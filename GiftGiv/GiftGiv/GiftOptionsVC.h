@@ -11,7 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GiftCustomCell.h"
 #import "GiftCardDetailsVC.h"
-
+#import "Gift_GreetingCardDetailsVC.h"
 
 @interface GiftOptionsVC : UIViewController{
     
@@ -22,7 +22,7 @@
     UIImage* pageActiveImage;
     UIImage* pageInactiveImage;
     NSMutableArray *giftCategoriesList;
-        
+    
 }
 @property (retain, nonatomic) IBOutlet UIImageView *profilePicImg;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;

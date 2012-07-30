@@ -39,7 +39,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     
     pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
     pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
@@ -74,7 +74,7 @@
     
     //Gift categories
     for(int i=0;i<totalCats;i++){
-
+        
         //dynamic button width based on the title for it
         CGSize giftCatTitleSize=[[giftCategoriesList objectAtIndex:i] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
         UIButton *giftCatBtn=[[UIButton alloc]initWithFrame:CGRectMake(xOriginForButton, 2, giftCatTitleSize.width, 40)];
@@ -113,7 +113,7 @@
         [giftsList addObject:giftDict];
         [giftDict release];
     }
-        
+    
 }
 -(void)swipeGestureForGiftCats:(UISwipeGestureRecognizer*)swipeRecognizer{
     //previous
@@ -263,7 +263,17 @@
         [self.navigationController pushViewController:giftCardDetails animated:YES];
         [giftCardDetails release];
     }
+    else{
         
+        Gift_GreetingCardDetailsVC *greetingCardDetails=[[Gift_GreetingCardDetailsVC alloc]initWithNibName:@"Gift_GreetingCardDetailsVC" bundle:nil];
+        if([[giftCategoriesList objectAtIndex:giftCatNum-1] isEqualToString:@"flowers"])
+            greetingCardDetails.isGreetingCard=NO;
+        else
+            greetingCardDetails.isGreetingCard=YES;
+        [self.navigationController pushViewController:greetingCardDetails animated:YES];
+        [greetingCardDetails release];
+    }
+    
 }
 -(void)categoryActions:(id)sender{
     

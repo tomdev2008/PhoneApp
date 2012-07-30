@@ -67,7 +67,7 @@
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
     eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 12, eventName_newSize.width, 21);
-    priceListArray =[[NSMutableArray alloc]initWithObjects:@"$10",@"$20",@"$30",@"$40",@"$50", nil];
+    priceListArray =[[NSMutableArray alloc]initWithObjects:@"$10",@"$20",@"$30",@"$40",@"$50",@"$60",@"$70",@"$80",@"$90", nil];
     
     
     [priceSelectedLbl.layer setCornerRadius:6.0];
@@ -88,42 +88,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)previousNextPriceSegmentAction:(id)sender {
-    
-    switch ([(UISegmentedControl*)sender selectedSegmentIndex]) {
-            //previous
-        case 0:
-            
-            if(selectedPriceRow>0){
-                [prevNextSegmentControl setEnabled:YES forSegmentAtIndex:1];
-                selectedPriceRow=selectedPriceRow-1;                
-            }
-            
-            if(selectedPriceRow==0){
-                [prevNextSegmentControl setEnabled:NO forSegmentAtIndex:0];
-            }
-            
-            break;
-            //next
-        case 1:
-            if(selectedPriceRow<[priceListArray count]-1){
-                selectedPriceRow=selectedPriceRow+1;
-                [prevNextSegmentControl setEnabled:YES forSegmentAtIndex:0];
-                
-            }
-            
-            if(selectedPriceRow==[priceListArray count]-1){
-                [prevNextSegmentControl setEnabled:NO forSegmentAtIndex:1];
-            }
-            
-            break;
-            
-            
-    }
-    [(UISegmentedControl*)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
-    [pricePicker selectRow:selectedPriceRow inComponent:0 animated:YES];
-    [pricePicker reloadComponent:0];
-}
 - (IBAction)messageKeyBoardAction:(id)sender {
     [personalMsgTxtView resignFirstResponder];
     [giftDetailsScroll setContentOffset:svos animated:YES];
@@ -163,6 +127,11 @@
     animation.type = kCATransitionMoveIn;
     animation.subtype=kCATransitionFromTop;
     [priceRangePickerBgView.layer addAnimation:animation forKey:@"animation"];
+    [pricePicker selectRow:selectedPriceRow inComponent:0 animated:YES];
+    if(selectedPriceRow==0){
+        [prevNextSegmentControl setEnabled:NO forSegmentAtIndex:0];
+        [prevNextSegmentControl setEnabled:YES forSegmentAtIndex:1];
+    }
     
 }
 - (IBAction)sendMediaAction:(id)sender {
@@ -199,7 +168,23 @@
 	[giftDetailsScroll setContentOffset:pt animated:YES];
 }
 - (IBAction)senderDetailsScreenAction:(id)sender {
-    
+    SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
+    if([[sendMediaLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@"Electronically"]){
+        sendOptions.isSendElectronically=YES;
+    }
+    else
+        sendOptions.isSendElectronically=NO;
+    NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
+    [giftAndSenderInfo setObject:@"BONNIE GIESEN" forKey:@"RecipientName"];
+    [giftAndSenderInfo setObject:@"birthday" forKey:@"EventName"];
+    [giftAndSenderInfo setObject:@"12345" forKey:@"GiftID"];
+    [giftAndSenderInfo setObject:@"Birthday card" forKey:@"GiftName"];
+    [giftAndSenderInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
+    [giftAndSenderInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
+        
+    [giftAndSenderInfo release];
+    [self.navigationController pushViewController:sendOptions animated:YES];
+    [sendOptions release];
 }
 #pragma mark - Actionsheet delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -218,6 +203,42 @@
     giftDetailsScroll.userInteractionEnabled=YES;
 }
 #pragma mark -
+- (IBAction)previousNextPriceSegmentAction:(id)sender {
+    
+    switch ([(UISegmentedControl*)sender selectedSegmentIndex]) {
+            //previous
+        case 0:
+            
+            if(selectedPriceRow>0){
+                [prevNextSegmentControl setEnabled:YES forSegmentAtIndex:1];
+                selectedPriceRow--;                
+            }
+            
+            if(selectedPriceRow==0){
+                [prevNextSegmentControl setEnabled:NO forSegmentAtIndex:0];
+            }
+            
+            break;
+            //next
+        case 1:
+            if(selectedPriceRow<[priceListArray count]-1){
+                selectedPriceRow++;
+                [prevNextSegmentControl setEnabled:YES forSegmentAtIndex:0];
+                
+            }
+            
+            if(selectedPriceRow==[priceListArray count]-1){
+                [prevNextSegmentControl setEnabled:NO forSegmentAtIndex:1];
+            }
+            
+            break;
+            
+            
+    }
+    [(UISegmentedControl*)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
+    [pricePicker selectRow:selectedPriceRow inComponent:0 animated:YES];
+    [pricePicker reloadComponent:0];
+}
 - (IBAction)priceSelectionButtonActions:(id)sender {
     
     CATransition *animation = [CATransition animation];
@@ -260,29 +281,34 @@
 	if (view == nil)
 	{
         view = [[[UIView alloc] init] autorelease];
-        UILabel *priceLabel=[[[UILabel alloc]init] autorelease];
+        UILabel *priceLabel=[[UILabel alloc]init];
         [priceLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
 		[priceLabel setBackgroundColor:[UIColor clearColor]];
-		[priceLabel setFrame:CGRectMake(30, 0, 200, 30)];
+		[priceLabel setFrame:CGRectMake(30, 0, 280, 30)];
         [priceLabel setTag:999];
-        UIButton *selectedButton=[[[UIButton alloc]init]autorelease];
-        [selectedButton setFrame:CGRectMake(0, 0, 280, 30)];
-        selectedButton.tag=row;
-        if(row==selectedPriceRow)
-            [selectedButton setTitle:@"✓" forState:UIControlStateNormal];
-        else
-            [selectedButton setTitle:@"" forState:UIControlStateNormal];
-        [selectedButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [selectedButton setTitleEdgeInsets:UIEdgeInsetsMake(2, 2, 2, 250)];
-		
+        UILabel *checkMarkLbl=[[UILabel alloc]init];
+        [checkMarkLbl setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+        [checkMarkLbl setTag:888];
+		[checkMarkLbl setBackgroundColor:[UIColor clearColor]];
+		[checkMarkLbl setFrame:CGRectMake(5, 0, 30, 30)];
+        [checkMarkLbl setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+        UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(priceSelectedByPicker:)];
+        [tapGesture setNumberOfTapsRequired:1];
+        [view addGestureRecognizer:tapGesture];
+        [tapGesture release];
+        
+        [view addSubview:checkMarkLbl];
         [view addSubview:priceLabel];
-        [view addSubview:selectedButton];
-        [selectedButton addTarget:self action:@selector(priceSelectedByPicker:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [priceLabel release];
+        [checkMarkLbl release];
         
         
 	}
+    view.tag=row;
     if(row==selectedPriceRow){
         [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+        
     }
     else{
         [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor blackColor]];        
@@ -291,31 +317,43 @@
     [(UILabel*)[view viewWithTag:999] setText:[NSString stringWithFormat:@"  %@",[priceListArray objectAtIndex:row]]];
     
     for(UIView *subview in [view subviews]){
-        if([subview isKindOfClass:[UIButton class]]){
-            if(row==selectedPriceRow){
-                [(UIButton*)subview setTitleColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0] forState:UIControlStateNormal];
-                [(UIButton*)subview setTitle:@"✓" forState:UIControlStateNormal];
+        if([subview isKindOfClass:[UILabel class]]){
+            if([(UILabel*)subview viewWithTag:888]){
+                if(row==selectedPriceRow)
+                    [(UILabel*)subview setText:@"✓"];
+                else
+                    [(UILabel*)subview setText:@""];
             }
-            else{
-                [(UIButton*)subview setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-                [(UIButton*)subview setTitle:@"" forState:UIControlStateNormal];
-            }
+            
         }
+        
     }
-    
-    
     
 	return view;
     
 }
 #pragma mark -
--(void)priceSelectedByPicker:(id)sender{
+-(void)priceSelectedByPicker:(UITapGestureRecognizer*)sender{
+    //NSLog(@"%d",[sender.view tag]);
     
-    selectedPriceRow=[sender tag];
+    selectedPriceRow=[sender.view tag];
     [pricePicker selectRow:selectedPriceRow inComponent:0 animated:YES];
     
     [pricePicker reloadComponent:0];
+    if(selectedPriceRow>0 && selectedPriceRow<[priceListArray count]-1){
+        [prevNextSegmentControl setEnabled:YES forSegmentAtIndex:0];
+        [prevNextSegmentControl setEnabled:YES forSegmentAtIndex:1];
+        
+    }
     
+    else if(selectedPriceRow==0){
+        [prevNextSegmentControl setEnabled:NO forSegmentAtIndex:0];
+        [prevNextSegmentControl setEnabled:YES forSegmentAtIndex:1];
+    }
+    else if(selectedPriceRow==[priceListArray count]-1){
+        [prevNextSegmentControl setEnabled:YES forSegmentAtIndex:0];
+        [prevNextSegmentControl setEnabled:NO forSegmentAtIndex:1];
+    }
 }
 
 #pragma mark -
@@ -334,7 +372,7 @@
     [self setPersonalMsgTxtView:nil];
     [self setPriceRangePickerBgView:nil];
     [self setPricePicker:nil];
-
+    
     [self setPrevNextSegmentControl:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.

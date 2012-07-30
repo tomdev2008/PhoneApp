@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "ImageAllocationObject.h"
-
+#import "SendOptionsVC.h"
 
 @interface GiftCardDetailsVC : UIViewController<UIActionSheetDelegate>{
     CGPoint svos;

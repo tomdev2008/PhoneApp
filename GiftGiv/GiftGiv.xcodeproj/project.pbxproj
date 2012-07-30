@@ -45,6 +45,10 @@
 		7E5EF73C15B9457200C1D252 /* ImageAllocationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5EF73B15B9457200C1D252 /* ImageAllocationObject.m */; };
 		7E5EF74D15B95D5100C1D252 /* EventCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5EF74C15B95D5100C1D252 /* EventCustomCell.m */; };
 		7E5EF74F15B95D6B00C1D252 /* EventCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E5EF74E15B95D6B00C1D252 /* EventCustomCell.xib */; };
+		7EAE79E015C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE79DE15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m */; };
+		7EAE79E115C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EAE79DF15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib */; };
+		7EAE79E615C6C16F00D67C27 /* SendOptionsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE79E415C6C16F00D67C27 /* SendOptionsVC.m */; };
+		7EAE79E715C6C16F00D67C27 /* SendOptionsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EAE79E515C6C16F00D67C27 /* SendOptionsVC.xib */; };
 		7ECC603815BD1A52008E855F /* EventDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECC603615BD1A52008E855F /* EventDetailsVC.m */; };
 		7ECC603915BD1A52008E855F /* EventDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7ECC603715BD1A52008E855F /* EventDetailsVC.xib */; };
 		7ECFE0C815BE6E9A002E95E3 /* appicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ECFE0C715BE6E9A002E95E3 /* appicon@2x.png */; };
@@ -140,6 +144,12 @@
 		7E5EF74B15B95D5100C1D252 /* EventCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCustomCell.h; sourceTree = "<group>"; };
 		7E5EF74C15B95D5100C1D252 /* EventCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCustomCell.m; sourceTree = "<group>"; };
 		7E5EF74E15B95D6B00C1D252 /* EventCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventCustomCell.xib; sourceTree = "<group>"; };
+		7EAE79DD15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gift_GreetingCardDetailsVC.h; sourceTree = "<group>"; };
+		7EAE79DE15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Gift_GreetingCardDetailsVC.m; sourceTree = "<group>"; };
+		7EAE79DF15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Gift_GreetingCardDetailsVC.xib; sourceTree = "<group>"; };
+		7EAE79E315C6C16F00D67C27 /* SendOptionsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendOptionsVC.h; sourceTree = "<group>"; };
+		7EAE79E415C6C16F00D67C27 /* SendOptionsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendOptionsVC.m; sourceTree = "<group>"; };
+		7EAE79E515C6C16F00D67C27 /* SendOptionsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SendOptionsVC.xib; sourceTree = "<group>"; };
 		7ECC603515BD1A52008E855F /* EventDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventDetailsVC.h; sourceTree = "<group>"; };
 		7ECC603615BD1A52008E855F /* EventDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventDetailsVC.m; sourceTree = "<group>"; };
 		7ECC603715BD1A52008E855F /* EventDetailsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventDetailsVC.xib; sourceTree = "<group>"; };
@@ -369,6 +379,26 @@
 			name = "Evens Table cell";
 			sourceTree = "<group>";
 		};
+		7EAE79DB15C6BFCD00D67C27 /* Greeting Card Details */ = {
+			isa = PBXGroup;
+			children = (
+				7EAE79DD15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.h */,
+				7EAE79DE15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m */,
+				7EAE79DF15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib */,
+			);
+			name = "Greeting Card Details";
+			sourceTree = "<group>";
+		};
+		7EAE79E215C6C13F00D67C27 /* Send Options */ = {
+			isa = PBXGroup;
+			children = (
+				7EAE79E315C6C16F00D67C27 /* SendOptionsVC.h */,
+				7EAE79E415C6C16F00D67C27 /* SendOptionsVC.m */,
+				7EAE79E515C6C16F00D67C27 /* SendOptionsVC.xib */,
+			);
+			name = "Send Options";
+			sourceTree = "<group>";
+		};
 		7ECC603315BD1A27008E855F /* EventDetails */ = {
 			isa = PBXGroup;
 			children = (
@@ -468,6 +498,7 @@
 			isa = PBXGroup;
 			children = (
 				7EDA102615C12A880073CB8D /* Gift Cards */,
+				7EAE79DB15C6BFCD00D67C27 /* Greeting Card Details */,
 			);
 			name = "Gift Details";
 			sourceTree = "<group>";
@@ -499,6 +530,7 @@
 				7EDC191115BFB75A00FF7789 /* Main */,
 				7EE0260C15BD99FF003B9C74 /* Gift Custom cell */,
 				7EDC191315BFB76B00FF7789 /* Gift Details */,
+				7EAE79E215C6C13F00D67C27 /* Send Options */,
 			);
 			name = Gifts;
 			sourceTree = "<group>";
@@ -597,6 +629,8 @@
 				7ECFE0DA15BE7574002E95E3 /* backbutton@2x.png in Resources */,
 				7ECFE0DB15BE7574002E95E3 /* nextarrow@2x.png in Resources */,
 				7EDC191815BFB79300FF7789 /* GiftCardDetailsVC.xib in Resources */,
+				7EAE79E115C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib in Resources */,
+				7EAE79E715C6C16F00D67C27 /* SendOptionsVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -637,6 +671,8 @@
 				7EDC191715BFB79300FF7789 /* GiftCardDetailsVC.m in Sources */,
 				7E0FE89815C2CED800EDC79C /* CheckNetwork.m in Sources */,
 				7E0FE89D15C2CF7B00EDC79C /* ApplicationHelpers.m in Sources */,
+				7EAE79E015C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m in Sources */,
+				7EAE79E615C6C16F00D67C27 /* SendOptionsVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
