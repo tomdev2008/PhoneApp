@@ -50,7 +50,7 @@
     // Do any additional setup after loading the view from its nib.
     
     //profilePic.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
-        
+    
     if(isGreetingCard){
         flowerImgView.hidden=YES;
         frontLbl.hidden=NO;
@@ -72,7 +72,7 @@
         flowerImgView.hidden=NO;
         //flowerImgView.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
     }
-            
+    
     giftDetailsContentScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsContentScroll];
     
@@ -95,7 +95,7 @@
 }
 -(void)zoomInOutForCards:(UITapGestureRecognizer*)tapRecog{
     CGPoint tapLocation=[tapRecog locationInView:self.view];
-
+    
     //zoom out
     if([zoomInImgView superview]){
         if(CGRectContainsPoint(zoomInImgView.frame, tapLocation))
@@ -112,7 +112,7 @@
                 //zoomInImgView.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
             } 
             if(CGRectContainsPoint(frontGreetingImg.frame, tapLocation)){
-               if(![zoomInImgView superview]){
+                if(![zoomInImgView superview]){
                     zoomInImgView.frame=CGRectMake(0, 0, 320, 460);
                     [self.view addSubview:zoomInImgView];
                 }
@@ -135,7 +135,7 @@
     [giftAndSenderInfo setObject:greetingPrice.text forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
     
-    
+    sendOptions.sendingInfoDict=giftAndSenderInfo;
     [giftAndSenderInfo release];
     [self.navigationController pushViewController:sendOptions animated:YES];
     [sendOptions release];
@@ -165,7 +165,7 @@
 #pragma mark -
 - (void)viewDidUnload
 {
-
+    
     [self setGiftDetailsContentScroll:nil];
     [self setProfilePic:nil];
     [self setProfileNameLbl:nil];
@@ -192,7 +192,7 @@
 }
 
 - (void)dealloc {
-
+    
     [giftDetailsContentScroll release];
     [profilePic release];
     [profileNameLbl release];

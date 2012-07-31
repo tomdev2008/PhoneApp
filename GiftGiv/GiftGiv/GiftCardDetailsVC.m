@@ -181,7 +181,8 @@
     [giftAndSenderInfo setObject:@"Birthday card" forKey:@"GiftName"];
     [giftAndSenderInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
-        
+    
+    sendOptions.sendingInfoDict=giftAndSenderInfo;
     [giftAndSenderInfo release];
     [self.navigationController pushViewController:sendOptions animated:YES];
     [sendOptions release];
