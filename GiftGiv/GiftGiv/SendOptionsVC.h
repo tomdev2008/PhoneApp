@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "ApplicationHelpers.h"
+#import "GiftSummaryVC.h"
 
 @interface SendOptionsVC : UIViewController<UIActionSheetDelegate>{
     CGPoint svos;

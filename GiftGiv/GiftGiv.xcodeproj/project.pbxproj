@@ -49,6 +49,8 @@
 		7EAE79E115C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EAE79DF15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib */; };
 		7EAE79E615C6C16F00D67C27 /* SendOptionsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE79E415C6C16F00D67C27 /* SendOptionsVC.m */; };
 		7EAE79E715C6C16F00D67C27 /* SendOptionsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EAE79E515C6C16F00D67C27 /* SendOptionsVC.xib */; };
+		7EBA4D8715C8586B00D479C4 /* GiftSummaryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBA4D8515C8586B00D479C4 /* GiftSummaryVC.m */; };
+		7EBA4D8815C8586B00D479C4 /* GiftSummaryVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EBA4D8615C8586B00D479C4 /* GiftSummaryVC.xib */; };
 		7ECC603815BD1A52008E855F /* EventDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECC603615BD1A52008E855F /* EventDetailsVC.m */; };
 		7ECC603915BD1A52008E855F /* EventDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7ECC603715BD1A52008E855F /* EventDetailsVC.xib */; };
 		7ECFE0C815BE6E9A002E95E3 /* appicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ECFE0C715BE6E9A002E95E3 /* appicon@2x.png */; };
@@ -151,6 +153,9 @@
 		7EAE79E315C6C16F00D67C27 /* SendOptionsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendOptionsVC.h; sourceTree = "<group>"; };
 		7EAE79E415C6C16F00D67C27 /* SendOptionsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendOptionsVC.m; sourceTree = "<group>"; };
 		7EAE79E515C6C16F00D67C27 /* SendOptionsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SendOptionsVC.xib; sourceTree = "<group>"; };
+		7EBA4D8415C8586B00D479C4 /* GiftSummaryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftSummaryVC.h; sourceTree = "<group>"; };
+		7EBA4D8515C8586B00D479C4 /* GiftSummaryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftSummaryVC.m; sourceTree = "<group>"; };
+		7EBA4D8615C8586B00D479C4 /* GiftSummaryVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GiftSummaryVC.xib; sourceTree = "<group>"; };
 		7ECC603515BD1A52008E855F /* EventDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventDetailsVC.h; sourceTree = "<group>"; };
 		7ECC603615BD1A52008E855F /* EventDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventDetailsVC.m; sourceTree = "<group>"; };
 		7ECC603715BD1A52008E855F /* EventDetailsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventDetailsVC.xib; sourceTree = "<group>"; };
@@ -401,6 +406,16 @@
 			name = "Send Options";
 			sourceTree = "<group>";
 		};
+		7EBA4D8215C8585200D479C4 /* Gift Summary */ = {
+			isa = PBXGroup;
+			children = (
+				7EBA4D8415C8586B00D479C4 /* GiftSummaryVC.h */,
+				7EBA4D8515C8586B00D479C4 /* GiftSummaryVC.m */,
+				7EBA4D8615C8586B00D479C4 /* GiftSummaryVC.xib */,
+			);
+			name = "Gift Summary";
+			sourceTree = "<group>";
+		};
 		7ECC603315BD1A27008E855F /* EventDetails */ = {
 			isa = PBXGroup;
 			children = (
@@ -534,6 +549,7 @@
 				7EE0260C15BD99FF003B9C74 /* Gift Custom cell */,
 				7EDC191315BFB76B00FF7789 /* Gift Details */,
 				7EAE79E215C6C13F00D67C27 /* Send Options */,
+				7EBA4D8215C8585200D479C4 /* Gift Summary */,
 			);
 			name = Gifts;
 			sourceTree = "<group>";
@@ -635,6 +651,7 @@
 				7EAE79E115C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib in Resources */,
 				7EAE79E715C6C16F00D67C27 /* SendOptionsVC.xib in Resources */,
 				7EED2FB315C7A031001160BB /* ListOfStates.plist in Resources */,
+				7EBA4D8815C8586B00D479C4 /* GiftSummaryVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -677,6 +694,7 @@
 				7E0FE89D15C2CF7B00EDC79C /* ApplicationHelpers.m in Sources */,
 				7EAE79E015C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m in Sources */,
 				7EAE79E615C6C16F00D67C27 /* SendOptionsVC.m in Sources */,
+				7EBA4D8715C8586B00D479C4 /* GiftSummaryVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -494,7 +494,15 @@
         if(![emailTxtFld.text isEqualToString:@""]){
             if([self validateMail:emailTxtFld.text]){
                 //Push the next screen (gift summary)
+                GiftSummaryVC *giftSummary=[[GiftSummaryVC alloc]initWithNibName:@"GiftSummaryVC" bundle:nil];
                 
+                [sendingInfoDict setObject:[emailTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"RecipientMailID"];
+                requestMsgTxtView.text=[requestMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                if(![requestMsgTxtView.text isEqualToString:@""])
+                    [sendingInfoDict setObject:requestMsgTxtView.text forKey:@"RequestMessage"];
+                giftSummary.giftSummaryDict=sendingInfoDict;
+                [self.navigationController pushViewController:giftSummary animated:YES];
+                [giftSummary release];
                 
             }
             else
@@ -508,7 +516,11 @@
         phoneNumTxtFld.text=[phoneNumTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         if(![phoneNumTxtFld.text isEqualToString:@""]){
             //push the next screen (gift summary)
-            
+            GiftSummaryVC *giftSummary=[[GiftSummaryVC alloc]initWithNibName:@"GiftSummaryVC" bundle:nil];
+            [sendingInfoDict setObject:[phoneNumTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] forKey:@"RecipientPhoneNum"];
+            giftSummary.giftSummaryDict=sendingInfoDict;
+            [self.navigationController pushViewController:giftSummary animated:YES];
+            [giftSummary release];
             
         }
         else{
@@ -525,7 +537,12 @@
         }
         else{
             //push the next screen (gift summary)
+            GiftSummaryVC *giftSummary=[[GiftSummaryVC alloc]initWithNibName:@"GiftSummaryVC" bundle:nil];
             
+            [sendingInfoDict setObject:[NSString stringWithFormat:@"%@, %@, %@, %@, %@",streeAddress_oneTxtFld.text,streetAddress_twoTxtFld.text,cityTxtFld.text,[stateLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]],zipTxtFld.text] forKey:@"RecipientAddress"];
+            giftSummary.giftSummaryDict=sendingInfoDict;
+            [self.navigationController pushViewController:giftSummary animated:YES];
+            [giftSummary release];
         }
         
     }
