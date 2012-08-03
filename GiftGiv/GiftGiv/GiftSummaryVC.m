@@ -68,7 +68,7 @@
         addressLbl.text=[giftSummaryDict objectForKey:@"RecipientMailID"];
         mailGiftToLbl.text=@"Address request sent to:";
     }
-        
+    
     
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
@@ -79,7 +79,7 @@
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
     eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 12, eventName_newSize.width, 21);
-      
+    
     
     CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
     
@@ -97,7 +97,15 @@
     giftSummaryScroll.contentSize=CGSizeMake(320, paymentBtn.frame.origin.y+paymentBtn.frame.size.height+10);
     
 }
+- (IBAction)backToRecipientForm:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
+- (IBAction)paymentBtnAction:(id)sender {
+    SuccessVC *success=[[SuccessVC alloc]initWithNibName:@"SuccessVC" bundle:nil];
+    [self.navigationController pushViewController:success animated:YES];
+    [success release];
+}
 - (void)viewDidUnload
 {
     [self setGiftSummaryScroll:nil];
@@ -125,12 +133,6 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (IBAction)backToRecipientForm:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (IBAction)paymentBtnAction:(id)sender {
-}
 - (void)dealloc {
     [giftSummaryScroll release];
     [profilePic release];

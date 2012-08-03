@@ -43,9 +43,9 @@
         
         //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
         /*[pageControlForEventGroups setCurrentPageIndicatorTintColor:[UIColor blackColor]];
-        [pageControlForEventGroups setPageIndicatorTintColor:[UIColor redColor]];*/
+         [pageControlForEventGroups setPageIndicatorTintColor:[UIColor redColor]];*/
     }
-        
+    
     
     UISwipeGestureRecognizer *swipeLeftRecognizer=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipingForEventGroups:)];
     swipeLeftRecognizer.direction=UISwipeGestureRecognizerDirectionLeft;
@@ -61,9 +61,12 @@
     pageControlForEventGroups.currentPage=eventGroupNum-1;
     
     [super viewDidLoad];
-
+    
 }
+
 -(void)swipingForEventGroups:(UISwipeGestureRecognizer*)swipeRecognizer{
+    
+    // The events list should be in carousel effect
     
     //previous
     if (swipeRecognizer.direction == UISwipeGestureRecognizerDirectionRight) {
@@ -72,7 +75,7 @@
 			eventGroupNum--;
 			
 			[self swiping:0];
-						
+            
 		}
 		else if(eventGroupNum==1)
 		{
@@ -96,7 +99,7 @@
 			[self swiping:1];
 		}
     }
-     pageControlForEventGroups.currentPage=eventGroupNum-1;
+    pageControlForEventGroups.currentPage=eventGroupNum-1;
 }
 -(void)swiping:(int)swipeDirectionNum{
     
@@ -128,6 +131,7 @@
     [eventsTable reloadData];
     [eventsTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
+#pragma mark - Transition
 -(CATransition *)getAnimationForEventGroup:(NSString *)animationType
 {
 	CATransition *animation1 = [CATransition animation];
@@ -221,11 +225,12 @@
         cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 29, eventDate_newSize.width, 21);
 		
 	}
-        
+    
 	return cell;
 }
 #pragma mark - TableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
     //Gift options screen
     GiftOptionsVC *giftOptions=[[GiftOptionsVC alloc]initWithNibName:@"GiftOptionsVC" bundle:nil];
     [self.navigationController pushViewController:giftOptions animated:YES];
@@ -237,13 +242,17 @@
     
     EventDetailsVC *details=[[EventDetailsVC alloc]initWithNibName:@"EventDetailsVC" bundle:nil];
     if([sender tag]==0)
-          details.isPhotoTagged=YES;
+        details.isPhotoTagged=YES;
     [self.navigationController pushViewController:details animated:YES];
     [details release];
     
 }
 //Setting screen
 - (IBAction)settingsAction:(id)sender {
+    SettingsVC *settings=[[SettingsVC alloc]initWithNibName:@"SettingsVC" bundle:nil];
+    [self.navigationController pushViewController:settings animated:YES];
+    [settings release];
+    
 }
 
 - (IBAction)pageControlActionForEventGroups:(id)sender {

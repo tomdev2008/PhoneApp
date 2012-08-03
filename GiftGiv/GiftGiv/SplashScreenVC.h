@@ -16,6 +16,7 @@
 
 @property (retain, nonatomic) IBOutlet UIActivityIndicatorView *loadingIndicator;
 
+// get the animation to reveal the screen
 -(CATransition *) getRevealAnimation;
 
 @end

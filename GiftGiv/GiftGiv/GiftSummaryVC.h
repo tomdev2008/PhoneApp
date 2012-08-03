@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SuccessVC.h"
 
 @interface GiftSummaryVC : UIViewController
 

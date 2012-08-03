@@ -7,16 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
 #import "CheckNetwork.h"
+#import "ApplicationHelpers.h"
 #import "FacebookShare.h"
 #import "HomeScreenVC.h"
-#import "ApplicationHelpers.h"
 
 @interface SignInVC : UIViewController<FacebookShareDelegate>
 
-@property (retain, nonatomic) IBOutlet UIButton *logInBtn;
 
 - (IBAction)logInAction:(id)sender;
+- (IBAction)termsAction:(id)sender;
 
 @end

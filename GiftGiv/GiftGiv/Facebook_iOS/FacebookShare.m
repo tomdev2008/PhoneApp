@@ -32,7 +32,7 @@ BOOL canReceiveDataFromFacebook;
 #ifdef DEBUGX
 	NSLog(@"%s", __FUNCTION__);
 #endif
-        
+    
     @synchronized(self)
     {
         if (!sharedInstance){
@@ -98,9 +98,9 @@ BOOL canReceiveDataFromFacebook;
  * Graph API: Get the user's basic information, picking the name and picture fields.
  */
 - (void)apiUpdateStatus:(NSMutableDictionary *)params withRequestDelegate:(id)requestedObject{
-
+    
     if (params) tempParams=params;
-
+    
     if ([[self facebook] isSessionValid]) {
         
         if ([requestedObject view]){
@@ -118,7 +118,8 @@ BOOL canReceiveDataFromFacebook;
     else {
         if (params){
             [self showProgressHUD:[requestedObject view] withMsg:@""];
-            [[[UIAlertView alloc]initWithTitle:@"GiftGiv" message:NSLocalizedString(@"ConnectToFacebook", @"") delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil] show];
+            //[[[UIAlertView alloc]initWithTitle:@"GiftGiv" message:NSLocalizedString(@"ConnectToFacebook", @"") delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil] show];
+            AlertWithMessageAndDelegateActionHandling(@"GiftGiv", NSLocalizedString(@"ConnectToFacebook", @""), [NSArray arrayWithObjects:@"NO",@"YES", nil], self);
         }
     }
 }
@@ -129,7 +130,7 @@ BOOL canReceiveDataFromFacebook;
 - (void)apiDialogFeedUser:(NSMutableDictionary *)params inView:(UIView*)viw
 {
     if (params) tempParams=params;
-
+    
     if ([[self facebook] isSessionValid]) {
         if (viw){
             [self showProgressHUD:viw withMsg:NSLocalizedString(@"PostingToWall", @"")];
@@ -147,15 +148,17 @@ BOOL canReceiveDataFromFacebook;
     else {
         if (params){
             [self showProgressHUD:viw withMsg:@""];
-            [[[UIAlertView alloc]initWithTitle:@"GiftGiv" message:NSLocalizedString(@"ConnectToFacebook", @"") delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil] show];
+            //[[[UIAlertView alloc]initWithTitle:@"GiftGiv" message:NSLocalizedString(@"ConnectToFacebook", @"") delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil] show];
+            AlertWithMessageAndDelegateActionHandling(@"GiftGiv", NSLocalizedString(@"ConnectToFacebook", @""), [NSArray arrayWithObjects:@"NO",@"YES", nil], self);
         }
     }
-        
+    
 }
 #pragma mark -
 #pragma mark alertView delegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (buttonIndex==1) {
+    //if (buttonIndex==1) {
+    if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"YES"]){
         [self authorizeOurAppToShareContentToFacebook];
         canReceiveDataFromFacebook=YES;
     }
@@ -216,6 +219,7 @@ BOOL canReceiveDataFromFacebook;
         [defaults removeObjectForKey:@"FBExpirationDateKey"];
         [defaults synchronize];
     }
+    [fbShareDelegate facebookDidLoggedOut];
 }
 
 /**
@@ -226,7 +230,8 @@ BOOL canReceiveDataFromFacebook;
  *  - the user changed his or her password
  */
 - (void)fbSessionInvalidated{
-    [[[UIAlertView alloc]initWithTitle:NSLocalizedString(@"FacebookSessionExpired", @"") message:NSLocalizedString(@"YourSessionExpired", @"") delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    //[[[UIAlertView alloc]initWithTitle:NSLocalizedString(@"FacebookSessionExpired", @"") message:NSLocalizedString(@"YourSessionExpired", @"") delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    AlertWithMessageAndDelegate(NSLocalizedString(@"FacebookSessionExpired", @""), NSLocalizedString(@"YourSessionExpired", @""),nil);
     [self fbDidLogout];
 }
 

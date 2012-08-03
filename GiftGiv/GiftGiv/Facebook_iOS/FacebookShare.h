@@ -9,13 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "FBConnect.h"
 #import "MBProgressHUD.h"
-
+#import "ApplicationHelpers.h"
 
 @protocol FacebookShareDelegate <NSObject>
 
 @optional
 - (void)facebookDidLoggedIn;
-
+- (void)facebookDidLoggedOut;
 @end
 
 @interface FacebookShare : NSObject <FBSessionDelegate,FBRequestDelegate,FBDialogDelegate,MBProgressHUDDelegate>

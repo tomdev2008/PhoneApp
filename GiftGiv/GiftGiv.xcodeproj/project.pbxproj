@@ -29,6 +29,10 @@
 		7E1D728715B809F00008D19C /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D727B15B809EF0008D19C /* SBJsonWriter.m */; };
 		7E1D728F15B80B920008D19C /* FacebookShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D728E15B80B920008D19C /* FacebookShare.m */; };
 		7E1D729415B80C860008D19C /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D729315B80C860008D19C /* MBProgressHUD.m */; };
+		7E58440F15CBD533005E35D4 /* SuccessVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E58440D15CBD533005E35D4 /* SuccessVC.m */; };
+		7E58441015CBD533005E35D4 /* SuccessVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E58440E15CBD533005E35D4 /* SuccessVC.xib */; };
+		7E58441515CBDD69005E35D4 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E58441315CBDD69005E35D4 /* SettingsVC.m */; };
+		7E58441615CBDD69005E35D4 /* SettingsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E58441415CBDD69005E35D4 /* SettingsVC.xib */; };
 		7E5EF72115B929D700C1D252 /* bubbleicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E5EF71B15B929D700C1D252 /* bubbleicon@2x.png */; };
 		7E5EF72215B929D700C1D252 /* redlogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E5EF71C15B929D700C1D252 /* redlogo@2x.png */; };
 		7E5EF72315B929D700C1D252 /* tealbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E5EF71D15B929D700C1D252 /* tealbutton@2x.png */; };
@@ -128,6 +132,12 @@
 		7E1D729015B80BEA0008D19C /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		7E1D729215B80C860008D19C /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		7E1D729315B80C860008D19C /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		7E58440C15CBD533005E35D4 /* SuccessVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuccessVC.h; sourceTree = "<group>"; };
+		7E58440D15CBD533005E35D4 /* SuccessVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuccessVC.m; sourceTree = "<group>"; };
+		7E58440E15CBD533005E35D4 /* SuccessVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SuccessVC.xib; sourceTree = "<group>"; };
+		7E58441215CBDD69005E35D4 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
+		7E58441315CBDD69005E35D4 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
+		7E58441415CBDD69005E35D4 /* SettingsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsVC.xib; sourceTree = "<group>"; };
 		7E5EF71B15B929D700C1D252 /* bubbleicon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bubbleicon@2x.png"; sourceTree = "<group>"; };
 		7E5EF71C15B929D700C1D252 /* redlogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "redlogo@2x.png"; sourceTree = "<group>"; };
 		7E5EF71D15B929D700C1D252 /* tealbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tealbutton@2x.png"; sourceTree = "<group>"; };
@@ -331,6 +341,26 @@
 			name = MBProgressHUD;
 			sourceTree = "<group>";
 		};
+		7E58440A15CBD51D005E35D4 /* Success */ = {
+			isa = PBXGroup;
+			children = (
+				7E58440C15CBD533005E35D4 /* SuccessVC.h */,
+				7E58440D15CBD533005E35D4 /* SuccessVC.m */,
+				7E58440E15CBD533005E35D4 /* SuccessVC.xib */,
+			);
+			name = Success;
+			sourceTree = "<group>";
+		};
+		7E58441115CBDD56005E35D4 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				7E58441215CBDD69005E35D4 /* SettingsVC.h */,
+				7E58441315CBDD69005E35D4 /* SettingsVC.m */,
+				7E58441415CBDD69005E35D4 /* SettingsVC.xib */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 		7E5EF71815B929BB00C1D252 /* Retina */ = {
 			isa = PBXGroup;
 			children = (
@@ -473,6 +503,7 @@
 				7E1D724515B7E9D00008D19C /* Home Screen */,
 				7ECC603315BD1A27008E855F /* EventDetails */,
 				7EE0260615BD8FD9003B9C74 /* Gifts */,
+				7E58441115CBDD56005E35D4 /* Settings */,
 				7ED7EA2315B6F1EE008DFDE3 /* Supporting Files */,
 			);
 			path = GiftGiv;
@@ -550,6 +581,7 @@
 				7EDC191315BFB76B00FF7789 /* Gift Details */,
 				7EAE79E215C6C13F00D67C27 /* Send Options */,
 				7EBA4D8215C8585200D479C4 /* Gift Summary */,
+				7E58440A15CBD51D005E35D4 /* Success */,
 			);
 			name = Gifts;
 			sourceTree = "<group>";
@@ -652,6 +684,8 @@
 				7EAE79E715C6C16F00D67C27 /* SendOptionsVC.xib in Resources */,
 				7EED2FB315C7A031001160BB /* ListOfStates.plist in Resources */,
 				7EBA4D8815C8586B00D479C4 /* GiftSummaryVC.xib in Resources */,
+				7E58441015CBD533005E35D4 /* SuccessVC.xib in Resources */,
+				7E58441615CBDD69005E35D4 /* SettingsVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,6 +729,8 @@
 				7EAE79E015C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m in Sources */,
 				7EAE79E615C6C16F00D67C27 /* SendOptionsVC.m in Sources */,
 				7EBA4D8715C8586B00D479C4 /* GiftSummaryVC.m in Sources */,
+				7E58440F15CBD533005E35D4 /* SuccessVC.m in Sources */,
+				7E58441515CBDD69005E35D4 /* SettingsVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

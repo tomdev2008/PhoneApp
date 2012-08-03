@@ -13,6 +13,7 @@
 #import "EventCustomCell.h"
 #import "EventDetailsVC.h"
 #import "GiftOptionsVC.h"
+#import "SettingsVC.h"
 
 @interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource>
 

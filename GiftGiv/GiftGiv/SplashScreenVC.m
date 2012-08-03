@@ -33,18 +33,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     
+}
+-(void)viewWillAppear:(BOOL)animated{
+    
+    //Check whether facebook session is valid or not, Based on the availability load either splash screen or Home/Events screen
     if([[[FacebookShare sharedSingleton] facebook] isSessionValid]){
-         [self performSelector:@selector(loadHomeScreen) withObject:nil afterDelay:2.0];
+        [self performSelector:@selector(loadHomeScreen) withObject:nil afterDelay:2.0];
     }
     else
         [self performSelector:@selector(loadSignInScreen) withObject:nil afterDelay:2.0];
+    
+    [super viewWillAppear:YES];
 }
 -(void)loadHomeScreen{
     [loadingIndicator setHidden:YES];
     
-    //Remove splashscreen by using Animation function EaseIn
+    //Load Home/Events by using Animation function EaseIn for Splash screen
 	CATransition *revealTransition=[self getRevealAnimation];
 	
 	[self.navigationController.view.layer addAnimation:revealTransition forKey:nil];
@@ -56,23 +61,23 @@
 -(void)loadSignInScreen{
     [loadingIndicator setHidden:YES];
     
-    //Remove splashscreen by using Animation function EaseIn
-    /*CATransition *revealTransition=[self getRevealAnimation];
-	
-	[self.navigationController.view.layer addAnimation:revealTransition forKey:nil];
-    revealTransition=nil;*/
+    //Load signIn screen
     SignInVC *signIn=[[SignInVC alloc]initWithNibName:@"SignInVC" bundle:nil];
     [self.navigationController pushViewController:signIn animated:NO];
     [signIn release];
 }
+#pragma mark - Transition
 
 -(CATransition *) getRevealAnimation{
+    
     CATransition *transition = [CATransition animation];
 	transition.duration = 1.0;
 	transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
 	transition.type = @"kCATransitionReveal";
     return transition;
+    
 }
+
 #pragma mark -
 - (void)viewDidUnload
 {
