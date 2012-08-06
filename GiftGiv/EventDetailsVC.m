@@ -67,7 +67,7 @@
         CGSize eventDescription_newSize=[eventDescription.text sizeWithFont:eventDescription.font constrainedToSize:eventDescription_maxSize lineBreakMode:UILineBreakModeWordWrap];
         eventDescription.frame=CGRectMake(5, 115,310, eventDescription_newSize.height+28);
         //NSLog(@"%@",NSStringFromCGSize(eventDescription_newSize));
-              
+        
         
         likesCommentsLbl.frame=CGRectMake(13, eventDescription.frame.origin.y+eventDescription.frame.size.height+5, 221, 21);
         
@@ -102,14 +102,14 @@
 		cell.selectionStyle=UITableViewCellSelectionStyleNone;
         NSString *profileNameAndComment;
         /*if(indexPath.row%2==0)
-            profileNameAndComment=@"Kushal Happy married life how are you fine thank you Happy married life how are you fine thank Kushal Happy married life how are you fine thank you Happy married life how are you fine thank Kushal Happy married life how are you fine thank you Happy married life how are you fine thank";
-        else*/
-            profileNameAndComment=@"Kushal congratulations";
+         profileNameAndComment=@"Kushal Happy married life how are you fine thank you Happy married life how are you fine thank Kushal Happy married life how are you fine thank you Happy married life how are you fine thank Kushal Happy married life how are you fine thank you Happy married life how are you fine thank";
+         else*/
+        profileNameAndComment=@"Kushal congratulations";
         NSMutableAttributedString* attrStr = [NSMutableAttributedString attributedStringWithString:profileNameAndComment];
         // for those calls we don't specify a range so it affects the whole string
         attrStr.font=[UIFont fontWithName:@"Helvetica" size:14];
         [attrStr setTextColor:[UIColor blackColor]];
-
+        
         [attrStr setTextColor:[UIColor colorWithRed:0 green:0.67 blue:0.66 alpha:1.0] range:[profileNameAndComment rangeOfString:@"Kushal"]];
         [attrStr setFont:[UIFont fontWithName:@"Helvetica-Bold" size:14] range:[profileNameAndComment rangeOfString:@"Kushal"]];
         cell.commentsLbl.attributedText = attrStr;
@@ -126,13 +126,13 @@
     CGSize constraintSize = CGSizeMake(246.0f, MAXFLOAT);
     NSString *commentText;
     /*if(indexPath.row%2==0)
-       commentText=@"Kushal Happy married life how are you fine thank you Happy married life how are you fine thank Kushal Happy married life how are you fine thank you Happy married life how are you fine thank Kushal Happy married life how are you fine thank you Happy married life how are you fine thank";
-    else*/
-        commentText=@"Kushal congratulations";
+     commentText=@"Kushal Happy married life how are you fine thank you Happy married life how are you fine thank Kushal Happy married life how are you fine thank you Happy married life how are you fine thank Kushal Happy married life how are you fine thank you Happy married life how are you fine thank";
+     else*/
+    commentText=@"Kushal congratulations";
     CGSize labelSize = [commentText sizeWithFont:cellFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
     if(labelSize.height>40)
         return labelSize.height+5;
-
+    
     return 44+5;
 }
 #pragma mark - 

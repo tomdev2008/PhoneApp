@@ -26,6 +26,7 @@
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
     [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackOpaque];
+    
     // Override point for customization after application launch.
     
     SplashScreenVC *splash=[[SplashScreenVC alloc]initWithNibName:@"SplashScreenVC" bundle:nil];
@@ -35,8 +36,6 @@
     [splash release];
     [self.window addSubview:navController.view];
     
-      
-   // self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     return YES;
 }

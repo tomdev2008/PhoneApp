@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CustomPageControl.h"
 #import <QuartzCore/QuartzCore.h>
+#import "CustomPageControl.h"
 #import "GiftCustomCell.h"
 #import "GiftCardDetailsVC.h"
 #import "Gift_GreetingCardDetailsVC.h"

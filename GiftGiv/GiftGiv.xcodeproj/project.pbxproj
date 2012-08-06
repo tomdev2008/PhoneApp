@@ -67,6 +67,12 @@
 		7ECFE0D915BE7574002E95E3 /* askagainbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ECFE0D515BE7574002E95E3 /* askagainbutton@2x.png */; };
 		7ECFE0DA15BE7574002E95E3 /* backbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ECFE0D615BE7574002E95E3 /* backbutton@2x.png */; };
 		7ECFE0DB15BE7574002E95E3 /* nextarrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ECFE0D715BE7574002E95E3 /* nextarrow@2x.png */; };
+		7ED149F215CFF3B3007CBDBF /* OrderListCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED149F015CFF3B3007CBDBF /* OrderListCustomCell.m */; };
+		7ED149F315CFF3B3007CBDBF /* OrderListCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7ED149F115CFF3B3007CBDBF /* OrderListCustomCell.xib */; };
+		7ED149F715CFF3C3007CBDBF /* OrderHistoryDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED149F515CFF3C3007CBDBF /* OrderHistoryDetailsVC.m */; };
+		7ED149F815CFF3C3007CBDBF /* OrderHistoryDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7ED149F615CFF3C3007CBDBF /* OrderHistoryDetailsVC.xib */; };
+		7ED149FC15CFF3D1007CBDBF /* OrderHistoryListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED149FA15CFF3D1007CBDBF /* OrderHistoryListVC.m */; };
+		7ED149FD15CFF3D1007CBDBF /* OrderHistoryListVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7ED149FB15CFF3D1007CBDBF /* OrderHistoryListVC.xib */; };
 		7ED7EA1D15B6F1EE008DFDE3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ED7EA1C15B6F1EE008DFDE3 /* UIKit.framework */; };
 		7ED7EA1F15B6F1EE008DFDE3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ED7EA1E15B6F1EE008DFDE3 /* Foundation.framework */; };
 		7ED7EA2115B6F1EE008DFDE3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ED7EA2015B6F1EE008DFDE3 /* CoreGraphics.framework */; };
@@ -179,6 +185,15 @@
 		7ECFE0D515BE7574002E95E3 /* askagainbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "askagainbutton@2x.png"; sourceTree = "<group>"; };
 		7ECFE0D615BE7574002E95E3 /* backbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backbutton@2x.png"; sourceTree = "<group>"; };
 		7ECFE0D715BE7574002E95E3 /* nextarrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nextarrow@2x.png"; sourceTree = "<group>"; };
+		7ED149EF15CFF3B3007CBDBF /* OrderListCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderListCustomCell.h; sourceTree = "<group>"; };
+		7ED149F015CFF3B3007CBDBF /* OrderListCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderListCustomCell.m; sourceTree = "<group>"; };
+		7ED149F115CFF3B3007CBDBF /* OrderListCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderListCustomCell.xib; sourceTree = "<group>"; };
+		7ED149F415CFF3C3007CBDBF /* OrderHistoryDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderHistoryDetailsVC.h; sourceTree = "<group>"; };
+		7ED149F515CFF3C3007CBDBF /* OrderHistoryDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderHistoryDetailsVC.m; sourceTree = "<group>"; };
+		7ED149F615CFF3C3007CBDBF /* OrderHistoryDetailsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderHistoryDetailsVC.xib; sourceTree = "<group>"; };
+		7ED149F915CFF3D1007CBDBF /* OrderHistoryListVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderHistoryListVC.h; sourceTree = "<group>"; };
+		7ED149FA15CFF3D1007CBDBF /* OrderHistoryListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderHistoryListVC.m; sourceTree = "<group>"; };
+		7ED149FB15CFF3D1007CBDBF /* OrderHistoryListVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderHistoryListVC.xib; sourceTree = "<group>"; };
 		7ED7EA1815B6F1EE008DFDE3 /* GiftGiv.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GiftGiv.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ED7EA1C15B6F1EE008DFDE3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7ED7EA1E15B6F1EE008DFDE3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -459,6 +474,38 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		7ED149EB15CFF384007CBDBF /* Order History */ = {
+			isa = PBXGroup;
+			children = (
+				7ED149F915CFF3D1007CBDBF /* OrderHistoryListVC.h */,
+				7ED149FA15CFF3D1007CBDBF /* OrderHistoryListVC.m */,
+				7ED149FB15CFF3D1007CBDBF /* OrderHistoryListVC.xib */,
+				7ED149EE15CFF39D007CBDBF /* OrderHistoryDetails */,
+				7ED149ED15CFF392007CBDBF /* Custom Cell */,
+			);
+			name = "Order History";
+			sourceTree = "<group>";
+		};
+		7ED149ED15CFF392007CBDBF /* Custom Cell */ = {
+			isa = PBXGroup;
+			children = (
+				7ED149EF15CFF3B3007CBDBF /* OrderListCustomCell.h */,
+				7ED149F015CFF3B3007CBDBF /* OrderListCustomCell.m */,
+				7ED149F115CFF3B3007CBDBF /* OrderListCustomCell.xib */,
+			);
+			name = "Custom Cell";
+			sourceTree = "<group>";
+		};
+		7ED149EE15CFF39D007CBDBF /* OrderHistoryDetails */ = {
+			isa = PBXGroup;
+			children = (
+				7ED149F415CFF3C3007CBDBF /* OrderHistoryDetailsVC.h */,
+				7ED149F515CFF3C3007CBDBF /* OrderHistoryDetailsVC.m */,
+				7ED149F615CFF3C3007CBDBF /* OrderHistoryDetailsVC.xib */,
+			);
+			name = OrderHistoryDetails;
+			sourceTree = "<group>";
+		};
 		7ED7EA0D15B6F1EE008DFDE3 = {
 			isa = PBXGroup;
 			children = (
@@ -504,6 +551,7 @@
 				7ECC603315BD1A27008E855F /* EventDetails */,
 				7EE0260615BD8FD9003B9C74 /* Gifts */,
 				7E58441115CBDD56005E35D4 /* Settings */,
+				7ED149EB15CFF384007CBDBF /* Order History */,
 				7ED7EA2315B6F1EE008DFDE3 /* Supporting Files */,
 			);
 			path = GiftGiv;
@@ -686,6 +734,9 @@
 				7EBA4D8815C8586B00D479C4 /* GiftSummaryVC.xib in Resources */,
 				7E58441015CBD533005E35D4 /* SuccessVC.xib in Resources */,
 				7E58441615CBDD69005E35D4 /* SettingsVC.xib in Resources */,
+				7ED149F315CFF3B3007CBDBF /* OrderListCustomCell.xib in Resources */,
+				7ED149F815CFF3C3007CBDBF /* OrderHistoryDetailsVC.xib in Resources */,
+				7ED149FD15CFF3D1007CBDBF /* OrderHistoryListVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -731,6 +782,9 @@
 				7EBA4D8715C8586B00D479C4 /* GiftSummaryVC.m in Sources */,
 				7E58440F15CBD533005E35D4 /* SuccessVC.m in Sources */,
 				7E58441515CBDD69005E35D4 /* SettingsVC.m in Sources */,
+				7ED149F215CFF3B3007CBDBF /* OrderListCustomCell.m in Sources */,
+				7ED149F715CFF3C3007CBDBF /* OrderHistoryDetailsVC.m in Sources */,
+				7ED149FC15CFF3D1007CBDBF /* OrderHistoryListVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
