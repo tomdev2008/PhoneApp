@@ -72,7 +72,7 @@
     // it's a good practice to refresh the access token also when the app becomes active.
     // This gives apps that seldom make api calls a higher chance of having a non expired
     // access token.
-    [[[FacebookShare sharedSingleton] facebook] extendAccessTokenIfNeeded];
+    [[[Facebook_GiftGiv sharedSingleton] facebook] extendAccessTokenIfNeeded];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

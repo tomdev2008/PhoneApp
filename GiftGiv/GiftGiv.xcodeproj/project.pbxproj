@@ -27,8 +27,10 @@
 		7E1D728515B809F00008D19C /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D727715B809EF0008D19C /* SBJsonBase.m */; };
 		7E1D728615B809F00008D19C /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D727915B809EF0008D19C /* SBJsonParser.m */; };
 		7E1D728715B809F00008D19C /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D727B15B809EF0008D19C /* SBJsonWriter.m */; };
-		7E1D728F15B80B920008D19C /* FacebookShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D728E15B80B920008D19C /* FacebookShare.m */; };
+		7E1D728F15B80B920008D19C /* Facebook_GiftGiv.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D728E15B80B920008D19C /* Facebook_GiftGiv.m */; };
 		7E1D729415B80C860008D19C /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D729315B80C860008D19C /* MBProgressHUD.m */; };
+		7E2D17A915D1295200E78FF0 /* AddUserRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D17A815D1295200E78FF0 /* AddUserRequest.m */; };
+		7E2D17B015D12A0100E78FF0 /* CoomonRequestCreationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */; };
 		7E58440F15CBD533005E35D4 /* SuccessVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E58440D15CBD533005E35D4 /* SuccessVC.m */; };
 		7E58441015CBD533005E35D4 /* SuccessVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E58440E15CBD533005E35D4 /* SuccessVC.xib */; };
 		7E58441515CBDD69005E35D4 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E58441315CBDD69005E35D4 /* SettingsVC.m */; };
@@ -133,11 +135,15 @@
 		7E1D727915B809EF0008D19C /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		7E1D727A15B809EF0008D19C /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		7E1D727B15B809EF0008D19C /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
-		7E1D728D15B80B920008D19C /* FacebookShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookShare.h; sourceTree = "<group>"; };
-		7E1D728E15B80B920008D19C /* FacebookShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookShare.m; sourceTree = "<group>"; };
+		7E1D728D15B80B920008D19C /* Facebook_GiftGiv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook_GiftGiv.h; sourceTree = "<group>"; };
+		7E1D728E15B80B920008D19C /* Facebook_GiftGiv.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Facebook_GiftGiv.m; sourceTree = "<group>"; };
 		7E1D729015B80BEA0008D19C /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		7E1D729215B80C860008D19C /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		7E1D729315B80C860008D19C /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		7E2D17A715D1295200E78FF0 /* AddUserRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddUserRequest.h; path = "Backend Services/Add User/AddUserRequest.h"; sourceTree = "<group>"; };
+		7E2D17A815D1295200E78FF0 /* AddUserRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddUserRequest.m; path = "Backend Services/Add User/AddUserRequest.m"; sourceTree = "<group>"; };
+		7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoomonRequestCreationObject.h; path = "Backend Services/CoomonRequestCreationObject.h"; sourceTree = "<group>"; };
+		7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoomonRequestCreationObject.m; path = "Backend Services/CoomonRequestCreationObject.m"; sourceTree = "<group>"; };
 		7E58440C15CBD533005E35D4 /* SuccessVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuccessVC.h; sourceTree = "<group>"; };
 		7E58440D15CBD533005E35D4 /* SuccessVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuccessVC.m; sourceTree = "<group>"; };
 		7E58440E15CBD533005E35D4 /* SuccessVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SuccessVC.xib; sourceTree = "<group>"; };
@@ -308,8 +314,8 @@
 		7E1D726115B809EF0008D19C /* Facebook_iOS */ = {
 			isa = PBXGroup;
 			children = (
-				7E1D728D15B80B920008D19C /* FacebookShare.h */,
-				7E1D728E15B80B920008D19C /* FacebookShare.m */,
+				7E1D728D15B80B920008D19C /* Facebook_GiftGiv.h */,
+				7E1D728E15B80B920008D19C /* Facebook_GiftGiv.m */,
 				7E1D726215B809EF0008D19C /* Facebook.h */,
 				7E1D726315B809EF0008D19C /* Facebook.m */,
 				7E1D726415B809EF0008D19C /* FBConnect.h */,
@@ -354,6 +360,25 @@
 				7E1D729315B80C860008D19C /* MBProgressHUD.m */,
 			);
 			name = MBProgressHUD;
+			sourceTree = "<group>";
+		};
+		7E2D17A615D1290F00E78FF0 /* Backend Services */ = {
+			isa = PBXGroup;
+			children = (
+				7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */,
+				7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */,
+				7E2D17AA15D1296F00E78FF0 /* Add User */,
+			);
+			name = "Backend Services";
+			sourceTree = "<group>";
+		};
+		7E2D17AA15D1296F00E78FF0 /* Add User */ = {
+			isa = PBXGroup;
+			children = (
+				7E2D17A715D1295200E78FF0 /* AddUserRequest.h */,
+				7E2D17A815D1295200E78FF0 /* AddUserRequest.m */,
+			);
+			name = "Add User";
 			sourceTree = "<group>";
 		};
 		7E58440A15CBD51D005E35D4 /* Success */ = {
@@ -552,6 +577,7 @@
 				7EE0260615BD8FD9003B9C74 /* Gifts */,
 				7E58441115CBDD56005E35D4 /* Settings */,
 				7ED149EB15CFF384007CBDBF /* Order History */,
+				7E2D17A615D1290F00E78FF0 /* Backend Services */,
 				7ED7EA2315B6F1EE008DFDE3 /* Supporting Files */,
 			);
 			path = GiftGiv;
@@ -763,7 +789,7 @@
 				7E1D728515B809F00008D19C /* SBJsonBase.m in Sources */,
 				7E1D728615B809F00008D19C /* SBJsonParser.m in Sources */,
 				7E1D728715B809F00008D19C /* SBJsonWriter.m in Sources */,
-				7E1D728F15B80B920008D19C /* FacebookShare.m in Sources */,
+				7E1D728F15B80B920008D19C /* Facebook_GiftGiv.m in Sources */,
 				7E1D729415B80C860008D19C /* MBProgressHUD.m in Sources */,
 				7E5EF73615B9359800C1D252 /* CustomPageControl.m in Sources */,
 				7E5EF73C15B9457200C1D252 /* ImageAllocationObject.m in Sources */,
@@ -785,6 +811,8 @@
 				7ED149F215CFF3B3007CBDBF /* OrderListCustomCell.m in Sources */,
 				7ED149F715CFF3C3007CBDBF /* OrderHistoryDetailsVC.m in Sources */,
 				7ED149FC15CFF3D1007CBDBF /* OrderHistoryListVC.m in Sources */,
+				7E2D17A915D1295200E78FF0 /* AddUserRequest.m in Sources */,
+				7E2D17B015D12A0100E78FF0 /* CoomonRequestCreationObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

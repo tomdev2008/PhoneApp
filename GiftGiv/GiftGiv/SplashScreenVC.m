@@ -38,7 +38,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     
     //Check whether facebook session is valid or not, Based on the availability load either splash screen or Home/Events screen
-    if([[[FacebookShare sharedSingleton] facebook] isSessionValid]){
+    if([[[Facebook_GiftGiv sharedSingleton] facebook] isSessionValid]){
         [self performSelector:@selector(loadHomeScreen) withObject:nil afterDelay:2.0];
     }
     else
@@ -47,7 +47,7 @@
     [super viewWillAppear:YES];
 }
 -(void)loadHomeScreen{
-    [loadingIndicator setHidden:YES];
+    //[loadingIndicator setHidden:YES];
     
     //Load Home/Events by using Animation function EaseIn for Splash screen
 	CATransition *revealTransition=[self getRevealAnimation];
@@ -59,7 +59,7 @@
     [home release];
 }
 -(void)loadSignInScreen{
-    [loadingIndicator setHidden:YES];
+    //[loadingIndicator setHidden:YES];
     
     //Load signIn screen
     SignInVC *signIn=[[SignInVC alloc]initWithNibName:@"SignInVC" bundle:nil];

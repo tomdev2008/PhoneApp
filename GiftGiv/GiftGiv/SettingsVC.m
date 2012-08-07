@@ -33,17 +33,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-       
+    
 }
 - (IBAction)backToHomeScreen:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)logoutFacebook:(id)sender {
-    if([[[FacebookShare sharedSingleton] facebook] isSessionValid]){
+    if([[[Facebook_GiftGiv sharedSingleton] facebook] isSessionValid]){
         if([CheckNetwork connectedToNetwork]){
-            [[FacebookShare sharedSingleton]setFbShareDelegate:self];
-            [[FacebookShare sharedSingleton]logoutOfFacebook];
+            [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+            [[Facebook_GiftGiv sharedSingleton]logoutOfFacebook];
         }
         else{
             AlertWithMessageAndDelegate(@"GiftGiv", @"Please check your network settings", nil);

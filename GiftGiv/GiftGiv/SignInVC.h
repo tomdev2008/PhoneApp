@@ -9,13 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "CheckNetwork.h"
 #import "ApplicationHelpers.h"
-#import "FacebookShare.h"
+#import "Facebook_GiftGiv.h"
 #import "HomeScreenVC.h"
+#import "MBProgressHUD.h"
+#import "AddUserRequest.h"
+#import "CoomonRequestCreationObject.h"
 
-@interface SignInVC : UIViewController<FacebookShareDelegate>
-
+@interface SignInVC : UIViewController<Facebook_GiftGivDelegate,MBProgressHUDDelegate,AddUserRequestDelegate>
+{
+    MBProgressHUD *HUD;
+}
 
 - (IBAction)logInAction:(id)sender;
 - (IBAction)termsAction:(id)sender;
+
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
+- (void)stopHUD;
 
 @end

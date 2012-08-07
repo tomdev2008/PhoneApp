@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "HomeScreenVC.h"
 #import "SignInVC.h"
-#import "FacebookShare.h"
+#import "Facebook_GiftGiv.h"
 
 @interface SplashScreenVC : UIViewController
 

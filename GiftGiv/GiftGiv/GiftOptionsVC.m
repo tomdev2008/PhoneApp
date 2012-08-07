@@ -40,10 +40,18 @@
 {
     [super viewDidLoad];
     
+    if(currentiOSVersion<6.0){
+       pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
+       pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
+    }
     
-    pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
-    pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
+    else if(currentiOSVersion>=6.0){
     
+        //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
+        /*[giftCategoryPageControl setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0]];
+        [giftCategoryPageControl setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
+    }
+        
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
@@ -312,8 +320,11 @@
 }
 
 - (void)dealloc {
-    [pageActiveImage release];
-    [pageInactiveImage release];
+    if(currentiOSVersion<6.0){
+        [pageActiveImage release];
+        [pageInactiveImage release]; 
+    }
+    
     [profilePicImg release];
     [profileNameLbl release];
     [eventNameLbl release];

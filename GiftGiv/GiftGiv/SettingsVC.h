@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FacebookShare.h"
+#import "Facebook_GiftGiv.h"
 #import "CheckNetwork.h"
 #import "ApplicationHelpers.h"
 
-@interface SettingsVC : UIViewController<FacebookShareDelegate>
+@interface SettingsVC : UIViewController<Facebook_GiftGivDelegate>
 
 - (IBAction)backToHomeScreen:(id)sender;
 - (IBAction)logoutFacebook:(id)sender;
