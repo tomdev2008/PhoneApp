@@ -12,7 +12,7 @@
 
 typedef enum apiCall {
     kAPIGetUserDetails,
-    
+    kAPIGetBirthdayEvents,
 } apiCall;
 
 
@@ -43,4 +43,7 @@ typedef enum apiCall {
 - (void)authorizeOurAppWithFacebook;
 - (void)logoutOfFacebook;
 - (void)apiFQLIMe;
+- (void)listOfBirthdayEvents;
+- (NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd;
+
 @end

@@ -36,16 +36,17 @@
 
 - (void)viewDidLoad
 {
+    [[Facebook_GiftGiv sharedSingleton] listOfBirthdayEvents];
     if(currentiOSVersion<6.0){
         pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
         pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
     }
-        
-    else if(currentiOSVersion>=6.0){
+    
+    if(currentiOSVersion>=6.0){
         
         //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
         /*[pageControlForEventGroups setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0]];
-        [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
+         [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
     }
     
     
@@ -303,7 +304,7 @@
         [pageActiveImage release];
         [pageInactiveImage release]; 
     }
-   
+    
     [eventsBgView release];
     [eventTitleLbl release];
     [pageControlForEventGroups release];

@@ -22,6 +22,7 @@
 @synthesize facebook,fbGiftGivDelegate;
 
 static Facebook_GiftGiv *sharedInstance = nil;
+static NSDateFormatter *standardDateFormatter = nil;
 
 #pragma mark Facebook_GiftGiv class methods
 + (Facebook_GiftGiv *)sharedSingleton
@@ -155,7 +156,7 @@ static Facebook_GiftGiv *sharedInstance = nil;
     [self fbDidLogout];
 }
 
-#pragma mark - About User FQL
+#pragma mark - FQLs
 
 - (void)apiFQLIMe {
     // Using the "pic" picture since this currently has a maximum width of 100 pixels
@@ -170,7 +171,46 @@ static Facebook_GiftGiv *sharedInstance = nil;
                       andHttpMethod:@"POST"
                         andDelegate:self];
 }
-
+- (void)listOfBirthdayEvents{
+    currentAPICall=kAPIGetBirthdayEvents;
+    
+    //Date should be in MM/dd/yyyy formate only for facebook queries
+    NSString *startDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3];
+    NSString *endDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:15];
+    
+    
+    NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND birthday_date >= \"%@\" AND birthday_date <= \"%@\" ORDER BY birthday_date ASC",startDate,endDate];
+    NSLog(@"%@",getBirthdaysQuery);
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   getBirthdaysQuery, @"query",
+                                   nil];
+    
+    [facebook requestWithMethodName:@"fql.query"
+                          andParams:params
+                      andHttpMethod:@"POST"
+                        andDelegate:self];
+    
+}
+-(NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd{
+    NSDate *now=[NSDate date];    
+    // set up date components
+    NSDateComponents *components = [[[NSDateComponents alloc] init] autorelease];
+    [components setDay:daysToAdd];
+    
+    // create a calendar
+    NSCalendar *gregorian = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+    
+    NSDate *updatedDate = [gregorian dateByAddingComponents:components toDate:now options:0];
+    NSLog(@"%@",updatedDate);
+    if(standardDateFormatter==nil){
+        standardDateFormatter=[[NSDateFormatter alloc]init];  
+        [standardDateFormatter setDateFormat:@"MM/dd/yyyy"];
+    }
+    
+    NSString *convertedToString=[standardDateFormatter stringFromDate:updatedDate];
+    
+    return convertedToString;
+}
 #pragma mark FBRequestDelegate methods
 
 /**
@@ -183,7 +223,7 @@ static Facebook_GiftGiv *sharedInstance = nil;
 
 - (void)request:(FBRequest *)request didLoad:(id)result{
     
-    NSLog(@"Facebook uploading completed successfully, \nresult=%@",result);
+    NSLog(@"Result=%@",result);
     
     if ([result isKindOfClass:[NSArray class]] && ([result count] > 0)) {
         result = [result objectAtIndex:0];
@@ -192,6 +232,9 @@ static Facebook_GiftGiv *sharedInstance = nil;
 	switch (currentAPICall) {
         case kAPIGetUserDetails:
             [fbGiftGivDelegate facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)result];
+            break;
+        case kAPIGetBirthdayEvents:
+            NSLog(@"Birthdays");
             break;
             
     }
