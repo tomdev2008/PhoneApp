@@ -223,18 +223,18 @@ static NSDateFormatter *standardDateFormatter = nil;
 
 - (void)request:(FBRequest *)request didLoad:(id)result{
     
-    NSLog(@"Result=%@",result);
-    
-    if ([result isKindOfClass:[NSArray class]] && ([result count] > 0)) {
-        result = [result objectAtIndex:0];
-    }
     
 	switch (currentAPICall) {
         case kAPIGetUserDetails:
+            if ([result isKindOfClass:[NSArray class]] && ([result count] > 0)) {
+                result = [result objectAtIndex:0];
+            }
             [fbGiftGivDelegate facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)result];
             break;
         case kAPIGetBirthdayEvents:
-            NSLog(@"Birthdays");
+            
+            [fbGiftGivDelegate receivedBirthDayEvents:(NSMutableArray *)result];
+            
             break;
             
     }

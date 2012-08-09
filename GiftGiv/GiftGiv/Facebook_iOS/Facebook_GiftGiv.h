@@ -21,6 +21,7 @@ typedef enum apiCall {
 
 @optional
 - (void)facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)userDetails;
+- (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays;
 - (void)facebookDidLoggedOut;
 - (void)facebookDidRequestFailed;
 - (void)facebookDidCancelledLogin;

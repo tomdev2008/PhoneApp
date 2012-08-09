@@ -65,11 +65,11 @@
     //pic url: https://graph.facebook.com/1061420790/picture
     
     NSDateFormatter *dateformatter=[[NSDateFormatter alloc]init];
-     [dateformatter setDateFormat:@"MM/dd/yyyy"];
-     NSDate *tempDate=[dateformatter dateFromString:[userDetails objectForKey:@"birthday_date"]];
-     [dateformatter setDateFormat:@"yyyy-MM-dd"];
-     NSString *dateString=[dateformatter stringFromDate:tempDate];
-     [dateformatter release];
+    [dateformatter setDateFormat:@"MM/dd/yyyy"];
+    NSDate *tempDate=[dateformatter dateFromString:[userDetails objectForKey:@"birthday_date"]];
+    [dateformatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *dateString=[dateformatter stringFromDate:tempDate];
+    [dateformatter release];
     
     NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddUser>\n<tem:fbId>%@</tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddUser>",[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],dateString];
     
@@ -96,7 +96,7 @@
     if([response isEqualToString:@"true"]){
         NSLog(@"User added into DB");
     }
-    else if([response isEqualToString:@"true"]){
+    else if([response isEqualToString:@"false"]){
         NSLog(@"User already exists");
     }
     [self stopHUD];

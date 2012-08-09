@@ -14,8 +14,13 @@
 #import "EventDetailsVC.h"
 #import "GiftOptionsVC.h"
 #import "SettingsVC.h"
+#import "Facebook_GiftGiv.h"
+#import "AddUserRequest.h"
+#import "Constants.h"
+#import "CoomonRequestCreationObject.h"
 
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource>
+
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate>
 
 {
     int eventGroupNum;
@@ -24,6 +29,12 @@
     
     UIImage* pageActiveImage;
     UIImage* pageInactiveImage;
+    
+    int birthdayEventUserNoToAddAsUser;
+    NSMutableArray *listOfBirthdayEvents; 
+    
+    NSMutableArray *profilePicImagesArray;
+    BOOL isProfilePicsLoadingInProgress;
 }
 
 @property (retain, nonatomic) IBOutlet UIView *eventsBgView;
@@ -37,5 +48,9 @@
 - (void)swiping:(int)swipeDirectionNum;
 
 - (CATransition *)getAnimationForEventGroup:(NSString *)animationType;
+
+- (void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails;
+
+- (NSString*)updatedDateToBeDisplayedForTheEvent:(NSString*)eventDate;
 
 @end

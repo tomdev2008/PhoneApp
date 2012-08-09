@@ -14,6 +14,8 @@
 @synthesize eventsTable;
 @synthesize eventTitleLbl;
 
+static NSDateFormatter *customDateFormat=nil;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -36,6 +38,7 @@
 
 - (void)viewDidLoad
 {
+    [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
     [[Facebook_GiftGiv sharedSingleton] listOfBirthdayEvents];
     if(currentiOSVersion<6.0){
         pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
@@ -49,7 +52,7 @@
          [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
     }
     
-    
+    profilePicImagesArray=[[NSMutableArray alloc] init];
     UISwipeGestureRecognizer *swipeLeftRecognizer=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipingForEventGroups:)];
     swipeLeftRecognizer.direction=UISwipeGestureRecognizerDirectionLeft;
     [eventsBgView addGestureRecognizer:swipeLeftRecognizer];
@@ -120,6 +123,7 @@
             break;
         case 2:
             eventTitleLbl.text=@"birthdays";
+            
             break;
         case 3:
             eventTitleLbl.text=@"anniversaries";
@@ -133,6 +137,13 @@
     }
     [eventsTable reloadData];
     [eventsTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    if(!isProfilePicsLoadingInProgress){
+        if([profilePicImagesArray count])
+            [profilePicImagesArray removeAllObjects];
+        [self performSelectorInBackground:@selector(photoRetrieve) withObject:nil];
+        isProfilePicsLoadingInProgress=YES;
+        [self performSelector:@selector(reloadEventsTable) withObject:nil afterDelay:0.2];
+    }
 }
 #pragma mark - Transition
 -(CATransition *)getAnimationForEventGroup:(NSString *)animationType
@@ -154,7 +165,13 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 5;
+	if([eventTitleLbl.text isEqualToString:@"birthdays"]){
+        
+        
+        return [listOfBirthdayEvents count];
+    }
+    
+    return 5;
 }
 
 
@@ -190,11 +207,11 @@
                 
                 break;
                 //birthdays
-            case 1:
-                cell.eventNameLbl.text=@"Birthday";
-                cell.dateLbl.text=@"Today";
-                cell.bubbleIconForCommentsBtn.hidden=YES;
-                break;
+                /*case 1:
+                 cell.eventNameLbl.text=@"Birthday";
+                 cell.dateLbl.text=@"Today";
+                 cell.bubbleIconForCommentsBtn.hidden=YES;
+                 break;*/
                 //anniversaries
             case 2:
                 cell.eventNameLbl.text=@"Happy anniversary";
@@ -216,20 +233,72 @@
                 
         }
         
-        
-        //Dynamic[fit] label width respected to the size of the text
-        CGSize eventName_maxSize = CGSizeMake(113, 21);
-        CGSize eventName_new_size=[cell.eventNameLbl.text sizeWithFont:cell.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-        cell.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
-        
-        CGSize eventDate_maxSize = CGSizeMake(90, 21);
-        CGSize eventDate_newSize = [cell.dateLbl.text sizeWithFont:cell.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-        
-        cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 29, eventDate_newSize.width, 21);
-		
 	}
+    if([eventTitleLbl.text isEqualToString:@"birthdays"]){
+        
+        if([listOfBirthdayEvents count]){
+            cell.profileNameLbl.text=[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
+            cell.eventNameLbl.text=@"Birthday";
+            if([profilePicImagesArray count])
+                cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
+            NSString *birthdayDt=[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"birthday_date"];
+            
+            cell.dateLbl.text=[self updatedDateToBeDisplayedForTheEvent:birthdayDt];
+            cell.bubbleIconForCommentsBtn.hidden=YES;
+        }
+        
+    }
     
+    
+    //Dynamic[fit] label width respected to the size of the text
+    CGSize eventName_maxSize = CGSizeMake(113, 21);
+    CGSize eventName_new_size=[cell.eventNameLbl.text sizeWithFont:cell.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+    cell.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
+    
+    CGSize eventDate_maxSize = CGSizeMake(90, 21);
+    CGSize eventDate_newSize = [cell.dateLbl.text sizeWithFont:cell.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+    
+    cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 29, eventDate_newSize.width, 21); 
 	return cell;
+}
+-(NSString*)updatedDateToBeDisplayedForTheEvent:(NSString*)eventDate{
+    
+    if(customDateFormat==nil){
+        customDateFormat=[[NSDateFormatter alloc]init];
+    }
+    [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+    NSDate *tempDate = [customDateFormat dateFromString:eventDate];
+    [customDateFormat setDateFormat:@"MMM dd"];
+    NSString *endDateString=[customDateFormat stringFromDate:tempDate];
+    NSString *startDateString=[customDateFormat stringFromDate:[NSDate date]];
+    
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *components = [gregorianCalendar components:NSDayCalendarUnit fromDate:[customDateFormat dateFromString:startDateString] toDate:[customDateFormat dateFromString:endDateString] options:0];
+    
+    //NSLog(@"%d",[components day]);
+    [gregorianCalendar release];
+    
+    switch ([components day]) {
+        case -1:
+            return @"Yesterday";
+            
+            break;
+        case 0:
+            return @"Today";
+            break;
+        case 1:
+            return @"Tomorrow";
+            break;
+            
+    }
+    if([components day]<-1){
+        return @"Recent";
+    }
+    if([components day]>1){
+        
+        return endDateString;
+    }
+    return nil;
 }
 #pragma mark - TableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -239,6 +308,38 @@
     [self.navigationController pushViewController:giftOptions animated:YES];
     [giftOptions release];
     
+}
+
+-(void)photoRetrieve{
+	
+    int totalBirthdaysCount=[listOfBirthdayEvents count];
+    //NSLog(@"%d",totalBirthdaysCount);
+    for(int i =0; i<totalBirthdaysCount;i++){
+		
+        UIImage	*tempPicImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:FacebookPicURL([[listOfBirthdayEvents objectAtIndex:i]objectForKey:@"uid"])]]];
+        //NSLog(@"%@",FacebookPicURL([[listOfBirthdayEvents objectAtIndex:i]objectForKey:@"uid"]));
+		if(tempPicImage){
+			[profilePicImagesArray addObject:tempPicImage];
+            
+		}
+		else{
+			/*UIImage *image2 = [UIImage imageNamed:@"nophoto.png"];
+             [imgArray replaceObjectAtIndex:i withObject:image2];*/
+		}
+        
+        
+	}
+    
+	isProfilePicsLoadingInProgress=NO;
+    
+}
+-(void)reloadEventsTable{
+	if(!isProfilePicsLoadingInProgress)
+        [eventsTable reloadData];
+	else if(isProfilePicsLoadingInProgress)
+	{
+		[self performSelector:@selector(reloadEventsTable) withObject:nil afterDelay:0.2];
+	}
 }
 #pragma mark -
 -(void)eventDetailsAction:(id)sender{
@@ -281,6 +382,73 @@
     }
     
 }
+#pragma mark - Facebook Events delegate
+- (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays{
+    //NSLog(@"%@",listOfBirthdays);
+    listOfBirthdayEvents=[[NSMutableArray alloc] initWithArray:listOfBirthdays];
+    int countOfBirthdays=[listOfBirthdayEvents count];
+    
+    for (int i=0;i<countOfBirthdays;i++){
+        NSMutableDictionary *tempDict=[listOfBirthdayEvents objectAtIndex:i];
+        NSArray *dateComponents=[[tempDict objectForKey:@"birthday_date"] componentsSeparatedByString:@"/"];
+        if([dateComponents count]!=3){
+            if(customDateFormat==nil){
+                customDateFormat = [[NSDateFormatter alloc] init];
+                
+            }
+            [customDateFormat setDateFormat:@"yyyy"];
+            NSString *yearString = [customDateFormat stringFromDate:[NSDate date]];
+            
+            NSString *updatedDateString=[[tempDict objectForKey:@"birthday_date"] stringByAppendingFormat:@"/%@",yearString];
+            [tempDict setObject:updatedDateString forKey:@"birthday_date"];
+            [listOfBirthdayEvents replaceObjectAtIndex:i withObject:tempDict];
+        }
+        if(customDateFormat==nil){
+            customDateFormat = [[NSDateFormatter alloc] init];
+        }
+        [customDateFormat setDateFormat:@"MM/dd/yyyy"];
+        NSDate *stringToDate=[customDateFormat dateFromString:[tempDict objectForKey:@"birthday_date"]];
+        [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+        [tempDict setObject:[customDateFormat stringFromDate:stringToDate] forKey:@"birthday_date"];
+        [listOfBirthdayEvents replaceObjectAtIndex:i withObject:tempDict];
+    }
+    birthdayEventUserNoToAddAsUser=1;
+    [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];
+    
+}
+-(void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails{
+    
+    NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddUser>\n<tem:fbId>%@</tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddUser>",[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"birthday_date"]];
+    
+    NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+    //NSLog(@"%@",soapRequestString);
+    NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddUser"];
+    
+    AddUserRequest *addUser=[[AddUserRequest alloc]init];
+    [addUser setAddUserDelegate:self];
+    [addUser addUserServiceRequest:theRequest];
+    [addUser release];
+}
+#pragma mark -
+#pragma mark - Add User Request delegate
+-(void) responseForAddUser:(NSMutableString*)response{
+    if([response isEqualToString:@"true"]){
+        NSLog(@"User added into DB");
+    }
+    else if([response isEqualToString:@"false"]){
+        NSLog(@"User already exists");
+    }
+    if(birthdayEventUserNoToAddAsUser<[listOfBirthdayEvents count]){
+        birthdayEventUserNoToAddAsUser++;
+        [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];   
+    }
+    
+    
+    
+}
+-(void) requestFailed{
+    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed", nil);
+}
 #pragma mark -
 - (void)viewDidUnload
 {
@@ -304,7 +472,7 @@
         [pageActiveImage release];
         [pageInactiveImage release]; 
     }
-    
+    [profilePicImagesArray release];
     [eventsBgView release];
     [eventTitleLbl release];
     [pageControlForEventGroups release];
