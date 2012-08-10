@@ -17,6 +17,7 @@
 #import "Facebook_GiftGiv.h"
 #import "AddUserRequest.h"
 #import "Constants.h"
+#import "CheckNetwork.h"
 #import "CoomonRequestCreationObject.h"
 
 
@@ -24,7 +25,7 @@
 
 {
     int eventGroupNum;
-    
+    int totalGroups;
     CATransition *tranAnimationForEventGroups;
     
     UIImage* pageActiveImage;
@@ -32,8 +33,13 @@
     
     int birthdayEventUserNoToAddAsUser;
     NSMutableArray *listOfBirthdayEvents; 
+    NSMutableArray *anniversaryEvents; 
+    NSMutableArray *newJobEvents; 
+    NSMutableArray *congratsEvents;
+    NSMutableArray *allupcomingEvents;
     
     NSMutableArray *profilePicImagesArray;
+    NSMutableArray *categoryTitles;
     BOOL isProfilePicsLoadingInProgress;
 }
 

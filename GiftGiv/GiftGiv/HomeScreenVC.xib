@@ -51,7 +51,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<int key="IBUINumberOfPages">5</int>
+						<bool key="IBUIHidesForSinglePage">YES</bool>
 					</object>
 					<object class="IBUIToolbar" id="709224681">
 						<reference key="NSNextResponder" ref="191373211"/>

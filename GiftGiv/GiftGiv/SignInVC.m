@@ -64,23 +64,26 @@
     
     //pic url: https://graph.facebook.com/1061420790/picture
     
-    NSDateFormatter *dateformatter=[[NSDateFormatter alloc]init];
-    [dateformatter setDateFormat:@"MM/dd/yyyy"];
-    NSDate *tempDate=[dateformatter dateFromString:[userDetails objectForKey:@"birthday_date"]];
-    [dateformatter setDateFormat:@"yyyy-MM-dd"];
-    NSString *dateString=[dateformatter stringFromDate:tempDate];
-    [dateformatter release];
+    if([CheckNetwork connectedToNetwork]){
+        NSDateFormatter *dateformatter=[[NSDateFormatter alloc]init];
+        [dateformatter setDateFormat:@"MM/dd/yyyy"];
+        NSDate *tempDate=[dateformatter dateFromString:[userDetails objectForKey:@"birthday_date"]];
+        [dateformatter setDateFormat:@"yyyy-MM-dd"];
+        NSString *dateString=[dateformatter stringFromDate:tempDate];
+        [dateformatter release];
+        
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddUser>\n<tem:fbId>%@</tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddUser>",[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],dateString];
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+        //NSLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddUser"];
+        
+        AddUserRequest *addUser=[[AddUserRequest alloc]init];
+        [addUser setAddUserDelegate:self];
+        [addUser addUserServiceRequest:theRequest];
+        [addUser release];
+    }
     
-    NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddUser>\n<tem:fbId>%@</tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddUser>",[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],dateString];
-    
-    NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-    //NSLog(@"%@",soapRequestString);
-    NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddUser"];
-    
-    AddUserRequest *addUser=[[AddUserRequest alloc]init];
-    [addUser setAddUserDelegate:self];
-    [addUser addUserServiceRequest:theRequest];
-    [addUser release];
     
 }
 - (void)facebookDidRequestFailed{

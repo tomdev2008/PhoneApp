@@ -172,6 +172,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                         andDelegate:self];
 }
 - (void)listOfBirthdayEvents{
+    
     currentAPICall=kAPIGetBirthdayEvents;
     
     //Date should be in MM/dd/yyyy formate only for facebook queries
