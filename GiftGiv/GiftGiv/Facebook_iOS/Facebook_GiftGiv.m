@@ -202,7 +202,7 @@ static NSDateFormatter *standardDateFormatter = nil;
     NSCalendar *gregorian = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
     
     NSDate *updatedDate = [gregorian dateByAddingComponents:components toDate:now options:0];
-    NSLog(@"%@",updatedDate);
+    //NSLog(@"%@",updatedDate);
     if(standardDateFormatter==nil){
         standardDateFormatter=[[NSDateFormatter alloc]init];  
         [standardDateFormatter setDateFormat:@"MM/dd/yyyy"];
@@ -211,6 +211,22 @@ static NSDateFormatter *standardDateFormatter = nil;
     NSString *convertedToString=[standardDateFormatter stringFromDate:updatedDate];
     
     return convertedToString;
+}
+
+- (void)getAllFriendsWithTheirDetails{
+    currentAPICall=kAPIGetAllFriends;
+    
+    
+    NSString *getFriendsQuery=@"SELECT uid, name, first_name, last_name, birthday_date from user where uid in (SELECT uid2 FROM friend WHERE uid1=me())";
+    NSLog(@"%@",getFriendsQuery);
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   getFriendsQuery, @"query",
+                                   nil];
+    
+    [facebook requestWithMethodName:@"fql.query"
+                          andParams:params
+                      andHttpMethod:@"POST"
+                        andDelegate:self];
 }
 #pragma mark FBRequestDelegate methods
 
@@ -224,7 +240,8 @@ static NSDateFormatter *standardDateFormatter = nil;
 
 - (void)request:(FBRequest *)request didLoad:(id)result{
     
-    
+    //NSLog(@"%@",result);
+    // NSJSONSerialization *sampleJson=[NSJSONSerialization 
 	switch (currentAPICall) {
         case kAPIGetUserDetails:
             if ([result isKindOfClass:[NSArray class]] && ([result count] > 0)) {
@@ -237,7 +254,26 @@ static NSDateFormatter *standardDateFormatter = nil;
             [fbGiftGivDelegate receivedBirthDayEvents:(NSMutableArray *)result];
             
             break;
+            //Received all friends details
+        case kAPIGetAllFriends:
+            currentAPICall=kAPIGetJSONForStatuses;
             
+            for (NSDictionary *friendDict in (NSMutableArray*)result){
+                
+                //last 2 days
+                [facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-2]] andDelegate:self];
+                [facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/photos?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-2]] andDelegate:self];
+                
+            }
+            
+            break;
+        case kAPIGetJSONForStatuses:
+            //json
+            if([result isKindOfClass:[NSDictionary class]]){
+                NSLog(@"dictionary");
+                //parse the json feed to check the number of comments and likes, If it has more than 25 comments then check for the event text
+            }
+            break;
     }
     
 }

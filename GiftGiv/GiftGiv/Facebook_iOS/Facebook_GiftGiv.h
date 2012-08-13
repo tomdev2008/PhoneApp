@@ -11,8 +11,11 @@
 #import "ApplicationHelpers.h"
 
 typedef enum apiCall {
+    kNOAPICall,
     kAPIGetUserDetails,
     kAPIGetBirthdayEvents,
+    kAPIGetAllFriends,
+    kAPIGetJSONForStatuses,
 } apiCall;
 
 
@@ -22,6 +25,7 @@ typedef enum apiCall {
 @optional
 - (void)facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)userDetails;
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays;
+
 - (void)facebookDidLoggedOut;
 - (void)facebookDidRequestFailed;
 - (void)facebookDidCancelledLogin;
@@ -45,6 +49,9 @@ typedef enum apiCall {
 - (void)logoutOfFacebook;
 - (void)apiFQLIMe;
 - (void)listOfBirthdayEvents;
+- (void)getAllFriendsWithTheirDetails;
+
 - (NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd;
+
 
 @end

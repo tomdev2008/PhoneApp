@@ -41,6 +41,7 @@ static NSDateFormatter *customDateFormat=nil;
     if([CheckNetwork connectedToNetwork]){
         [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
         [[Facebook_GiftGiv sharedSingleton] listOfBirthdayEvents];
+        //[[Facebook_GiftGiv sharedSingleton] getAllFriendsWithTheirDetails];
     }
     categoryTitles=[[NSMutableArray alloc]init];
     listOfBirthdayEvents=[[NSMutableArray alloc]init];
@@ -510,6 +511,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma mark - Facebook Events delegate
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays{
+    [[Facebook_GiftGiv sharedSingleton] getAllFriendsWithTheirDetails];
     if([listOfBirthdays count]){
         NSLog(@"%@",listOfBirthdays);
         if([listOfBirthdayEvents count])
