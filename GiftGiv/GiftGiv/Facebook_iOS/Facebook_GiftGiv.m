@@ -35,6 +35,7 @@ static NSDateFormatter *standardDateFormatter = nil;
     {
         if (!sharedInstance){
             sharedInstance = [[Facebook_GiftGiv alloc] init];
+            
         }
         
         return sharedInstance;// Facebook_GiftGiv singleton
@@ -140,6 +141,28 @@ static NSDateFormatter *standardDateFormatter = nil;
         [defaults removeObjectForKey:@"FBExpirationDateKey"];
         [defaults synchronize];
     }
+    
+    if(birthdaySearchStrings!=nil){
+        [birthdaySearchStrings removeAllObjects];
+        birthdaySearchStrings=nil;
+    }
+    if(anniversarySearchStrings!=nil){
+        [anniversarySearchStrings removeAllObjects];
+        anniversarySearchStrings=nil;
+    }
+    if(newJobSearchStrings!=nil){
+        [newJobSearchStrings removeAllObjects];
+        newJobSearchStrings=nil;
+    }
+    if(congratsSearchStrings!=nil){
+        [congratsSearchStrings removeAllObjects];
+        congratsSearchStrings=nil;
+    }
+    if(friendUserIds!=nil){
+        [friendUserIds removeAllObjects];
+        friendUserIds=nil;
+    }
+    
     [fbGiftGivDelegate facebookDidLoggedOut];
 }
 
@@ -181,7 +204,7 @@ static NSDateFormatter *standardDateFormatter = nil;
     
     
     NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND birthday_date >= \"%@\" AND birthday_date <= \"%@\" ORDER BY birthday_date ASC",startDate,endDate];
-    NSLog(@"%@",getBirthdaysQuery);
+    //NSLog(@"%@",getBirthdaysQuery);
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    getBirthdaysQuery, @"query",
                                    nil];
@@ -218,7 +241,7 @@ static NSDateFormatter *standardDateFormatter = nil;
     
     
     NSString *getFriendsQuery=@"SELECT uid, name, first_name, last_name, birthday_date from user where uid in (SELECT uid2 FROM friend WHERE uid1=me())";
-    NSLog(@"%@",getFriendsQuery);
+    //NSLog(@"%@",getFriendsQuery);
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    getFriendsQuery, @"query",
                                    nil];
@@ -241,7 +264,7 @@ static NSDateFormatter *standardDateFormatter = nil;
 - (void)request:(FBRequest *)request didLoad:(id)result{
     
     //NSLog(@"%@",result);
-    // NSJSONSerialization *sampleJson=[NSJSONSerialization 
+    
 	switch (currentAPICall) {
         case kAPIGetUserDetails:
             if ([result isKindOfClass:[NSArray class]] && ([result count] > 0)) {
@@ -257,21 +280,214 @@ static NSDateFormatter *standardDateFormatter = nil;
             //Received all friends details
         case kAPIGetAllFriends:
             currentAPICall=kAPIGetJSONForStatuses;
+            if(friendUserIds!=nil && [friendUserIds count]){
+                [friendUserIds removeAllObjects];
+                [friendUserIds release];
+                friendUserIds=nil;
+            }
+            friendUserIds=[[NSMutableDictionary alloc]init];
+            
+            if(newJobSearchStrings==nil){
+                newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats",@"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job",nil];
+            }
+            if(anniversarySearchStrings==nil){
+                anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary",nil];
+            }
+            if(congratsSearchStrings==nil){
+                congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations",nil];
+            }
+            if(birthdaySearchStrings==nil){
+                birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];
+            }
+            
             
             for (NSDictionary *friendDict in (NSMutableArray*)result){
                 
-                //last 2 days
-                [facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-2]] andDelegate:self];
-                [facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/photos?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-2]] andDelegate:self];
                 
+                //last 2 days
+                FBRequest *fbReqStatuses=[facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-2]] andDelegate:self];
+                [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqStatuses url]];
+                FBRequest *fbReqPhotos=[facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/photos?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-2]] andDelegate:self];
+                [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqPhotos url]];  
             }
             
             break;
         case kAPIGetJSONForStatuses:
             //json
+            
             if([result isKindOfClass:[NSDictionary class]]){
-                NSLog(@"dictionary");
+                
+                
                 //parse the json feed to check the number of comments and likes, If it has more than 25 comments then check for the event text
+                int totalCountForMessagesOrPhotos=[[result objectForKey:@"data"]count];
+                
+                if(totalCountForMessagesOrPhotos){
+                    
+                    for (int i=0;i<totalCountForMessagesOrPhotos;i++){
+                        //Picture(photos)
+                        if([[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"picture"]){
+                            
+                            NSString *photoFromUser=[NSString stringWithFormat:@"%@",[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"from"] objectForKey:@"id"]];
+                            NSString *userIDOfPhotos=[NSString stringWithFormat:@"%@",[friendUserIds objectForKey:request.url]];
+                            
+                            if([photoFromUser isEqualToString:userIDOfPhotos]){
+                                
+                                int commentsCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
+                                int likesCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"likes"] objectForKey:@"data"] count];
+                                
+                                if(commentsCount>=15 || likesCount>=15){
+                                    
+                                    for(int j=0;j<commentsCount;j++){
+                                        NSString *commentsStr=[[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
+                                        commentsStr=[commentsStr lowercaseString];
+                                        BOOL isEventFound;
+                                        for (NSString *searchedString in birthdaySearchStrings){
+                                            if(!isEventFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                                isEventFound=YES;
+                                                [fbGiftGivDelegate birthdayEventDetailsFromPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                                break;
+                                            }
+                                        }                                    
+                                        if(!isEventFound){
+                                            for (NSString *searchedString in anniversarySearchStrings){
+                                                if(!isEventFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                                    isEventFound=YES;
+                                                    [fbGiftGivDelegate birthdayEventDetailsFromPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                                    break;
+                                                }
+                                            }  
+                                        }
+                                        if(!isEventFound){
+                                            for (NSString *searchedString in anniversarySearchStrings){
+                                                if(!isEventFound &&[commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                                    isEventFound=YES;
+                                                    [fbGiftGivDelegate anniversaryEventDetailsFromPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                                    break;
+                                                }
+                                            }  
+                                        }
+                                        if(!isEventFound){
+                                            for (NSString *searchedString in newJobSearchStrings){
+                                                if(!isEventFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                                    isEventFound=YES;
+                                                    [fbGiftGivDelegate newJobEventDetailsFromPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                                    break;
+                                                }
+                                            }  
+                                        }
+                                        if(!isEventFound){
+                                            for (NSString *searchedString in congratsSearchStrings){
+                                                
+                                                if(!isEventFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                                    isEventFound=YES;
+                                                    [fbGiftGivDelegate congratsEventDetailsFromPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                                    break;
+                                                }
+                                            }  
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                            }
+                        }
+                        
+                        //Statuses
+                        else{
+                            int commentsCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
+                            int likesCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"likes"] objectForKey:@"data"] count];
+                            if(commentsCount>=25 || likesCount>=25){
+                                NSString *messageStr=[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"message"];
+                                BOOL isEventStatusFound;
+                                if(!isEventStatusFound){
+                                    for (NSString *searchedString in birthdaySearchStrings){
+                                        if(!isEventStatusFound && [messageStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                            isEventStatusFound=YES;
+                                            [fbGiftGivDelegate birthdayEventDetailsFromStatus:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                            break;
+                                        }
+                                    }  
+                                }
+                                if(!isEventStatusFound){
+                                    for (NSString *searchedString in anniversarySearchStrings){
+                                        if(!isEventStatusFound && [messageStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                            isEventStatusFound=YES;
+                                            [fbGiftGivDelegate anniversaryEventDetailsFromStatus:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                            break;
+                                        }
+                                    }  
+                                }
+                                if(!isEventStatusFound){
+                                    for (NSString *searchedString in newJobSearchStrings){
+                                        if(!isEventStatusFound && [messageStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                            isEventStatusFound=YES;
+                                            [fbGiftGivDelegate newJobEventDetailsFromStatus:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                            break;
+                                        }
+                                    }  
+                                }                                
+                                if(!isEventStatusFound){
+                                    for (NSString *searchedString in congratsSearchStrings){
+                                        if(!isEventStatusFound && [messageStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                            isEventStatusFound=YES;
+                                            [fbGiftGivDelegate congratsEventDetailsFromStatus:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                            break;
+                                        }
+                                    }  
+                                }
+                                
+                                else if(!isEventStatusFound){
+                                    for(int j=0;j<commentsCount;j++){
+                                        NSString *commentsStr=[[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
+                                        BOOL isEventsFromCommentsFound;
+                                        
+                                        if(!isEventsFromCommentsFound){
+                                            for (NSString *searchedString in birthdaySearchStrings){
+                                                if(!isEventsFromCommentsFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                                    isEventsFromCommentsFound=YES;
+                                                    [fbGiftGivDelegate birthdayEventDetailsFromStatus:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                                    break;
+                                                }
+                                            }  
+                                        }
+                                        
+                                        if(!isEventsFromCommentsFound){
+                                            for (NSString *searchedString in anniversarySearchStrings){
+                                                if(!isEventsFromCommentsFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                                    isEventsFromCommentsFound=YES;
+                                                    [fbGiftGivDelegate anniversaryEventDetailsFromPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                                    break;
+                                                }
+                                            }  
+                                        }
+                                        if(!isEventsFromCommentsFound){
+                                            for (NSString *searchedString in newJobSearchStrings){
+                                                if(!isEventsFromCommentsFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                                    isEventsFromCommentsFound=YES;
+                                                    [fbGiftGivDelegate newJobEventDetailsFromPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                                    break;
+                                                }
+                                            }  
+                                        }
+                                        if(!isEventsFromCommentsFound){
+                                            for (NSString *searchedString in congratsSearchStrings){
+                                                if(!isEventsFromCommentsFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
+                                                    isEventsFromCommentsFound=YES;
+                                                    [fbGiftGivDelegate congratsEventDetailsFromStatus:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                                    break;
+                                                }
+                                            }  
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                        }
+                        
+                        
+                    }
+                }
+                
             }
             break;
     }

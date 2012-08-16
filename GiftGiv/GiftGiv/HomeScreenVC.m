@@ -244,62 +244,61 @@ static NSDateFormatter *customDateFormat=nil;
         cell.bubbleIconForCommentsBtn.tag=indexPath.row;
         [cell.bubbleIconForCommentsBtn addTarget:self action:@selector(eventDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
         
-        /*switch (pageControlForEventGroups.currentPage) {
-         //all upcoming
-         case 0:
-         if(indexPath.row%2==0){
-         cell.eventNameLbl.text=@"New job";
-         cell.dateLbl.text=@"Yesterday";
-         cell.bubbleIconForCommentsBtn.hidden=NO;
-         }
-         else{
-         cell.eventNameLbl.text=@"Birthday";
-         cell.dateLbl.text=@"Today";
-         cell.bubbleIconForCommentsBtn.hidden=YES;
-         }
-         
-         break;
-         //birthdays
-         case 1:
-         cell.eventNameLbl.text=@"Birthday";
-         cell.dateLbl.text=@"Today";
-         cell.bubbleIconForCommentsBtn.hidden=YES;
-         break;
-         //anniversaries
-         case 2:
-         cell.eventNameLbl.text=@"Happy anniversary";
-         cell.dateLbl.text=@"Yesterday";
-         cell.bubbleIconForCommentsBtn.hidden=YES;
-         break;
-         //New job
-         case 3:
-         cell.eventNameLbl.text=@"New job";
-         cell.dateLbl.text=@"Yesterday";
-         cell.bubbleIconForCommentsBtn.hidden=NO;
-         break;
-         //Congratulations
-         case 4:
-         cell.eventNameLbl.text=@"Congratulations";
-         cell.dateLbl.text=@"Yesterday";
-         cell.bubbleIconForCommentsBtn.hidden=YES;
-         break;
-         
-         }*/
         
 	}
     if([eventTitleLbl.text isEqualToString:events_category_1]){
         if([allupcomingEvents count]){
-            cell.profileNameLbl.text=[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
+            
+            if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                cell.bubbleIconForCommentsBtn.hidden=NO;
+                cell.profileNameLbl.text=[[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
+                
+            }
+            else{
+                cell.profileNameLbl.text=[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
+                
+                cell.bubbleIconForCommentsBtn.hidden=YES;
+            }
+            NSString *birthdayDt=[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"birthday_date"];
+            
+            cell.dateLbl.text=[self updatedDateToBeDisplayedForTheEvent:birthdayDt];
             cell.eventNameLbl.text=@"Birthday";
             if([profilePicImagesArray count]){
                 if(!isProfilePicsLoadingInProgress)
                     cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
             }
             
-            NSString *birthdayDt=[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"birthday_date"];
+            /*dispatch_queue_t ImageLoader_Q;
+             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+             dispatch_async(ImageLoader_Q, ^{
+             
+             NSString *urlStr=FacebookPicURL([[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"uid"]);
+             NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+             if (data) {
+             UIImage *thumbnail = [UIImage imageWithData:data];
+             
+             if(cell.profileImg.image==nil && thumbnail!=nil){
+             dispatch_sync(dispatch_get_main_queue(), ^(void) {
+             NSLog(@"%@",thumbnail);
+             cell.profileImg.image = thumbnail;
+             //[liveUpdatesTbl beginUpdates];
+             [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
+             withRowAnimation:UITableViewRowAnimationNone];
+             [eventsTable endUpdates];
+             //customCell.profilePic.hidden=NO;
+             //[customCell.activityIndctr stopAnimating];
+             });
+             }
+             
+             }
+             
+             
+             });
+             dispatch_release(ImageLoader_Q);
+             
+             */
             
-            cell.dateLbl.text=[self updatedDateToBeDisplayedForTheEvent:birthdayDt];
-            cell.bubbleIconForCommentsBtn.hidden=YES;
+            
         }
     }
     else if([eventTitleLbl.text isEqualToString:events_category_2]){
@@ -323,7 +322,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         if([anniversaryEvents count]){
             cell.profileNameLbl.text=[[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-            cell.eventNameLbl.text=@"Birthday";
+            cell.eventNameLbl.text=@"anniversary";
             if([profilePicImagesArray count]){
                 if(!isProfilePicsLoadingInProgress)
                     cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
@@ -340,7 +339,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         if([newJobEvents count]){
             cell.profileNameLbl.text=[[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-            cell.eventNameLbl.text=@"Birthday";
+            cell.eventNameLbl.text=@"new job";
             if([profilePicImagesArray count]){
                 if(!isProfilePicsLoadingInProgress)
                     cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
@@ -357,7 +356,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         if([congratsEvents count]){
             cell.profileNameLbl.text=[[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-            cell.eventNameLbl.text=@"Birthday";
+            cell.eventNameLbl.text=@"congratulations";
             if([profilePicImagesArray count]){
                 if(!isProfilePicsLoadingInProgress)
                     cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
@@ -513,7 +512,7 @@ static NSDateFormatter *customDateFormat=nil;
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays{
     [[Facebook_GiftGiv sharedSingleton] getAllFriendsWithTheirDetails];
     if([listOfBirthdays count]){
-        NSLog(@"%@",listOfBirthdays);
+        //NSLog(@"%@",listOfBirthdays);
         if([listOfBirthdayEvents count])
             [listOfBirthdayEvents removeAllObjects];
         [listOfBirthdayEvents addObjectsFromArray:listOfBirthdays];
@@ -584,7 +583,46 @@ static NSDateFormatter *customDateFormat=nil;
 - (void)facebookDidRequestFailed{
     //AlertWithMessageAndDelegate(@"Oops", @"facebook request failed", nil);
 }
-#pragma mark -
+#pragma mark - Events from statuses
+- (void)birthdayEventDetailsFromStatus:(NSMutableDictionary*)eventDetails{
+    
+    for (NSDictionary *existEvents in listOfBirthdayEvents){
+        NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
+        NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventDetails objectForKey:@"from"]objectForKey:@"id"]];
+        if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
+            return;
+    }
+    if(customDateFormat==nil){
+        customDateFormat=[[NSDateFormatter alloc]init];
+    }
+    [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+    [eventDetails setObject:[customDateFormat stringFromDate:[eventDetails objectForKey:@"updated_time"]]forKey:@"birthday_date"];
+    
+    [listOfBirthdayEvents addObject:eventDetails];
+    
+}
+- (void)newJobEventDetailsFromStatus:(NSMutableDictionary*)eventDetails{
+    
+}
+- (void)anniversaryEventDetailsFromStatus:(NSMutableDictionary*)eventDetails{
+    
+}
+- (void)congratsEventDetailsFromStatus:(NSMutableDictionary*)eventDetails{
+    
+}
+#pragma mark - Events from photos
+- (void)birthdayEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails{
+    
+}
+- (void)newJobEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails{
+    
+}
+- (void)anniversaryEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails{
+    
+}
+- (void)congratsEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails{
+    
+}
 #pragma mark - Add User Request delegate
 -(void) responseForAddUser:(NSMutableString*)response{
     if([response isEqualToString:@"true"]){
