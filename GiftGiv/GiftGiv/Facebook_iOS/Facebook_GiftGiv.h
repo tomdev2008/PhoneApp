@@ -26,16 +26,10 @@ typedef enum apiCall {
 - (void)facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)userDetails;
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays;
 
-- (void)birthdayEventDetailsFromStatus:(NSMutableDictionary*)eventDetails;
-- (void)newJobEventDetailsFromStatus:(NSMutableDictionary*)eventDetails;
-- (void)anniversaryEventDetailsFromStatus:(NSMutableDictionary*)eventDetails;
-- (void)congratsEventDetailsFromStatus:(NSMutableDictionary*)eventDetails;
-
-- (void)birthdayEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails;
-- (void)newJobEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails;
-- (void)anniversaryEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails;
-- (void)congratsEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails;
-
+- (void)birthdayEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
+- (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
+- (void)anniversaryEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
+- (void)congratsEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
 
 - (void)facebookDidLoggedOut;
 - (void)facebookDidRequestFailed;

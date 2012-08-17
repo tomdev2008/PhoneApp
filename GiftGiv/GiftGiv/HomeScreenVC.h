@@ -38,9 +38,8 @@
     NSMutableArray *congratsEvents;
     NSMutableArray *allupcomingEvents;
     
-    NSMutableArray *profilePicImagesArray;
     NSMutableArray *categoryTitles;
-    BOOL isProfilePicsLoadingInProgress;
+    
 }
 
 @property (retain, nonatomic) IBOutlet UIView *eventsBgView;
@@ -59,4 +58,5 @@
 
 - (NSString*)updatedDateToBeDisplayedForTheEvent:(NSString*)eventDate;
 
+- (BOOL)checkWhetherEventExistInTheListOfEvents:(NSMutableDictionary*)eventsData;
 @end

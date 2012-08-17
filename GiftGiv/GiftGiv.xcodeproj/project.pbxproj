@@ -31,6 +31,7 @@
 		7E1D729415B80C860008D19C /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D729315B80C860008D19C /* MBProgressHUD.m */; };
 		7E2D17A915D1295200E78FF0 /* AddUserRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D17A815D1295200E78FF0 /* AddUserRequest.m */; };
 		7E2D17B015D12A0100E78FF0 /* CoomonRequestCreationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */; };
+		7E46474415DE47BD00BAFFD4 /* profilepic_dummy.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */; };
 		7E58440F15CBD533005E35D4 /* SuccessVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E58440D15CBD533005E35D4 /* SuccessVC.m */; };
 		7E58441015CBD533005E35D4 /* SuccessVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E58440E15CBD533005E35D4 /* SuccessVC.xib */; };
 		7E58441515CBDD69005E35D4 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E58441315CBDD69005E35D4 /* SettingsVC.m */; };
@@ -144,6 +145,7 @@
 		7E2D17A815D1295200E78FF0 /* AddUserRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddUserRequest.m; path = "Backend Services/Add User/AddUserRequest.m"; sourceTree = "<group>"; };
 		7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoomonRequestCreationObject.h; path = "Backend Services/CoomonRequestCreationObject.h"; sourceTree = "<group>"; };
 		7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoomonRequestCreationObject.m; path = "Backend Services/CoomonRequestCreationObject.m"; sourceTree = "<group>"; };
+		7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profilepic_dummy.png; sourceTree = "<group>"; };
 		7E58440C15CBD533005E35D4 /* SuccessVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuccessVC.h; sourceTree = "<group>"; };
 		7E58440D15CBD533005E35D4 /* SuccessVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuccessVC.m; sourceTree = "<group>"; };
 		7E58440E15CBD533005E35D4 /* SuccessVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SuccessVC.xib; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 		7E5EF71A15B929C300C1D252 /* Normal */ = {
 			isa = PBXGroup;
 			children = (
+				7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */,
 				7ECFE0CA15BE6EAB002E95E3 /* appicon.png */,
 				7ECFE0CC15BE7535002E95E3 /* logoutbutton.png */,
 				7ECFE0CD15BE7535002E95E3 /* askagainbutton.png */,
@@ -763,6 +766,7 @@
 				7ED149F315CFF3B3007CBDBF /* OrderListCustomCell.xib in Resources */,
 				7ED149F815CFF3C3007CBDBF /* OrderHistoryDetailsVC.xib in Resources */,
 				7ED149FD15CFF3D1007CBDBF /* OrderHistoryListVC.xib in Resources */,
+				7E46474415DE47BD00BAFFD4 /* profilepic_dummy.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

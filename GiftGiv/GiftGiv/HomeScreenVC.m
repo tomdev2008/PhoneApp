@@ -65,7 +65,6 @@ static NSDateFormatter *customDateFormat=nil;
          [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
     }
     
-    profilePicImagesArray=[[NSMutableArray alloc] init];
     UISwipeGestureRecognizer *swipeLeftRecognizer=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipingForEventGroups:)];
     swipeLeftRecognizer.direction=UISwipeGestureRecognizerDirectionLeft;
     [eventsBgView addGestureRecognizer:swipeLeftRecognizer];
@@ -129,52 +128,53 @@ static NSDateFormatter *customDateFormat=nil;
         tranAnimationForEventGroups=[self getAnimationForEventGroup:kCATransitionFromLeft];
     
     [eventsBgView.layer addAnimation:tranAnimationForEventGroups forKey:@"groupAnimation"];
+    
     eventTitleLbl.text=[categoryTitles objectAtIndex:eventGroupNum-1];
     
-    if([eventTitleLbl.text isEqualToString:events_category_1]){
-        
-    }
-    else if([eventTitleLbl.text isEqualToString:events_category_2]){
-        //if([listOfBirthdayEvents count])
-        //   [eventsTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    }
-    else if([eventTitleLbl.text isEqualToString:events_category_3]){
-    }
-    else if([eventTitleLbl.text isEqualToString:events_category_4]){
-    }
-    else if([eventTitleLbl.text isEqualToString:events_category_5]){
-    }
+    /*if([eventTitleLbl.text isEqualToString:events_category_1]){
+     
+     }
+     else if([eventTitleLbl.text isEqualToString:events_category_2]){
+     //if([listOfBirthdayEvents count])
+     //   [eventsTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+     }
+     else if([eventTitleLbl.text isEqualToString:events_category_3]){
+     }
+     else if([eventTitleLbl.text isEqualToString:events_category_4]){
+     }
+     else if([eventTitleLbl.text isEqualToString:events_category_5]){
+     }*/
     
     [eventsTable reloadData];
     
-    if(!isProfilePicsLoadingInProgress){
-        if([profilePicImagesArray count])
-            [profilePicImagesArray removeAllObjects];
-        [self performSelectorInBackground:@selector(photoRetrieve) withObject:nil];
-        isProfilePicsLoadingInProgress=YES;
-        [self performSelector:@selector(reloadEventsTable) withObject:nil afterDelay:0.2];
-    }
 }
 -(void)checkTotalNumberOfGroups{
     totalGroups=0;
+    if([categoryTitles count])
+        [categoryTitles removeAllObjects];
     if([allupcomingEvents count]){
+        
         [categoryTitles addObject:events_category_1];
         totalGroups++;
     }
     if([listOfBirthdayEvents count]){
+        
         [categoryTitles addObject:events_category_2];
         totalGroups++;
     }
     if([anniversaryEvents count]){
+        
         [categoryTitles addObject:events_category_3];
         totalGroups++;
     }    
     if([newJobEvents count]){
+        
         [categoryTitles addObject:events_category_4];
         totalGroups++;
     }
     
     if([congratsEvents count]){
+        
         [categoryTitles addObject:events_category_5];
         totalGroups++;
     }
@@ -259,113 +259,371 @@ static NSDateFormatter *customDateFormat=nil;
                 
                 cell.bubbleIconForCommentsBtn.hidden=YES;
             }
-            NSString *birthdayDt=[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"birthday_date"];
+            NSString *eventDt=[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"];
             
-            cell.dateLbl.text=[self updatedDateToBeDisplayedForTheEvent:birthdayDt];
-            cell.eventNameLbl.text=@"Birthday";
-            if([profilePicImagesArray count]){
-                if(!isProfilePicsLoadingInProgress)
-                    cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
+            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:eventDt];
+            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
+                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+            }
+            else{
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+                cell.dateLbl.textColor=[UIColor blackColor];
             }
             
-            /*dispatch_queue_t ImageLoader_Q;
-             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
-             dispatch_async(ImageLoader_Q, ^{
-             
-             NSString *urlStr=FacebookPicURL([[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"uid"]);
-             NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
-             if (data) {
-             UIImage *thumbnail = [UIImage imageWithData:data];
-             
-             if(cell.profileImg.image==nil && thumbnail!=nil){
-             dispatch_sync(dispatch_get_main_queue(), ^(void) {
-             NSLog(@"%@",thumbnail);
-             cell.profileImg.image = thumbnail;
-             //[liveUpdatesTbl beginUpdates];
-             [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
-             withRowAnimation:UITableViewRowAnimationNone];
-             [eventsTable endUpdates];
-             //customCell.profilePic.hidden=NO;
-             //[customCell.activityIndctr stopAnimating];
-             });
-             }
-             
-             }
-             
-             
-             });
-             dispatch_release(ImageLoader_Q);
-             
-             */
             
+            cell.dateLbl.text=dateDisplay;
+            cell.eventNameLbl.text=[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
+            
+            if(![[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                dispatch_queue_t ImageLoader_Q;
+                ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+                dispatch_async(ImageLoader_Q, ^{
+                    NSString *urlStr;
+                    if([[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"uid"])
+                        urlStr=FacebookPicURL([[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"uid"]);
+                    else
+                        urlStr=FacebookPicURL([[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"id"]);
+                    NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+                    if(data==nil){
+                        [[allupcomingEvents objectAtIndex:indexPath.row] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    }
+                    else {
+                        UIImage *thumbnail = [UIImage imageWithData:data];
+                        
+                        if(thumbnail!=nil){
+                            
+                            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                                
+                                [[allupcomingEvents objectAtIndex:indexPath.row] setObject:thumbnail forKey:@"ProfilePicture"];
+                                
+                                if([eventTitleLbl.text isEqualToString:events_category_1]){
+                                    [eventsTable beginUpdates];
+                                    [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
+                                                       withRowAnimation:UITableViewRowAnimationNone];
+                                    [eventsTable endUpdates];
+                                }
+                                
+                            });
+                        }
+                        
+                    }
+                    
+                    
+                });
+                dispatch_release(ImageLoader_Q);
+                
+            }
+            
+            if([[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                cell.profileImg.image=[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
+            }
             
         }
     }
     else if([eventTitleLbl.text isEqualToString:events_category_2]){
         
         if([listOfBirthdayEvents count]){
-            cell.profileNameLbl.text=[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-            cell.eventNameLbl.text=@"Birthday";
-            if([profilePicImagesArray count]){
-                if(!isProfilePicsLoadingInProgress)
-                    cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
+            
+            if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                cell.bubbleIconForCommentsBtn.hidden=NO;
+                cell.profileNameLbl.text=[[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
+                
+            }
+            else{
+                cell.profileNameLbl.text=[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
+                
+                cell.bubbleIconForCommentsBtn.hidden=YES;
             }
             
-            NSString *birthdayDt=[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"birthday_date"];
+            cell.eventNameLbl.text=[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
             
-            cell.dateLbl.text=[self updatedDateToBeDisplayedForTheEvent:birthdayDt];
-            cell.bubbleIconForCommentsBtn.hidden=YES;
+            NSString *eventDt=[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"];
+            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:eventDt];
+            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
+                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+            }
+            else{
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+                cell.dateLbl.textColor=[UIColor blackColor];
+            }
+            cell.dateLbl.text=dateDisplay;
+            
+            if(![[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                dispatch_queue_t ImageLoader_Q;
+                ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+                dispatch_async(ImageLoader_Q, ^{
+                    NSString *urlStr;
+                    if([[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"uid"])
+                        urlStr=FacebookPicURL([[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"uid"]);
+                    else
+                        urlStr=FacebookPicURL([[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"id"]);
+                    NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+                    if(data==nil){
+                        [[listOfBirthdayEvents objectAtIndex:indexPath.row] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    }
+                    else {
+                        UIImage *thumbnail = [UIImage imageWithData:data];
+                        
+                        if(thumbnail!=nil){
+                            
+                            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                                
+                                [[listOfBirthdayEvents objectAtIndex:indexPath.row] setObject:thumbnail forKey:@"ProfilePicture"];
+                                
+                                if([eventTitleLbl.text isEqualToString:events_category_2]){
+                                    [eventsTable beginUpdates];
+                                    [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
+                                                       withRowAnimation:UITableViewRowAnimationNone];
+                                    [eventsTable endUpdates];
+                                }
+                                
+                            });
+                        }
+                        
+                    }
+                    
+                    
+                });
+                dispatch_release(ImageLoader_Q);
+                
+            }
+            
+            if([[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                cell.profileImg.image=[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
+            }
+            
+            
         }
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_3]){
         
         if([anniversaryEvents count]){
-            cell.profileNameLbl.text=[[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-            cell.eventNameLbl.text=@"anniversary";
-            if([profilePicImagesArray count]){
-                if(!isProfilePicsLoadingInProgress)
-                    cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
+            if([[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                cell.bubbleIconForCommentsBtn.hidden=NO;
+                cell.profileNameLbl.text=[[[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
+                
+            }
+            else{
+                cell.profileNameLbl.text=[[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
+                
+                cell.bubbleIconForCommentsBtn.hidden=YES;
+            }
+            cell.eventNameLbl.text=[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
+            
+            NSString *eventDt=[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"];
+            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:eventDt];
+            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
+                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+            }
+            else{
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+                cell.dateLbl.textColor=[UIColor blackColor];
+            }
+            cell.dateLbl.text=dateDisplay;
+            if(![[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                dispatch_queue_t ImageLoader_Q;
+                ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+                dispatch_async(ImageLoader_Q, ^{
+                    NSString *urlStr;
+                    if([[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"uid"])
+                        urlStr=FacebookPicURL([[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"uid"]);
+                    else
+                        urlStr=FacebookPicURL([[[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"id"]);
+                    NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+                    if(data==nil){
+                        [[anniversaryEvents objectAtIndex:indexPath.row] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    }
+                    else {
+                        UIImage *thumbnail = [UIImage imageWithData:data];
+                        
+                        if(thumbnail!=nil){
+                            
+                            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                                
+                                [[anniversaryEvents objectAtIndex:indexPath.row] setObject:thumbnail forKey:@"ProfilePicture"];
+                                
+                                if([eventTitleLbl.text isEqualToString:events_category_3]){
+                                    [eventsTable beginUpdates];
+                                    [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
+                                                       withRowAnimation:UITableViewRowAnimationNone];
+                                    [eventsTable endUpdates];
+                                }
+                                
+                            });
+                        }
+                        
+                    }
+                    
+                    
+                });
+                dispatch_release(ImageLoader_Q);
+                
             }
             
-            NSString *birthdayDt=[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"birthday_date"];
+            if([[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                cell.profileImg.image=[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
+            }
             
-            cell.dateLbl.text=[self updatedDateToBeDisplayedForTheEvent:birthdayDt];
-            cell.bubbleIconForCommentsBtn.hidden=NO;
+            
         }
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_4]){
         
         if([newJobEvents count]){
-            cell.profileNameLbl.text=[[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-            cell.eventNameLbl.text=@"new job";
-            if([profilePicImagesArray count]){
-                if(!isProfilePicsLoadingInProgress)
-                    cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
+            
+            if([[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                cell.bubbleIconForCommentsBtn.hidden=NO;
+                cell.profileNameLbl.text=[[[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
+                
+            }
+            else{
+                cell.profileNameLbl.text=[[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
+                
+                cell.bubbleIconForCommentsBtn.hidden=YES;
             }
             
-            NSString *birthdayDt=[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"birthday_date"];
+            cell.eventNameLbl.text=[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
             
-            cell.dateLbl.text=[self updatedDateToBeDisplayedForTheEvent:birthdayDt];
-            cell.bubbleIconForCommentsBtn.hidden=NO;
+            NSString *eventDt=[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"];
+            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:eventDt];
+            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
+                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+            }
+            else{
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+                cell.dateLbl.textColor=[UIColor blackColor];
+            }
+            cell.dateLbl.text=dateDisplay;
+            if(![[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                dispatch_queue_t ImageLoader_Q;
+                ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+                dispatch_async(ImageLoader_Q, ^{
+                    NSString *urlStr;
+                    if([[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"uid"])
+                        urlStr=FacebookPicURL([[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"uid"]);
+                    else
+                        urlStr=FacebookPicURL([[[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"id"]);
+                    NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+                    if(data==nil){
+                        [[newJobEvents objectAtIndex:indexPath.row] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    }
+                    else {
+                        UIImage *thumbnail = [UIImage imageWithData:data];
+                        
+                        if(thumbnail!=nil){
+                            
+                            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                                
+                                [[newJobEvents objectAtIndex:indexPath.row] setObject:thumbnail forKey:@"ProfilePicture"];
+                                
+                                if([eventTitleLbl.text isEqualToString:events_category_4]){
+                                    [eventsTable beginUpdates];
+                                    [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
+                                                       withRowAnimation:UITableViewRowAnimationNone];
+                                    [eventsTable endUpdates];
+                                }
+                                
+                            });
+                        }
+                        
+                    }
+                    
+                    
+                });
+                dispatch_release(ImageLoader_Q);
+                
+            }
+            
+            if([[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                cell.profileImg.image=[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
+            }
+            
+            
+            
         }
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_5]){
         
         if([congratsEvents count]){
-            cell.profileNameLbl.text=[[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-            cell.eventNameLbl.text=@"congratulations";
-            if([profilePicImagesArray count]){
-                if(!isProfilePicsLoadingInProgress)
-                    cell.profileImg.image=[profilePicImagesArray objectAtIndex:indexPath.row];
+            
+            if([[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                cell.bubbleIconForCommentsBtn.hidden=NO;
+                cell.profileNameLbl.text=[[[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
+                
+            }
+            else{
+                cell.profileNameLbl.text=[[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
+                
+                cell.bubbleIconForCommentsBtn.hidden=YES;
+            }
+            cell.eventNameLbl.text=[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
+            
+            NSString *eventDt=[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"];
+            
+            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:eventDt];
+            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
+                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+            }
+            else{
+                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+                cell.dateLbl.textColor=[UIColor blackColor];
+            }
+            cell.dateLbl.text=dateDisplay;
+            
+            if(![[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                dispatch_queue_t ImageLoader_Q;
+                ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+                dispatch_async(ImageLoader_Q, ^{
+                    NSString *urlStr;
+                    if([[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"uid"])
+                        urlStr=FacebookPicURL([[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"uid"]);
+                    else
+                        urlStr=FacebookPicURL([[[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"id"]);
+                    NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+                    if(data==nil){
+                        [[congratsEvents objectAtIndex:indexPath.row] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    }
+                    else {
+                        UIImage *thumbnail = [UIImage imageWithData:data];
+                        
+                        if(thumbnail!=nil){
+                            
+                            
+                            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                                
+                                [[congratsEvents objectAtIndex:indexPath.row] setObject:thumbnail forKey:@"ProfilePicture"];
+                                
+                                if([eventTitleLbl.text isEqualToString:events_category_5]){
+                                    [eventsTable beginUpdates];
+                                    [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
+                                                       withRowAnimation:UITableViewRowAnimationNone];
+                                    [eventsTable endUpdates];
+                                }
+                                
+                            });
+                        }
+                        
+                    }
+                    
+                    
+                });
+                dispatch_release(ImageLoader_Q);
+                
             }
             
-            NSString *birthdayDt=[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"birthday_date"];
+            if([[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+                cell.profileImg.image=[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
+            }
             
-            cell.dateLbl.text=[self updatedDateToBeDisplayedForTheEvent:birthdayDt];
-            cell.bubbleIconForCommentsBtn.hidden=NO;
+            
         }
         
     }
@@ -379,7 +637,7 @@ static NSDateFormatter *customDateFormat=nil;
     CGSize eventDate_maxSize = CGSizeMake(90, 21);
     CGSize eventDate_newSize = [cell.dateLbl.text sizeWithFont:cell.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
-    cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 29, eventDate_newSize.width, 21); 
+    cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 30, eventDate_newSize.width, 21); 
     
 	return cell;
 }
@@ -432,41 +690,6 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 
--(void)photoRetrieve{
-	
-    if([CheckNetwork connectedToNetwork]){
-        
-        int totalBirthdaysCount=[listOfBirthdayEvents count];
-        //NSLog(@"%d",totalBirthdaysCount);
-        for(int i =0; i<totalBirthdaysCount;i++){
-            
-            UIImage	*tempPicImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:FacebookPicURL([[listOfBirthdayEvents objectAtIndex:i]objectForKey:@"uid"])]]];
-            //NSLog(@"%@",FacebookPicURL([[listOfBirthdayEvents objectAtIndex:i]objectForKey:@"uid"]));
-            if(tempPicImage){
-                [profilePicImagesArray addObject:tempPicImage];
-                
-            }
-            else{
-                /*UIImage *image2 = [UIImage imageNamed:@"nophoto.png"];
-                 [imgArray replaceObjectAtIndex:i withObject:image2];*/
-            }
-            
-            
-        }
-        
-        isProfilePicsLoadingInProgress=NO;
-    }
-    
-    
-}
--(void)reloadEventsTable{
-	if(!isProfilePicsLoadingInProgress)
-        [eventsTable reloadData];
-	else if(isProfilePicsLoadingInProgress)
-	{
-		[self performSelector:@selector(reloadEventsTable) withObject:nil afterDelay:0.2];
-	}
-}
 #pragma mark -
 -(void)eventDetailsAction:(id)sender{
     
@@ -540,21 +763,15 @@ static NSDateFormatter *customDateFormat=nil;
             [customDateFormat setDateFormat:@"MM/dd/yyyy"];
             NSDate *stringToDate=[customDateFormat dateFromString:[tempDict objectForKey:@"birthday_date"]];
             [customDateFormat setDateFormat:@"yyyy-MM-dd"];
-            [tempDict setObject:[customDateFormat stringFromDate:stringToDate] forKey:@"birthday_date"];
+            [tempDict setObject:[customDateFormat stringFromDate:stringToDate] forKey:@"event_date"];
+            [tempDict setObject:@"birthday" forKey:@"event_type"];
+            [tempDict setObject:@"" forKey:@"ProfilePicture"];
             [listOfBirthdayEvents replaceObjectAtIndex:i withObject:tempDict];
         }
         [allupcomingEvents addObjectsFromArray:listOfBirthdayEvents];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
+        
         [eventsTable reloadData];
-        
-        if(!isProfilePicsLoadingInProgress){
-            if([profilePicImagesArray count])
-                [profilePicImagesArray removeAllObjects];
-            [self performSelectorInBackground:@selector(photoRetrieve) withObject:nil];
-            isProfilePicsLoadingInProgress=YES;
-            [self performSelector:@selector(reloadEventsTable) withObject:nil afterDelay:0.2];
-        }
-        
         birthdayEventUserNoToAddAsUser=1;
         [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];
     }
@@ -584,44 +801,154 @@ static NSDateFormatter *customDateFormat=nil;
     //AlertWithMessageAndDelegate(@"Oops", @"facebook request failed", nil);
 }
 #pragma mark - Events from statuses
-- (void)birthdayEventDetailsFromStatus:(NSMutableDictionary*)eventDetails{
+- (void)birthdayEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
     
     for (NSDictionary *existEvents in listOfBirthdayEvents){
         NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
         NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventDetails objectForKey:@"from"]objectForKey:@"id"]];
         if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
-            return;
+            return ;
     }
+    
+    
     if(customDateFormat==nil){
         customDateFormat=[[NSDateFormatter alloc]init];
     }
+    
+    [customDateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZ"];
+    
+    NSDate *convertedDateFromString;
+    if([eventDetails objectForKey:@"picture"]){
+        convertedDateFromString=[customDateFormat dateFromString:[eventDetails objectForKey:@"created_time"]];
+    }
+    else{
+        convertedDateFromString=[customDateFormat dateFromString:[eventDetails objectForKey:@"updated_time"]];
+    }
+    
     [customDateFormat setDateFormat:@"yyyy-MM-dd"];
-    [eventDetails setObject:[customDateFormat stringFromDate:[eventDetails objectForKey:@"updated_time"]]forKey:@"birthday_date"];
     
+    [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
+    [eventDetails setObject:@"birthday" forKey:@"event_type"];
+    [eventDetails setObject:@"" forKey:@"ProfilePicture"];
     [listOfBirthdayEvents addObject:eventDetails];
+    [allupcomingEvents addObject:eventDetails];
+    [self performSelector:@selector(checkTotalNumberOfGroups)];
+    [eventsTable reloadData];
+    
     
 }
-- (void)newJobEventDetailsFromStatus:(NSMutableDictionary*)eventDetails{
+- (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
+    
+    if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
+        
+        if(customDateFormat==nil){
+            customDateFormat=[[NSDateFormatter alloc]init];
+        }
+        
+        [customDateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZ"];
+        
+        NSDate *convertedDateFromString;
+        if([eventDetails objectForKey:@"picture"]){
+            convertedDateFromString=[customDateFormat dateFromString:[eventDetails objectForKey:@"created_time"]];
+        }
+        else{
+            convertedDateFromString=[customDateFormat dateFromString:[eventDetails objectForKey:@"updated_time"]];
+        }
+        
+        
+        [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+        
+        [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
+        [eventDetails setObject:@"new job" forKey:@"event_type"];
+        [eventDetails setObject:@"" forKey:@"ProfilePicture"];
+        [newJobEvents addObject:eventDetails];
+        [allupcomingEvents addObject:eventDetails];
+        [self performSelector:@selector(checkTotalNumberOfGroups)];
+        [eventsTable reloadData];
+    }
     
 }
-- (void)anniversaryEventDetailsFromStatus:(NSMutableDictionary*)eventDetails{
+- (void)anniversaryEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
     
+    if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
+        
+        if(customDateFormat==nil){
+            customDateFormat=[[NSDateFormatter alloc]init];
+        }
+        
+        [customDateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZ"];
+        
+        NSDate *convertedDateFromString;
+        if([eventDetails objectForKey:@"picture"]){
+            convertedDateFromString=[customDateFormat dateFromString:[eventDetails objectForKey:@"created_time"]];
+        }
+        else{
+            convertedDateFromString=[customDateFormat dateFromString:[eventDetails objectForKey:@"updated_time"]];
+        }
+        
+        
+        [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+        
+        [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
+        [eventDetails setObject:@"relationship status" forKey:@"event_type"];
+        [eventDetails setObject:@"" forKey:@"ProfilePicture"];
+        [anniversaryEvents addObject:eventDetails];
+        [allupcomingEvents addObject:eventDetails];
+        [self performSelector:@selector(checkTotalNumberOfGroups)];
+        [eventsTable reloadData];
+    }
 }
-- (void)congratsEventDetailsFromStatus:(NSMutableDictionary*)eventDetails{
-    
+- (void)congratsEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
+    if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
+        
+        if(customDateFormat==nil){
+            customDateFormat=[[NSDateFormatter alloc]init];
+        }
+        
+        [customDateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZ"];
+        
+        NSDate *convertedDateFromString;
+        if([eventDetails objectForKey:@"picture"]){
+            convertedDateFromString=[customDateFormat dateFromString:[eventDetails objectForKey:@"created_time"]];
+        }
+        else{
+            convertedDateFromString=[customDateFormat dateFromString:[eventDetails objectForKey:@"updated_time"]];
+        }
+        
+        [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+        
+        [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
+        [eventDetails setObject:@"congratulations" forKey:@"event_type"];
+        [eventDetails setObject:@"" forKey:@"ProfilePicture"];
+        [congratsEvents addObject:eventDetails];
+        [allupcomingEvents addObject:eventDetails];
+        [self performSelector:@selector(checkTotalNumberOfGroups)];
+        [eventsTable reloadData];
+    }
 }
-#pragma mark - Events from photos
-- (void)birthdayEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails{
+
+-(BOOL)checkWhetherEventExistInTheListOfEvents:(NSMutableDictionary*)eventsData{
     
-}
-- (void)newJobEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails{
+    for (NSDictionary *existEvents in newJobEvents){
+        NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
+        NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventsData objectForKey:@"from"]objectForKey:@"id"]];
+        if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
+            return YES;
+    }
     
-}
-- (void)anniversaryEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails{
-    
-}
-- (void)congratsEventDetailsFromPhoto:(NSMutableDictionary*)eventDetails{
-    
+    for (NSDictionary *existEvents in anniversaryEvents){
+        NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
+        NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventsData objectForKey:@"from"]objectForKey:@"id"]];
+        if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
+            return YES;
+    }
+    for (NSDictionary *existEvents in congratsEvents){
+        NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
+        NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventsData objectForKey:@"from"]objectForKey:@"id"]];
+        if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
+            return YES;
+    }
+    return NO;
 }
 #pragma mark - Add User Request delegate
 -(void) responseForAddUser:(NSMutableString*)response{
@@ -673,7 +1000,6 @@ static NSDateFormatter *customDateFormat=nil;
     [allupcomingEvents release];
     
     [categoryTitles release];
-    [profilePicImagesArray release];
     [eventsBgView release];
     [eventTitleLbl release];
     [pageControlForEventGroups release];
