@@ -56,6 +56,10 @@
 }
 #pragma mark - Facebook Logout delegate
 - (void)facebookDidLoggedOut{
+    //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
+    //[[NSUserDefaults standardUserDefaults]removeObjectForKey:@"FBAccessTokenKey"];
+    [[[Facebook_GiftGiv sharedSingleton]facebook]setAccessToken:nil];
+    [[Facebook_GiftGiv sharedSingleton]releaseFacebook];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 #pragma mark -

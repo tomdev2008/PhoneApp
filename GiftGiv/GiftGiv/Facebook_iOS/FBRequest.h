@@ -87,6 +87,7 @@ typedef NSUInteger FBRequestState;
 - (BOOL) loading;
 
 - (void) connect;
+- (void)cancelConnection;
 
 @end
 
@@ -137,6 +138,7 @@ typedef NSUInteger FBRequestState;
  * The result object is the raw response from the server of type NSData
  */
 - (void)request:(FBRequest *)request didLoadRawResponse:(NSData *)data;
+
 
 @end
 

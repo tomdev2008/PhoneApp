@@ -39,6 +39,7 @@
     NSMutableArray *allupcomingEvents;
     
     NSMutableArray *categoryTitles;
+    BOOL shouldLoadingPicsStop;
     
 }
 
@@ -56,7 +57,12 @@
 
 - (void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails;
 
-- (NSString*)updatedDateToBeDisplayedForTheEvent:(NSString*)eventDate;
+- (NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate;
 
 - (BOOL)checkWhetherEventExistInTheListOfEvents:(NSMutableDictionary*)eventsData;
+
+- (void)sortEvents:(NSMutableArray*)listOfEvents eventCategory:(int)catNum;
+
+- (void)loadProfilePictures;
+
 @end

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FBConnect.h"
+#import "Facebook.h"
 #import "ApplicationHelpers.h"
 
 typedef enum apiCall {
@@ -48,6 +49,7 @@ typedef enum apiCall {
     NSMutableArray *newJobSearchStrings;
     NSMutableArray *congratsSearchStrings;
     
+    NSMutableArray *fbRequestsArray;
     
 }
 
@@ -64,6 +66,6 @@ typedef enum apiCall {
 - (void)getAllFriendsWithTheirDetails;
 
 - (NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd;
-
+- (void) releaseFacebook;
 
 @end

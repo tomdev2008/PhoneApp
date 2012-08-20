@@ -37,14 +37,14 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
 @implementation FBRequest
 
 @synthesize delegate = _delegate,
-            url = _url,
-            httpMethod = _httpMethod,
-            params = _params,
-            connection = _connection,
-            responseText = _responseText,
-            state = _state,
-            sessionDidExpire = _sessionDidExpire,
-            error = _error;
+url = _url,
+httpMethod = _httpMethod,
+params = _params,
+connection = _connection,
+responseText = _responseText,
+state = _state,
+sessionDidExpire = _sessionDidExpire,
+error = _error;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // class public
@@ -205,11 +205,11 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
     SBJSON *jsonParser = [[SBJSON alloc] init];
     id result = [jsonParser objectWithString:responseString];
     [jsonParser release];
-
+    
     if (result == nil) {
         return responseString;
     }
-
+    
     if ([result isKindOfClass:[NSDictionary class]]) {
         if ([result objectForKey:@"error"] != nil) {
             if (error != nil) {
@@ -311,22 +311,26 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
                         timeoutInterval:kTimeoutInterval];
     [request setValue:kUserAgent forHTTPHeaderField:@"User-Agent"];
-
-
+    
+    
     [request setHTTPMethod:self.httpMethod];
     if ([self.httpMethod isEqualToString: @"POST"]) {
         NSString* contentType = [NSString
-                             stringWithFormat:@"multipart/form-data; boundary=%@", kStringBoundary];
+                                 stringWithFormat:@"multipart/form-data; boundary=%@", kStringBoundary];
         [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
-
+        
         [request setHTTPBody:[self generatePostBody]];
     }
-
+    
     _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     self.state = kFBRequestStateLoading;
     self.sessionDidExpire = NO;
 }
-
+- (void)cancelConnection{
+    if(self.state==kFBRequestStateReady || self.state==kFBRequestStateLoading)
+        [_connection cancel];
+    
+}
 /**
  * Free internal structure
  */
@@ -364,7 +368,7 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     [self handleResponseData:_responseText];
-
+    
     self.responseText = nil;
     self.connection = nil;
     self.state = kFBRequestStateComplete;
@@ -372,7 +376,7 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [self failWithError:error];
-
+    
     self.responseText = nil;
     self.connection = nil;
     self.state = kFBRequestStateComplete;
