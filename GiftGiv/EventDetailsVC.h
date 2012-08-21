@@ -10,9 +10,17 @@
 #import "CommentsCustomCell.h"
 #import "NSAttributedString+Attributes.h"
 #import "GiftOptionsVC.h"
+#import "Facebook_GiftGiv.h"
+#import "MBProgressHUD.h"
+#import "CustomDateDisplay.h"
 
-@interface EventDetailsVC : UIViewController <UITableViewDelegate,UITableViewDataSource>
-
+@interface EventDetailsVC : UIViewController <UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,MBProgressHUDDelegate>
+{
+    MBProgressHUD *HUD;
+    NSMutableArray *listOfComments;
+    BOOL shouldLoadingPicsStop;
+    //NSMutableDictionary *basicInfoForMsg;
+}
 @property (retain, nonatomic) IBOutlet UIImageView *profileImgView;
 @property (retain, nonatomic) IBOutlet UILabel *nameLbl;
 @property (retain, nonatomic) IBOutlet UILabel *eventNameLbl;
@@ -22,9 +30,15 @@
 @property (retain, nonatomic) IBOutlet UITextView *eventDescription;
 @property (retain, nonatomic) IBOutlet UIImageView *eventImg;
 
+@property (retain, nonatomic) NSMutableDictionary *basicInfoForMsg;
 @property BOOL isPhotoTagged;
 
 - (IBAction)backToEventsList:(id)sender;
 - (IBAction)showGiftCategories:(id)sender;
 
+#pragma mark - Progress HUD
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
+- (void) stopHUD;
+#pragma mark -
+- (void)loadProfilePictures;
 @end

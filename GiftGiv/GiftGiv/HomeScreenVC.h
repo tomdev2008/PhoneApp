@@ -19,7 +19,7 @@
 #import "Constants.h"
 #import "CheckNetwork.h"
 #import "CoomonRequestCreationObject.h"
-
+#import "CustomDateDisplay.h"
 
 @interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate>
 
@@ -57,7 +57,7 @@
 
 - (void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails;
 
-- (NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate;
+//- (NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate;
 
 - (BOOL)checkWhetherEventExistInTheListOfEvents:(NSMutableDictionary*)eventsData;
 

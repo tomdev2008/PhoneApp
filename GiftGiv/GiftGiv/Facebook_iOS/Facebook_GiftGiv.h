@@ -17,6 +17,7 @@ typedef enum apiCall {
     kAPIGetBirthdayEvents,
     kAPIGetAllFriends,
     kAPIGetJSONForStatuses,
+    
 } apiCall;
 
 
@@ -31,6 +32,7 @@ typedef enum apiCall {
 - (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
 - (void)anniversaryEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
 - (void)congratsEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
+- (void)receivedDetailedEventInfo:(NSMutableDictionary*)eventDetails;
 
 - (void)facebookDidLoggedOut;
 - (void)facebookDidRequestFailed;
@@ -50,7 +52,7 @@ typedef enum apiCall {
     NSMutableArray *congratsSearchStrings;
     
     NSMutableArray *fbRequestsArray;
-    
+    FBRequest *getDetailedEventReq;
 }
 
 @property (nonatomic, retain) Facebook *facebook;
@@ -64,7 +66,7 @@ typedef enum apiCall {
 - (void)apiFQLIMe;
 - (void)listOfBirthdayEvents;
 - (void)getAllFriendsWithTheirDetails;
-
+- (void)getEventDetails:(NSString*)statusID;
 - (NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd;
 - (void) releaseFacebook;
 

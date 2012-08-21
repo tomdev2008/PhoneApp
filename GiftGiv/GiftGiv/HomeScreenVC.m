@@ -261,7 +261,7 @@ static NSDateFormatter *customDateFormat=nil;
                 cell.bubbleIconForCommentsBtn.hidden=YES;
             }
             
-            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
             if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
                 cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
                 cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
@@ -301,7 +301,7 @@ static NSDateFormatter *customDateFormat=nil;
             cell.eventNameLbl.text=[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
             
             
-            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
             if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
                 cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
                 cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
@@ -337,7 +337,7 @@ static NSDateFormatter *customDateFormat=nil;
             cell.eventNameLbl.text=[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
             
             
-            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
             if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
                 cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
                 cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
@@ -374,7 +374,7 @@ static NSDateFormatter *customDateFormat=nil;
             cell.eventNameLbl.text=[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
             
             
-            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
             if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
                 cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
                 cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
@@ -411,7 +411,7 @@ static NSDateFormatter *customDateFormat=nil;
             cell.eventNameLbl.text=[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
             
             
-            NSString *dateDisplay=[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
             if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
                 cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
                 cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
@@ -444,62 +444,175 @@ static NSDateFormatter *customDateFormat=nil;
     
 	return cell;
 }
--(NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate{
-    
-    if(customDateFormat==nil){
-        customDateFormat=[[NSDateFormatter alloc]init];
-    }
-    NSString *endDateString;
-    
-    if([eventDate isKindOfClass:[NSString class]]){
-        
-        eventDate=[NSString stringWithFormat:@"%@",eventDate];
-        
-        [customDateFormat setDateFormat:@"yyyy-MM-dd"];
-        NSDate *tempDate = [customDateFormat dateFromString:eventDate];
-        [customDateFormat setDateFormat:@"MMM dd"];
-        endDateString=[customDateFormat stringFromDate:tempDate];
-    }
-    else{
-        [customDateFormat setDateFormat:@"MMM dd"];
-        endDateString=[customDateFormat stringFromDate:(NSDate*)eventDate];
-    }
-    
-    NSString *startDateString=[customDateFormat stringFromDate:[NSDate date]]; //current date
-    
-    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *components = [gregorianCalendar components:NSDayCalendarUnit fromDate:[customDateFormat dateFromString:startDateString] toDate:[customDateFormat dateFromString:endDateString] options:0];
-    
-    //NSLog(@"%d",[components day]);
-    [gregorianCalendar release];
-    
-    switch ([components day]) {
-        case -1:
-            return @"Yesterday";
-            
-            break;
-        case 0:
-            return @"Today";
-            break;
-        case 1:
-            return @"Tomorrow";
-            break;
-            
-    }
-    if([components day]<-1){
-        return @"Recent";
-    }
-    if([components day]>1){
-        
-        return endDateString;
-    }
-    return nil;
-}
+/*-(NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate{
+ 
+ if(customDateFormat==nil){
+ customDateFormat=[[NSDateFormatter alloc]init];
+ }
+ NSString *endDateString;
+ 
+ if([eventDate isKindOfClass:[NSString class]]){
+ 
+ eventDate=[NSString stringWithFormat:@"%@",eventDate];
+ 
+ [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+ NSDate *tempDate = [customDateFormat dateFromString:eventDate];
+ [customDateFormat setDateFormat:@"MMM dd"];
+ endDateString=[customDateFormat stringFromDate:tempDate];
+ }
+ else{
+ [customDateFormat setDateFormat:@"MMM dd"];
+ endDateString=[customDateFormat stringFromDate:(NSDate*)eventDate];
+ }
+ 
+ NSString *startDateString=[customDateFormat stringFromDate:[NSDate date]]; //current date
+ 
+ NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+ NSDateComponents *components = [gregorianCalendar components:NSDayCalendarUnit fromDate:[customDateFormat dateFromString:startDateString] toDate:[customDateFormat dateFromString:endDateString] options:0];
+ 
+ //NSLog(@"%d",[components day]);
+ [gregorianCalendar release];
+ 
+ switch ([components day]) {
+ case -1:
+ return @"Yesterday";
+ 
+ break;
+ case 0:
+ return @"Today";
+ break;
+ case 1:
+ return @"Tomorrow";
+ break;
+ 
+ }
+ if([components day]<-1){
+ return @"Recent";
+ }
+ if([components day]>1){
+ 
+ return endDateString;
+ }
+ return nil;
+ }*/
 #pragma mark - TableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"]){
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"UserDetails"];
+    }
     //Gift options screen
     GiftOptionsVC *giftOptions=[[GiftOptionsVC alloc]initWithNibName:@"GiftOptionsVC" bundle:nil];
+    
+    if([eventTitleLbl.text isEqualToString:events_category_1]){
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+        if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+            [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        }
+        else{
+            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+        }
+        
+        
+        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+        
+        //NSLog(@"%@",tempInfoDict);
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        //details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+        
+        
+        //details.statusMsgId=[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"];
+    }
+    
+    else if([eventTitleLbl.text isEqualToString:events_category_2]){
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+        if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+            [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        }
+        else{
+            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+        }
+        
+        
+        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+        
+        //NSLog(@"%@",tempInfoDict);
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        //details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+    }
+    else if([eventTitleLbl.text isEqualToString:events_category_3]){
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+        if([[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+            [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        }
+        else{
+            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+        }
+        
+        
+        [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+        
+        //NSLog(@"%@",tempInfoDict);
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        //details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+    }
+    else if([eventTitleLbl.text isEqualToString:events_category_4]){
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+        if([[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+            [tempInfoDict setObject:[[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            [tempInfoDict setObject:[[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        }
+        else{
+            [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+            [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+        }
+        
+        
+        [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+        
+        //NSLog(@"%@",tempInfoDict);
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        //details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+    }
+    else if([eventTitleLbl.text isEqualToString:events_category_5]){
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+        if([[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+            [tempInfoDict setObject:[[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            [tempInfoDict setObject:[[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        }
+        else{
+            [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+            [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+        }
+        
+        
+        [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+        
+        //NSLog(@"%@",tempInfoDict);
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        //details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+    }
+    
     [self.navigationController pushViewController:giftOptions animated:YES];
     [giftOptions release];
     
@@ -509,8 +622,114 @@ static NSDateFormatter *customDateFormat=nil;
 -(void)eventDetailsAction:(id)sender{
     
     EventDetailsVC *details=[[EventDetailsVC alloc]initWithNibName:@"EventDetailsVC" bundle:nil];
-    if([sender tag]==0)
-        details.isPhotoTagged=YES;
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"]){
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"UserDetails"];
+    }
+    
+    if([eventTitleLbl.text isEqualToString:events_category_1]){
+        if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+            details.isPhotoTagged=YES;
+        }
+        else
+            details.isPhotoTagged=NO;
+        
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+        [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+        NSLog(@"%@",tempInfoDict);
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+        
+        
+        //details.statusMsgId=[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"];
+    }
+    
+    else if([eventTitleLbl.text isEqualToString:events_category_2]){
+        if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+            details.isPhotoTagged=YES;
+        }
+        else
+            details.isPhotoTagged=NO;
+        
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
+        [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];                   
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        //details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+        //details.statusMsgId=[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"];
+    }
+    else if([eventTitleLbl.text isEqualToString:events_category_3]){
+        if([[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+            details.isPhotoTagged=YES;
+        }
+        else
+            details.isPhotoTagged=NO;
+        
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
+        [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+        [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+        [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        //details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+        
+        //details.statusMsgId=[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"id"];
+    }
+    else if([eventTitleLbl.text isEqualToString:events_category_4]){
+        if([[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+            details.isPhotoTagged=YES;
+        }
+        else
+            details.isPhotoTagged=NO;
+        
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
+        [tempInfoDict setObject:[[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        [tempInfoDict setObject:[[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+        [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+        [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        //details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+        //details.statusMsgId=[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"id"];
+    }
+    else if([eventTitleLbl.text isEqualToString:events_category_5]){
+        if([[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+            details.isPhotoTagged=YES;
+        }
+        else
+            details.isPhotoTagged=NO;
+        
+        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
+        [tempInfoDict setObject:[[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        [tempInfoDict setObject:[[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+        [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+        [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        //details.basicInfoForMsg=tempInfoDict;
+        [tempInfoDict release];
+        
+        //details.statusMsgId=[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"id"];
+    }
+    
     [self.navigationController pushViewController:details animated:YES];
     [details release];
     

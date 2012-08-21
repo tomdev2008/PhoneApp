@@ -96,6 +96,7 @@
 		7EE0260F15BD9A26003B9C74 /* GiftCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0260E15BD9A26003B9C74 /* GiftCustomCell.m */; };
 		7EE0261115BD9A37003B9C74 /* GiftCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EE0261015BD9A37003B9C74 /* GiftCustomCell.xib */; };
 		7EED2FB315C7A031001160BB /* ListOfStates.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7EED2FB215C7A031001160BB /* ListOfStates.plist */; };
+		7EEE489315E3D92C00E8DB29 /* CustomDateDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EEE489215E3D92C00E8DB29 /* CustomDateDisplay.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -233,6 +234,8 @@
 		7EE0260E15BD9A26003B9C74 /* GiftCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftCustomCell.m; sourceTree = "<group>"; };
 		7EE0261015BD9A37003B9C74 /* GiftCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GiftCustomCell.xib; sourceTree = "<group>"; };
 		7EED2FB215C7A031001160BB /* ListOfStates.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ListOfStates.plist; sourceTree = "<group>"; };
+		7EEE489115E3D92C00E8DB29 /* CustomDateDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomDateDisplay.h; sourceTree = "<group>"; };
+		7EEE489215E3D92C00E8DB29 /* CustomDateDisplay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomDateDisplay.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -292,6 +295,7 @@
 		7E1D724515B7E9D00008D19C /* Home Screen */ = {
 			isa = PBXGroup;
 			children = (
+				7EEE489515E3D93900E8DB29 /* CustomDate */,
 				7E5EF74315B95A3B00C1D252 /* Evens Table cell */,
 				7E5EF73A15B9457100C1D252 /* ImageAllocationObject.h */,
 				7E5EF73B15B9457200C1D252 /* ImageAllocationObject.m */,
@@ -673,6 +677,15 @@
 			name = "Gift Custom cell";
 			sourceTree = "<group>";
 		};
+		7EEE489515E3D93900E8DB29 /* CustomDate */ = {
+			isa = PBXGroup;
+			children = (
+				7EEE489115E3D92C00E8DB29 /* CustomDateDisplay.h */,
+				7EEE489215E3D92C00E8DB29 /* CustomDateDisplay.m */,
+			);
+			name = CustomDate;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -817,6 +830,7 @@
 				7ED149FC15CFF3D1007CBDBF /* OrderHistoryListVC.m in Sources */,
 				7E2D17A915D1295200E78FF0 /* AddUserRequest.m in Sources */,
 				7E2D17B015D12A0100E78FF0 /* CoomonRequestCreationObject.m in Sources */,
+				7EEE489315E3D92C00E8DB29 /* CustomDateDisplay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

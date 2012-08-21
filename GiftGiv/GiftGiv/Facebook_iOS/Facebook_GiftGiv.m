@@ -213,7 +213,7 @@ static NSDateFormatter *standardDateFormatter = nil;
     [self fbDidLogout];
 }
 
-#pragma mark - FQLs
+#pragma mark - FQLs and GraphAPI
 
 - (void)apiFQLIMe {
     // Using the "pic" picture since this currently has a maximum width of 100 pixels
@@ -295,7 +295,11 @@ static NSDateFormatter *standardDateFormatter = nil;
     }
     
 }
-#pragma mark FBRequestDelegate methods
+- (void)getEventDetails:(NSString*)statusID{
+    
+    getDetailedEventReq=[facebook requestWithGraphPath:[NSString stringWithFormat:@"%@",statusID] andDelegate:self];
+}
+#pragma mark - FBRequestDelegate methods
 
 /**
  * Called when an error prevents the request from completing successfully.
@@ -308,6 +312,14 @@ static NSDateFormatter *standardDateFormatter = nil;
 - (void)request:(FBRequest *)request didLoad:(id)result{
     
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
+        
+        if([request isEqual:getDetailedEventReq]){
+            
+            if([result isKindOfClass:[NSDictionary class]]){
+                [fbGiftGivDelegate receivedDetailedEventInfo:(NSMutableDictionary*)result];
+            }
+        }
+        
         switch (currentAPICall) {
                 
             case kAPIGetUserDetails:
@@ -324,7 +336,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                 break;
                 //Received all friends details
             case kAPIGetAllFriends:
-                currentAPICall=kAPIGetJSONForStatuses;
+                
                 if(friendUserIds!=nil && [friendUserIds count]){
                     [friendUserIds removeAllObjects];
                     [friendUserIds release];
@@ -348,7 +360,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                 
                 for (NSDictionary *friendDict in (NSMutableArray*)result){
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                    
+                    currentAPICall=kAPIGetJSONForStatuses;
                     //last 2 days
                     FBRequest *fbReqStatuses=[facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
                     [fbRequestsArray addObject:fbReqStatuses];
@@ -439,7 +451,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                             else{
                                 int commentsCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
                                 int likesCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"likes"] objectForKey:@"data"] count];
-                                if(commentsCount>=25 || likesCount>=25){
+                                if(commentsCount>=25 || likesCount>=0){
                                     NSString *messageStr=[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"message"];
                                     //NSLog(@"%@",messageStr);
                                     BOOL isEventStatusFound=NO;
@@ -537,6 +549,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];     
                 }
                 break;
+                
         }
     }
     
