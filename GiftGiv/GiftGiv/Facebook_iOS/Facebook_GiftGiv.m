@@ -451,7 +451,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                             else{
                                 int commentsCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
                                 int likesCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"likes"] objectForKey:@"data"] count];
-                                if(commentsCount>=25 || likesCount>=0){
+                                if(commentsCount>=25 || likesCount>=25){
                                     NSString *messageStr=[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"message"];
                                     //NSLog(@"%@",messageStr);
                                     BOOL isEventStatusFound=NO;

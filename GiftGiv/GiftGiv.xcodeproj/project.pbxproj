@@ -31,6 +31,10 @@
 		7E1D729415B80C860008D19C /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D729315B80C860008D19C /* MBProgressHUD.m */; };
 		7E2D17A915D1295200E78FF0 /* AddUserRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D17A815D1295200E78FF0 /* AddUserRequest.m */; };
 		7E2D17B015D12A0100E78FF0 /* CoomonRequestCreationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */; };
+		7E3E0EA715E535F600B77007 /* GiftItemsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E0EA415E535F600B77007 /* GiftItemsRequest.m */; };
+		7E3E0EA815E535F600B77007 /* GiftItemObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E0EA615E535F600B77007 /* GiftItemObject.m */; };
+		7E3E0EAE15E5361100B77007 /* GiftCategoriesRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E0EAB15E5361100B77007 /* GiftCategoriesRequest.m */; };
+		7E3E0EAF15E5361100B77007 /* GiftCategoryObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E0EAD15E5361100B77007 /* GiftCategoryObject.m */; };
 		7E46474415DE47BD00BAFFD4 /* profilepic_dummy.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */; };
 		7E58440F15CBD533005E35D4 /* SuccessVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E58440D15CBD533005E35D4 /* SuccessVC.m */; };
 		7E58441015CBD533005E35D4 /* SuccessVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E58440E15CBD533005E35D4 /* SuccessVC.xib */; };
@@ -146,6 +150,14 @@
 		7E2D17A815D1295200E78FF0 /* AddUserRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddUserRequest.m; path = "Backend Services/Add User/AddUserRequest.m"; sourceTree = "<group>"; };
 		7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoomonRequestCreationObject.h; path = "Backend Services/CoomonRequestCreationObject.h"; sourceTree = "<group>"; };
 		7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoomonRequestCreationObject.m; path = "Backend Services/CoomonRequestCreationObject.m"; sourceTree = "<group>"; };
+		7E3E0EA315E535F600B77007 /* GiftItemsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftItemsRequest.h; sourceTree = "<group>"; };
+		7E3E0EA415E535F600B77007 /* GiftItemsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftItemsRequest.m; sourceTree = "<group>"; };
+		7E3E0EA515E535F600B77007 /* GiftItemObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftItemObject.h; sourceTree = "<group>"; };
+		7E3E0EA615E535F600B77007 /* GiftItemObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftItemObject.m; sourceTree = "<group>"; };
+		7E3E0EAA15E5361100B77007 /* GiftCategoriesRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftCategoriesRequest.h; sourceTree = "<group>"; };
+		7E3E0EAB15E5361100B77007 /* GiftCategoriesRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftCategoriesRequest.m; sourceTree = "<group>"; };
+		7E3E0EAC15E5361100B77007 /* GiftCategoryObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftCategoryObject.h; sourceTree = "<group>"; };
+		7E3E0EAD15E5361100B77007 /* GiftCategoryObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftCategoryObject.m; sourceTree = "<group>"; };
 		7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profilepic_dummy.png; sourceTree = "<group>"; };
 		7E58440C15CBD533005E35D4 /* SuccessVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuccessVC.h; sourceTree = "<group>"; };
 		7E58440D15CBD533005E35D4 /* SuccessVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuccessVC.m; sourceTree = "<group>"; };
@@ -371,6 +383,8 @@
 		7E2D17A615D1290F00E78FF0 /* Backend Services */ = {
 			isa = PBXGroup;
 			children = (
+				7E3E0EA915E535FA00B77007 /* GiftCategories */,
+				7E3E0EA115E535D600B77007 /* GiftItems */,
 				7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */,
 				7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */,
 				7E2D17AA15D1296F00E78FF0 /* Add User */,
@@ -385,6 +399,28 @@
 				7E2D17A815D1295200E78FF0 /* AddUserRequest.m */,
 			);
 			name = "Add User";
+			sourceTree = "<group>";
+		};
+		7E3E0EA115E535D600B77007 /* GiftItems */ = {
+			isa = PBXGroup;
+			children = (
+				7E3E0EA315E535F600B77007 /* GiftItemsRequest.h */,
+				7E3E0EA415E535F600B77007 /* GiftItemsRequest.m */,
+				7E3E0EA515E535F600B77007 /* GiftItemObject.h */,
+				7E3E0EA615E535F600B77007 /* GiftItemObject.m */,
+			);
+			name = GiftItems;
+			sourceTree = "<group>";
+		};
+		7E3E0EA915E535FA00B77007 /* GiftCategories */ = {
+			isa = PBXGroup;
+			children = (
+				7E3E0EAA15E5361100B77007 /* GiftCategoriesRequest.h */,
+				7E3E0EAB15E5361100B77007 /* GiftCategoriesRequest.m */,
+				7E3E0EAC15E5361100B77007 /* GiftCategoryObject.h */,
+				7E3E0EAD15E5361100B77007 /* GiftCategoryObject.m */,
+			);
+			name = GiftCategories;
 			sourceTree = "<group>";
 		};
 		7E58440A15CBD51D005E35D4 /* Success */ = {
@@ -831,6 +867,10 @@
 				7E2D17A915D1295200E78FF0 /* AddUserRequest.m in Sources */,
 				7E2D17B015D12A0100E78FF0 /* CoomonRequestCreationObject.m in Sources */,
 				7EEE489315E3D92C00E8DB29 /* CustomDateDisplay.m in Sources */,
+				7E3E0EA715E535F600B77007 /* GiftItemsRequest.m in Sources */,
+				7E3E0EA815E535F600B77007 /* GiftItemObject.m in Sources */,
+				7E3E0EAE15E5361100B77007 /* GiftCategoriesRequest.m in Sources */,
+				7E3E0EAF15E5361100B77007 /* GiftCategoryObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

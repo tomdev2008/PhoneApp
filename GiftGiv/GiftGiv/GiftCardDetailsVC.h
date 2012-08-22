@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ImageAllocationObject.h"
 #import "SendOptionsVC.h"
+#import "GiftItemObject.h"
 
 @interface GiftCardDetailsVC : UIViewController<UIActionSheetDelegate>{
     CGPoint svos;
@@ -30,6 +31,8 @@
 @property (retain, nonatomic) IBOutlet UIView *priceRangePickerBgView;
 @property (retain, nonatomic) IBOutlet UISegmentedControl *prevNextSegmentControl;
 @property (retain, nonatomic) IBOutlet UIPickerView *pricePicker;
+@property (retain, nonatomic) GiftItemObject *giftItemInfo;
+
 
 - (IBAction)messageKeyBoardAction:(id)sender;
 - (IBAction)senderDetailsScreenAction:(id)sender;

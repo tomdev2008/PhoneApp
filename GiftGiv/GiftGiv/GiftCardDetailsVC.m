@@ -22,7 +22,7 @@
 @synthesize giftNameLbl;
 @synthesize priceRangePickerBgView;
 @synthesize priceListArray;
-
+@synthesize giftItemInfo;
 @synthesize prevNextSegmentControl;
 @synthesize pricePicker;
 
@@ -48,10 +48,40 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     
-    //profilePic.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
-    //giftImg.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"eventName"];
+    
+    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"userName"];
+    
+    
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+    dispatch_async(ImageLoader_Q, ^{
+        
+        NSString *urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"UserDetails"] objectForKey:@"userID"]);
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+        UIImage *thumbnail = [UIImage imageWithData:data];
+        
+        if(thumbnail==nil){
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
+                
+            });
+            
+        }
+        else {
+            
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                profilePic.image=thumbnail;                   
+                
+            });
+        }
+        
+    });
+    dispatch_release(ImageLoader_Q);
+    [self performSelector:@selector(loadGiftImage)];
+    
     giftDetailsScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsScroll];
     
@@ -66,8 +96,11 @@
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
-    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 12, eventName_newSize.width, 21);
-    priceListArray =[[NSMutableArray alloc]initWithObjects:@"$10",@"$20",@"$30",@"$40",@"$50",@"$60",@"$70",@"$80",@"$90", nil];
+    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 13, eventName_newSize.width, 21);
+    
+    NSArray *tempPrices=[[giftItemInfo giftPrice] componentsSeparatedByString:@";"];
+    
+    priceListArray =[[NSMutableArray alloc]initWithArray:tempPrices];
     
     
     [priceSelectedLbl.layer setCornerRadius:6.0];
@@ -83,6 +116,45 @@
     [personalMsgTxtView.layer setBorderWidth:1.0];
     
     
+    giftNameLbl.text=[giftItemInfo giftTitle];
+    NSArray *priceArray=[[giftItemInfo giftPrice] componentsSeparatedByString:@";"];
+    
+    if([priceArray count]>1){
+        ;
+        giftPriceLbl.text=[NSString stringWithFormat:@"$%@ - $%@",[priceArray objectAtIndex:0],[priceArray objectAtIndex:[priceArray count]-1]];
+        priceSelectedLbl.text=[NSString stringWithFormat:@"   $%@",[priceArray objectAtIndex:0]];
+    }
+    else{
+        giftPriceLbl.text=[NSString stringWithFormat:@"$%@",[giftItemInfo giftPrice]];
+        priceSelectedLbl.text=[NSString stringWithFormat:@"   $%@",[giftItemInfo giftPrice]];
+    }
+    
+    
+}
+-(void)loadGiftImage{
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+    dispatch_async(ImageLoader_Q, ^{
+        
+        NSString *urlStr=[giftItemInfo giftImageUrl];
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+        UIImage *thumbnail = [UIImage imageWithData:data];
+        
+        if(thumbnail==nil){
+            
+            
+        }
+        else {
+            
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                profilePic.image=thumbnail;                   
+                
+            });
+        }
+        
+    });
+    dispatch_release(ImageLoader_Q);
 }
 - (IBAction)backToListOfGifts:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
@@ -175,10 +247,10 @@
     else
         sendOptions.isSendElectronically=NO;
     NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
-    [giftAndSenderInfo setObject:@"BONNIE GIESEN" forKey:@"RecipientName"];
-    [giftAndSenderInfo setObject:@"birthday" forKey:@"EventName"];
-    [giftAndSenderInfo setObject:@"12345" forKey:@"GiftID"];
-    [giftAndSenderInfo setObject:@"Birthday card" forKey:@"GiftName"];
+    [giftAndSenderInfo setObject:profileNameLbl.text forKey:@"RecipientName"];
+    [giftAndSenderInfo setObject:eventNameLbl.text forKey:@"EventName"];
+    [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
+    [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
     [giftAndSenderInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
     
@@ -259,7 +331,7 @@
     }
     
     
-    priceSelectedLbl.text=[NSString stringWithFormat:@"   %@",[priceListArray objectAtIndex:selectedPriceRow]];
+    priceSelectedLbl.text=[NSString stringWithFormat:@"   $%@",[priceListArray objectAtIndex:selectedPriceRow]];
     
 }
 #pragma mark - PickerViewDatasource
@@ -315,7 +387,7 @@
         [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor blackColor]];        
     }
     
-    [(UILabel*)[view viewWithTag:999] setText:[NSString stringWithFormat:@"  %@",[priceListArray objectAtIndex:row]]];
+    [(UILabel*)[view viewWithTag:999] setText:[NSString stringWithFormat:@"  $%@",[priceListArray objectAtIndex:row]]];
     
     for(UIView *subview in [view subviews]){
         if([subview isKindOfClass:[UILabel class]]){
@@ -388,6 +460,7 @@
 
 
 - (void)dealloc {
+    [giftItemInfo release];
     [giftDetailsScroll release];
     [profilePic release];
     [profileNameLbl release];

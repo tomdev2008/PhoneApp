@@ -12,8 +12,11 @@
 #import "GiftCustomCell.h"
 #import "GiftCardDetailsVC.h"
 #import "Gift_GreetingCardDetailsVC.h"
+#import "CoomonRequestCreationObject.h"
+#import "GiftCategoriesRequest.h"
+#import "GiftItemsRequest.h"
 
-@interface GiftOptionsVC : UIViewController{
+@interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate>{
     
     int giftCatNum;
     int totalCats;
@@ -23,6 +26,9 @@
     UIImage* pageInactiveImage;
     NSMutableArray *giftCategoriesList;
     
+    NSMutableArray *flowersList,*giftCarsList,*greetingCardsList;
+    
+    
 }
 @property (retain, nonatomic) IBOutlet UIImageView *profilePicImg;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;
@@ -30,6 +36,7 @@
 @property (retain, nonatomic) IBOutlet UITableView *giftsTable;
 @property (retain, nonatomic) IBOutlet CustomPageControl *giftCategoryPageControl;
 @property (retain, nonatomic) IBOutlet UIScrollView *giftCategoriesScroll;
+
 @property (retain, nonatomic) NSMutableArray *giftsList;
 
 - (IBAction)backToEvents:(id)sender;
@@ -39,5 +46,7 @@
 - (void)reloadTheContentForGifts;
 
 - (CATransition *)getAnimationForGiftCategories:(NSString *)animationType;
+
+- (void)makeRequestToGetCategories;
 
 @end
