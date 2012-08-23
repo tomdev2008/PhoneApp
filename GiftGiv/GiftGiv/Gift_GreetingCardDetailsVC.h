@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ImageAllocationObject.h"
 #import "SendOptionsVC.h"
+#import "GiftItemObject.h"
 
 @interface Gift_GreetingCardDetailsVC : UIViewController{
     CGPoint svos;
@@ -29,11 +30,12 @@
 @property (retain, nonatomic) IBOutlet UILabel *greetingPrice;
 @property (retain, nonatomic) IBOutlet UIToolbar *msgInputAccessoryView;
 @property (retain, nonatomic) IBOutlet UITextView *personalMsgTxt;
+@property (retain, nonatomic) GiftItemObject *giftItemInfo;
 
 @property BOOL isGreetingCard;
 
 - (IBAction)sendOptionsScreenAction:(id)sender;
 - (IBAction)msgKeyboardDismissAction:(id)sender;
 - (IBAction)backToListOfGiftsAction:(id)sender;
-
+- (void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView;
 @end

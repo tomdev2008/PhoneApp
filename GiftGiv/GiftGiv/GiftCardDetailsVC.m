@@ -148,7 +148,7 @@
         else {
             
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                profilePic.image=thumbnail;                   
+                giftImg.image=thumbnail;                   
                 
             });
         }
@@ -251,6 +251,7 @@
     [giftAndSenderInfo setObject:eventNameLbl.text forKey:@"EventName"];
     [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
     [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
+    [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
     [giftAndSenderInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
     

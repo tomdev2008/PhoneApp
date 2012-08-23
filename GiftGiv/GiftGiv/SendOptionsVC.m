@@ -63,6 +63,40 @@
 {
     [super viewDidLoad];
     
+    
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"eventName"];
+    
+    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"userName"];
+    
+    
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+    dispatch_async(ImageLoader_Q, ^{
+        
+        NSString *urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"UserDetails"] objectForKey:@"userID"]);
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+        UIImage *thumbnail = [UIImage imageWithData:data];
+        
+        if(thumbnail==nil){
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
+                
+            });
+            
+        }
+        else {
+            
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                profilePic.image=thumbnail;                   
+                
+            });
+        }
+        
+    });
+    dispatch_release(ImageLoader_Q);
+    
+    
     sendOptionsContentScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:sendOptionsContentScroll];
     
@@ -90,7 +124,7 @@
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
-    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 12, eventName_newSize.width, 21);
+    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 13, eventName_newSize.width, 21);
     
     
     

@@ -82,7 +82,10 @@ static NSDateFormatter *customDateFormat=nil;
     [super viewDidLoad];
     
 }
-
+-(void)viewWillAppear:(BOOL)animated{
+    [eventsTable reloadData];
+    [super viewWillAppear:YES];
+}
 -(void)swipingForEventGroups:(UISwipeGestureRecognizer*)swipeRecognizer{
     
     // The events list should be in carousel effect

@@ -13,8 +13,8 @@
 #define currentiOSVersion [[[UIDevice currentDevice] systemVersion] doubleValue]
 
 #define WebServiceURL /*@"http://10.11.32.211:81/Service.svc"*/@"http://giftgivstage.cloudapp.net/giftgivservice/Service.svc"
-//Staging: http://giftgivstage.cloudapp.net/giftgivservice/Service.svc?wsdl
-//Local: http://10.11.32.211:81/Service.svc?wsdl
+//Staging: http://giftgivstage.cloudapp.net/giftgivservice/Service.svc
+//Local: http://10.11.32.211:81/Service.svc
 //Production: http://giftgiv.cloudapp.net/GiftGivService/Service.svc
 
 #define SOAPRequestMsg(msgbody) [NSString stringWithFormat:@"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n<soapenv:Header/>\n<soapenv:Body>\n%@\n</soapenv:Body>\n</soapenv:Envelope>",msgbody]

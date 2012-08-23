@@ -40,7 +40,7 @@
 {
     [super viewDidLoad];
     
-    
+    [self showProgressHUD:self.view withMsg:nil];
     
     eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"eventName"];
     
@@ -199,11 +199,12 @@
     
 }
 -(void) requestFailed{
+    [self stopHUD];
     AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed", nil);
 }
 #pragma mark - Gift Items
 -(void) responseForGiftItems:(NSMutableArray*)listOfGifts{
-    NSLog(@"%@",listOfGifts);
+    
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     
     if(flowersList!=nil){
@@ -234,7 +235,6 @@
             
             for(int i=0;i<categoriesCount;i++){
                 
-                NSLog(@"%@",giftItem.giftCategoryId);
                 if([giftItem.giftCategoryId isEqualToString:[[giftCategoriesList objectAtIndex:i]catId]]){
                     
                     if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"flowers"]){
@@ -268,14 +268,10 @@
         }
     }
     
-    NSLog(@"flowers..%@",flowersList);
-    NSLog(@"gift..%@",giftCarsList);
-    NSLog(@"greeting..%@",greetingCardsList);
-    
     
     for(int i=0;i<[giftCategoriesList count];i++){
         if(![flowersList count]){
-            NSLog(@"%@",[giftCategoriesList objectAtIndex:i]);
+            
             if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"flowers"]){
                 [giftCategoriesList removeObject:[giftCategoriesList objectAtIndex:i]];
             }
@@ -296,15 +292,12 @@
     [self loadDynamicCategories];
     giftCatNum=1;
     [self reloadTheContentForGifts];
-    
+    [self stopHUD];
 }
 #pragma mark -
 
 -(void)reloadTheContentForGifts{
     
-    //NSLog(@"flowers..%@",flowersList);
-    // NSLog(@"gift cards.. %@",giftCarsList);
-    //NSLog(@"greeting cards..%@",greetingCardsList);
     
     if([giftsList count] && giftsList!=nil){
         [giftsList removeAllObjects];
@@ -449,7 +442,7 @@
 	cellIdentifier=[NSString stringWithFormat:@"Cell%d",indexPath.row];
 	tableView.backgroundColor=[UIColor clearColor];
 	GiftCustomCell *cell = (GiftCustomCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    cell.tag=indexPath.row;  
+    
     
 	if (cell == nil) {
         
@@ -465,6 +458,7 @@
         [cell.giftIcon_two addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
 		
 	}
+    cell.tag=indexPath.row;
     cell.giftTitle_one.text=[[giftsList objectAtIndex:(indexPath.row*2)] giftTitle];
     
     NSArray *priceArray_one=[[[giftsList objectAtIndex:(indexPath.row*2)] giftPrice] componentsSeparatedByString:@";"];
@@ -508,7 +502,6 @@
     int rowNum=[(GiftCustomCell*)[(UIButton*)sender superview] tag];
     int columNum=[sender tag];
     GiftItemObject *selectedGift=[giftsList objectAtIndex:(rowNum*2+columNum)-1];
-    NSLog(@"%@",[selectedGift giftTitle]);
     
     if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName] isEqualToString:@"gift cards"]){
         GiftCardDetailsVC *giftCardDetails=[[GiftCardDetailsVC alloc]initWithNibName:@"GiftCardDetailsVC" bundle:nil];
@@ -523,6 +516,7 @@
             greetingCardDetails.isGreetingCard=NO;
         else if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName] isEqualToString:@"greeting cards"])
             greetingCardDetails.isGreetingCard=YES;
+        greetingCardDetails.giftItemInfo=selectedGift;
         [self.navigationController pushViewController:greetingCardDetails animated:YES];
         [greetingCardDetails release];
     }
@@ -542,6 +536,35 @@
     giftCategoryPageControl.currentPage=giftCatNum-1;
     
     
+}
+
+#pragma mark - ProgressHUD methods
+
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr  
+{
+	HUD = [[MBProgressHUD alloc] initWithView:targetView];
+	
+	// Add HUD to screen
+	[targetView addSubview:HUD];
+	
+	// Regisete for HUD callbacks so we can remove it from the window at the right time
+	HUD.delegate = self;
+	
+	HUD.labelText=titleStr;
+	
+	// Show the HUD while the provided method executes in a new thread
+	[HUD show:YES];
+	
+}
+- (void)stopHUD{
+    if (![HUD isHidden]) {
+        [HUD setHidden:YES];
+    }
+}
+- (void)hudWasHidden:(MBProgressHUD *)hud
+{
+	[HUD removeFromSuperview];
+	HUD=nil;
 }
 #pragma mark -
 - (void)viewDidUnload

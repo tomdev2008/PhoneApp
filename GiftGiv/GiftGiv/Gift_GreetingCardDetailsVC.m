@@ -24,6 +24,7 @@
 @synthesize msgInputAccessoryView;
 @synthesize personalMsgTxt;
 @synthesize isGreetingCard;
+@synthesize giftItemInfo;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -47,9 +48,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     
-    //profilePic.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"eventName"];
+    
+    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"userName"];
+    
+    [self loadGiftImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"UserDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
+    
     
     if(isGreetingCard){
         flowerImgView.hidden=YES;
@@ -57,12 +62,9 @@
         backLbl.hidden=NO;
         frontGreetingImg.hidden=NO;
         backGreetingImg.hidden=NO;
-        //frontGreetingImg.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
-        //backGreetingImg.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
-        UITapGestureRecognizer *tapRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(zoomInOutForCards:)];
-        tapRecognizer.numberOfTapsRequired=2;
-        [self.view addGestureRecognizer:tapRecognizer];
-        [tapRecognizer release];
+        [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:frontGreetingImg];
+        [self loadGiftImage:[giftItemInfo giftImageBackSideUrl] forAnObject:backGreetingImg];
+        
     }
     else{
         frontLbl.hidden=YES;
@@ -70,9 +72,17 @@
         frontGreetingImg.hidden=YES;
         backGreetingImg.hidden=YES;
         flowerImgView.hidden=NO;
-        //flowerImgView.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
+        [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:flowerImgView];
+        
     }
     
+    UITapGestureRecognizer *tapRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(zoomInOutForCards:)];
+    tapRecognizer.numberOfTapsRequired=2;
+    [self.view addGestureRecognizer:tapRecognizer];
+    [tapRecognizer release];
+    
+    greetingNameLbl.text=[giftItemInfo giftTitle];
+    greetingPrice.text=[NSString stringWithFormat:@"$%@",[giftItemInfo giftPrice]];
     giftDetailsContentScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsContentScroll];
     
@@ -87,12 +97,44 @@
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
-    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 12, eventName_newSize.width, 21);
+    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 13, eventName_newSize.width, 21);
     
     [personalMsgTxt.layer setCornerRadius:6.0];
     [personalMsgTxt.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
     [personalMsgTxt.layer setBorderWidth:1.0];
 }
+
+-(void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
+    
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+    dispatch_async(ImageLoader_Q, ^{
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imgURL]];
+        UIImage *giftImg = [UIImage imageWithData:data];
+        
+        if(giftImg==nil){
+            if([targetImgView isEqual:profilePic]){
+                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                    profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
+                    
+                });
+            }
+            
+            
+        }
+        else {
+            
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                targetImgView.image=giftImg;                   
+                
+            });
+        }
+        
+    });
+    dispatch_release(ImageLoader_Q);
+}
+
 -(void)zoomInOutForCards:(UITapGestureRecognizer*)tapRecog{
     CGPoint tapLocation=[tapRecog locationInView:self.view];
     
@@ -103,11 +145,13 @@
     }
     else{
         if(flowerImgView.hidden){
+            zoomInImgView.image=nil;
             if(CGRectContainsPoint(backGreetingImg.frame, tapLocation)){
                 if(![zoomInImgView superview]){
                     zoomInImgView.frame=CGRectMake(0, 0, 320, 460);
                     [self.view addSubview:zoomInImgView];
                 }
+                zoomInImgView.image=backGreetingImg.image;
                 //Assign inside/back image to zoomInImgView
                 //zoomInImgView.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
             } 
@@ -116,9 +160,20 @@
                     zoomInImgView.frame=CGRectMake(0, 0, 320, 460);
                     [self.view addSubview:zoomInImgView];
                 }
+                zoomInImgView.image=frontGreetingImg.image;
                 //Assign front image to zoomInImgView
                 //zoomInImgView.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
             }
+        }
+        else{
+            if(CGRectContainsPoint(flowerImgView.frame, tapLocation)){
+                if(![zoomInImgView superview]){
+                    zoomInImgView.frame=CGRectMake(0, 0, 320, 460);
+                    [self.view addSubview:zoomInImgView];
+                }
+                zoomInImgView.image=flowerImgView.image;
+                
+            } 
         }
         
     }
@@ -128,10 +183,11 @@
     SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
     sendOptions.isSendElectronically=NO;
     NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
-    [giftAndSenderInfo setObject:@"BONNIE GIESEN" forKey:@"RecipientName"];
-    [giftAndSenderInfo setObject:@"birthday" forKey:@"EventName"];
-    [giftAndSenderInfo setObject:@"12345" forKey:@"GiftID"];
-    [giftAndSenderInfo setObject:@"Greeting" forKey:@"GiftName"];
+    [giftAndSenderInfo setObject:profileNameLbl.text forKey:@"RecipientName"];
+    [giftAndSenderInfo setObject:eventNameLbl.text forKey:@"EventName"];
+    [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
+    [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
+    [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
     [giftAndSenderInfo setObject:greetingPrice.text forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
     
@@ -192,7 +248,7 @@
 }
 
 - (void)dealloc {
-    
+    [giftItemInfo release];
     [giftDetailsContentScroll release];
     [profilePic release];
     [profileNameLbl release];

@@ -15,12 +15,13 @@
 #import "CoomonRequestCreationObject.h"
 #import "GiftCategoriesRequest.h"
 #import "GiftItemsRequest.h"
+#import "MBProgressHUD.h"
 
-@interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate>{
+@interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate>{
     
     int giftCatNum;
     int totalCats;
-    
+    MBProgressHUD *HUD;
     CATransition *tranAnimationForGiftCategories;
     UIImage* pageActiveImage;
     UIImage* pageInactiveImage;
@@ -48,5 +49,10 @@
 - (CATransition *)getAnimationForGiftCategories:(NSString *)animationType;
 
 - (void)makeRequestToGetCategories;
+
+#pragma mark - Progress HUD
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
+- (void) stopHUD;
+#pragma mark -
 
 @end
