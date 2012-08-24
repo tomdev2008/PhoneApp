@@ -72,11 +72,11 @@
         NSString *dateString=[dateformatter stringFromDate:tempDate];
         [dateformatter release];
         
-        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddUser>\n<tem:fbId>%@</tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddUser>",[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],dateString];
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddGiftGivUser>\n<tem:fbId>%@</tem:fbId>\n<tem:fbAccessToken>%@</tem:fbAccessToken>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddGiftGivUser>",[userDetails objectForKey:@"uid"],[[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],dateString];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
         //NSLog(@"%@",soapRequestString);
-        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddUser"];
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddGiftGivUser"];
         
         AddUserRequest *addUser=[[AddUserRequest alloc]init];
         [addUser setAddUserDelegate:self];
@@ -96,12 +96,8 @@
 }
 #pragma mark - Add User Request delegate
 -(void) responseForAddUser:(NSMutableString*)response{
-    if([response isEqualToString:@"true"]){
-        NSLog(@"User added into DB");
-    }
-    else if([response isEqualToString:@"false"]){
-        NSLog(@"User already exists");
-    }
+    [[NSUserDefaults standardUserDefaults]setObject:response forKey:@"GiftGivUserId"];
+   
     [self stopHUD];
     
     //Once facebook logged in, will show Home/Events screen

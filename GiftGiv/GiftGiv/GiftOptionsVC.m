@@ -193,6 +193,7 @@
     }
     else{
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+        [self stopHUD];
     }
     
     

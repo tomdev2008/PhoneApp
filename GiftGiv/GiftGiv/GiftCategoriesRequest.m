@@ -37,13 +37,15 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
 	
 	//parsing the whole data which we got from the request
-	   
+    
     NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
 	[webData release];
-	theXML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
-  	theXML=[theXML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+	NSString *upDated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
+    [theXML release];
+  	NSString *convertedStr=[upDated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
     //NSLog(@"%@",theXML);
-    webData=(NSMutableData*)[theXML dataUsingEncoding:NSASCIIStringEncoding];
+    webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
+    
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
 	[xmlParser setDelegate:self];
     listOfGiftCategories=[[NSMutableArray alloc]init];
@@ -97,13 +99,13 @@
         
         giftCategory.catName=[[currentElementValue lowercaseString]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
-        
+    
     
     else if([argElementName isEqualToString:@"Categories"]){
         [listOfGiftCategories addObject:giftCategory];
         [giftCategory release];
     }
-    	
+    
 	currentElementValue=nil;
 	[currentElementValue release];
 }

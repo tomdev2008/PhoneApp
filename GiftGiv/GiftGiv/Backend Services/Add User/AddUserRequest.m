@@ -40,7 +40,8 @@
 	NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
     
     /*NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
-     NSLog(@"XML...%@",theXML);*/
+     NSLog(@"XML...%@",theXML);
+    [theXML release];*/
 	[webData release];
 	
 	[xmlParser setDelegate:self];
@@ -60,7 +61,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error{
 	
 	//delegate method to indicate connection failed
-	[delegate requestFailed];
+	[addUserDelegate requestFailed];
 	[webData release];
 	[connection release];
 }
@@ -83,10 +84,15 @@
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
 	
-	if([argElementName isEqualToString:@"AddUserResult" ]){
+	if([argElementName isEqualToString:@"AddGiftGivUserResult" ]){
         receivedResponse=currentElementValue;
 		
 	}
+    else if([argElementName isEqualToString:@"AddNormalUserResult" ]){
+        receivedResponse=currentElementValue;
+		
+	}
+   
 	currentElementValue=nil;
 	[currentElementValue release];
 }

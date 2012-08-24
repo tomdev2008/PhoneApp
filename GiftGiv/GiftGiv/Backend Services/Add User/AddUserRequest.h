@@ -18,9 +18,7 @@
 @end
 @interface AddUserRequest : NSObject<NSXMLParserDelegate>
 {
-    id <AddUserRequestDelegate> delegate;
-	
-	NSMutableString *receivedResponse;
+    NSMutableString *receivedResponse;
 	NSMutableString *currentElementValue; //parsed string
 	NSMutableData *webData;  //data while parsing the response
 }

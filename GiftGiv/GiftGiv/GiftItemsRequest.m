@@ -38,10 +38,12 @@
 	
 	NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
 	[webData release];
-	theXML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
-  	theXML=[theXML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
+    [theXML release];
+  	NSString *convertedStr=[updated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
     //NSLog(@"%@",theXML);
-    webData=(NSMutableData*)[theXML dataUsingEncoding:NSASCIIStringEncoding];
+    webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
+    
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
 	
 	[xmlParser setDelegate:self];
@@ -110,7 +112,7 @@
     }
     else if([argElementName isEqualToString:@"ThumbnailUrl"]){
         currentElementValue=(NSMutableString*)[[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-       
+        
         giftItem.giftThumbnailUrl=currentElementValue;
         NSData *imgData=[NSData dataWithContentsOfURL:[NSURL URLWithString:currentElementValue]];
         if(imgData!=nil)
