@@ -18,9 +18,12 @@
 
 @synthesize startURL, returnURL, cancelURL, step;
 @dynamic loadingView;
+@synthesize selectedGift;
 
-- (id)initWithURL:(NSString *)theURL returnURL:(NSString *)theReturnURL cancelURL:(NSString *)theCancelURL {
+- (id)initWithURL:(NSString *)theURL returnURL:(NSString *)theReturnURL cancelURL:(NSString *)theCancelURL giftItem:(NSMutableDictionary*)gift {
     if (self = [super init]) {
+        NSLog(@"gift.. %@",gift);
+        self.selectedGift=gift;
 		self.startURL = theURL;
 		self.returnURL = theReturnURL;
 		self.cancelURL = theCancelURL;
@@ -71,12 +74,12 @@
 }
 
 /*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
+ // Override to allow orientations other than the default portrait orientation.
+ - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+ // Return YES for supported orientations
+ return (interfaceOrientation == UIInterfaceOrientationPortrait);
+ }
+ */
 
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
@@ -97,6 +100,7 @@
 	self.returnURL = nil;
 	self.cancelURL = nil;
 	((UIWebView *)self.view).delegate = nil;
+    [selectedGift release];
     [super dealloc];
 }
 
@@ -105,14 +109,128 @@
 #pragma mark payment result handling methods
 
 -(void)paymentSuccess:(NSString *)transactionID {
-		
-	SuccessVC *paymentSuccess = [[[SuccessVC alloc] initWithNibName:@"SuccessVC" bundle:nil] autorelease];
-	UINavigationController *navController = self.navigationController;
-	//paymentSuccess.transactionID = transactionID;
-	[navController popViewControllerAnimated:FALSE];
-	[navController pushViewController:paymentSuccess animated:TRUE];	
+	if([CheckNetwork connectedToNetwork]){
+        
+        
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]];
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+        //NSLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetUser"];
+        
+        GetUserRequest *getUser=[[GetUserRequest alloc]init];
+        [getUser setGetuserDelegate:self];
+        [getUser makeRequestToGetUserId:theRequest];
+        [getUser release];
+    }
+	
+    
 }
-
+-(void) responseForGetuser:(UserDetailsObject*)userdetails{
+    
+    
+    //Send request to add an order
+    if([CheckNetwork connectedToNetwork]){
+        NSString *statusCode;
+        if([[[[NSUserDefaults standardUserDefaults]objectForKey:@"Select"] objectForKey:@"ElectronicalSend"] isEqualToString:@"YES"]){
+            statusCode=@"-1";
+        }
+        else
+            statusCode=@"0";
+        
+        NSString *soapmsgFormat;
+        if([selectedGift objectForKey:@"RecipientAddress"]){
+            NSArray *address=[[selectedGift objectForKey:@"RecipientAddress"] componentsSeparatedByString:@","];
+            NSString *address_2=@"";
+            if([address count]==5){
+                address_2=[address objectAtIndex:4];
+            }
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrder>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>%@</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1>%@</tem:addressLine1>\n<tem:addressLine2>%@</tem:addressLine2>\n<tem:city>%@</tem:city>\n<tem:state>%@</tem:state>\n<tem:zip>%@</tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n</tem:AddOrder>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],statusCode,userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[address objectAtIndex:0],[address objectAtIndex:1],[address objectAtIndex:2],[address objectAtIndex:3],address_2,[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""]];
+        }
+        else if([selectedGift objectForKey:@"RecipientMailID"]){
+            
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrder>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>%@</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email>%@</tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n</tem:AddOrder>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],statusCode,userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientMailID"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""]];
+        }
+        else if([selectedGift objectForKey:@"RecipientPhoneNum"]){
+            
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrder>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>%@</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone>%@</tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n</tem:AddOrder>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],statusCode,userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientPhoneNum"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""]];
+        }
+        
+        
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+        NSLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddOrder"];
+        
+        AddOrderRequest *addOrder=[[AddOrderRequest alloc]init];
+        [addOrder setAddorderDelegate:self];
+        [addOrder makeReqToAddOrder:theRequest];
+        [addOrder release];
+    }
+    
+}
+-(void) responseForAddOrder:(NSMutableString*)orderCode{
+    
+    
+    
+    if([selectedGift objectForKey:@"RecipientMailID"]){
+        if([CheckNetwork connectedToNetwork]){
+            
+            
+            NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:SendEmail>\n<tem:orderId>%@</tem:orderId>\n<tem:toEmail>%@</tem:toEmail>\n<tem:subject>%@</tem:subject>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n<tem:optionalMessage>Hi %@ -\n\nCongratulations!!! I wish I could be with you to take part in this celebration. However, I have selected a small gift at giftgiv to celebrate this joyous occasion. Can you please send your address so that giftgiv can deliver it to you?</tem:optionalMessage>\n</tem:SendEmail>",orderCode,[selectedGift objectForKey:@"RecipientMailID"],[selectedGift objectForKey:@"EventName"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientName"]];
+            
+            NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+            //NSLog(@"%@",soapRequestString);
+            NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"SendEmail"];
+            
+            SendEmailRequest *mailReq=[[SendEmailRequest alloc]init];
+            [mailReq setSendEmailDelegate:self];
+            [mailReq makeReqToSendMail:theRequest];
+            [mailReq release];
+        }
+    }
+    else if([selectedGift objectForKey:@"RecipientPhoneNum"]){
+        if([CheckNetwork connectedToNetwork]){
+            NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:SendSMS>\n<tem:orderId>%@</tem:orderId>\n<tem:toPhone>%@</tem:toPhone>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n</tem:SendSMS>",orderCode,[selectedGift objectForKey:@"RecipientPhoneNum"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[selectedGift objectForKey:@"RecipientName"]];
+            
+            NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+            //NSLog(@"%@",soapRequestString);
+            NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"SendSMS"];
+            
+            SendSMSRequest *smsReq=[[SendSMSRequest alloc]init];
+            [smsReq setSendSMSDelegate:self];
+            [smsReq makeReqToSendSMS:theRequest];
+            [smsReq release];
+        }
+    }
+    else{
+        [self performSelector:@selector(pushToSuccessScreen)];
+    }
+}
+-(void) responseForSendEmail:(NSMutableString*)response{
+    
+    //true -- send
+    //false -- failed
+    
+    [self performSelector:@selector(pushToSuccessScreen)];
+}
+-(void) responseForSendSMS:(NSMutableString*)response{
+    
+    //true -- send
+    //false -- failed
+    [self performSelector:@selector(pushToSuccessScreen)];
+    
+}
+-(void) requestFailed{
+    //request faild.
+}
+-(void)pushToSuccessScreen{
+    SuccessVC *paymentSuccess = [[[SuccessVC alloc] initWithNibName:@"SuccessVC" bundle:nil] autorelease];
+    UINavigationController *navController = self.navigationController;
+    //paymentSuccess.transactionID = transactionID;
+    [navController popViewControllerAnimated:FALSE];
+    [navController pushViewController:paymentSuccess animated:TRUE];
+}
 -(void)paymentCanceled {
 	[self.navigationController popViewControllerAnimated:TRUE];
     

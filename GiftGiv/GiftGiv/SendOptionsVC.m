@@ -20,7 +20,6 @@
 @synthesize phoneNumTxtFld;
 @synthesize emailBgView;
 @synthesize emailTxtFld;
-@synthesize requestMsgTxtView;
 @synthesize keyboardAccessoryView;
 @synthesize recipientemailContentView;
 @synthesize recipientAddressContentView;
@@ -64,16 +63,16 @@
     [super viewDidLoad];
     
     
-    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"eventName"];
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
-    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"userName"];
+    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     
     
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
         
-        NSString *urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"UserDetails"] objectForKey:@"userID"]);
+        NSString *urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
         
         NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
         UIImage *thumbnail = [UIImage imageWithData:data];
@@ -160,12 +159,7 @@
     [emailBgView.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
     [emailBgView.layer setBorderWidth:1.0];
     
-    [requestMsgTxtView.layer setCornerRadius:6.0];
-    [requestMsgTxtView.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
-    [requestMsgTxtView.layer setBorderWidth:1.0];
     
-    //phoneNumTxtFld.inputAccessoryView=keyboardAccessoryView;
-    requestMsgTxtView.inputAccessoryView=keyboardAccessoryView;
     zipTxtFld.inputAccessoryView=keyboardAccessoryView;
     
 }
@@ -187,7 +181,7 @@
                 [recipientSMSContentView removeFromSuperview];
             if([recipientemailContentView superview]){
                 [recipientemailContentView removeFromSuperview];
-                [requestMsgTxtView removeFromSuperview];
+                
             }
             if(![recipientAddressContentView superview]){
                 recipientAddressContentView.frame=CGRectMake(23, 166, 275, 317);
@@ -213,23 +207,23 @@
             if([recipientSMSContentView superview])
                 [recipientSMSContentView removeFromSuperview];
             if(![recipientemailContentView superview]){
-                recipientemailContentView.frame=CGRectMake(23, 166, 275, 154);
+                recipientemailContentView.frame=CGRectMake(23, 166, 275, 140);
                 [sendOptionsContentScroll addSubview:recipientemailContentView];
             }
             if([statePickerBgView superview]){
                 [statePickerBgView removeFromSuperview];
             }
-            requestMsgTxtView.frame=CGRectMake(23, 320, 275 , 82);
-            [sendOptionsContentScroll addSubview:requestMsgTxtView];
+            //requestMsgTxtView.frame=CGRectMake(23, 320, 275 , 82);
+            //[sendOptionsContentScroll addSubview:requestMsgTxtView];
             
             CGRect confirmBtnFrame_email=confirmBtn.frame;
-            confirmBtnFrame_email.origin.y=414;
+            confirmBtnFrame_email.origin.y=364;
             confirmBtn.frame=confirmBtnFrame_email;
             
             CGRect confirmLblFrame_email=confirmBtnLbl.frame;
-            confirmLblFrame_email.origin.y=421;
+            confirmLblFrame_email.origin.y=370;
             confirmBtnLbl.frame=confirmLblFrame_email;
-            sendOptionsContentScroll.contentSize=CGSizeMake(320, 463);
+            sendOptionsContentScroll.contentSize=CGSizeMake(320, 416);
             break;
             //sms
         case 2:
@@ -237,7 +231,7 @@
                 [recipientAddressContentView removeFromSuperview];
             if([recipientemailContentView superview]){
                 [recipientemailContentView removeFromSuperview];
-                [requestMsgTxtView removeFromSuperview];
+                
             }
             if([statePickerBgView superview]){
                 [statePickerBgView removeFromSuperview];
@@ -512,10 +506,7 @@
         [zipTxtFld resignFirstResponder];
     if([phoneNumTxtFld isFirstResponder])
         [phoneNumTxtFld resignFirstResponder];
-    if([requestMsgTxtView isFirstResponder]){
-        [requestMsgTxtView resignFirstResponder];
-        
-    }
+    
     [sendOptionsContentScroll setContentOffset:svos animated:YES];
     sendOptionsContentScroll.userInteractionEnabled=YES;
 }
@@ -524,6 +515,10 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (IBAction)confirmScreenAction:(id)sender {
+    if(isSendElectronically)
+        [sendingInfoDict setObject:@"YES" forKey:@"ElectronicalSend"];
+    else 
+        [sendingInfoDict setObject:@"NO" forKey:@"ElectronicalSend"];
     if([recipientemailContentView superview]){
         if(![emailTxtFld.text isEqualToString:@""]){
             if([self validateMail:emailTxtFld.text]){
@@ -531,9 +526,7 @@
                 GiftSummaryVC *giftSummary=[[GiftSummaryVC alloc]initWithNibName:@"GiftSummaryVC" bundle:nil];
                 
                 [sendingInfoDict setObject:[emailTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"RecipientMailID"];
-                requestMsgTxtView.text=[requestMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                if(![requestMsgTxtView.text isEqualToString:@""])
-                    [sendingInfoDict setObject:requestMsgTxtView.text forKey:@"RequestMessage"];
+                
                 giftSummary.giftSummaryDict=sendingInfoDict;
                 [self.navigationController pushViewController:giftSummary animated:YES];
                 [giftSummary release];
@@ -566,7 +559,7 @@
         streetAddress_twoTxtFld.text=[streetAddress_twoTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         cityTxtFld.text=[cityTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         zipTxtFld.text=[zipTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        if([streeAddress_oneTxtFld.text isEqualToString:@""]||[streetAddress_twoTxtFld.text isEqualToString:@""] ||[cityTxtFld.text isEqualToString:@""]||[zipTxtFld.text isEqualToString:@""]){
+        if([streeAddress_oneTxtFld.text isEqualToString:@""]||[cityTxtFld.text isEqualToString:@""]||[zipTxtFld.text isEqualToString:@""]){
             AlertWithMessageAndDelegate(@"Gift Giv", @"Please provide all details", nil);
         }
         else{
@@ -574,6 +567,7 @@
             GiftSummaryVC *giftSummary=[[GiftSummaryVC alloc]initWithNibName:@"GiftSummaryVC" bundle:nil];
             
             [sendingInfoDict setObject:[NSString stringWithFormat:@"%@, %@, %@, %@, %@",streeAddress_oneTxtFld.text,streetAddress_twoTxtFld.text,cityTxtFld.text,[stateLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]],zipTxtFld.text] forKey:@"RecipientAddress"];
+            
             giftSummary.giftSummaryDict=sendingInfoDict;
             [self.navigationController pushViewController:giftSummary animated:YES];
             [giftSummary release];
@@ -664,7 +658,6 @@
     [self setRecipientemailContentView:nil];
     [self setEmailBgView:nil];
     [self setEmailTxtFld:nil];
-    [self setRequestMsgTxtView:nil];
     [self setKeyboardAccessoryView:nil];
     
     [self setSendOptionsContentScroll:nil];
@@ -705,7 +698,7 @@
     [recipientemailContentView release];
     [emailBgView release];
     [emailTxtFld release];
-    [requestMsgTxtView release];
+    
     [keyboardAccessoryView release];
     
     [listOfStates release];

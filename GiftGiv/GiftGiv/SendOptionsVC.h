@@ -40,7 +40,7 @@
 @property (retain, nonatomic) IBOutlet UIView *emailBgView;
 @property (retain, nonatomic) IBOutlet UIView *recipientemailContentView;
 @property (retain, nonatomic) IBOutlet UITextField *emailTxtFld;
-@property (retain, nonatomic) IBOutlet UITextView *requestMsgTxtView;
+
 @property (retain, nonatomic) IBOutlet UIToolbar *keyboardAccessoryView;
 @property (retain, nonatomic) IBOutlet UIScrollView *sendOptionsContentScroll;
 @property (retain, nonatomic) IBOutlet UILabel *confirmBtnLbl;

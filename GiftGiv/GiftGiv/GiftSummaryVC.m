@@ -53,12 +53,12 @@
 {
     [super viewDidLoad];
     
-    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"eventName"];
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
-    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"userName"];
+    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     
     
-    [self loadGiftImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"UserDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
+    [self loadGiftImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
     
     [self loadGiftImage:[giftSummaryDict objectForKey:@"GiftImgUrl"] forAnObject:giftImg];
     
@@ -217,7 +217,7 @@
 	} else if ([response isKindOfClass:[NSString class]]) { //got back token
 		//The response from setExpressCheckout is an Express Checkout token.  The ECNetworkHandler class stores
 		//this token for us, so we do not have to pass it back in.  Redirect to PayPal's login page.
-		[self.navigationController pushViewController:[[[WebViewController alloc] initWithURL:[ECNetworkHandler sharedInstance].redirectURL returnURL:RETURN_URL cancelURL:CANCEL_URL]autorelease] animated:TRUE];
+		[self.navigationController pushViewController:[[[WebViewController alloc] initWithURL:[ECNetworkHandler sharedInstance].redirectURL returnURL:RETURN_URL cancelURL:CANCEL_URL giftItem:giftSummaryDict]autorelease] animated:TRUE];
 	}
     [self stopHUD];
 }

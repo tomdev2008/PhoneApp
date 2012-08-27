@@ -1,18 +1,19 @@
 //
-//  AddUserRequest.m
+//  GetUserRequest.m
 //  GiftGiv
 //
-//  Created by Srinivas G on 07/08/12.
+//  Created by Srinivas G on 27/08/12.
 //  Copyright (c) 2012 Teleparadigm Networks Limited. All rights reserved.
 //
 
-#import "AddUserRequest.h"
+#import "GetUserRequest.h"
 
-@implementation AddUserRequest
-@synthesize addUserDelegate;
+@implementation GetUserRequest
+
+@synthesize getuserDelegate;
 
 
--(void)addUserServiceRequest:(NSMutableURLRequest *)request{
+-(void)makeRequestToGetUserId:(NSMutableURLRequest *)request{
 	
     
 	//Asynchronous URL connection
@@ -36,22 +37,24 @@
 //Connection finished successful
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
 	
-	//parsing the whole data which we got from the request
-	NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
-    
-    NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
-    NSLog(@"XML...%@",theXML);
-    [theXML release];
+	NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
 	[webData release];
+	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
+    [theXML release];
+  	NSString *convertedStr=[updated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+    //NSLog(@"%@",theXML);
+    webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
+    
+    NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
 	
 	[xmlParser setDelegate:self];
-    receivedResponse=[[NSMutableString alloc]init];
+    user=[[UserDetailsObject alloc]init];
 	
 	//delegate method to send the response after parsing finished successfully
 	if([xmlParser parse]){
-		[addUserDelegate responseForAddUser:receivedResponse];
+		[getuserDelegate responseForGetuser:user];
 	}
-	[receivedResponse  release];
+	[user  release];
 	[xmlParser release];
 	[theConnection release];
 }
@@ -61,7 +64,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error{
 	
 	//delegate method to indicate connection failed
-	[addUserDelegate requestFailed];
+	[getuserDelegate requestFailed];
 	[webData release];
 	[theConnection release];
 }
@@ -84,12 +87,33 @@
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
 	
-	if([argElementName isEqualToString:@"AddGiftGivUserResult" ]){
-        receivedResponse=currentElementValue;
+	if([argElementName isEqualToString:@"Id" ]){
+        user.userId =currentElementValue;
 		
 	}
-    else if([argElementName isEqualToString:@"AddNormalUserResult" ]){
-        receivedResponse=currentElementValue;
+    
+    else if([argElementName isEqualToString:@"FBId" ]){
+        user.userfbId =currentElementValue;
+		
+	}
+    else if([argElementName isEqualToString:@"FirstName" ]){
+        user.firstname =currentElementValue;
+		
+	}
+    else if([argElementName isEqualToString:@"LastName" ]){
+        user.lastname =currentElementValue;
+		
+	}
+    else if([argElementName isEqualToString:@"ProfilePictureUrl" ]){
+        user.picUrl =currentElementValue;
+		
+	}
+    else if([argElementName isEqualToString:@"DOB" ]){
+        user.userDOB =currentElementValue;
+		
+	}
+    else if([argElementName isEqualToString:@"Email" ]){
+        user.userEmail =currentElementValue;
 		
 	}
     
@@ -103,3 +127,4 @@
 	[super dealloc];
 }
 @end
+

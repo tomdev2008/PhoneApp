@@ -20,6 +20,7 @@
 #import "CheckNetwork.h"
 #import "CoomonRequestCreationObject.h"
 #import "CustomDateDisplay.h"
+#import "OrderHistoryListVC.h"
 
 @interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate>
 
@@ -52,7 +53,7 @@
 - (IBAction)pageControlActionForEventGroups:(id)sender;
 
 - (void)swiping:(int)swipeDirectionNum;
-
+- (IBAction)showListOfOrders:(id)sender;
 - (CATransition *)getAnimationForEventGroup:(NSString *)animationType;
 
 - (void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails;
@@ -64,5 +65,6 @@
 - (void)sortEvents:(NSMutableArray*)listOfEvents eventCategory:(int)catNum;
 
 - (void)loadProfilePictures;
+- (void)storeAllupcomingsForSuccessScreen;
 
 @end

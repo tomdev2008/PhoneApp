@@ -500,8 +500,8 @@ static NSDateFormatter *customDateFormat=nil;
  }*/
 #pragma mark - TableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if([[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"]){
-        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"UserDetails"];
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     }
     //Gift options screen
     GiftOptionsVC *giftOptions=[[GiftOptionsVC alloc]initWithNibName:@"GiftOptionsVC" bundle:nil];
@@ -520,10 +520,9 @@ static NSDateFormatter *customDateFormat=nil;
         
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
         
-        //NSLog(@"%@",tempInfoDict);
         
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
-       
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
+        
         [tempInfoDict release];
         
     }
@@ -542,9 +541,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
         
-        //NSLog(@"%@",tempInfoDict);
-        
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
         [tempInfoDict release];
     }
@@ -562,9 +559,8 @@ static NSDateFormatter *customDateFormat=nil;
         
         [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
         
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
-       
         [tempInfoDict release];
     }
     else if([eventTitleLbl.text isEqualToString:events_category_4]){
@@ -581,8 +577,8 @@ static NSDateFormatter *customDateFormat=nil;
         
         [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
         
-               
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
         [tempInfoDict release];
     }
@@ -599,8 +595,8 @@ static NSDateFormatter *customDateFormat=nil;
         
         
         [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-                
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
         [tempInfoDict release];
     }
@@ -614,8 +610,8 @@ static NSDateFormatter *customDateFormat=nil;
 -(void)eventDetailsAction:(id)sender{
     
     EventDetailsVC *details=[[EventDetailsVC alloc]initWithNibName:@"EventDetailsVC" bundle:nil];
-    if([[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"]){
-        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"UserDetails"];
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     }
     
     if([eventTitleLbl.text isEqualToString:events_category_1]){
@@ -631,9 +627,9 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-        NSLog(@"%@",tempInfoDict);
+        //NSLog(@"%@",tempInfoDict);
         
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
         details.basicInfoForMsg=tempInfoDict;
         [tempInfoDict release];
@@ -653,7 +649,7 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];                   
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
         [tempInfoDict release];
         
@@ -672,7 +668,7 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
         
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
         [tempInfoDict release];
         
@@ -691,7 +687,7 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
         
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
         [tempInfoDict release];
         
@@ -709,10 +705,10 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"UserDetails"];
+        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
         [tempInfoDict release];
-       
+        
     }
     
     [self.navigationController pushViewController:details animated:YES];
@@ -750,6 +746,12 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
 }
+
+- (IBAction)showListOfOrders:(id)sender {
+    OrderHistoryListVC *orders=[[OrderHistoryListVC alloc]initWithNibName:@"OrderHistoryListVC" bundle:nil];
+    [self.navigationController pushViewController:orders animated:YES];
+    [orders release];
+}
 #pragma mark - Facebook Events delegate
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays{
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -776,7 +778,6 @@ static NSDateFormatter *customDateFormat=nil;
                 NSString *updatedDateString=[[tempDict objectForKey:@"birthday_date"] stringByAppendingFormat:@"/%@",yearString];
                 [tempDict setObject:updatedDateString forKey:@"birthday_date"];
                 [listOfBirthdayEvents replaceObjectAtIndex:i withObject:tempDict];
-                
             }
             if(customDateFormat==nil){
                 customDateFormat = [[NSDateFormatter alloc] init];
@@ -788,7 +789,6 @@ static NSDateFormatter *customDateFormat=nil;
             [tempDict setObject:@"birthday" forKey:@"event_type"];
             [tempDict setObject:@"" forKey:@"ProfilePicture"];
             [listOfBirthdayEvents replaceObjectAtIndex:i withObject:tempDict];
-            
         }
         [allupcomingEvents addObjectsFromArray:listOfBirthdayEvents];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
@@ -796,6 +796,8 @@ static NSDateFormatter *customDateFormat=nil;
         [eventsTable reloadData];
         birthdayEventUserNoToAddAsUser=1;
         shouldLoadingPicsStop=NO;
+        
+        [self storeAllupcomingsForSuccessScreen];
         [self loadProfilePictures];
         
         [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];
@@ -1040,8 +1042,6 @@ static NSDateFormatter *customDateFormat=nil;
 -(void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails{
     
     if([CheckNetwork connectedToNetwork]){
-               
-        
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddNormalUser>\n<tem:fbId>%@</tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddNormalUser>",[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"event_date"]];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
@@ -1101,12 +1101,28 @@ static NSDateFormatter *customDateFormat=nil;
         [self sortEvents:allupcomingEvents eventCategory:1];
     if([listOfBirthdayEvents count]>1)
         [self sortEvents:listOfBirthdayEvents eventCategory:2];
+    
+    
     shouldLoadingPicsStop=YES;
     [self loadProfilePictures];
     [eventsTable reloadData];
     
     
     
+}
+-(void)storeAllupcomingsForSuccessScreen{
+    NSMutableArray *tempArray=[[NSMutableArray alloc]initWithArray:allupcomingEvents];
+    for(NSMutableDictionary *eventDict in tempArray ){
+        [eventDict setObject:@"" forKey:@"ProfilePicture"];
+    }
+    
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"]){
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"AllUpcomingEvents"];
+    }
+    [[NSUserDefaults standardUserDefaults]setObject:tempArray forKey:@"AllUpcomingEvents"];
+    
+    [tempArray release];
+    [[UIApplication sharedApplication]setApplicationIconBadgeNumber:[allupcomingEvents count]];
 }
 - (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
     
@@ -1141,6 +1157,9 @@ static NSDateFormatter *customDateFormat=nil;
         if([newJobEvents count])
             [self sortEvents:newJobEvents eventCategory:4];
         shouldLoadingPicsStop=YES;
+        
+        [self storeAllupcomingsForSuccessScreen];
+        
         [self loadProfilePictures];
         [eventsTable reloadData];
         
@@ -1180,6 +1199,9 @@ static NSDateFormatter *customDateFormat=nil;
         if([anniversaryEvents count]>1)
             [self sortEvents:anniversaryEvents eventCategory:3];
         shouldLoadingPicsStop=YES;
+        
+        [self storeAllupcomingsForSuccessScreen];
+        
         [self loadProfilePictures];
         
         [eventsTable reloadData];
@@ -1218,6 +1240,9 @@ static NSDateFormatter *customDateFormat=nil;
             [self sortEvents:congratsEvents eventCategory:5];
         
         shouldLoadingPicsStop=YES;
+        
+        [self storeAllupcomingsForSuccessScreen];
+        
         [self loadProfilePictures];
         [eventsTable reloadData];
         
@@ -1308,12 +1333,8 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma mark - Add User Request delegate
 -(void) responseForAddUser:(NSMutableString*)response{
-    if([response isEqualToString:@"true"]){
-        NSLog(@"User added into DB");
-    }
-    else if([response isEqualToString:@"false"]){
-        NSLog(@"User already exists");
-    }
+    
+    //response will return userID.
     if(birthdayEventUserNoToAddAsUser<[listOfBirthdayEvents count]){
         birthdayEventUserNoToAddAsUser++;
         [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];   

@@ -61,7 +61,7 @@
 #pragma mark - Facebook giftgiv delegates
 - (void)facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{
     //Add user in the database of giftgiv server
-    
+    [[NSUserDefaults standardUserDefaults]setObject:userDetails forKey:@"MyFBDetails"];
     //pic url: https://graph.facebook.com/1061420790/picture
     
     if([CheckNetwork connectedToNetwork]){
@@ -75,7 +75,7 @@
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddGiftGivUser>\n<tem:fbId>%@</tem:fbId>\n<tem:fbAccessToken>%@</tem:fbAccessToken>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddGiftGivUser>",[userDetails objectForKey:@"uid"],[[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],dateString];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        //NSLog(@"%@",soapRequestString);
+        NSLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddGiftGivUser"];
         
         AddUserRequest *addUser=[[AddUserRequest alloc]init];
@@ -96,8 +96,8 @@
 }
 #pragma mark - Add User Request delegate
 -(void) responseForAddUser:(NSMutableString*)response{
-    [[NSUserDefaults standardUserDefaults]setObject:response forKey:@"GiftGivUserId"];
-   
+    [[NSUserDefaults standardUserDefaults]setObject:response forKey:@"MyGiftGivUserId"];
+    
     [self stopHUD];
     
     //Once facebook logged in, will show Home/Events screen
@@ -109,6 +109,7 @@
 }
 -(void) requestFailed{
     AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed", nil);
+    [self stopHUD];
 }
 #pragma mark - ProgressHUD methods
 

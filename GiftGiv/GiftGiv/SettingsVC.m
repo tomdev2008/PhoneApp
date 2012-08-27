@@ -60,6 +60,7 @@
     //[[NSUserDefaults standardUserDefaults]removeObjectForKey:@"FBAccessTokenKey"];
     [[[Facebook_GiftGiv sharedSingleton]facebook]setAccessToken:nil];
     [[Facebook_GiftGiv sharedSingleton]releaseFacebook];
+    [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 #pragma mark -

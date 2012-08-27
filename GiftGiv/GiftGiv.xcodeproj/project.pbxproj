@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E06A53F15EBE36F00EB236B /* giftbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E06A53E15EBE36F00EB236B /* giftbutton.png */; };
+		7E06A54215EBE37800EB236B /* giftbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E06A54115EBE37800EB236B /* giftbutton@2x.png */; };
+		7E06A54915EBE57F00EB236B /* SendEmailRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E06A54815EBE57F00EB236B /* SendEmailRequest.m */; };
+		7E06A54C15EBE58700EB236B /* SendSMSRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E06A54B15EBE58700EB236B /* SendSMSRequest.m */; };
+		7E06A54F15EBE59000EB236B /* AddOrderRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E06A54E15EBE59000EB236B /* AddOrderRequest.m */; };
+		7E06A55415EBE59A00EB236B /* GetUserRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E06A55115EBE59A00EB236B /* GetUserRequest.m */; };
+		7E06A55515EBE59A00EB236B /* UserDetailsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E06A55315EBE59A00EB236B /* UserDetailsObject.m */; };
 		7E0FE89815C2CED800EDC79C /* CheckNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0FE89715C2CED800EDC79C /* CheckNetwork.m */; };
 		7E0FE89A15C2CF0A00EDC79C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0FE89915C2CF0A00EDC79C /* SystemConfiguration.framework */; };
 		7E0FE89D15C2CF7B00EDC79C /* ApplicationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0FE89B15C2CF7B00EDC79C /* ApplicationHelpers.m */; };
@@ -129,6 +136,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7E06A53E15EBE36F00EB236B /* giftbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = giftbutton.png; sourceTree = "<group>"; };
+		7E06A54115EBE37800EB236B /* giftbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "giftbutton@2x.png"; sourceTree = "<group>"; };
+		7E06A54715EBE57F00EB236B /* SendEmailRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendEmailRequest.h; sourceTree = "<group>"; };
+		7E06A54815EBE57F00EB236B /* SendEmailRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendEmailRequest.m; sourceTree = "<group>"; };
+		7E06A54A15EBE58700EB236B /* SendSMSRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendSMSRequest.h; sourceTree = "<group>"; };
+		7E06A54B15EBE58700EB236B /* SendSMSRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendSMSRequest.m; sourceTree = "<group>"; };
+		7E06A54D15EBE59000EB236B /* AddOrderRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddOrderRequest.h; sourceTree = "<group>"; };
+		7E06A54E15EBE59000EB236B /* AddOrderRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddOrderRequest.m; sourceTree = "<group>"; };
+		7E06A55015EBE59A00EB236B /* GetUserRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetUserRequest.h; sourceTree = "<group>"; };
+		7E06A55115EBE59A00EB236B /* GetUserRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetUserRequest.m; sourceTree = "<group>"; };
+		7E06A55215EBE59A00EB236B /* UserDetailsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDetailsObject.h; sourceTree = "<group>"; };
+		7E06A55315EBE59A00EB236B /* UserDetailsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserDetailsObject.m; sourceTree = "<group>"; };
 		7E0FE89615C2CED800EDC79C /* CheckNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckNetwork.h; sourceTree = "<group>"; };
 		7E0FE89715C2CED800EDC79C /* CheckNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckNetwork.m; sourceTree = "<group>"; };
 		7E0FE89915C2CF0A00EDC79C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -344,6 +363,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7E06A54315EBE54800EB236B /* SendSMS */ = {
+			isa = PBXGroup;
+			children = (
+				7E06A54A15EBE58700EB236B /* SendSMSRequest.h */,
+				7E06A54B15EBE58700EB236B /* SendSMSRequest.m */,
+			);
+			name = SendSMS;
+			sourceTree = "<group>";
+		};
+		7E06A54415EBE55A00EB236B /* SendEmail */ = {
+			isa = PBXGroup;
+			children = (
+				7E06A54715EBE57F00EB236B /* SendEmailRequest.h */,
+				7E06A54815EBE57F00EB236B /* SendEmailRequest.m */,
+			);
+			name = SendEmail;
+			sourceTree = "<group>";
+		};
+		7E06A54515EBE56300EB236B /* AddOrder */ = {
+			isa = PBXGroup;
+			children = (
+				7E06A54D15EBE59000EB236B /* AddOrderRequest.h */,
+				7E06A54E15EBE59000EB236B /* AddOrderRequest.m */,
+			);
+			name = AddOrder;
+			sourceTree = "<group>";
+		};
+		7E06A54615EBE56F00EB236B /* GetUser */ = {
+			isa = PBXGroup;
+			children = (
+				7E06A55015EBE59A00EB236B /* GetUserRequest.h */,
+				7E06A55115EBE59A00EB236B /* GetUserRequest.m */,
+				7E06A55215EBE59A00EB236B /* UserDetailsObject.h */,
+				7E06A55315EBE59A00EB236B /* UserDetailsObject.m */,
+			);
+			name = GetUser;
+			sourceTree = "<group>";
+		};
 		7E0FE89415C2CEC600EDC79C /* Network Connectivity */ = {
 			isa = PBXGroup;
 			children = (
@@ -460,6 +517,10 @@
 		7E2D17A615D1290F00E78FF0 /* Backend Services */ = {
 			isa = PBXGroup;
 			children = (
+				7E06A54615EBE56F00EB236B /* GetUser */,
+				7E06A54515EBE56300EB236B /* AddOrder */,
+				7E06A54415EBE55A00EB236B /* SendEmail */,
+				7E06A54315EBE54800EB236B /* SendSMS */,
 				7ECD8F8D15E7C8D800E9B0C7 /* Paypal */,
 				7E3E0EA915E535FA00B77007 /* GiftCategories */,
 				7E3E0EA115E535D600B77007 /* GiftItems */,
@@ -524,6 +585,7 @@
 		7E5EF71815B929BB00C1D252 /* Retina */ = {
 			isa = PBXGroup;
 			children = (
+				7E06A54115EBE37800EB236B /* giftbutton@2x.png */,
 				7ECFE0C715BE6E9A002E95E3 /* appicon@2x.png */,
 				7ECFE0D415BE7574002E95E3 /* logoutbutton@2x.png */,
 				7ECFE0D515BE7574002E95E3 /* askagainbutton@2x.png */,
@@ -542,6 +604,7 @@
 		7E5EF71A15B929C300C1D252 /* Normal */ = {
 			isa = PBXGroup;
 			children = (
+				7E06A53E15EBE36F00EB236B /* giftbutton.png */,
 				7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */,
 				7ECFE0CA15BE6EAB002E95E3 /* appicon.png */,
 				7ECFE0CC15BE7535002E95E3 /* logoutbutton.png */,
@@ -968,6 +1031,8 @@
 				7ED149F815CFF3C3007CBDBF /* OrderHistoryDetailsVC.xib in Resources */,
 				7ED149FD15CFF3D1007CBDBF /* OrderHistoryListVC.xib in Resources */,
 				7E46474415DE47BD00BAFFD4 /* profilepic_dummy.png in Resources */,
+				7E06A53F15EBE36F00EB236B /* giftbutton.png in Resources */,
+				7E06A54215EBE37800EB236B /* giftbutton@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1047,6 +1112,11 @@
 				7ECD8FD815E7C95C00E9B0C7 /* SellerDetails.m in Sources */,
 				7ECD8FD915E7C95C00E9B0C7 /* SetExpressCheckoutRequestDetails.m in Sources */,
 				7ECD8FDA15E7C95C00E9B0C7 /* ShippingOptions.m in Sources */,
+				7E06A54915EBE57F00EB236B /* SendEmailRequest.m in Sources */,
+				7E06A54C15EBE58700EB236B /* SendSMSRequest.m in Sources */,
+				7E06A54F15EBE59000EB236B /* AddOrderRequest.m in Sources */,
+				7E06A55415EBE59A00EB236B /* GetUserRequest.m in Sources */,
+				7E06A55515EBE59A00EB236B /* UserDetailsObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

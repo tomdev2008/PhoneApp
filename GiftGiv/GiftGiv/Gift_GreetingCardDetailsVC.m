@@ -49,11 +49,11 @@
 {
     [super viewDidLoad];
     
-    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"eventName"];
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
-    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"userName"];
+    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     
-    [self loadGiftImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"UserDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
+    [self loadGiftImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
     
     
     if(isGreetingCard){

@@ -42,16 +42,16 @@
     
     [self showProgressHUD:self.view withMsg:nil];
     
-    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"eventName"];
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
-    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"UserDetails"] objectForKey:@"userName"];
+    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     
     
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
         
-        NSString *urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"UserDetails"] objectForKey:@"userID"]);
+        NSString *urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
         
         NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
         UIImage *thumbnail = [UIImage imageWithData:data];
