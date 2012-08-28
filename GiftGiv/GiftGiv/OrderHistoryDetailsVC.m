@@ -12,19 +12,19 @@
 @synthesize statusLbl;
 @synthesize mailGiftToLbl;
 @synthesize giftImg;
-@synthesize askAgainBtn;
-@synthesize askAddressLbl;
 @synthesize orderDetailsScroll;
 @synthesize giftNameLbl;
 @synthesize statusHeadLbl;
 @synthesize statusDateLbl;
 @synthesize recipientAddressHeadLbl;
+@synthesize msgHeadLbl;
 @synthesize profilePic;
 @synthesize messageLbl;
 @synthesize profileNameLbl;
 @synthesize eventNameLbl;
 @synthesize giftPriceLbl;
 @synthesize addressLbl;
+@synthesize orderDetails;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -49,27 +49,92 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    
+    //NSLog(@"%@",orderDetails.price);
     orderDetailsScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:orderDetailsScroll];
     
+    profilePic.image=orderDetails.profilePicImg;
+    profileNameLbl.text=orderDetails.recipientName;
+    //eventNameLbl.text=orderDetails.
+    
+    
+    [self performSelector:@selector(getGiftItemDetails)];
+    
+    if(![orderDetails.phone isEqualToString:@""]){
+        addressLbl.text=orderDetails.phone;
+        mailGiftToLbl.text=@"Address request sent to:";
+    }
+    else if(![orderDetails.email isEqualToString:@""]){
+        addressLbl.text=orderDetails.email;
+        mailGiftToLbl.text=@"Address request sent to:";
+    }
+    else{
+        
+        NSString *address=[NSString stringWithFormat:@"%@, ",orderDetails.addressLine1];
+        if(![orderDetails.addressLine2 isEqualToString:@""])
+            address=[address stringByAppendingFormat:@"%@,",orderDetails.addressLine2];
+        address=[address stringByAppendingFormat:@"%@, ",orderDetails.city];
+        address=[address stringByAppendingFormat:@"%@, ",orderDetails.state];
+        address=[address stringByAppendingFormat:@"%@",orderDetails.zip];
+        addressLbl.text=address;
+        
+        mailGiftToLbl.text=@"Mail Gift to:";
+    }
+    
+    if([[orderDetails status] isEqualToString:@"-1"]){
+        statusLbl.text=@"waiting for recipient reply";
+    }
+    else if([[orderDetails status] isEqualToString:@"0"]){
+        
+        statusLbl.text=@"pending at store";
+    }
+    else if([[orderDetails status] isEqualToString:@"1"]){
+        
+        statusLbl.text=@"dispatched";
+    }
+    else if([[orderDetails status] isEqualToString:@"2"]){
+        
+        statusLbl.text=@"delivered";
+    }
+    else if([[orderDetails status] isEqualToString:@"3"]){
+        
+        statusLbl.text=@"returned";
+    }
+    
+    NSString *dateString=[[[orderDetails orderUpdatedDate] componentsSeparatedByString:@"T"] objectAtIndex:0];
+    statusDateLbl.text=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
+    if([statusDateLbl.text isEqualToString:@"Today"]||[statusDateLbl.text isEqualToString:@"Yesterday"]||[statusDateLbl.text isEqualToString:@"Tomorrow"]||[statusDateLbl.text isEqualToString:@"Recent"]){
+        statusDateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+        statusDateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+    }
+    
+    
+    if(![orderDetails.userMessage isEqualToString:@""]){
+        msgHeadLbl.hidden=NO;
+        messageLbl.text=orderDetails.userMessage;
+        messageLbl.hidden=NO;       
+    }
+    else{
+        messageLbl.hidden=YES;
+        msgHeadLbl.hidden=YES;
+    }
     
     
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-    profileNameLbl.frame=CGRectMake(57, 12, profileName_new_size.width, 21);
+    profileNameLbl.frame=CGRectMake(57, 19, profileName_new_size.width, 21);
     
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
-    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 12, eventName_newSize.width, 21);
-    
+    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 19, eventName_newSize.width, 21);
     
     CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
     
     CGSize labelSize = [messageLbl.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:11.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
     messageLbl.frame=CGRectMake(messageLbl.frame.origin.x, messageLbl.frame.origin.y, 280.0, labelSize.height);
+    recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, messageLbl.frame.origin.y+messageLbl.frame.size.height+10, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
     
     recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, messageLbl.frame.origin.y+messageLbl.frame.size.height+10, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
     mailGiftToLbl.frame=CGRectMake(mailGiftToLbl.frame.origin.x, recipientAddressHeadLbl.frame.origin.y+recipientAddressHeadLbl.frame.size.height-5, mailGiftToLbl.frame.size.width, mailGiftToLbl.frame.size.height);
@@ -81,15 +146,72 @@
     
     // askAddressLbl,askAgainBtn will be visible only if the order is of type Email/SMS
     
-    askAddressLbl.frame=CGRectMake(askAddressLbl.frame.origin.x, statusLbl.frame.origin.y+statusLbl.frame.size.height+13, askAddressLbl.frame.size.width, askAddressLbl.frame.size.height);
-    
-    askAgainBtn.frame=CGRectMake(askAgainBtn.frame.origin.x, askAddressLbl.frame.origin.y+askAddressLbl.frame.size.height+10, askAgainBtn.frame.size.width, askAgainBtn.frame.size.height);
     
     //The scroll content size has to change respected to statusLbl or askAddressLbl based on the Order type (Email/SMS)
-    orderDetailsScroll.contentSize=CGSizeMake(320, askAgainBtn.frame.origin.y+askAgainBtn.frame.size.height+10);
+    orderDetailsScroll.contentSize=CGSizeMake(320, statusLbl.frame.origin.y+statusLbl.frame.size.height+10);
     
     
     
+}
+-(void)getGiftItemDetails{
+    if([CheckNetwork connectedToNetwork]){
+        
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetGiftItem>\n<tem:id>%@</tem:id>\n</tem:GetGiftItem>",orderDetails.itemId];
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+        //NSLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetGiftItem"];
+        
+        GetGiftItemRequest *getGiftItem=[[GetGiftItemRequest alloc]init];
+        [getGiftItem setGiftItemDelegate:self];
+        [getGiftItem makeGiftItemRequest:theRequest];
+        [getGiftItem release];
+    }
+}
+#pragma mark -GetGiftItemDelegate
+-(void) receivedGiftItem:(GetDetailedGiftItemObject*)giftDetails{
+    
+    giftNameLbl.text=giftDetails.giftTitle;
+    giftPriceLbl.text=[NSString stringWithFormat:@"$%@",orderDetails.price];
+    [self loadGiftImage:giftDetails.giftThumbnailUrl forAnObject:giftImg];
+}
+-(void) requestFailed{
+    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed. Please try again later", nil);
+}
+#pragma mark -
+-(void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
+    
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+    dispatch_async(ImageLoader_Q, ^{
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imgURL]];
+        UIImage *giftImage = [UIImage imageWithData:data];
+        
+        if(giftImage==nil){
+            
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                
+                
+            });
+            
+        }
+        else {
+            
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                
+                if(giftImage.size.width<125 || giftImage.size.height<125){
+                    targetImgView.frame= CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y+(giftImage.size.height)/4, giftImage.size.width, giftImage.size.height);
+                }
+                
+                targetImgView.image=giftImage; 
+                
+                
+            });
+        }
+        
+    });
+    dispatch_release(ImageLoader_Q);
 }
 - (IBAction)backToOrdersList:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
@@ -116,10 +238,9 @@
     [self setStatusHeadLbl:nil];
     [self setGiftNameLbl:nil];
     [self setStatusLbl:nil];
-    [self setAskAddressLbl:nil];
     [self setMailGiftToLbl:nil];
     [self setGiftImg:nil];
-    [self setAskAgainBtn:nil];
+    [self setMsgHeadLbl:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -132,6 +253,7 @@
 }
 
 - (void)dealloc {
+    [orderDetails release];
     [orderDetailsScroll release];
     [profilePic release];
     [profileNameLbl release];
@@ -144,13 +266,12 @@
     [statusHeadLbl release];
     [giftNameLbl release];
     [statusLbl release];
-    [askAddressLbl release];
+    
     [mailGiftToLbl release];
     [giftImg release];
-    [askAgainBtn release];
+    
+    [msgHeadLbl release];
     [super dealloc];
 }
-- (IBAction)askAgainAction:(id)sender {
-    // Send a request to ask the address
-}
+
 @end

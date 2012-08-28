@@ -11,12 +11,22 @@
 #import "SettingsVC.h"
 #import "HomeScreenVC.h"
 #import "OrderHistoryDetailsVC.h"
+#import "GetListOfOrdersRequest.h"
+#import "CustomDateDisplay.h"
+#import "MBProgressHUD.h"
 
-@interface OrderHistoryListVC : UIViewController <UITableViewDataSource,UITableViewDelegate>
+@interface OrderHistoryListVC : UIViewController <UITableViewDataSource,UITableViewDelegate,GetListOfOrdersDelegate,MBProgressHUDDelegate>{
+    NSMutableArray *ordersList;
+    MBProgressHUD *HUD;
+}
 
 @property (retain, nonatomic) IBOutlet UITableView *orderHistoryTable;
 
 - (IBAction)backToMenu:(id)sender;
 - (IBAction)settingsAction:(id)sender;
 
+#pragma mark - progress hud
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
+- (void)stopHUD;
+#pragma mark -
 @end

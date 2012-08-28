@@ -10,12 +10,20 @@
 #import "HomeScreenVC.h"
 #import "EventCustomCell.h"
 #import "GiftOptionsVC.h"
+#import "CustomDateDisplay.h"
 
 @interface SuccessVC : UIViewController<UITableViewDelegate,UITableViewDataSource>
-
+{
+    NSMutableArray *upcomingEvents;
+}
 @property (retain, nonatomic) IBOutlet UITableView *upcomingEventsTable;
+@property (retain, nonatomic) NSMutableArray *upcomingEvents;
+//@property (nonatomic, retain) NSString *transactionID;
+
 
 - (IBAction)backToHome:(id)sender;
 - (IBAction)onlineSite:(id)sender;
+
+-(void)loadProfilePictures;
 
 @end

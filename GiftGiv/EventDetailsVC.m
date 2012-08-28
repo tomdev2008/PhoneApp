@@ -43,7 +43,7 @@
 {
     [super viewDidLoad];
     
-    basicInfoForMsg=[[NSUserDefaults standardUserDefaults] objectForKey:@"UserDetails"];
+    basicInfoForMsg=[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"];
     
     listOfComments=[[NSMutableArray alloc]init];
     

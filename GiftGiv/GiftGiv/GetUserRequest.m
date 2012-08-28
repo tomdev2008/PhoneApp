@@ -88,20 +88,20 @@
 {
 	
 	if([argElementName isEqualToString:@"Id" ]){
-        user.userId =currentElementValue;
+        user.userId =(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
 	}
     
     else if([argElementName isEqualToString:@"FBId" ]){
-        user.userfbId =currentElementValue;
+        user.userfbId =(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
 	}
     else if([argElementName isEqualToString:@"FirstName" ]){
-        user.firstname =currentElementValue;
+        user.firstname =(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
 	}
     else if([argElementName isEqualToString:@"LastName" ]){
-        user.lastname =currentElementValue;
+        user.lastname =(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
 	}
     else if([argElementName isEqualToString:@"ProfilePictureUrl" ]){
@@ -109,11 +109,11 @@
 		
 	}
     else if([argElementName isEqualToString:@"DOB" ]){
-        user.userDOB =currentElementValue;
+        user.userDOB =(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
 	}
     else if([argElementName isEqualToString:@"Email" ]){
-        user.userEmail =currentElementValue;
+        user.userEmail =(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
 	}
     

@@ -515,10 +515,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (IBAction)confirmScreenAction:(id)sender {
-    if(isSendElectronically)
-        [sendingInfoDict setObject:@"YES" forKey:@"ElectronicalSend"];
-    else 
-        [sendingInfoDict setObject:@"NO" forKey:@"ElectronicalSend"];
+    
     if([recipientemailContentView superview]){
         if(![emailTxtFld.text isEqualToString:@""]){
             if([self validateMail:emailTxtFld.text]){
@@ -565,8 +562,14 @@
         else{
             //push the next screen (gift summary)
             GiftSummaryVC *giftSummary=[[GiftSummaryVC alloc]initWithNibName:@"GiftSummaryVC" bundle:nil];
+            NSString *address=[NSString stringWithFormat:@"%@, ",streeAddress_oneTxtFld.text];
+            if(![streetAddress_twoTxtFld.text isEqualToString:@""])
+                address=[address stringByAppendingFormat:@"%@,",streetAddress_twoTxtFld.text];
+            address=[address stringByAppendingFormat:@"%@, ",[cityTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+            address=[address stringByAppendingFormat:@"%@, ",[stateLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+            address=[address stringByAppendingFormat:@"%@, ",zipTxtFld.text];
             
-            [sendingInfoDict setObject:[NSString stringWithFormat:@"%@, %@, %@, %@, %@",streeAddress_oneTxtFld.text,streetAddress_twoTxtFld.text,cityTxtFld.text,[stateLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]],zipTxtFld.text] forKey:@"RecipientAddress"];
+            [sendingInfoDict setObject:address forKey:@"RecipientAddress"];
             
             giftSummary.giftSummaryDict=sendingInfoDict;
             [self.navigationController pushViewController:giftSummary animated:YES];

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E04C02415ED0E3D00C5C385 /* GetListOfOrdersRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E04C02115ED0E3D00C5C385 /* GetListOfOrdersRequest.m */; };
+		7E04C02515ED0E3D00C5C385 /* OrderObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E04C02315ED0E3D00C5C385 /* OrderObject.m */; };
+		7E04C02B15ED0E6F00C5C385 /* GetGiftItemRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E04C02815ED0E6F00C5C385 /* GetGiftItemRequest.m */; };
+		7E04C02C15ED0E6F00C5C385 /* GetDetailedGiftItemObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E04C02A15ED0E6F00C5C385 /* GetDetailedGiftItemObject.m */; };
 		7E06A53F15EBE36F00EB236B /* giftbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E06A53E15EBE36F00EB236B /* giftbutton.png */; };
 		7E06A54215EBE37800EB236B /* giftbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E06A54115EBE37800EB236B /* giftbutton@2x.png */; };
 		7E06A54915EBE57F00EB236B /* SendEmailRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E06A54815EBE57F00EB236B /* SendEmailRequest.m */; };
@@ -136,6 +140,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7E04C02015ED0E3D00C5C385 /* GetListOfOrdersRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetListOfOrdersRequest.h; sourceTree = "<group>"; };
+		7E04C02115ED0E3D00C5C385 /* GetListOfOrdersRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetListOfOrdersRequest.m; sourceTree = "<group>"; };
+		7E04C02215ED0E3D00C5C385 /* OrderObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderObject.h; sourceTree = "<group>"; };
+		7E04C02315ED0E3D00C5C385 /* OrderObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderObject.m; sourceTree = "<group>"; };
+		7E04C02715ED0E6F00C5C385 /* GetGiftItemRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetGiftItemRequest.h; sourceTree = "<group>"; };
+		7E04C02815ED0E6F00C5C385 /* GetGiftItemRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetGiftItemRequest.m; sourceTree = "<group>"; };
+		7E04C02915ED0E6F00C5C385 /* GetDetailedGiftItemObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDetailedGiftItemObject.h; sourceTree = "<group>"; };
+		7E04C02A15ED0E6F00C5C385 /* GetDetailedGiftItemObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetDetailedGiftItemObject.m; sourceTree = "<group>"; };
 		7E06A53E15EBE36F00EB236B /* giftbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = giftbutton.png; sourceTree = "<group>"; };
 		7E06A54115EBE37800EB236B /* giftbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "giftbutton@2x.png"; sourceTree = "<group>"; };
 		7E06A54715EBE57F00EB236B /* SendEmailRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendEmailRequest.h; sourceTree = "<group>"; };
@@ -363,6 +375,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7E04C01E15ED0DD300C5C385 /* OrdersList */ = {
+			isa = PBXGroup;
+			children = (
+				7E04C02015ED0E3D00C5C385 /* GetListOfOrdersRequest.h */,
+				7E04C02115ED0E3D00C5C385 /* GetListOfOrdersRequest.m */,
+				7E04C02215ED0E3D00C5C385 /* OrderObject.h */,
+				7E04C02315ED0E3D00C5C385 /* OrderObject.m */,
+			);
+			name = OrdersList;
+			sourceTree = "<group>";
+		};
+		7E04C02615ED0E4200C5C385 /* DetailedGiftitem */ = {
+			isa = PBXGroup;
+			children = (
+				7E04C02715ED0E6F00C5C385 /* GetGiftItemRequest.h */,
+				7E04C02815ED0E6F00C5C385 /* GetGiftItemRequest.m */,
+				7E04C02915ED0E6F00C5C385 /* GetDetailedGiftItemObject.h */,
+				7E04C02A15ED0E6F00C5C385 /* GetDetailedGiftItemObject.m */,
+			);
+			name = DetailedGiftitem;
+			sourceTree = "<group>";
+		};
 		7E06A54315EBE54800EB236B /* SendSMS */ = {
 			isa = PBXGroup;
 			children = (
@@ -517,6 +551,8 @@
 		7E2D17A615D1290F00E78FF0 /* Backend Services */ = {
 			isa = PBXGroup;
 			children = (
+				7E04C02615ED0E4200C5C385 /* DetailedGiftitem */,
+				7E04C01E15ED0DD300C5C385 /* OrdersList */,
 				7E06A54615EBE56F00EB236B /* GetUser */,
 				7E06A54515EBE56300EB236B /* AddOrder */,
 				7E06A54415EBE55A00EB236B /* SendEmail */,
@@ -1117,6 +1153,10 @@
 				7E06A54F15EBE59000EB236B /* AddOrderRequest.m in Sources */,
 				7E06A55415EBE59A00EB236B /* GetUserRequest.m in Sources */,
 				7E06A55515EBE59A00EB236B /* UserDetailsObject.m in Sources */,
+				7E04C02415ED0E3D00C5C385 /* GetListOfOrdersRequest.m in Sources */,
+				7E04C02515ED0E3D00C5C385 /* OrderObject.m in Sources */,
+				7E04C02B15ED0E6F00C5C385 /* GetGiftItemRequest.m in Sources */,
+				7E04C02C15ED0E6F00C5C385 /* GetDetailedGiftItemObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

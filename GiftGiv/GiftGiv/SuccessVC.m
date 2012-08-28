@@ -10,6 +10,9 @@
 
 @implementation SuccessVC
 @synthesize upcomingEventsTable;
+@synthesize upcomingEvents;
+//@synthesize transactionID;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -34,7 +37,66 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    upcomingEvents=[[NSMutableArray alloc]initWithArray:[[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"]];
+    
+    [self loadProfilePictures];
 }
+
+-(void)loadProfilePictures{
+    int upcomingEventsCount=[upcomingEvents count];
+    for(int i=0;i<upcomingEventsCount;i++){
+        
+        if(![[[upcomingEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+            dispatch_queue_t ImageLoader_Q;
+            ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+            dispatch_async(ImageLoader_Q, ^{
+                NSString *urlStr;
+                if([[upcomingEvents objectAtIndex:i]objectForKey:@"uid"])
+                    urlStr=FacebookPicURL([[upcomingEvents objectAtIndex:i]objectForKey:@"uid"]);
+                else
+                    urlStr=FacebookPicURL([[[upcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
+                NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+                if(data==nil){
+                    NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[upcomingEvents objectAtIndex:i]];
+                    
+                    [tempDict setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    [upcomingEvents replaceObjectAtIndex:i withObject:tempDict];
+                    [tempDict release];
+                    
+                }
+                else {
+                    UIImage *thumbnail = [UIImage imageWithData:data];
+                    
+                    if(thumbnail!=nil){
+                        
+                        dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                            NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[upcomingEvents objectAtIndex:i]];
+                            
+                            [tempDict setObject:thumbnail forKey:@"ProfilePicture"];
+                            [upcomingEvents replaceObjectAtIndex:i withObject:tempDict];
+                            [tempDict release];
+                            
+                            
+                            [upcomingEventsTable beginUpdates];
+                            
+                            [upcomingEventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:i inSection:0], nil]
+                                                       withRowAnimation:UITableViewRowAnimationNone];
+                            [upcomingEventsTable endUpdates];
+                            
+                        });
+                    }
+                    
+                }
+                
+                
+            });
+            dispatch_release(ImageLoader_Q);
+            
+        }
+    }
+}
+
 #pragma mark - TableView Data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -43,7 +105,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 3;
+	return [upcomingEvents count];
 }
 
 
@@ -62,36 +124,82 @@
 		cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.bubbleIconForCommentsBtn.tag=indexPath.row;
         [cell.bubbleIconForCommentsBtn addTarget:self action:@selector(eventDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
-        if(indexPath.row%2==0){
-            cell.eventNameLbl.text=@"New job";
-            cell.dateLbl.text=@"Yesterday";
+        
+	}
+    if([upcomingEvents count]){
+        
+        if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
             cell.bubbleIconForCommentsBtn.hidden=NO;
+            cell.profileNameLbl.text=[[[upcomingEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
+            
         }
         else{
-            cell.eventNameLbl.text=@"Birthday";
-            cell.dateLbl.text=@"Today";
+            cell.profileNameLbl.text=[[upcomingEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
+            
             cell.bubbleIconForCommentsBtn.hidden=YES;
         }
-                
         
-        //Dynamic[fit] label width respected to the size of the text
-        CGSize eventName_maxSize = CGSizeMake(113, 21);
-        CGSize eventName_new_size=[cell.eventNameLbl.text sizeWithFont:cell.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-        cell.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
+        NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+        if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
+            cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+            cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+        }
+        else{
+            cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+            cell.dateLbl.textColor=[UIColor blackColor];
+        }
         
-        CGSize eventDate_maxSize = CGSizeMake(90, 21);
-        CGSize eventDate_newSize = [cell.dateLbl.text sizeWithFont:cell.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
         
-        cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 29, eventDate_newSize.width, 21);
-		
-	}
+        cell.dateLbl.text=dateDisplay;
+        cell.eventNameLbl.text=[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
+        
+        
+        
+        if([[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+            cell.profileImg.image=[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
+        }
+        
+    }
+    //Dynamic[fit] label width respected to the size of the text
+    CGSize eventName_maxSize = CGSizeMake(113, 21);
+    CGSize eventName_new_size=[cell.eventNameLbl.text sizeWithFont:cell.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+    cell.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
     
+    CGSize eventDate_maxSize = CGSizeMake(90, 21);
+    CGSize eventDate_newSize = [cell.dateLbl.text sizeWithFont:cell.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+    
+    cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 29, eventDate_newSize.width, 21);
 	return cell;
 }
 #pragma mark - TableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     //Gift options screen
     GiftOptionsVC *giftOptions=[[GiftOptionsVC alloc]initWithNibName:@"GiftOptionsVC" bundle:nil];
+    
+    
+    NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+    if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+        [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+    }
+    else{
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+    }
+    
+    
+    [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+    
+    //NSLog(@"%@",tempInfoDict);
+    
+    [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
+    
+    //details.basicInfoForMsg=tempInfoDict;
+    [tempInfoDict release];
+    
+    
+    
+    
     [self.navigationController pushViewController:giftOptions animated:YES];
     [giftOptions release];
     
@@ -99,8 +207,33 @@
 -(void)eventDetailsAction:(id)sender{
     
     EventDetailsVC *details=[[EventDetailsVC alloc]initWithNibName:@"EventDetailsVC" bundle:nil];
-    if([sender tag]==0)
+    
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
+    }
+    
+    
+    if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
         details.isPhotoTagged=YES;
+    }
+    else
+        details.isPhotoTagged=NO;
+    
+    NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+    [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+    [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+    [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+    [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+    [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+    NSLog(@"%@",tempInfoDict);
+    
+    [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
+    
+    //details.basicInfoForMsg=tempInfoDict;
+    [tempInfoDict release];
+    
+    
+    
     [self.navigationController pushViewController:details animated:YES];
     [details release];
     
@@ -134,6 +267,8 @@
 }
 
 - (void)dealloc {
+    //[transactionID release];
+    [upcomingEvents release];
     [upcomingEventsTable release];
     [super dealloc];
 }
