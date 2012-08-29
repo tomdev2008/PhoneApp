@@ -265,13 +265,13 @@ params   = _params;
 
 - (void)dismiss:(BOOL)animated {
     [self dialogWillDisappear];
-
+    
     // If the dialog has been closed, then we need to cancel the order to open it.	
     // This happens in the case of a frictionless request, see webViewDidFinishLoad for details	
     [NSObject cancelPreviousPerformRequestsWithTarget:self 
                                              selector:@selector(showWebView)
                                                object:nil];
-
+    
     [_loadingURL release];
     _loadingURL = nil;
     
@@ -307,7 +307,7 @@ params   = _params;
                                  init]
                                 autorelease];
         id recipients = [parser objectWithString:recipientJson];
-
+        
         // if we got something usable, copy the ids out and update the cache
         if ([recipients isKindOfClass:[NSArray class]]) { 
             NSMutableArray *ids = [[[NSMutableArray alloc]
@@ -417,13 +417,13 @@ params   = _params;
     [_modalBackgroundView addSubview:self];	
     [window addSubview:_modalBackgroundView];	
     
-    self.transform = CGAffineTransformScale([self transformForOrientation], 0.001, 0.001);	
-    [UIView beginAnimations:nil context:nil];	
-    [UIView setAnimationDuration:kTransitionDuration/1.5];	
-    [UIView setAnimationDelegate:self];	
-    [UIView setAnimationDidStopSelector:@selector(bounce1AnimationStopped)];	
-    self.transform = CGAffineTransformScale([self transformForOrientation], 1.1, 1.1);	
-    [UIView commitAnimations];	
+    /*self.transform = CGAffineTransformScale([self transformForOrientation], 0.001, 0.001);	
+     [UIView beginAnimations:nil context:nil];	
+     [UIView setAnimationDuration:kTransitionDuration/1.5];	
+     [UIView setAnimationDelegate:self];	
+     [UIView setAnimationDidStopSelector:@selector(bounce1AnimationStopped)];	
+     self.transform = CGAffineTransformScale([self transformForOrientation], 1.1, 1.1);	
+     [UIView commitAnimations];*/	
     
     [self dialogWillAppear];	
     [self addObservers];	
@@ -580,8 +580,8 @@ params   = _params;
             NSRange end = [[url substringFromIndex:start.location+start.length] rangeOfString:@"&"];
             NSUInteger offset = start.location+start.length;
             str = end.location == NSNotFound ?
-                [url substringFromIndex:offset] : 
-                [url substringWithRange:NSMakeRange(offset, end.location)];
+            [url substringFromIndex:offset] : 
+            [url substringWithRange:NSMakeRange(offset, end.location)];
             str = [str stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         }
     }    
@@ -591,7 +591,7 @@ params   = _params;
 - (id)initWithURL: (NSString *) serverURL
            params: (NSMutableDictionary *) params
   isViewInvisible: (BOOL)isViewInvisible
-     frictionlessSettings: (FBFrictionlessRequestSettings*) frictionlessSettings
+frictionlessSettings: (FBFrictionlessRequestSettings*) frictionlessSettings
          delegate: (id <FBDialogDelegate>) delegate {
     
     self = [self init];
@@ -609,7 +609,7 @@ params   = _params;
 }
 
 - (void)loadURL:(NSString*)url get:(NSDictionary*)getParams {
-
+    
     [_loadingURL release];
     _loadingURL = [[self generateURL:url params:getParams] retain];
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:_loadingURL];

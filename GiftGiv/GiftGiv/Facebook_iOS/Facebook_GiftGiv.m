@@ -78,9 +78,9 @@ static NSDateFormatter *standardDateFormatter = nil;
 -(void)authorizeOurAppWithFacebook{
     
     // Check and retrieve authorization information
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *fbAccessToken=[defaults objectForKey:@"FBAccessTokenKey"];
-    NSDate *fbExpirationDateKey=[defaults objectForKey:@"FBExpirationDateKey"];
+    
+    NSString *fbAccessToken=[[NSUserDefaults standardUserDefaults] objectForKey:@"FBAccessTokenKey"];
+    NSDate *fbExpirationDateKey=[[NSUserDefaults standardUserDefaults] objectForKey:@"FBExpirationDateKey"];
     
     if (fbAccessToken && fbExpirationDateKey)
     {
@@ -139,11 +139,11 @@ static NSDateFormatter *standardDateFormatter = nil;
     [self storeAuthData:accessToken expiresAt:expiresAt];
 }
 - (void)storeAuthData:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:accessToken forKey:@"FBAccessTokenKey"];
-    [defaults setObject:expiresAt forKey:@"FBExpirationDateKey"];
+    [[NSUserDefaults standardUserDefaults]setObject:accessToken forKey:@"FBAccessTokenKey"];
+    [[NSUserDefaults standardUserDefaults]setObject:expiresAt forKey:@"FBExpirationDateKey"];
+    
     //NSLog(@"%@",[defaults objectForKey:@"FBAccessTokenKey"]);
-    [defaults synchronize];
+    //[defaults synchronize];
 }
 /**
  * Called when the user logged out.
@@ -164,11 +164,11 @@ static NSDateFormatter *standardDateFormatter = nil;
     
     
     // Remove saved authorization information if it exists
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults objectForKey:@"FBAccessTokenKey"]) {
-        [defaults removeObjectForKey:@"FBAccessTokenKey"];
-        [defaults removeObjectForKey:@"FBExpirationDateKey"];
-        [defaults synchronize];
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"FBAccessTokenKey"]) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"FBAccessTokenKey"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"FBExpirationDateKey"];
+        //[defaults synchronize];
         
         for(FBRequest *request in fbRequestsArray){
             [request  cancelConnection];
@@ -345,16 +345,16 @@ static NSDateFormatter *standardDateFormatter = nil;
                 friendUserIds=[[NSMutableDictionary alloc]init];
                 
                 if(newJobSearchStrings==nil){
-                    newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats",@"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job",nil];
+                    newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job" ,nil];/*@"congrats",@"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job",nil];*/
                 }
                 if(anniversarySearchStrings==nil){
-                    anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary",nil];
+                    anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary" ,nil];/*@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary",nil]*/;
                 }
                 if(congratsSearchStrings==nil){
-                    congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations",nil];
+                    congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations",nil];/*@"congrats", @"all the best", @"good luck", @"congratulations",nil];*/
                 }
                 if(birthdaySearchStrings==nil){
-                    birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];
+                    birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"wish you", @"belated", @"birthday wishes", @"have a lovely birthday", @"happy birthday", @"many happy returns of the day",nil];/*@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];*/
                 }
                 
                 
@@ -388,6 +388,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                         
                         for (int i=0;i<totalCountForMessagesOrPhotos;i++){
                             //Picture(photos)
+                            //NSLog(@"%@",result);
                             if([[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"picture"]){
                                 
                                 NSString *photoFromUser=[NSString stringWithFormat:@"%@",[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"from"] objectForKey:@"id"]];
@@ -400,10 +401,13 @@ static NSDateFormatter *standardDateFormatter = nil;
                                     
                                     if(commentsCount>=15 || likesCount>=15){
                                         
+                                        BOOL isEventFound=NO;
+                                        
                                         for(int j=0;j<commentsCount;j++){
                                             NSString *commentsStr=[[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
+                                            
                                             //commentsStr=[commentsStr lowercaseString];
-                                            BOOL isEventFound=NO;
+                                            
                                             for (NSString *searchedString in birthdaySearchStrings){
                                                 if(!isEventFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
                                                     isEventFound=YES;
@@ -451,9 +455,9 @@ static NSDateFormatter *standardDateFormatter = nil;
                             else{
                                 int commentsCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
                                 int likesCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"likes"] objectForKey:@"data"] count];
-                                if(commentsCount>=25 || likesCount>=25){
+                                if(commentsCount>=15 || likesCount>=15){
                                     NSString *messageStr=[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"message"];
-                                    //NSLog(@"%@",messageStr);
+                                    
                                     BOOL isEventStatusFound=NO;
                                     if(!isEventStatusFound){
                                         
@@ -488,17 +492,19 @@ static NSDateFormatter *standardDateFormatter = nil;
                                     if(!isEventStatusFound){
                                         for (NSString *searchedString in congratsSearchStrings){
                                             if(!isEventStatusFound && [messageStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
-                                                //isEventStatusFound=YES;
+                                                isEventStatusFound=YES;
                                                 [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                 break;
                                             }
                                         }  
                                     }
                                     
-                                    else if(!isEventStatusFound){
+                                    if(!isEventStatusFound){
+                                        BOOL isEventsFromCommentsFound=NO;
                                         for(int j=0;j<commentsCount;j++){
                                             NSString *commentsStr=[[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
-                                            BOOL isEventsFromCommentsFound=NO;
+                                            NSLog(@"comments..%@",commentsStr);
+                                            
                                             
                                             if(!isEventsFromCommentsFound){
                                                 for (NSString *searchedString in birthdaySearchStrings){

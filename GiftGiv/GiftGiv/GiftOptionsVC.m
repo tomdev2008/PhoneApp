@@ -91,12 +91,12 @@
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-    profileNameLbl.frame=CGRectMake(57, 56, profileName_new_size.width, 21);
+    profileNameLbl.frame=CGRectMake(57, 63, profileName_new_size.width, 21);
     
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
-    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+5+profileNameLbl.frame.size.width, 57, eventName_newSize.width, 21);
+    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+5+profileNameLbl.frame.size.width, 64, eventName_newSize.width, 21);
     
     
     UISwipeGestureRecognizer *swipeLeftRecognizer=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeGestureForGiftCats:)];
@@ -116,7 +116,7 @@
 }
 -(void)loadDynamicCategories{
     
-    UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica" size:25];
+    UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
     
     int xOriginForButton=0;
     totalCats=[giftCategoriesList count];

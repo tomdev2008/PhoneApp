@@ -17,8 +17,9 @@
 @synthesize commentsTable;
 @synthesize eventDescription;
 @synthesize eventImg;
+@synthesize detailsScroll;
 @synthesize isPhotoTagged;
-@synthesize basicInfoForMsg;
+//@synthesize basicInfoForMsg;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -43,20 +44,19 @@
 {
     [super viewDidLoad];
     
-    basicInfoForMsg=[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"];
     
     listOfComments=[[NSMutableArray alloc]init];
     
-    eventNameLbl.text=[basicInfoForMsg objectForKey:@"eventName"];
-    eventDateLbl.text=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[basicInfoForMsg objectForKey:@"eventDate"]];
-    nameLbl.text=[basicInfoForMsg objectForKey:@"userName"];
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
+    eventDateLbl.text=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"eventDate"]];
+    nameLbl.text=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     
     
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
         
-        NSString *urlStr=FacebookPicURL([basicInfoForMsg objectForKey:@"userID"]);
+        NSString *urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
         
         NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
         UIImage *thumbnail = [UIImage imageWithData:data];
@@ -83,7 +83,7 @@
         [self showProgressHUD:self.view withMsg:nil];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-        [[Facebook_GiftGiv sharedSingleton] getEventDetails:[basicInfoForMsg objectForKey:@"msgID"]];
+        [[Facebook_GiftGiv sharedSingleton] getEventDetails:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"msgID"]];
         
     }
     
@@ -115,7 +115,7 @@
     
     [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     
-    [self stopHUD];
+    
     
     int likesCount=[[[eventDetails objectForKey:@"likes"] objectForKey:@"data"] count];
     int commentsCount=[[[eventDetails objectForKey:@"comments"] objectForKey:@"data"] count];
@@ -133,7 +133,7 @@
     
     if(isPhotoTagged){
         //event photo's default frame 10, 120,300,170
-        eventImg.frame=CGRectMake(10, 120, 300, 170);
+        eventImg.frame=CGRectMake(10, 0, 300, 170);
         
         dispatch_queue_t ImageLoader_Q;
         ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
@@ -155,20 +155,20 @@
         });
         dispatch_release(ImageLoader_Q);
         
-        [self.view addSubview:eventImg];
-        likesCommentsLbl.frame=CGRectMake(13, 290, 221, 21);
-        commentsTable.frame=CGRectMake(10, 319, 300, 80);
+        [detailsScroll addSubview:eventImg];
+        likesCommentsLbl.frame=CGRectMake(13, 190, 221, 21);
+        commentsTable.frame=CGRectMake(10, 219, 300, 80);
     }
     else{
         //event description's default frame 5, 115, 310, 100
-        eventDescription.frame=CGRectMake(5, 115, 310, 100);
+        eventDescription.frame=CGRectMake(5, 0, 310, 100);
         
         eventDescription.text=[eventDetails objectForKey:@"message"];
         
-        [self.view addSubview:eventDescription];
+        [detailsScroll addSubview:eventDescription];
         CGSize eventDescription_maxSize = CGSizeMake(310, 100);
         CGSize eventDescription_newSize=[eventDescription.text sizeWithFont:eventDescription.font constrainedToSize:eventDescription_maxSize lineBreakMode:UILineBreakModeWordWrap];
-        eventDescription.frame=CGRectMake(5, 115,310, eventDescription_newSize.height+28);
+        eventDescription.frame=CGRectMake(5, 0,310, eventDescription_newSize.height+28);
         //NSLog(@"%@",NSStringFromCGSize(eventDescription_newSize));
         
         
@@ -176,8 +176,24 @@
         
         commentsTable.frame=CGRectMake(10,likesCommentsLbl.frame.origin.y+21+5, 300,400-(likesCommentsLbl.frame.origin.y+21+5));
     }
+    float tableHeight=0;
+    for(int i=0;i<commentsCount;i++){
+        UIFont *cellFont = [UIFont fontWithName:@"Helvetica" size:14.0];
+        CGSize constraintSize = CGSizeMake(246.0f, MAXFLOAT);
+        
+        CGSize labelSize = [[NSString stringWithFormat:@"%@ %@",[[[listOfComments objectAtIndex:i]objectForKey:@"from"]objectForKey:@"name"],[[listOfComments objectAtIndex:i]objectForKey:@"message"]] sizeWithFont:cellFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
+        if(labelSize.height>40)
+            tableHeight+=labelSize.height+5;
+        else
+            tableHeight+=44+5;
+    }
+    
+    commentsTable.frame=CGRectMake(commentsTable.frame.origin.x, commentsTable.frame.origin.y, 300, tableHeight);
+    
+    detailsScroll.contentSize=CGSizeMake(320, commentsTable.frame.origin.y+commentsTable.frame.size.height);
     [commentsTable reloadData];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [self stopHUD];
 }
 #pragma mark - TableView Data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -335,6 +351,7 @@
     [self setEventImg:nil];
     [self setLikesCommentsLbl:nil];
     [self setCommentsTable:nil];
+    [self setDetailsScroll:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -348,7 +365,7 @@
 
 - (void)dealloc {
     [listOfComments release];
-    [basicInfoForMsg release];
+    
     [profileImgView release];
     [nameLbl release];
     [eventNameLbl release];
@@ -357,6 +374,7 @@
     [eventImg release];
     [likesCommentsLbl release];
     [commentsTable release];
+    [detailsScroll release];
     [super dealloc];
 }
 

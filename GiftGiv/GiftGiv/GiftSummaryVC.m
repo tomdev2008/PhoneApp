@@ -88,12 +88,12 @@
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-    profileNameLbl.frame=CGRectMake(57, 12, profileName_new_size.width, 21);
+    profileNameLbl.frame=CGRectMake(57, 19, profileName_new_size.width, 21);
     
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
-    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 13, eventName_newSize.width, 21);
+    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 20, eventName_newSize.width, 21);
     
     if(personalMsgLbl.text==nil || [personalMsgLbl.text isEqualToString:@""]){
         msgHeadLbl.hidden=YES;
@@ -138,7 +138,12 @@
         else {
             
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                targetImgView.image=giftImage;                   
+                if(giftImage.size.width<125 || giftImage.size.height<125){
+                    targetImgView.frame= CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y+(giftImage.size.height)/4, giftImage.size.width, giftImage.size.height);
+                }
+                
+                targetImgView.image=giftImage;
+                //targetImgView.image=giftImage;                   
                 
             });
         }

@@ -631,7 +631,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
-        details.basicInfoForMsg=tempInfoDict;
+        //details.basicInfoForMsg=tempInfoDict;
         [tempInfoDict release];
         
     }

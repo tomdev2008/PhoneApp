@@ -19,7 +19,7 @@
     MBProgressHUD *HUD;
     NSMutableArray *listOfComments;
     BOOL shouldLoadingPicsStop;
-    //NSMutableDictionary *basicInfoForMsg;
+    
 }
 @property (retain, nonatomic) IBOutlet UIImageView *profileImgView;
 @property (retain, nonatomic) IBOutlet UILabel *nameLbl;
@@ -29,8 +29,9 @@
 @property (retain, nonatomic) IBOutlet UITableView *commentsTable;
 @property (retain, nonatomic) IBOutlet UITextView *eventDescription;
 @property (retain, nonatomic) IBOutlet UIImageView *eventImg;
+@property (retain, nonatomic) IBOutlet UIScrollView *detailsScroll;
 
-@property (retain, nonatomic) NSMutableDictionary *basicInfoForMsg;
+
 @property BOOL isPhotoTagged;
 
 - (IBAction)backToEventsList:(id)sender;
