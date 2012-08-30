@@ -21,14 +21,16 @@
 #import "CoomonRequestCreationObject.h"
 #import "CustomDateDisplay.h"
 #import "OrderHistoryListVC.h"
+#import "MBProgressHUD.h"
+#import "GetEventsRequest.h"
 
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate>
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate>
 
 {
     int eventGroupNum;
     int totalGroups;
     CATransition *tranAnimationForEventGroups;
-    
+    MBProgressHUD *HUD;
     UIImage* pageActiveImage;
     UIImage* pageInactiveImage;
     
@@ -51,9 +53,9 @@
 
 - (IBAction)settingsAction:(id)sender;
 - (IBAction)pageControlActionForEventGroups:(id)sender;
-
-- (void)swiping:(int)swipeDirectionNum;
 - (IBAction)showListOfOrders:(id)sender;
+- (void)swiping:(int)swipeDirectionNum;
+
 - (CATransition *)getAnimationForEventGroup:(NSString *)animationType;
 
 - (void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails;
@@ -66,5 +68,9 @@
 
 - (void)loadProfilePictures;
 - (void)storeAllupcomingsForSuccessScreen;
+#pragma mark - Progress HUD
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
+- (void) stopHUD;
+#pragma mark -
 
 @end

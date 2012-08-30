@@ -15,6 +15,8 @@
 @synthesize giftIcon_two;
 @synthesize giftTitle_two;
 @synthesize giftPrice_two;
+@synthesize giftImg_one;
+@synthesize giftImg_two;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -28,11 +30,13 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 
 - (void)dealloc {
+    [giftImg_one release];
+    [giftImg_two release];
     [giftIcon_one release];
     [giftTitle_one release];
     [giftPrice_one release];

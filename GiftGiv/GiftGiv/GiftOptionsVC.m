@@ -8,6 +8,11 @@
 
 #import "GiftOptionsVC.h"
 
+#define NUMBER_OF_ITEMS 20
+#define NUMBER_OF_VISIBLE_ITEMS 5
+#define ITEM_SPACING 135
+
+
 @implementation GiftOptionsVC
 @synthesize giftsTable;
 @synthesize giftCategoryPageControl;
@@ -16,6 +21,7 @@
 @synthesize profileNameLbl;
 @synthesize eventNameLbl;
 @synthesize giftsList;
+@synthesize category_iScroll;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -39,6 +45,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    
     
     [self showProgressHUD:self.view withMsg:nil];
     
@@ -114,6 +122,80 @@
     
     //[self reloadTheContentForGifts];
 }
+
+
+#pragma mark - iCarousel methods
+
+- (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel1
+{
+    category_iScroll.contentOffset=CGSizeMake(-(category_iScroll.frame.size.width/3),0);
+    category_iScroll.centerItemWhenSelected=YES;
+    
+    return [giftCategoriesList count];
+}
+
+- (NSUInteger)numberOfVisibleItemsInCarousel:(iCarousel *)carousel
+{
+    //limit the number of items views loaded concurrently (for performance reasons)
+    //this also affects the appearance of circular-type carousels
+    return NUMBER_OF_VISIBLE_ITEMS;
+}
+
+- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view
+{
+    UIButton *button = (UIButton *)view;
+	if (button == nil)
+	{
+        
+		button = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        //button.frame = CGRectMake(0.0f, 2.0f, 130, 40);
+        
+		
+        [button.titleLabel setFont:[UIFont fontWithName:@"Helvetica-Light" size:25.0]];
+        
+		
+	}
+    //NSString *titleStr=[[giftCategoriesList objectAtIndex:index]catName];
+    //CGSize giftCatTitleSize=[titleStr sizeWithFont:[button.titleLabel font] constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+    button.frame = CGRectMake(0.0f, 2.0f, 135, 40);
+    // button.tag=index+1;
+    // [button addTarget:self action:@selector(categoryActions:) forControlEvents:UIControlEventTouchUpInside];
+    [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [button setTitle:[[giftCategoriesList objectAtIndex:index]catName]  forState:UIControlStateNormal];
+    
+    return button;
+}
+- (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index{
+    //[category_iScroll reloadData];
+    /*category_iScroll.scrollEnabled=YES;
+     [category_iScroll scrollToItemAtIndex:index animated:YES];
+     category_iScroll.scrollEnabled=NO;*/
+    //[[(UIButton*)sender titleLabel] setTextColor:[UIColor blackColor]];
+    //[[(UIButton*)[category_iScroll itemViewAtIndex:index] titleLabel] setTextColor:[UIColor blackColor]];
+    if(giftCatNum<index+1){
+        giftCatNum=index+1;
+        [self swipingForGiftCategories:1];
+    }
+    else if(giftCatNum>index+1){
+        giftCatNum=index+1;
+        [self swipingForGiftCategories:0];
+    }
+    
+    giftCategoryPageControl.currentPage=giftCatNum-1;
+    
+}
+- (CGFloat)carouselItemWidth:(iCarousel *)carousel
+{
+    //usually this should be slightly wider than the item views
+    return ITEM_SPACING;
+}
+
+- (BOOL)carouselShouldWrap:(iCarousel *)carousel
+{
+    return YES;
+}
+#pragma mark -
 -(void)loadDynamicCategories{
     
     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
@@ -289,8 +371,16 @@
         }
         
     }
+    totalCats=[giftCategoriesList count];
+    giftCategoryPageControl.numberOfPages=totalCats;    
+    giftCatNum=1;
+    giftCategoryPageControl.currentPage=giftCatNum-1;
     
-    [self loadDynamicCategories];
+    
+    [category_iScroll reloadData];
+    
+    [[(UIButton*)[category_iScroll itemViewAtIndex:0] titleLabel] setTextColor:[UIColor blackColor]];
+    
     giftCatNum=1;
     [self reloadTheContentForGifts];
     [self stopHUD];
@@ -384,23 +474,33 @@
 }
 -(void)swipingForGiftCategories:(int)swipeDirectionNum{
     if(swipeDirectionNum==1){
+        
         tranAnimationForGiftCategories=[self getAnimationForGiftCategories:kCATransitionFromRight];
     }
-    else
+    else{
+        
         tranAnimationForGiftCategories=[self getAnimationForGiftCategories:kCATransitionFromLeft];
+    }
+    
     
     for(UIView *subview in [giftCategoriesScroll subviews]){
         if([subview isKindOfClass:[UIButton class]]){
             [(UIButton*)subview setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         }
     }
-    UIButton*targetBtn=(UIButton*)[giftCategoriesScroll viewWithTag:giftCatNum];
-    [targetBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    /*UIButton*targetBtn=(UIButton*)[giftCategoriesScroll viewWithTag:giftCatNum];
+     [targetBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];*/
     
+    [category_iScroll reloadData];
+    [[(UIButton*)[category_iScroll itemViewAtIndex:giftCatNum-1] titleLabel] setTextColor:[UIColor blackColor]];
+    
+    category_iScroll.scrollEnabled=YES;
+    [category_iScroll scrollToItemAtIndex:giftCatNum-1 animated:YES];
+    category_iScroll.scrollEnabled=NO;
     //Scroll the category titles to visible on the screen
-    giftCategoriesScroll.scrollEnabled=YES;
-    [giftCategoriesScroll scrollRectToVisible:targetBtn.frame animated:YES];
-    giftCategoriesScroll.scrollEnabled=NO;       
+    //giftCategoriesScroll.scrollEnabled=YES;
+    //[giftCategoriesScroll scrollRectToVisible:targetBtn.frame animated:YES];
+    //giftCategoriesScroll.scrollEnabled=NO;       
     [giftsTable.layer addAnimation:tranAnimationForGiftCategories forKey:@"groupAnimation"];
     
     [self reloadTheContentForGifts];
@@ -470,7 +570,21 @@
     }
     else
         cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",[[giftsList objectAtIndex:(indexPath.row*2)] giftPrice]];
-    [cell.giftIcon_one setImage:[[giftsList objectAtIndex:(indexPath.row*2)]giftThumbnail] forState:UIControlStateNormal];
+    UIImage *tempImg_one=[[giftsList objectAtIndex:(indexPath.row*2)]giftThumbnail];
+    if(tempImg_one.size.width==160 && tempImg_one.size.height==120){
+        cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+12,cell.giftImg_one.frame.origin.y+25 , 100, 75);
+    }
+    else if(tempImg_one.size.width==160 && tempImg_one.size.height==172){
+        cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+12,cell.giftImg_one.frame.origin.y+8 , 100, 108);
+    }
+    else if(tempImg_one.size.width==110 && tempImg_one.size.height==150){
+        cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+28,cell.giftImg_one.frame.origin.y+15 , 69, 94);
+    }
+    
+    //[cell.giftIcon_one setImage:[[giftsList objectAtIndex:(indexPath.row*2)]giftThumbnail] forState:UIControlStateNormal];
+    //NSLog(@"%@",NSStringFromCGSize([[[giftsList objectAtIndex:(indexPath.row*2)]giftThumbnail] size]));
+    [cell.giftImg_one setImage:tempImg_one];
+    
     if([giftsList count]>(indexPath.row*2)+1){
         cell.giftIcon_two.hidden=NO;
         cell.giftPrice_two.hidden=NO;
@@ -485,7 +599,22 @@
         }
         else
             cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",[[giftsList objectAtIndex:(indexPath.row*2)+1] giftPrice]];
-        [cell.giftIcon_two setImage:[[giftsList objectAtIndex:(indexPath.row*2)+1]giftThumbnail] forState:UIControlStateNormal];
+        
+        UIImage *tempImg_two=[[giftsList objectAtIndex:(indexPath.row*2)+1]giftThumbnail];
+        
+        if(tempImg_two.size.width==160 && tempImg_two.size.height==120){
+            cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+12,cell.giftImg_two.frame.origin.y+25 , 100, 75);
+        }
+        else if(tempImg_two.size.width==160 && tempImg_two.size.height==172){
+            cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+12,cell.giftImg_two.frame.origin.y+8 , 100, 108);
+        }
+        else if(tempImg_two.size.width==110 && tempImg_two.size.height==150){
+            cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+28,cell.giftImg_two.frame.origin.y+15 , 69, 94);
+        }
+        
+        
+        //[cell.giftIcon_two setImage:[[giftsList objectAtIndex:(indexPath.row*2)+1]giftThumbnail] forState:UIControlStateNormal];
+        [cell.giftImg_two setImage:tempImg_two];
     }
     
     else{
@@ -521,21 +650,6 @@
         [self.navigationController pushViewController:greetingCardDetails animated:YES];
         [greetingCardDetails release];
     }
-    
-}
--(void)categoryActions:(id)sender{
-    
-    if(giftCatNum<[sender tag]){
-        giftCatNum=[sender tag];
-        [self swipingForGiftCategories:1];
-    }
-    else if(giftCatNum>[sender tag]){
-        giftCatNum=[sender tag];
-        [self swipingForGiftCategories:0];
-    }
-    
-    giftCategoryPageControl.currentPage=giftCatNum-1;
-    
     
 }
 
@@ -577,6 +691,8 @@
     [self setGiftsTable:nil];
     [self setGiftCategoriesScroll:nil];
     [self setGiftsList:nil];
+    
+    [self setCategory_iScroll:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -589,6 +705,7 @@
 }
 
 - (void)dealloc {
+    
     if(currentiOSVersion<6.0){
         [pageActiveImage release];
         [pageInactiveImage release]; 
@@ -607,6 +724,8 @@
     [giftCategoriesScroll release];
     
     [giftsList release];
+    
+    [category_iScroll release];
     [super dealloc];
 }
 

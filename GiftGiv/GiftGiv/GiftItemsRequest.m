@@ -87,7 +87,7 @@
 
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
-	
+	//NSLog(@"%@",argElementName);
 	if([argElementName isEqualToString:@"Id"])
         giftItem.giftId=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     

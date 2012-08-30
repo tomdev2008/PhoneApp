@@ -100,7 +100,7 @@
         
         statusLbl.text=@"returned";
     }
-    
+    eventNameLbl.text=[orderDetails details];
     NSString *dateString=[[[orderDetails orderUpdatedDate] componentsSeparatedByString:@"T"] objectAtIndex:0];
     statusDateLbl.text=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
     if([statusDateLbl.text isEqualToString:@"Today"]||[statusDateLbl.text isEqualToString:@"Yesterday"]||[statusDateLbl.text isEqualToString:@"Tomorrow"]||[statusDateLbl.text isEqualToString:@"Recent"]){
@@ -128,7 +128,7 @@
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
-    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 20, eventName_newSize.width, 21);
+    eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 19, eventName_newSize.width, 21);
     
     CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
     

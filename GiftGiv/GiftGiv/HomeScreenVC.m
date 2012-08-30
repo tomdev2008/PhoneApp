@@ -38,12 +38,7 @@ static NSDateFormatter *customDateFormat=nil;
 
 - (void)viewDidLoad
 {
-    if([CheckNetwork connectedToNetwork]){
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-        [[Facebook_GiftGiv sharedSingleton] listOfBirthdayEvents];
-        
-    }
+    
     categoryTitles=[[NSMutableArray alloc]init];
     listOfBirthdayEvents=[[NSMutableArray alloc]init];
     newJobEvents=[[NSMutableArray alloc]init];
@@ -83,9 +78,112 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 -(void)viewWillAppear:(BOOL)animated{
+    
+    if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"]){
+        //[self showProgressHUD:self.view withMsg:nil];
+        [self performSelector:@selector(makeRequestToGetEvents)];
+    }
+    
     [eventsTable reloadData];
     [super viewWillAppear:YES];
 }
+-(void)makeRequestToGetEvents{
+    if([CheckNetwork connectedToNetwork]){
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetEvents>\n<tem:userId>%@</tem:userId>\n<tem:typeEventList>Display</tem:typeEventList>\n</tem:GetEvents>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"]];
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+        //NSLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetEvents"];
+        
+        GetEventsRequest *getEvents=[[GetEventsRequest alloc]init];
+        [getEvents setEventsDelegate:self];
+        [getEvents getListOfEvents:theRequest];
+        [getEvents release];
+    }
+    else{
+        AlertWithMessageAndDelegate(@"Network connectivity", @"Please check your network connection", nil);
+    }
+}
+#pragma -EventsRequest delegate
+-(void) receivedAllEvents:(NSMutableArray*)allEvents{
+    
+    int eventsCount=[allEvents count];
+    
+    [[UIApplication sharedApplication]setApplicationIconBadgeNumber:eventsCount];
+    
+    if(eventsCount){
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+        [self stopHUD];
+        if([allupcomingEvents count])
+            [allupcomingEvents removeAllObjects];
+        if([listOfBirthdayEvents count])
+            [listOfBirthdayEvents removeAllObjects];
+        if([newJobEvents count])
+            [newJobEvents removeAllObjects];
+        if([congratsEvents count])
+            [congratsEvents removeAllObjects];
+        if([anniversaryEvents count])
+            [anniversaryEvents removeAllObjects];
+        
+        for (int i=0;i<eventsCount;i++){
+            NSMutableDictionary *eventDict=[[NSMutableDictionary alloc]init];
+            [eventDict setObject:[[[allEvents objectAtIndex:i]fb_FriendId]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"uid"];
+            [eventDict setObject:[[[allEvents objectAtIndex:i]fb_EventId]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"id"];
+            [eventDict setObject:[[[allEvents objectAtIndex:i]fb_Name]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"name"];
+            [eventDict setObject:[[[allEvents objectAtIndex:i]eventName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"event_type"];
+            [eventDict setObject:[[[[[allEvents objectAtIndex:i]eventdate]componentsSeparatedByString:@"T"]objectAtIndex:0]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"event_date"];
+            [eventDict setObject:@"" forKey:@"ProfilePicture"];
+            NSString *eventType=[[[allEvents objectAtIndex:i]eventType]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if([eventType isEqualToString:@"Birthday"])
+                [listOfBirthdayEvents addObject:eventDict];
+            else if([eventType isEqualToString:@"New Job"])
+                [newJobEvents addObject:eventDict];
+            else if([eventType isEqualToString:@"Congratulations"])
+                [congratsEvents addObject:eventDict];
+            else if([eventType isEqualToString:@"Anniversary"])
+                [anniversaryEvents addObject:eventDict];
+            
+            [allupcomingEvents addObject:eventDict];
+            [eventDict release];
+            
+        }
+        NSLog(@"%@",allupcomingEvents);
+        [self performSelector:@selector(checkTotalNumberOfGroups)];
+        
+        
+        
+        if([allupcomingEvents count]>1)
+            [self sortEvents:allupcomingEvents eventCategory:1];
+        if([listOfBirthdayEvents count]>1)
+            [self sortEvents:listOfBirthdayEvents eventCategory:2];
+        if([newJobEvents count]>1)
+            [self sortEvents:newJobEvents eventCategory:4];
+        if([congratsEvents count]>1)
+            [self sortEvents:congratsEvents eventCategory:5];
+        if([anniversaryEvents count]>1)
+            [self sortEvents:anniversaryEvents eventCategory:3];
+        
+        [[NSUserDefaults standardUserDefaults]setObject:allupcomingEvents forKey:@"AllUpcomingEvents"];
+        
+        shouldLoadingPicsStop=YES;
+        [self loadProfilePictures];     
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        //[self stopHUD];
+        
+        [eventsTable reloadData];
+    }
+    else{
+        if([CheckNetwork connectedToNetwork]){
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+            [[Facebook_GiftGiv sharedSingleton] listOfBirthdayEvents];
+            
+        }
+    }
+}
+#pragma mark -
 -(void)swipingForEventGroups:(UISwipeGestureRecognizer*)swipeRecognizer{
     
     // The events list should be in carousel effect
@@ -99,7 +197,7 @@ static NSDateFormatter *customDateFormat=nil;
 			[self swiping:0];
             
 		}
-		else if(eventGroupNum==1)
+		else if(eventGroupNum==1 && totalGroups!=0)
 		{
 			eventGroupNum=totalGroups;
 			[self swiping:0];
@@ -208,6 +306,7 @@ static NSDateFormatter *customDateFormat=nil;
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if([eventTitleLbl.text isEqualToString:events_category_1]){
+        
         return [allupcomingEvents count];
         
     }
@@ -253,6 +352,7 @@ static NSDateFormatter *customDateFormat=nil;
     if([eventTitleLbl.text isEqualToString:events_category_1]){
         if([allupcomingEvents count]){
             
+            
             if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
                 cell.bubbleIconForCommentsBtn.hidden=NO;
                 cell.profileNameLbl.text=[[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
@@ -260,6 +360,10 @@ static NSDateFormatter *customDateFormat=nil;
             }
             else{
                 cell.profileNameLbl.text=[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
+                if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
+                    if([[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
+                        cell.bubbleIconForCommentsBtn.hidden=NO;
+                }
                 
                 cell.bubbleIconForCommentsBtn.hidden=YES;
             }
@@ -298,6 +402,12 @@ static NSDateFormatter *customDateFormat=nil;
             else{
                 cell.profileNameLbl.text=[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
                 
+                if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
+                    if([[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
+                        cell.bubbleIconForCommentsBtn.hidden=NO;
+                }
+                
+                
                 cell.bubbleIconForCommentsBtn.hidden=YES;
             }
             
@@ -335,7 +445,12 @@ static NSDateFormatter *customDateFormat=nil;
             else{
                 cell.profileNameLbl.text=[[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
                 
-                cell.bubbleIconForCommentsBtn.hidden=YES;
+                if([[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
+                    if([[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
+                        cell.bubbleIconForCommentsBtn.hidden=NO;
+                }
+                else 
+                    cell.bubbleIconForCommentsBtn.hidden=YES;
             }
             cell.eventNameLbl.text=[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
             
@@ -370,8 +485,12 @@ static NSDateFormatter *customDateFormat=nil;
             }
             else{
                 cell.profileNameLbl.text=[[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-                
-                cell.bubbleIconForCommentsBtn.hidden=YES;
+                if([[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
+                    if([[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
+                        cell.bubbleIconForCommentsBtn.hidden=NO;
+                }
+                else 
+                    cell.bubbleIconForCommentsBtn.hidden=YES;
             }
             
             cell.eventNameLbl.text=[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
@@ -408,8 +527,12 @@ static NSDateFormatter *customDateFormat=nil;
             }
             else{
                 cell.profileNameLbl.text=[[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-                
-                cell.bubbleIconForCommentsBtn.hidden=YES;
+                if([[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
+                    if([[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
+                        cell.bubbleIconForCommentsBtn.hidden=NO;
+                }
+                else 
+                    cell.bubbleIconForCommentsBtn.hidden=YES;
             }
             cell.eventNameLbl.text=[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
             
@@ -1345,6 +1468,37 @@ static NSDateFormatter *customDateFormat=nil;
 }
 -(void) requestFailed{
     AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed", nil);
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+    [self stopHUD];
+}
+
+#pragma mark - ProgressHUD methods
+
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr  
+{
+	HUD = [[MBProgressHUD alloc] initWithView:targetView];
+	
+	// Add HUD to screen
+	[targetView addSubview:HUD];
+	
+	// Regisete for HUD callbacks so we can remove it from the window at the right time
+	HUD.delegate = self;
+	
+	HUD.labelText=titleStr;
+	
+	// Show the HUD while the provided method executes in a new thread
+	[HUD show:YES];
+	
+}
+- (void)stopHUD{
+    if (![HUD isHidden]) {
+        [HUD setHidden:YES];
+    }
+}
+- (void)hudWasHidden:(MBProgressHUD *)hud
+{
+	[HUD removeFromSuperview];
+	HUD=nil;
 }
 #pragma mark -
 - (void)viewDidUnload

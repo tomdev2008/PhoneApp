@@ -27,5 +27,6 @@
 @property (retain,nonatomic) NSMutableString *dateofCreation;
 @property (retain,nonatomic) NSMutableString *phone;
 @property (retain,nonatomic) NSMutableString *email;
+@property (retain,nonatomic) NSMutableString *details;
 @property (retain,nonatomic) UIImage *profilePicImg;
 @end

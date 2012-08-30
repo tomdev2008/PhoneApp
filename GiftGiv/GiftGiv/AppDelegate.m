@@ -50,6 +50,8 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
     /*
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
      If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
@@ -58,6 +60,14 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    
+    if([[[self.navController viewControllers] objectAtIndex:1] isKindOfClass:[HomeScreenVC class]]){
+        [[[self.navController viewControllers] objectAtIndex:1]viewWillAppear:YES];
+    }
+    else if([[[self.navController viewControllers] objectAtIndex:2] isKindOfClass:[HomeScreenVC class]]){
+        [[[self.navController viewControllers] objectAtIndex:1]viewWillAppear:YES];
+    }
+    
     /*
      Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
      */

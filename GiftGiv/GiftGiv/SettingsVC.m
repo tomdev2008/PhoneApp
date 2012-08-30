@@ -61,6 +61,12 @@
     [[[Facebook_GiftGiv sharedSingleton]facebook]setAccessToken:nil];
     [[Facebook_GiftGiv sharedSingleton]releaseFacebook];
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
+    
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
+    }
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 #pragma mark -
@@ -68,7 +74,7 @@
     switch ([sender tag]) {
             //mail
         case 1:
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"mailto://srinivasgadda@teleparadigm.com"]];
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"mailto://contactemail@giftgiv.com"]];
             break;
             //phone
         case 2:

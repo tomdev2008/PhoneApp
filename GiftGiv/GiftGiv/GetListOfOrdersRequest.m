@@ -95,11 +95,14 @@
     else if([argElementName isEqualToString:@"Id"]){
         order.orderId=(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
+    else if([argElementName isEqualToString:@"Details"]){
+        order.details=(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }
     
     else if([argElementName isEqualToString:@"ProfilePictureUrl"]){
         order.profilePictureUrl=(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         NSData *picData=[NSData dataWithContentsOfURL:[NSURL URLWithString:order.profilePictureUrl]];
-        NSLog(@"%@",order.profilePictureUrl);
+        //NSLog(@"%@",order.profilePictureUrl);
         if(picData!=nil){
             order.profilePicImg=[UIImage imageWithData:picData];
         }

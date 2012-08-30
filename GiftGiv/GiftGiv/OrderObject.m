@@ -28,8 +28,10 @@
 @synthesize phone;
 @synthesize email;
 @synthesize profilePicImg;
+@synthesize details;
 
 -(void)dealloc{
+    [details release];
     [orderId release];
     [profilePictureUrl release];
     [recipientName release];

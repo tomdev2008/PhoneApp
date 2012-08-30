@@ -16,5 +16,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *giftIcon_two;
 @property (retain, nonatomic) IBOutlet UILabel *giftTitle_two;
 @property (retain, nonatomic) IBOutlet UILabel *giftPrice_two;
-
+@property (retain, nonatomic) IBOutlet UIImageView *giftImg_one;
+@property (retain, nonatomic) IBOutlet UIImageView *giftImg_two;
 @end

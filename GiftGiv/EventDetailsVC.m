@@ -131,7 +131,7 @@
     [self loadProfilePictures];
     likesCommentsLbl.text=[NSString stringWithFormat:@"%d likes, %d comments",likesCount,commentsCount];
     
-    if(isPhotoTagged){
+    if([eventDetails objectForKey:@"picture"]){
         //event photo's default frame 10, 120,300,170
         eventImg.frame=CGRectMake(10, 0, 300, 170);
         
