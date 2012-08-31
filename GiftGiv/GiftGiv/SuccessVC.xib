@@ -264,7 +264,7 @@
 							<object class="IBUITableView" id="482897768">
 								<reference key="NSNextResponder" ref="785549704"/>
 								<int key="NSvFlags">274</int>
-								<string key="NSFrame">{{10, 196}, {300, 176}}</string>
+								<string key="NSFrame">{{10, 196}, {280, 176}}</string>
 								<reference key="NSSuperview" ref="785549704"/>
 								<reference key="NSWindow"/>
 								<reference key="IBUIBackgroundColor" ref="63263204"/>
@@ -557,7 +557,6 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="backToHome:">id</string>
 						<string key="getOrders:">id</string>
-						<string key="onlineSite:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="backToHome:">
@@ -566,10 +565,6 @@
 						</object>
 						<object class="IBActionInfo" key="getOrders:">
 							<string key="name">getOrders:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="onlineSite:">
-							<string key="name">onlineSite:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>

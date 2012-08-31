@@ -43,7 +43,7 @@
     
     float tableHeight=[upcomingEvents count]*60;
     
-    upcomingEventsTable.frame=CGRectMake(upcomingEventsTable.frame.origin.x, upcomingEventsTable.frame.origin.y, 300, tableHeight);
+    upcomingEventsTable.frame=CGRectMake(upcomingEventsTable.frame.origin.x, upcomingEventsTable.frame.origin.y, 280, tableHeight);
     
     contentScroll.contentSize=CGSizeMake(320, upcomingEventsTable.frame.origin.y+upcomingEventsTable.frame.size.height);
     

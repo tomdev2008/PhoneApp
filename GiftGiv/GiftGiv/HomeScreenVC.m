@@ -13,6 +13,8 @@
 @synthesize pageControlForEventGroups;
 @synthesize eventsTable;
 @synthesize eventTitleLbl;
+@synthesize eventTitle_2_Lbl;
+@synthesize events_2_Table;
 
 static NSDateFormatter *customDateFormat=nil;
 
@@ -85,6 +87,7 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     [eventsTable reloadData];
+    [events_2_Table reloadData];
     [super viewWillAppear:YES];
 }
 -(void)makeRequestToGetEvents{
@@ -149,10 +152,10 @@ static NSDateFormatter *customDateFormat=nil;
             [eventDict release];
             
         }
-        NSLog(@"%@",allupcomingEvents);
+        //NSLog(@"%@",allupcomingEvents);
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
-        
+        [self performSelector:@selector(updateNextColumnTitle)];
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
@@ -166,7 +169,7 @@ static NSDateFormatter *customDateFormat=nil;
             [self sortEvents:anniversaryEvents eventCategory:3];
         
         [[NSUserDefaults standardUserDefaults]setObject:allupcomingEvents forKey:@"AllUpcomingEvents"];
-        
+        //eventTitleLbl.text=events_category_1;
         shouldLoadingPicsStop=YES;
         [self loadProfilePictures];     
         
@@ -174,6 +177,7 @@ static NSDateFormatter *customDateFormat=nil;
         //[self stopHUD];
         
         [eventsTable reloadData];
+        [events_2_Table reloadData];
     }
     else{
         if([CheckNetwork connectedToNetwork]){
@@ -234,22 +238,11 @@ static NSDateFormatter *customDateFormat=nil;
     
     eventTitleLbl.text=[categoryTitles objectAtIndex:eventGroupNum-1];
     
-    /*if([eventTitleLbl.text isEqualToString:events_category_1]){
-     
-     }
-     else if([eventTitleLbl.text isEqualToString:events_category_2]){
-     //if([listOfBirthdayEvents count])
-     //   [eventsTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-     }
-     else if([eventTitleLbl.text isEqualToString:events_category_3]){
-     }
-     else if([eventTitleLbl.text isEqualToString:events_category_4]){
-     }
-     else if([eventTitleLbl.text isEqualToString:events_category_5]){
-     }*/
+    [self performSelector:@selector(updateNextColumnTitle)];
+    
     
     [eventsTable reloadData];
-    
+    [events_2_Table reloadData];
 }
 -(void)checkTotalNumberOfGroups{
     totalGroups=0;
@@ -291,8 +284,8 @@ static NSDateFormatter *customDateFormat=nil;
 {
 	CATransition *animation1 = [CATransition animation];
 	animation1.duration = 0.6f;//0.4f
-	animation1.timingFunction = UIViewAnimationCurveEaseInOut;
-	animation1.type = kCATransitionPush ;
+	//animation1.timingFunction = UIViewAnimationCurveEaseInOut;
+	animation1.type = kCATransitionPush;
 	
 	animation1.subtype = animationType;
 	
@@ -335,241 +328,191 @@ static NSDateFormatter *customDateFormat=nil;
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-	static NSString *cellIdentifier;
-	cellIdentifier=[NSString stringWithFormat:@"Cell%d",indexPath.row];
-	tableView.backgroundColor=[UIColor clearColor];
-	EventCustomCell *cell = (EventCustomCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    
-	if (cell == nil) {
+    if([tableView isEqual:eventsTable]){
+        static NSString *cellIdentifier;
+        cellIdentifier=[NSString stringWithFormat:@"Cell%d",indexPath.row];
+        tableView.backgroundColor=[UIColor clearColor];
+        EventCustomCell *cell = (EventCustomCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         
-        cell=[[[NSBundle mainBundle]loadNibNamed:@"EventCustomCell" owner:self options:nil] lastObject];
-		
-		cell.selectionStyle=UITableViewCellSelectionStyleNone;
-        cell.bubbleIconForCommentsBtn.tag=indexPath.row;
-        [cell.bubbleIconForCommentsBtn addTarget:self action:@selector(eventDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
-        
-        
-	}
-    if([eventTitleLbl.text isEqualToString:events_category_1]){
-        if([allupcomingEvents count]){
+        if (cell == nil) {
+            
+            cell=[[[NSBundle mainBundle]loadNibNamed:@"EventCustomCell" owner:self options:nil] lastObject];
+            
+            cell.selectionStyle=UITableViewCellSelectionStyleNone;
+            cell.bubbleIconForCommentsBtn.tag=indexPath.row;
+            [cell.bubbleIconForCommentsBtn addTarget:self action:@selector(eventDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
             
             
-            if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                cell.bubbleIconForCommentsBtn.hidden=NO;
-                cell.profileNameLbl.text=[[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
+        }
+        if([eventTitleLbl.text isEqualToString:events_category_1]){
+            if([allupcomingEvents count]){
+                
+                [self loadEventsData:allupcomingEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
                 
             }
-            else{
-                cell.profileNameLbl.text=[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-                if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
-                    if([[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
-                        cell.bubbleIconForCommentsBtn.hidden=NO;
-                }
+        }
+        else if([eventTitleLbl.text isEqualToString:events_category_2]){
+            
+            if([listOfBirthdayEvents count]){
                 
+                [self loadEventsData:listOfBirthdayEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                
+                
+            }
+            
+        }
+        else if([eventTitleLbl.text isEqualToString:events_category_3]){
+            
+            if([anniversaryEvents count]){
+                [self loadEventsData:anniversaryEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                
+                
+            }
+            
+        }
+        else if([eventTitleLbl.text isEqualToString:events_category_4]){
+            
+            if([newJobEvents count]){
+                [self loadEventsData:newJobEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];   
+            }
+            
+        }
+        else if([eventTitleLbl.text isEqualToString:events_category_5]){
+            
+            if([congratsEvents count]){
+                
+                
+                [self loadEventsData:congratsEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                
+            }
+            
+        }
+        
+        
+        //Dynamic[fit] label width respected to the size of the text
+        CGSize eventName_maxSize = CGSizeMake(113, 21);
+        CGSize eventName_new_size=[cell.eventNameLbl.text sizeWithFont:cell.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+        cell.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
+        
+        CGSize eventDate_maxSize = CGSizeMake(90, 21);
+        CGSize eventDate_newSize = [cell.dateLbl.text sizeWithFont:cell.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+        
+        cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 30, eventDate_newSize.width, 21); 
+        
+        return cell;
+    }
+    else if([tableView isEqual:events_2_Table]){
+        
+        static NSString *cellIdentifier_2;
+        cellIdentifier_2=[NSString stringWithFormat:@"Cell_2_%d",indexPath.row];
+        tableView.backgroundColor=[UIColor clearColor];
+        EventCustomCell *cell_two = (EventCustomCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier_2];
+        
+        if (cell_two == nil) {
+            
+            cell_two=[[[NSBundle mainBundle]loadNibNamed:@"EventCustomCell" owner:self options:nil] lastObject];
+            
+            cell_two.selectionStyle=UITableViewCellSelectionStyleNone;
+            cell_two.bubbleIconForCommentsBtn.tag=indexPath.row;
+            [cell_two.bubbleIconForCommentsBtn addTarget:self action:@selector(eventDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
+            
+            
+        }
+        if([eventTitle_2_Lbl.text isEqualToString:events_category_1]){
+            if([allupcomingEvents count]){
+                
+                [self loadEventsData:allupcomingEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
+                
+            }
+        }
+        else if([eventTitle_2_Lbl.text isEqualToString:events_category_2]){
+            
+            if([listOfBirthdayEvents count]){
+                
+                [self loadEventsData:listOfBirthdayEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
+                
+                
+            }
+            
+        }
+        else if([eventTitle_2_Lbl.text isEqualToString:events_category_3]){
+            
+            if([anniversaryEvents count]){
+                [self loadEventsData:anniversaryEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
+                
+                
+            }
+            
+        }
+        else if([eventTitle_2_Lbl.text isEqualToString:events_category_4]){
+            
+            if([newJobEvents count]){
+                [self loadEventsData:newJobEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];   
+            }
+            
+        }
+        else if([eventTitle_2_Lbl.text isEqualToString:events_category_5]){
+            
+            if([congratsEvents count]){
+                
+                
+                [self loadEventsData:congratsEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
+                
+            }
+            
+        }
+        
+        
+        //Dynamic[fit] label width respected to the size of the text
+        CGSize eventName_maxSize = CGSizeMake(113, 21);
+        CGSize eventName_new_size=[cell_two.eventNameLbl.text sizeWithFont:cell_two.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+        cell_two.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
+        
+        CGSize eventDate_maxSize = CGSizeMake(90, 21);
+        CGSize eventDate_newSize = [cell_two.dateLbl.text sizeWithFont:cell_two.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+        
+        cell_two.dateLbl.frame= CGRectMake(cell_two.eventNameLbl.frame.origin.x+3+cell_two.eventNameLbl.frame.size.width, 30, eventDate_newSize.width, 21); 
+        
+        return cell_two;
+    }
+	return nil;
+}
+-(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath{
+    
+    if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+        cell.bubbleIconForCommentsBtn.hidden=NO;
+        cell.profileNameLbl.text=[[[sourceArray objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
+        
+    }
+    else{
+        cell.profileNameLbl.text=[[sourceArray objectAtIndex:indexPath.row]objectForKey:@"name"];
+        if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
+            if([[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
+                cell.bubbleIconForCommentsBtn.hidden=NO;
+            else
                 cell.bubbleIconForCommentsBtn.hidden=YES;
-            }
-            
-            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
-            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
-                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-            }
-            else{
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
-                cell.dateLbl.textColor=[UIColor blackColor];
-            }
-            
-            
-            cell.dateLbl.text=dateDisplay;
-            cell.eventNameLbl.text=[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
-            
-            
-            
-            if([[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
-                cell.profileImg.image=[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
-            }
-            
+        }
+        else {
+            cell.bubbleIconForCommentsBtn.hidden=YES;
         }
     }
-    else if([eventTitleLbl.text isEqualToString:events_category_2]){
-        
-        if([listOfBirthdayEvents count]){
-            
-            if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                cell.bubbleIconForCommentsBtn.hidden=NO;
-                cell.profileNameLbl.text=[[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
-                
-            }
-            else{
-                cell.profileNameLbl.text=[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-                
-                if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
-                    if([[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
-                        cell.bubbleIconForCommentsBtn.hidden=NO;
-                }
-                
-                
-                cell.bubbleIconForCommentsBtn.hidden=YES;
-            }
-            
-            cell.eventNameLbl.text=[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
-            
-            
-            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
-            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
-                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-            }
-            else{
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
-                cell.dateLbl.textColor=[UIColor blackColor];
-            }
-            cell.dateLbl.text=dateDisplay;
-            
-            
-            if([[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
-                cell.profileImg.image=[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
-            }
-            
-            
-        }
-        
+    cell.eventNameLbl.text=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_type"];
+    
+    
+    NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+    if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
+        cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+        cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
     }
-    else if([eventTitleLbl.text isEqualToString:events_category_3]){
-        
-        if([anniversaryEvents count]){
-            if([[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                cell.bubbleIconForCommentsBtn.hidden=NO;
-                cell.profileNameLbl.text=[[[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
-                
-            }
-            else{
-                cell.profileNameLbl.text=[[anniversaryEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-                
-                if([[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
-                    if([[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
-                        cell.bubbleIconForCommentsBtn.hidden=NO;
-                }
-                else 
-                    cell.bubbleIconForCommentsBtn.hidden=YES;
-            }
-            cell.eventNameLbl.text=[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
-            
-            
-            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
-            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
-                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-            }
-            else{
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
-                cell.dateLbl.textColor=[UIColor blackColor];
-            }
-            cell.dateLbl.text=dateDisplay;
-            
-            if([[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
-                cell.profileImg.image=[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
-            }
-            
-            
-        }
-        
+    else{
+        cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+        cell.dateLbl.textColor=[UIColor blackColor];
     }
-    else if([eventTitleLbl.text isEqualToString:events_category_4]){
-        
-        if([newJobEvents count]){
-            
-            if([[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                cell.bubbleIconForCommentsBtn.hidden=NO;
-                cell.profileNameLbl.text=[[[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
-                
-            }
-            else{
-                cell.profileNameLbl.text=[[newJobEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-                if([[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
-                    if([[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
-                        cell.bubbleIconForCommentsBtn.hidden=NO;
-                }
-                else 
-                    cell.bubbleIconForCommentsBtn.hidden=YES;
-            }
-            
-            cell.eventNameLbl.text=[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
-            
-            
-            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
-            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
-                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-            }
-            else{
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
-                cell.dateLbl.textColor=[UIColor blackColor];
-            }
-            cell.dateLbl.text=dateDisplay;
-            
-            if([[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
-                cell.profileImg.image=[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
-            }
-            
-            
-            
-        }
-        
+    cell.dateLbl.text=dateDisplay;
+    
+    if([[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        cell.profileImg.image=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
     }
-    else if([eventTitleLbl.text isEqualToString:events_category_5]){
-        
-        if([congratsEvents count]){
-            
-            if([[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                cell.bubbleIconForCommentsBtn.hidden=NO;
-                cell.profileNameLbl.text=[[[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
-                
-            }
-            else{
-                cell.profileNameLbl.text=[[congratsEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-                if([[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
-                    if([[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
-                        cell.bubbleIconForCommentsBtn.hidden=NO;
-                }
-                else 
-                    cell.bubbleIconForCommentsBtn.hidden=YES;
-            }
-            cell.eventNameLbl.text=[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
-            
-            
-            NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
-            if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
-                cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-            }
-            else{
-                cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
-                cell.dateLbl.textColor=[UIColor blackColor];
-            }
-            cell.dateLbl.text=dateDisplay;
-            
-            if([[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
-                cell.profileImg.image=[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
-            }
-            
-            
-        }
-        
-    }
-    
-    
-    //Dynamic[fit] label width respected to the size of the text
-    CGSize eventName_maxSize = CGSizeMake(113, 21);
-    CGSize eventName_new_size=[cell.eventNameLbl.text sizeWithFont:cell.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-    cell.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
-    
-    CGSize eventDate_maxSize = CGSizeMake(90, 21);
-    CGSize eventDate_newSize = [cell.dateLbl.text sizeWithFont:cell.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-    
-    cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 30, eventDate_newSize.width, 21); 
-    
-	return cell;
 }
 /*-(NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate{
  
@@ -624,109 +567,114 @@ static NSDateFormatter *customDateFormat=nil;
  }*/
 #pragma mark - TableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
-        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
-    }
-    //Gift options screen
-    GiftOptionsVC *giftOptions=[[GiftOptionsVC alloc]initWithNibName:@"GiftOptionsVC" bundle:nil];
     
-    if([eventTitleLbl.text isEqualToString:events_category_1]){
-        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-        if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-            [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-            [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+    if([tableView isEqual:eventsTable]){
+        if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+            [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
         }
-        else{
-            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+        //Gift options screen
+        GiftOptionsVC *giftOptions=[[GiftOptionsVC alloc]initWithNibName:@"GiftOptionsVC" bundle:nil];
+        
+        if([eventTitleLbl.text isEqualToString:events_category_1]){
+            NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+            if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            }
+            else{
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+            }
+            
+            
+            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            
+            
+            [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
+            
+            [tempInfoDict release];
+            
         }
         
+        else if([eventTitleLbl.text isEqualToString:events_category_2]){
+            NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+            if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            }
+            else{
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+            }
+            
+            
+            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            
+            [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
+            
+            [tempInfoDict release];
+        }
+        else if([eventTitleLbl.text isEqualToString:events_category_3]){
+            NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+            if([[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            }
+            else{
+                [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+            }
+            
+            
+            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            
+            [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
+            
+            [tempInfoDict release];
+        }
+        else if([eventTitleLbl.text isEqualToString:events_category_4]){
+            NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+            if([[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                [tempInfoDict setObject:[[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                [tempInfoDict setObject:[[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            }
+            else{
+                [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+            }
+            
+            
+            [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            
+            
+            [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
+            
+            [tempInfoDict release];
+        }
+        else if([eventTitleLbl.text isEqualToString:events_category_5]){
+            NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
+            if([[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                [tempInfoDict setObject:[[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                [tempInfoDict setObject:[[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            }
+            else{
+                [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+            }
+            
+            
+            [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            
+            [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
+            
+            [tempInfoDict release];
+        }
         
-        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-        
-        
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
-        
-        [tempInfoDict release];
-        
+        [self.navigationController pushViewController:giftOptions animated:YES];
+        [giftOptions release];
     }
     
-    else if([eventTitleLbl.text isEqualToString:events_category_2]){
-        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-        if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-            [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-            [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        }
-        else{
-            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
-        }
-        
-        
-        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-        
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
-        
-        [tempInfoDict release];
-    }
-    else if([eventTitleLbl.text isEqualToString:events_category_3]){
-        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-        if([[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-            [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-            [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        }
-        else{
-            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
-        }
-        
-        
-        [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-        
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
-        
-        [tempInfoDict release];
-    }
-    else if([eventTitleLbl.text isEqualToString:events_category_4]){
-        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-        if([[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-            [tempInfoDict setObject:[[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-            [tempInfoDict setObject:[[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        }
-        else{
-            [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-            [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
-        }
-        
-        
-        [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-        
-        
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
-        
-        [tempInfoDict release];
-    }
-    else if([eventTitleLbl.text isEqualToString:events_category_5]){
-        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-        if([[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-            [tempInfoDict setObject:[[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-            [tempInfoDict setObject:[[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        }
-        else{
-            [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-            [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
-        }
-        
-        
-        [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-        
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
-        
-        [tempInfoDict release];
-    }
     
-    [self.navigationController pushViewController:giftOptions animated:YES];
-    [giftOptions release];
     
 }
 
@@ -917,7 +865,12 @@ static NSDateFormatter *customDateFormat=nil;
         [allupcomingEvents addObjectsFromArray:listOfBirthdayEvents];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
+        
+        [self performSelector:@selector(updateNextColumnTitle)];
+        
+        
         [eventsTable reloadData];
+        [events_2_Table reloadData];
         birthdayEventUserNoToAddAsUser=1;
         shouldLoadingPicsStop=NO;
         
@@ -928,6 +881,19 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     
+}
+-(void)updateNextColumnTitle{
+    int nextGroupNum;
+    
+    if(eventGroupNum==[categoryTitles count]){
+        nextGroupNum=1;
+    }
+    else if(eventGroupNum==1)
+        nextGroupNum=[categoryTitles count];
+    else
+        nextGroupNum++;
+    
+    eventTitle_2_Lbl.text=[categoryTitles objectAtIndex:nextGroupNum-1];
 }
 -(void)loadProfilePictures{
     int upcomingEventsCount=[allupcomingEvents count];
@@ -961,13 +927,8 @@ static NSDateFormatter *customDateFormat=nil;
                             if(!shouldLoadingPicsStop)
                                 [[allupcomingEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
-                            if([eventTitleLbl.text isEqualToString:events_category_1]){
-                                [eventsTable beginUpdates];
-                                
-                                [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:i inSection:0], nil]
-                                                   withRowAnimation:UITableViewRowAnimationNone];
-                                [eventsTable endUpdates];
-                            }
+                            [self loadImageForEventAtIndexNum:i forTable:eventsTable];
+                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1006,13 +967,8 @@ static NSDateFormatter *customDateFormat=nil;
                             if(!shouldLoadingPicsStop)
                                 [[listOfBirthdayEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
-                            if([eventTitleLbl.text isEqualToString:events_category_2]){
-                                [eventsTable beginUpdates];
-                                
-                                [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:i inSection:0], nil]
-                                                   withRowAnimation:UITableViewRowAnimationNone];
-                                [eventsTable endUpdates];
-                            }
+                            [self loadImageForEventAtIndexNum:i forTable:eventsTable];
+                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1051,13 +1007,8 @@ static NSDateFormatter *customDateFormat=nil;
                             if(!shouldLoadingPicsStop)
                                 [[anniversaryEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
-                            if([eventTitleLbl.text isEqualToString:events_category_3]){
-                                [eventsTable beginUpdates];
-                                
-                                [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:i inSection:0], nil]
-                                                   withRowAnimation:UITableViewRowAnimationNone];
-                                [eventsTable endUpdates];
-                            }
+                            [self loadImageForEventAtIndexNum:i forTable:eventsTable];
+                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1095,13 +1046,8 @@ static NSDateFormatter *customDateFormat=nil;
                             if(!shouldLoadingPicsStop)
                                 [[newJobEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
-                            if([eventTitleLbl.text isEqualToString:events_category_4]){
-                                [eventsTable beginUpdates];
-                                
-                                [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:i inSection:0], nil]
-                                                   withRowAnimation:UITableViewRowAnimationNone];
-                                [eventsTable endUpdates];
-                            }
+                            [self loadImageForEventAtIndexNum:i forTable:eventsTable];
+                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1139,13 +1085,8 @@ static NSDateFormatter *customDateFormat=nil;
                             if(!shouldLoadingPicsStop)
                                 [[congratsEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
-                            if([eventTitleLbl.text isEqualToString:events_category_5]){
-                                [eventsTable beginUpdates];
-                                
-                                [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:i inSection:0], nil]
-                                                   withRowAnimation:UITableViewRowAnimationNone];
-                                [eventsTable endUpdates];
-                            }
+                            [self loadImageForEventAtIndexNum:i forTable:eventsTable];
+                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1159,10 +1100,16 @@ static NSDateFormatter *customDateFormat=nil;
         }
     }
     
-    
-    
-    
 }
+
+-(void) loadImageForEventAtIndexNum:(int)index forTable:(UITableView*)table{
+    [table beginUpdates];
+    
+    [table reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:index inSection:0], nil] withRowAnimation:UITableViewRowAnimationNone];
+    
+    [table endUpdates];
+}
+
 -(void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails{
     
     if([CheckNetwork connectedToNetwork]){
@@ -1219,7 +1166,7 @@ static NSDateFormatter *customDateFormat=nil;
     [allupcomingEvents addObject:eventDetails];
     [self performSelector:@selector(checkTotalNumberOfGroups)];
     
-    
+    [self performSelector:@selector(updateNextColumnTitle)];
     
     if([allupcomingEvents count]>1)
         [self sortEvents:allupcomingEvents eventCategory:1];
@@ -1230,7 +1177,7 @@ static NSDateFormatter *customDateFormat=nil;
     shouldLoadingPicsStop=YES;
     [self loadProfilePictures];
     [eventsTable reloadData];
-    
+    [events_2_Table reloadData];
     
     
 }
@@ -1276,6 +1223,7 @@ static NSDateFormatter *customDateFormat=nil;
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
+        [self performSelector:@selector(updateNextColumnTitle)];
         if([allupcomingEvents count])
             [self sortEvents:allupcomingEvents eventCategory:1];
         if([newJobEvents count])
@@ -1286,6 +1234,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [self loadProfilePictures];
         [eventsTable reloadData];
+        [events_2_Table reloadData];
         
     }
     
@@ -1317,6 +1266,7 @@ static NSDateFormatter *customDateFormat=nil;
         [anniversaryEvents addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
+        [self performSelector:@selector(updateNextColumnTitle)];
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
@@ -1329,6 +1279,7 @@ static NSDateFormatter *customDateFormat=nil;
         [self loadProfilePictures];
         
         [eventsTable reloadData];
+        [events_2_Table reloadData];
         
     }
 }
@@ -1357,6 +1308,7 @@ static NSDateFormatter *customDateFormat=nil;
         [congratsEvents addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
+        [self performSelector:@selector(updateNextColumnTitle)];
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
@@ -1369,6 +1321,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [self loadProfilePictures];
         [eventsTable reloadData];
+        [events_2_Table reloadData];
         
     }
 }
@@ -1428,7 +1381,7 @@ static NSDateFormatter *customDateFormat=nil;
     [sortDescriptor release];
     
     [eventsTable reloadData];
-    
+    [events_2_Table reloadData];
 	
 }
 #pragma mark - Check Event existance
@@ -1508,6 +1461,8 @@ static NSDateFormatter *customDateFormat=nil;
     [self setEventTitleLbl:nil];
     [self setPageControlForEventGroups:nil];
     [self setEventsTable:nil];
+    [self setEventTitle_2_Lbl:nil];
+    [self setEvents_2_Table:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -1538,6 +1493,8 @@ static NSDateFormatter *customDateFormat=nil;
     [eventTitleLbl release];
     [pageControlForEventGroups release];
     [eventsTable release];
+    [eventTitle_2_Lbl release];
+    [events_2_Table release];
     [super dealloc];
 }
 

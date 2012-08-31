@@ -50,7 +50,8 @@
 @property (retain, nonatomic) IBOutlet CustomPageControl *pageControlForEventGroups;
 @property (retain, nonatomic) IBOutlet UITableView *eventsTable;
 @property (retain, nonatomic) IBOutlet UILabel *eventTitleLbl;
-
+@property (retain, nonatomic) IBOutlet UILabel *eventTitle_2_Lbl;
+@property (retain, nonatomic) IBOutlet UITableView *events_2_Table;
 
 - (IBAction)settingsAction:(id)sender;
 - (IBAction)pageControlActionForEventGroups:(id)sender;
@@ -73,5 +74,9 @@
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
 - (void) stopHUD;
 #pragma mark -
+
+-(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath;
+
+-(void) loadImageForEventAtIndexNum:(int)index forTable:(UITableView*)table;
 
 @end
