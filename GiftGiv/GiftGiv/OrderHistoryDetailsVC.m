@@ -102,12 +102,12 @@
     }
     eventNameLbl.text=[orderDetails details];
     NSString *dateString=[[[orderDetails orderUpdatedDate] componentsSeparatedByString:@"T"] objectAtIndex:0];
-    statusDateLbl.text=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
-    if([statusDateLbl.text isEqualToString:@"Today"]||[statusDateLbl.text isEqualToString:@"Yesterday"]||[statusDateLbl.text isEqualToString:@"Tomorrow"]||[statusDateLbl.text isEqualToString:@"Recent"]){
-        statusDateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-        statusDateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-    }
-    
+    statusDateLbl.text=dateString;//[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
+    /*if([statusDateLbl.text isEqualToString:@"Today"]||[statusDateLbl.text isEqualToString:@"Yesterday"]||[statusDateLbl.text isEqualToString:@"Tomorrow"]||[statusDateLbl.text isEqualToString:@"Recent"]){
+     statusDateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+     statusDateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+     }
+     */
     
     if(![orderDetails.userMessage isEqualToString:@""]){
         msgHeadLbl.hidden=NO;
@@ -141,7 +141,7 @@
     addressLbl.frame=CGRectMake(addressLbl.frame.origin.x, mailGiftToLbl.frame.origin.y+mailGiftToLbl.frame.size.height-3, addressLbl.frame.size.width, addressLbl.frame.size.height);
     
     statusHeadLbl.frame=CGRectMake(statusHeadLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+10, statusHeadLbl.frame.size.width, statusHeadLbl.frame.size.height);
-    statusDateLbl.frame=CGRectMake(statusDateLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+10, statusDateLbl.frame.size.width, statusDateLbl.frame.size.height);
+    statusDateLbl.frame=CGRectMake(statusDateLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+9, statusDateLbl.frame.size.width, statusDateLbl.frame.size.height);
     statusLbl.frame=CGRectMake(statusLbl.frame.origin.x, statusHeadLbl.frame.origin.y+statusHeadLbl.frame.size.height-3, statusLbl.frame.size.width, statusLbl.frame.size.height);
     
     // askAddressLbl,askAgainBtn will be visible only if the order is of type Email/SMS
@@ -173,7 +173,7 @@
     
     giftNameLbl.text=giftDetails.giftTitle;
     giftPriceLbl.text=[NSString stringWithFormat:@"$%@",orderDetails.price];
-    [self loadGiftImage:giftDetails.giftThumbnailUrl forAnObject:giftImg];
+    [self loadGiftImage:giftDetails.giftImageUrl forAnObject:giftImg];
 }
 -(void) requestFailed{
     AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed. Please try again later", nil);
@@ -200,10 +200,14 @@
             
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
                 
-                if(giftImage.size.width<125 || giftImage.size.height<125){
-                    targetImgView.frame= CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y+(giftImage.size.height)/4, giftImage.size.width, giftImage.size.height);
+                if(![targetImgView isEqual:profilePic])
+                {
+                    if(giftImage.size.width<125 || giftImage.size.height<125){
+                        targetImgView.frame= CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y+(giftImage.size.height)/4, giftImage.size.width, giftImage.size.height);
+                    }
                 }
                 
+                               
                 targetImgView.image=giftImage; 
                 
                 

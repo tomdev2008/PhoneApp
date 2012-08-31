@@ -363,7 +363,7 @@ params   = _params;
         _closeButton.showsTouchWhenHighlighted = YES;
         _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin
         | UIViewAutoresizingFlexibleBottomMargin;
-        [self addSubview:_closeButton];
+        //[self addSubview:_closeButton];
         
         _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:
                     UIActivityIndicatorViewStyleWhiteLarge];

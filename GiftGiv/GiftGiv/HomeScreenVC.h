@@ -51,6 +51,7 @@
 @property (retain, nonatomic) IBOutlet UITableView *eventsTable;
 @property (retain, nonatomic) IBOutlet UILabel *eventTitleLbl;
 
+
 - (IBAction)settingsAction:(id)sender;
 - (IBAction)pageControlActionForEventGroups:(id)sender;
 - (IBAction)showListOfOrders:(id)sender;

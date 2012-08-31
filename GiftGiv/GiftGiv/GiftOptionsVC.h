@@ -30,7 +30,7 @@
     
     NSMutableArray *flowersList,*giftCarsList,*greetingCardsList;
     
-    
+    float giftCatItemSpace;
 }
 @property (retain, nonatomic) IBOutlet iCarousel *category_iScroll;
 

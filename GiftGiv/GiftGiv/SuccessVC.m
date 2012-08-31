@@ -10,6 +10,7 @@
 
 @implementation SuccessVC
 @synthesize upcomingEventsTable;
+@synthesize contentScroll;
 @synthesize upcomingEvents;
 //@synthesize transactionID;
 
@@ -39,6 +40,15 @@
     // Do any additional setup after loading the view from its nib.
     
     upcomingEvents=[[NSMutableArray alloc]initWithArray:[[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"]];
+    
+    float tableHeight=[upcomingEvents count]*60;
+    
+    upcomingEventsTable.frame=CGRectMake(upcomingEventsTable.frame.origin.x, upcomingEventsTable.frame.origin.y, 300, tableHeight);
+    
+    contentScroll.contentSize=CGSizeMake(320, upcomingEventsTable.frame.origin.y+upcomingEventsTable.frame.size.height);
+    
+    [upcomingEventsTable reloadData];
+    
     
     [self loadProfilePictures];
 }
@@ -248,13 +258,20 @@
     }
 }
 
-- (IBAction)onlineSite:(id)sender {
+/*- (IBAction)onlineSite:(id)sender {
     [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://giftgiv.com"]];
+}*/
+
+- (IBAction)getOrders:(id)sender {
+    OrderHistoryListVC *orders=[[OrderHistoryListVC alloc]initWithNibName:@"OrderHistoryListVC" bundle:nil];
+    [self.navigationController pushViewController:orders animated:YES];
+    [orders release];
 }
 #pragma mark -
 - (void)viewDidUnload
 {
     [self setUpcomingEventsTable:nil];
+    [self setContentScroll:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -270,6 +287,7 @@
     //[transactionID release];
     [upcomingEvents release];
     [upcomingEventsTable release];
+    [contentScroll release];
     [super dealloc];
 }
 @end

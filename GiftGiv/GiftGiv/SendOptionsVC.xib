@@ -416,7 +416,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">We'll send a text message to your recipient to securely ask for their mailing address. Don't worry: we won't give away the surprise.</string>
+						<string key="IBUIText">We'll send a text message to your recipient to securely ask for their mailing address. Don't worry: we won't give away to surprise.</string>
 						<reference key="IBUITextColor" ref="84599202"/>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
@@ -510,7 +510,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">We'll send an e-mail to your recipient to securely ask for their mailing address. Don't worry: we won't give away the surprise.</string>
+						<string key="IBUIText">We'll send an e-mail to your recipient to securely ask for their mailing address. Don't worry: we won't give away to surprise.</string>
 						<reference key="IBUITextColor" ref="84599202"/>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>

@@ -391,8 +391,13 @@
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
 						<float key="IBUIMinimumFontSize">10</float>
-						<reference key="IBUIFontDescription" ref="687770810"/>
-						<reference key="IBUIFont" ref="288925148"/>
+						<object class="IBUIFontDescription" key="IBUIFontDescription" id="916693842">
+							<string key="name">Helvetica-Bold</string>
+							<string key="family">Helvetica</string>
+							<int key="traits">2</int>
+							<double key="pointSize">12</double>
+						</object>
+						<reference key="IBUIFont" ref="304212670"/>
 					</object>
 					<object class="IBUITextView" id="495769142">
 						<reference key="NSNextResponder" ref="908729979"/>
@@ -468,12 +473,7 @@
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">nextarrow.png</string>
 						</object>
-						<object class="IBUIFontDescription" key="IBUIFontDescription">
-							<string key="name">Helvetica-Bold</string>
-							<string key="family">Helvetica</string>
-							<int key="traits">2</int>
-							<double key="pointSize">12</double>
-						</object>
+						<reference key="IBUIFontDescription" ref="916693842"/>
 						<reference key="IBUIFont" ref="304212670"/>
 					</object>
 				</array>

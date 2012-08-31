@@ -10,7 +10,7 @@
 
 #define NUMBER_OF_ITEMS 20
 #define NUMBER_OF_VISIBLE_ITEMS 5
-#define ITEM_SPACING 135
+//#define ITEM_SPACING 130
 
 
 @implementation GiftOptionsVC
@@ -46,7 +46,7 @@
 {
     [super viewDidLoad];
     
-    
+    category_iScroll.clipsToBounds=YES;
     
     [self showProgressHUD:self.view withMsg:nil];
     
@@ -54,6 +54,10 @@
     
     profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     
+    
+    UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+    CGSize giftCatTitleSize=[@"gift cards" sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+    giftCatItemSpace=giftCatTitleSize.width;
     
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
@@ -128,7 +132,7 @@
 
 - (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel1
 {
-    category_iScroll.contentOffset=CGSizeMake(-(category_iScroll.frame.size.width/3),0);
+    category_iScroll.contentOffset=CGSizeMake(-(category_iScroll.frame.size.width/3.2),0);
     category_iScroll.centerItemWhenSelected=YES;
     
     return [giftCategoriesList count];
@@ -143,36 +147,32 @@
 
 - (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view
 {
-    UIButton *button = (UIButton *)view;
-	if (button == nil)
+    
+    UILabel *label = (UILabel *)view;
+	if (label == nil)
 	{
-        
-		button = [UIButton buttonWithType:UIButtonTypeCustom];
-        
-        //button.frame = CGRectMake(0.0f, 2.0f, 130, 40);
-        
-		
-        [button.titleLabel setFont:[UIFont fontWithName:@"Helvetica-Light" size:25.0]];
-        
+        label = [[[UILabel alloc]init] autorelease];
+               
+		label.font=[UIFont fontWithName:@"Helvetica-Light" size:25.0];
+        label.textAlignment=UITextAlignmentLeft;
 		
 	}
-    //NSString *titleStr=[[giftCategoriesList objectAtIndex:index]catName];
-    //CGSize giftCatTitleSize=[titleStr sizeWithFont:[button.titleLabel font] constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
-    button.frame = CGRectMake(0.0f, 2.0f, 135, 40);
-    // button.tag=index+1;
-    // [button addTarget:self action:@selector(categoryActions:) forControlEvents:UIControlEventTouchUpInside];
-    [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [button setTitle:[[giftCategoriesList objectAtIndex:index]catName]  forState:UIControlStateNormal];
+    NSString *titleStr=[[giftCategoriesList objectAtIndex:index]catName];
+   
+    label.frame = CGRectMake(0.0f, 2.0f, giftCatItemSpace, 40);
     
-    return button;
+    label.textColor=[UIColor grayColor];
+   
+    label.text=titleStr;
+    return label;
+}
+- (BOOL)carousel:(iCarousel *)carousel shouldSelectItemAtIndex:(NSInteger)index{
+    if(index==[carousel currentItemIndex])
+        return NO;
+    return YES;
 }
 - (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index{
-    //[category_iScroll reloadData];
-    /*category_iScroll.scrollEnabled=YES;
-     [category_iScroll scrollToItemAtIndex:index animated:YES];
-     category_iScroll.scrollEnabled=NO;*/
-    //[[(UIButton*)sender titleLabel] setTextColor:[UIColor blackColor]];
-    //[[(UIButton*)[category_iScroll itemViewAtIndex:index] titleLabel] setTextColor:[UIColor blackColor]];
+    
     if(giftCatNum<index+1){
         giftCatNum=index+1;
         [self swipingForGiftCategories:1];
@@ -185,10 +185,64 @@
     giftCategoryPageControl.currentPage=giftCatNum-1;
     
 }
+
+
 - (CGFloat)carouselItemWidth:(iCarousel *)carousel
 {
-    //usually this should be slightly wider than the item views
-    return ITEM_SPACING;
+    /*NSLog(@"visible items..%d,%d",[carousel currentItemIndex],[carousel numberOfItems]);
+     int current, next_1,next_2;
+     current=[carousel currentItemIndex];
+     if([carousel currentItemIndex]==[giftCategoriesList count]-1){
+     next_1=0;
+     next_2=1;
+     
+     }
+     else if([carousel currentItemIndex]>=0){
+     next_1=current+1;
+     next_2=current+2;
+     
+     }
+     if(!currentWidth){
+     currentWidth=YES;
+     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+     CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:current]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+     
+     //usually this should be slightly wider than the item views
+     return giftCatTitleSize.width+10;
+     
+     }
+     else if(!next_1_Width){
+     next_1_Width=YES;
+     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+     CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:next_1]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+     
+     //usually this should be slightly wider than the item views
+     return giftCatTitleSize.width+10;
+     }
+     else if(!next_2_Width){
+     next_2_Width=YES;
+     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+     CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:next_2]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+     
+     //usually this should be slightly wider than the item views
+     return giftCatTitleSize.width+10;
+     }
+     
+     if([[carousel visibleItemViews] count]){
+     for(UIView *innerView in [carousel visibleItemViews]){
+     int indexNum=[carousel indexOfItemView:innerView];
+     NSLog(@"number..%d",[carousel indexOfItemView:innerView]); 
+     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+     CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:indexNum]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+     
+     //usually this should be slightly wider than the item views
+     return giftCatTitleSize.width+10;
+     } 
+     }*/
+    //else 
+    return giftCatItemSpace+5;
+    //NSLog(@"gift...%d",[carousel currentItemIndex]);
+    //ITEM_SPACING;
 }
 
 - (BOOL)carouselShouldWrap:(iCarousel *)carousel
@@ -196,37 +250,37 @@
     return YES;
 }
 #pragma mark -
--(void)loadDynamicCategories{
-    
-    UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
-    
-    int xOriginForButton=0;
-    totalCats=[giftCategoriesList count];
-    
-    //Gift categories
-    for(int i=0;i<totalCats;i++){
-        
-        //dynamic button width based on the title for it
-        CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:i]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
-        UIButton *giftCatBtn=[[UIButton alloc]initWithFrame:CGRectMake(xOriginForButton, 2, giftCatTitleSize.width, 40)];
-        giftCatBtn.tag=i+1;
-        [giftCatBtn addTarget:self action:@selector(categoryActions:) forControlEvents:UIControlEventTouchUpInside];
-        [giftCatBtn.titleLabel setFont:catTitleFont];
-        [giftCatBtn setTitle:[[giftCategoriesList objectAtIndex:i]catName] forState:UIControlStateNormal];
-        if(i==0)
-            [giftCatBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        else
-            [giftCatBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [giftCategoriesScroll addSubview:giftCatBtn];
-        
-        [giftCategoriesScroll setContentSize:CGSizeMake(xOriginForButton+giftCatTitleSize.width, 44)];
-        xOriginForButton=xOriginForButton+giftCatTitleSize.width+10;
-        [giftCatBtn release];
-    }
-    giftCategoryPageControl.numberOfPages=totalCats;    
-    giftCatNum=1;
-    giftCategoryPageControl.currentPage=giftCatNum-1;
-}
+/*-(void)loadDynamicCategories{
+ 
+ UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+ 
+ int xOriginForButton=0;
+ totalCats=[giftCategoriesList count];
+ 
+ //Gift categories
+ for(int i=0;i<totalCats;i++){
+ 
+ //dynamic button width based on the title for it
+ CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:i]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+ UIButton *giftCatBtn=[[UIButton alloc]initWithFrame:CGRectMake(xOriginForButton, 2, giftCatTitleSize.width, 40)];
+ giftCatBtn.tag=i+1;
+ [giftCatBtn addTarget:self action:@selector(categoryActions:) forControlEvents:UIControlEventTouchUpInside];
+ [giftCatBtn.titleLabel setFont:catTitleFont];
+ [giftCatBtn setTitle:[[giftCategoriesList objectAtIndex:i]catName] forState:UIControlStateNormal];
+ if(i==0)
+ [giftCatBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+ else
+ [giftCatBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+ [giftCategoriesScroll addSubview:giftCatBtn];
+ 
+ [giftCategoriesScroll setContentSize:CGSizeMake(xOriginForButton+giftCatTitleSize.width, 44)];
+ xOriginForButton=xOriginForButton+giftCatTitleSize.width+10;
+ [giftCatBtn release];
+ }
+ giftCategoryPageControl.numberOfPages=totalCats;    
+ giftCatNum=1;
+ giftCategoryPageControl.currentPage=giftCatNum-1;
+ }*/
 -(void)makeRequestToGetCategories{
     
     if([CheckNetwork connectedToNetwork]){
@@ -336,7 +390,7 @@
                         [giftCarsList addObject:giftItem];
                         break;
                     }
-                    if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"greeting cards"]){
+                    if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"cards"]){
                         if(greetingCardsList==nil){
                             greetingCardsList=[[NSMutableArray alloc]init];
                         }
@@ -360,7 +414,7 @@
             }
         }
         if(greetingCardsList==nil){
-            if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"greeting cards"]){
+            if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"cards"]){
                 [giftCategoriesList removeObject:[giftCategoriesList objectAtIndex:i]];
             }
         }
@@ -379,7 +433,7 @@
     
     [category_iScroll reloadData];
     
-    [[(UIButton*)[category_iScroll itemViewAtIndex:0] titleLabel] setTextColor:[UIColor blackColor]];
+    [(UILabel*)[category_iScroll itemViewAtIndex:0] setTextColor:[UIColor blackColor]];
     
     giftCatNum=1;
     [self reloadTheContentForGifts];
@@ -403,7 +457,7 @@
     else if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName]isEqualToString:@"gift cards"]){
         giftsList=[[NSMutableArray alloc]initWithArray:giftCarsList];
     }
-    else if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName]isEqualToString:@"greeting cards"]){
+    else if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName]isEqualToString:@"cards"]){
         giftsList=[[NSMutableArray alloc]initWithArray:greetingCardsList];
     }
     
@@ -484,15 +538,15 @@
     
     
     for(UIView *subview in [giftCategoriesScroll subviews]){
-        if([subview isKindOfClass:[UIButton class]]){
-            [(UIButton*)subview setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        if([subview isKindOfClass:[UILabel class]]){
+            [(UILabel*)subview setTextColor:[UIColor grayColor]];
         }
     }
     /*UIButton*targetBtn=(UIButton*)[giftCategoriesScroll viewWithTag:giftCatNum];
      [targetBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];*/
     
     [category_iScroll reloadData];
-    [[(UIButton*)[category_iScroll itemViewAtIndex:giftCatNum-1] titleLabel] setTextColor:[UIColor blackColor]];
+    [(UILabel*)[category_iScroll itemViewAtIndex:giftCatNum-1] setTextColor:[UIColor blackColor]];
     
     category_iScroll.scrollEnabled=YES;
     [category_iScroll scrollToItemAtIndex:giftCatNum-1 animated:YES];
@@ -644,7 +698,7 @@
         Gift_GreetingCardDetailsVC *greetingCardDetails=[[Gift_GreetingCardDetailsVC alloc]initWithNibName:@"Gift_GreetingCardDetailsVC" bundle:nil];
         if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName] isEqualToString:@"flowers"])
             greetingCardDetails.isGreetingCard=NO;
-        else if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName] isEqualToString:@"greeting cards"])
+        else if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName] isEqualToString:@"cards"])
             greetingCardDetails.isGreetingCard=YES;
         greetingCardDetails.giftItemInfo=selectedGift;
         [self.navigationController pushViewController:greetingCardDetails animated:YES];

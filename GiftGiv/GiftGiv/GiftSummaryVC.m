@@ -53,18 +53,20 @@
 {
     [super viewDidLoad];
     
+    giftSummaryScroll.frame=CGRectMake(0, 44, 320, 416);
+    [self.view addSubview:giftSummaryScroll];
+    
     eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
     profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     
     
-    [self loadGiftImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
+    [self loadImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
     
-    [self loadGiftImage:[giftSummaryDict objectForKey:@"GiftImgUrl"] forAnObject:giftImg];
+    [self loadImage:[giftSummaryDict objectForKey:@"GiftImgUrl"] forAnObject:giftImg];
     
     
-    giftSummaryScroll.frame=CGRectMake(0, 44, 320, 416);
-    [self.view addSubview:giftSummaryScroll];
+   
     
     profileNameLbl.text=[giftSummaryDict objectForKey:@"RecipientName"];
     eventNameLbl.text=[giftSummaryDict objectForKey:@"EventName"];
@@ -117,8 +119,8 @@
     
 }
 
--(void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
-    
+-(void)loadImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
+    NSLog(@"%@",imgURL);
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
@@ -138,12 +140,18 @@
         else {
             
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                if(giftImage.size.width<125 || giftImage.size.height<125){
-                    targetImgView.frame= CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y+(giftImage.size.height)/4, giftImage.size.width, giftImage.size.height);
+                
+                if(![targetImgView isEqual:profilePic])
+                {
+                    if(giftImage.size.width<125 || giftImage.size.height<125){
+                        targetImgView.frame= CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y+(giftImage.size.height)/4, giftImage.size.width, giftImage.size.height);
+                    }
                 }
                 
+                
+                
                 targetImgView.image=giftImage;
-                //targetImgView.image=giftImage;                   
+                                 
                 
             });
         }

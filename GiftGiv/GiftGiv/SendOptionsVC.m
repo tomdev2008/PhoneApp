@@ -285,7 +285,7 @@
         if(![emailTxtFld.text isEqualToString:@""]){
             if(![self validateMail:emailTxtFld.text]){
                 //emailTxtFld.textColor=[UIColor redColor];
-                AlertWithMessageAndDelegate(@"Gift Giv", @"Invalid mail ID", nil);
+                AlertWithMessageAndDelegate(@"GiftGiv", @"Invalid mail ID", nil);
             }
         }
         
@@ -530,10 +530,10 @@
                 
             }
             else
-                AlertWithMessageAndDelegate(@"Gift Giv", @"Invalid mail ID", nil);
+                AlertWithMessageAndDelegate(@"GiftGiv", @"Invalid mail ID", nil);
         }
         else{
-            AlertWithMessageAndDelegate(@"Gift Giv", @"Please provide a recipient mail ID", nil);
+            AlertWithMessageAndDelegate(@"GiftGiv", @"Please provide a recipient mail ID", nil);
         }
     }
     else if([recipientSMSContentView superview]){
@@ -548,7 +548,7 @@
             
         }
         else{
-            AlertWithMessageAndDelegate(@"Gift Giv", @"Please provide a recipient phone number", nil);
+            AlertWithMessageAndDelegate(@"GiftGiv", @"Please provide a recipient phone number", nil);
         }
     }
     else if([recipientAddressContentView superview]){
@@ -557,7 +557,7 @@
         cityTxtFld.text=[cityTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         zipTxtFld.text=[zipTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         if([streeAddress_oneTxtFld.text isEqualToString:@""]||[cityTxtFld.text isEqualToString:@""]||[zipTxtFld.text isEqualToString:@""]){
-            AlertWithMessageAndDelegate(@"Gift Giv", @"Please provide all details", nil);
+            AlertWithMessageAndDelegate(@"GiftGiv", @"Please provide all details", nil);
         }
         else{
             //push the next screen (gift summary)

@@ -48,7 +48,7 @@
 - (IBAction)backToRecipientForm:(id)sender;
 - (IBAction)paymentBtnAction:(id)sender;
 
-- (void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView;
+- (void)loadImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView;
 
 #pragma mark - progress hud
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;

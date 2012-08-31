@@ -11,18 +11,20 @@
 #import "EventCustomCell.h"
 #import "GiftOptionsVC.h"
 #import "CustomDateDisplay.h"
+#import "OrderHistoryListVC.h"
 
 @interface SuccessVC : UIViewController<UITableViewDelegate,UITableViewDataSource>
 {
     NSMutableArray *upcomingEvents;
 }
 @property (retain, nonatomic) IBOutlet UITableView *upcomingEventsTable;
+@property (retain, nonatomic) IBOutlet UIScrollView *contentScroll;
 @property (retain, nonatomic) NSMutableArray *upcomingEvents;
 //@property (nonatomic, retain) NSString *transactionID;
 
 
 - (IBAction)backToHome:(id)sender;
-- (IBAction)onlineSite:(id)sender;
+- (IBAction)getOrders:(id)sender;
 
 -(void)loadProfilePictures;
 

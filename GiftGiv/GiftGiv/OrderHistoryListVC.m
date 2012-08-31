@@ -10,6 +10,8 @@
 
 @implementation OrderHistoryListVC
 @synthesize orderHistoryTable;
+@synthesize noHistoryLbl;
+@synthesize startCelebBtn;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,6 +35,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    startCelebBtn.hidden=YES;
+    noHistoryLbl.hidden=YES;
+    
     ordersList=[[NSMutableArray alloc]init];
     [self showProgressHUD:self.view withMsg:nil];
     // Do any additional setup after loading the view from its nib.
@@ -85,15 +91,15 @@
 	}
     cell.profileNameLbl.text=[[ordersList objectAtIndex:indexPath.row] recipientName];
     NSString *dateString=[[[[ordersList objectAtIndex:indexPath.row] dateofCreation] componentsSeparatedByString:@"T"] objectAtIndex:0];
-    cell.orderDateLbl.text=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
-    if([cell.orderDateLbl.text isEqualToString:@"Today"]||[cell.orderDateLbl.text isEqualToString:@"Yesterday"]||[cell.orderDateLbl.text isEqualToString:@"Tomorrow"]||[cell.orderDateLbl.text isEqualToString:@"Recent"]){
-        cell.orderDateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-        cell.orderDateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-    }
-    else{
-        cell.orderDateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
-        cell.orderDateLbl.textColor=[UIColor blackColor];
-    }
+    cell.orderDateLbl.text=dateString;//[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
+    /*if([cell.orderDateLbl.text isEqualToString:@"Today"]||[cell.orderDateLbl.text isEqualToString:@"Yesterday"]||[cell.orderDateLbl.text isEqualToString:@"Tomorrow"]||[cell.orderDateLbl.text isEqualToString:@"Recent"]){
+     cell.orderDateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+     cell.orderDateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+     }
+     else{
+     cell.orderDateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+     cell.orderDateLbl.textColor=[UIColor blackColor];
+     }*/
     cell.profilePic.image=[(OrderObject*)[ordersList objectAtIndex:indexPath.row] profilePicImg];
     
     if([[[ordersList objectAtIndex:indexPath.row] status] isEqualToString:@"-1"]){
@@ -158,12 +164,23 @@
 -(void) receivedListOfOrder:(NSMutableArray*)listOfOrders{
     
     [self stopHUD];
+    if([listOfOrders count]){
+        orderHistoryTable.hidden=NO;
+        startCelebBtn.hidden=YES;
+        noHistoryLbl.hidden=YES;
+    }
+    else{
+        orderHistoryTable.hidden=YES;
+        startCelebBtn.hidden=NO;
+        noHistoryLbl.hidden=NO;
+    }
     if([ordersList count])
         [ordersList removeAllObjects];
     [ordersList addObjectsFromArray:listOfOrders];
     [orderHistoryTable reloadData];
 }
 -(void) requestFailed{
+    [self stopHUD];
     AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed. Please try again later", nil);
 }
 #pragma mark - ProgressHUD methods
@@ -198,6 +215,8 @@
 - (void)viewDidUnload
 {
     [self setOrderHistoryTable:nil];
+    [self setNoHistoryLbl:nil];
+    [self setStartCelebBtn:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -212,6 +231,8 @@
 - (void)dealloc {
     [ordersList release];
     [orderHistoryTable release];
+    [noHistoryLbl release];
+    [startCelebBtn release];
     [super dealloc];
 }
 @end

@@ -21,6 +21,8 @@
 }
 
 @property (retain, nonatomic) IBOutlet UITableView *orderHistoryTable;
+@property (retain, nonatomic) IBOutlet UILabel *noHistoryLbl;
+@property (retain, nonatomic) IBOutlet UIButton *startCelebBtn;
 
 - (IBAction)backToMenu:(id)sender;
 - (IBAction)settingsAction:(id)sender;
