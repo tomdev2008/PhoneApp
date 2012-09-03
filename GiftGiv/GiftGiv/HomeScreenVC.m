@@ -110,7 +110,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma -EventsRequest delegate
 -(void) receivedAllEvents:(NSMutableArray*)allEvents{
-    NSLog(@"events..%@",allEvents);
+   
     int eventsCount=[allEvents count];
     
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:eventsCount];
@@ -727,10 +727,19 @@ static NSDateFormatter *customDateFormat=nil;
             details.isPhotoTagged=NO;
         
         NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-        [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        
+        if([[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+            [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"])
+             [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
+        if([[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+            [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
+            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+        
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+        
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
         //NSLog(@"%@",tempInfoDict);
         
