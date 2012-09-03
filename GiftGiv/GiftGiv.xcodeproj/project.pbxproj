@@ -1208,12 +1208,59 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		7E464D2D15F4F4E7004010A2 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Teleparadigm Networks Limited";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Teleparadigm Networks Limited";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "547AD540-5017-4521-8CFE-9C3AF03FA214";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "547AD540-5017-4521-8CFE-9C3AF03FA214";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Distribution;
+		};
+		7E464D2E15F4F4E7004010A2 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Teleparadigm Networks Limited";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Teleparadigm Networks Limited";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GiftGiv/GiftGiv-Prefix.pch";
+				INFOPLIST_FILE = "GiftGiv/GiftGiv-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/GiftGiv\"",
+				);
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "547AD540-5017-4521-8CFE-9C3AF03FA214";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "547AD540-5017-4521-8CFE-9C3AF03FA214";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Distribution;
+		};
 		7ED7EA3415B6F1EE008DFDE3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Teleparadigm Networks Limited";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Teleparadigm Networks Limited";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1228,6 +1275,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PROVISIONING_PROFILE = "547AD540-5017-4521-8CFE-9C3AF03FA214";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "547AD540-5017-4521-8CFE-9C3AF03FA214";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1278,6 +1327,8 @@
 		7ED7EA3815B6F1EE008DFDE3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Teleparadigm Networks Limited";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Teleparadigm Networks Limited";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1291,6 +1342,8 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "547AD540-5017-4521-8CFE-9C3AF03FA214";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "547AD540-5017-4521-8CFE-9C3AF03FA214";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1303,6 +1356,7 @@
 			buildConfigurations = (
 				7ED7EA3415B6F1EE008DFDE3 /* Debug */,
 				7ED7EA3515B6F1EE008DFDE3 /* Release */,
+				7E464D2D15F4F4E7004010A2 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1312,6 +1366,7 @@
 			buildConfigurations = (
 				7ED7EA3715B6F1EE008DFDE3 /* Debug */,
 				7ED7EA3815B6F1EE008DFDE3 /* Release */,
+				7E464D2E15F4F4E7004010A2 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

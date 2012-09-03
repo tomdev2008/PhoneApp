@@ -110,7 +110,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma -EventsRequest delegate
 -(void) receivedAllEvents:(NSMutableArray*)allEvents{
-    
+    NSLog(@"events..%@",allEvents);
     int eventsCount=[allEvents count];
     
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:eventsCount];
@@ -299,26 +299,52 @@ static NSDateFormatter *customDateFormat=nil;
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if([eventTitleLbl.text isEqualToString:events_category_1]){
-        
-        return [allupcomingEvents count];
-        
+	
+    if([tableView isEqual:eventsTable]){
+        if([eventTitleLbl.text isEqualToString:events_category_1]){
+            
+            return [allupcomingEvents count];
+            
+        }
+        if([eventTitleLbl.text isEqualToString:events_category_2]){
+            return [listOfBirthdayEvents count];
+            
+        }
+        if([eventTitleLbl.text isEqualToString:events_category_3]){
+            return [anniversaryEvents count];
+            
+        }
+        if([eventTitleLbl.text isEqualToString:events_category_4]){
+            return [newJobEvents count];
+            
+        }
+        if([eventTitleLbl.text isEqualToString:events_category_5]){
+            return [congratsEvents count];
+            
+        }
     }
-    if([eventTitleLbl.text isEqualToString:events_category_2]){
-        return [listOfBirthdayEvents count];
-        
-    }
-    if([eventTitleLbl.text isEqualToString:events_category_3]){
-        return [anniversaryEvents count];
-        
-    }
-    if([eventTitleLbl.text isEqualToString:events_category_4]){
-        return [newJobEvents count];
-        
-    }
-    if([eventTitleLbl.text isEqualToString:events_category_5]){
-        return [congratsEvents count];
-        
+    else if([tableView isEqual:events_2_Table]){
+        if([eventTitle_2_Lbl.text isEqualToString:events_category_1]){
+            
+            return [allupcomingEvents count];
+            
+        }
+        if([eventTitle_2_Lbl.text isEqualToString:events_category_2]){
+            return [listOfBirthdayEvents count];
+            
+        }
+        if([eventTitle_2_Lbl.text isEqualToString:events_category_3]){
+            return [anniversaryEvents count];
+            
+        }
+        if([eventTitle_2_Lbl.text isEqualToString:events_category_4]){
+            return [newJobEvents count];
+            
+        }
+        if([eventTitle_2_Lbl.text isEqualToString:events_category_5]){
+            return [congratsEvents count];
+            
+        }
     }
     
     return 0;
@@ -346,7 +372,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         if([eventTitleLbl.text isEqualToString:events_category_1]){
             if([allupcomingEvents count]){
-                
+                //NSLog(@"upcoming..%@",allupcomingEvents);
                 [self loadEventsData:allupcomingEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
                 
             }
@@ -354,7 +380,7 @@ static NSDateFormatter *customDateFormat=nil;
         else if([eventTitleLbl.text isEqualToString:events_category_2]){
             
             if([listOfBirthdayEvents count]){
-                
+                //NSLog(@"list of birthdays..%@",listOfBirthdayEvents);
                 [self loadEventsData:listOfBirthdayEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
                 
                 
@@ -364,6 +390,7 @@ static NSDateFormatter *customDateFormat=nil;
         else if([eventTitleLbl.text isEqualToString:events_category_3]){
             
             if([anniversaryEvents count]){
+                //NSLog(@"list of anniversaries..%@",anniversaryEvents);
                 [self loadEventsData:anniversaryEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
                 
                 
@@ -373,6 +400,7 @@ static NSDateFormatter *customDateFormat=nil;
         else if([eventTitleLbl.text isEqualToString:events_category_4]){
             
             if([newJobEvents count]){
+                //NSLog(@"list of newJobEvents..%@",newJobEvents);
                 [self loadEventsData:newJobEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];   
             }
             
@@ -380,7 +408,7 @@ static NSDateFormatter *customDateFormat=nil;
         else if([eventTitleLbl.text isEqualToString:events_category_5]){
             
             if([congratsEvents count]){
-                
+               // NSLog(@"list of congratsEvents..%@",congratsEvents);
                 
                 [self loadEventsData:congratsEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
                 
@@ -420,7 +448,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         if([eventTitle_2_Lbl.text isEqualToString:events_category_1]){
             if([allupcomingEvents count]){
-                
+               // NSLog(@"upcoming...2..%@",allupcomingEvents);
                 [self loadEventsData:allupcomingEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
                 
             }
@@ -428,7 +456,7 @@ static NSDateFormatter *customDateFormat=nil;
         else if([eventTitle_2_Lbl.text isEqualToString:events_category_2]){
             
             if([listOfBirthdayEvents count]){
-                
+                //NSLog(@"birthday.....2..%@",listOfBirthdayEvents);
                 [self loadEventsData:listOfBirthdayEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
                 
                 
@@ -438,6 +466,7 @@ static NSDateFormatter *customDateFormat=nil;
         else if([eventTitle_2_Lbl.text isEqualToString:events_category_3]){
             
             if([anniversaryEvents count]){
+                 //NSLog(@"anniversaries.....2..%@",anniversaryEvents);
                 [self loadEventsData:anniversaryEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
                 
                 
@@ -447,6 +476,7 @@ static NSDateFormatter *customDateFormat=nil;
         else if([eventTitle_2_Lbl.text isEqualToString:events_category_4]){
             
             if([newJobEvents count]){
+                //NSLog(@"newjob.......2..%@",newJobEvents);
                 [self loadEventsData:newJobEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];   
             }
             
@@ -455,7 +485,7 @@ static NSDateFormatter *customDateFormat=nil;
             
             if([congratsEvents count]){
                 
-                
+                //NSLog(@"congratsEvents.......2..%@",congratsEvents);
                 [self loadEventsData:congratsEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
                 
             }
@@ -513,6 +543,9 @@ static NSDateFormatter *customDateFormat=nil;
     if([[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
         cell.profileImg.image=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
     }
+    
+    
+    
 }
 /*-(NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate{
  
@@ -883,16 +916,16 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 -(void)updateNextColumnTitle{
-    int nextGroupNum;
+    int nextGroupNum=eventGroupNum;
     
     if(eventGroupNum==[categoryTitles count]){
         nextGroupNum=1;
     }
-    else if(eventGroupNum==1)
-        nextGroupNum=[categoryTitles count];
+    /*else if(eventGroupNum==1)
+        nextGroupNum=[categoryTitles count];*/
     else
         nextGroupNum++;
-    
+    NSLog(@"next group..%d",nextGroupNum);
     eventTitle_2_Lbl.text=[categoryTitles objectAtIndex:nextGroupNum-1];
 }
 -(void)loadProfilePictures{
@@ -1103,11 +1136,12 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 -(void) loadImageForEventAtIndexNum:(int)index forTable:(UITableView*)table{
-    [table beginUpdates];
+    /*[table beginUpdates];
     
     [table reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:index inSection:0], nil] withRowAnimation:UITableViewRowAnimationNone];
     
-    [table endUpdates];
+    [table endUpdates];*/
+    [table reloadData];
 }
 
 -(void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails{
