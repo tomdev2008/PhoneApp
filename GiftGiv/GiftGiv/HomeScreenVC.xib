@@ -47,6 +47,7 @@
 						<string key="NSFrame">{{20, 380}, {280, 36}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="837230259"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
@@ -87,6 +88,7 @@
 						<string key="NSFrame">{{123, 3}, {76, 40}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="1032165074"/>
 						<int key="IBUIContentMode">1</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -180,6 +182,7 @@
 								<string key="NSFrame">{{291, 59}, {280, 280}}</string>
 								<reference key="NSSuperview" ref="1032165074"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="1005727111"/>
 								<reference key="IBUIBackgroundColor" ref="655337850"/>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -210,6 +213,7 @@
 						<string key="NSFrame">{{0, 416}, {320, 44}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -222,7 +226,7 @@
 							<object class="IBUIBarButtonItem" id="1001622166">
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">giftbutton.png</string>
+									<string key="NSResourceName">giftbutton_new.png</string>
 								</object>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIToolbar" ref="837230259"/>
@@ -597,7 +601,7 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="giftbutton.png">{24, 25}</string>
+			<string key="giftbutton_new.png">{24, 24}</string>
 			<string key="whitelogo.png">{114, 60}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>
