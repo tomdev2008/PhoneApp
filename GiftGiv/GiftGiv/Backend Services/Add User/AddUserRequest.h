@@ -12,7 +12,7 @@
 
 @protocol AddUserRequestDelegate
 
--(void) responseForAddUser:(NSMutableString*)response;
+-(void) responseForAddUser:(NSMutableDictionary*)response;
 -(void) requestFailed;
 
 @end
@@ -21,7 +21,7 @@
   	
     NSURLConnection *theConnection;
     
-	NSMutableString *receivedResponse;
+	NSMutableDictionary *receivedResponse;
 	NSMutableString *currentElementValue; //parsed string
 	NSMutableData *webData;  //data while parsing the response
 }

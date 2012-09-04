@@ -31,4 +31,5 @@
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
 - (void)stopHUD;
 #pragma mark -
+-(NSString*)updateDate:(id)sourceDate;
 @end

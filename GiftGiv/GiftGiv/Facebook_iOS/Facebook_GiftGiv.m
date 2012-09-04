@@ -113,7 +113,7 @@ static NSDateFormatter *standardDateFormatter = nil;
 
 - (void)fbDidLogin {
     [self storeAuthData:[self.facebook accessToken] expiresAt:[self.facebook expirationDate]];
-    
+    [fbGiftGivDelegate facebookLoggedIn];
     [self apiFQLIMe];
     
 }

@@ -70,8 +70,7 @@
     
     profileNameLbl.text=[giftSummaryDict objectForKey:@"RecipientName"];
     eventNameLbl.text=[giftSummaryDict objectForKey:@"EventName"];
-    giftNameLbl.text=[giftSummaryDict objectForKey:@"GiftName"];
-    giftPriceLbl.text=[giftSummaryDict objectForKey:@"GiftPrice"];
+    
     personalMsgLbl.text=[giftSummaryDict objectForKey:@"PersonalMessage"];
     if([giftSummaryDict objectForKey:@"RecipientAddress"]){
         addressLbl.text=[giftSummaryDict objectForKey:@"RecipientAddress"];
@@ -99,9 +98,14 @@
     
     if(personalMsgLbl.text==nil || [personalMsgLbl.text isEqualToString:@""]){
         msgHeadLbl.hidden=YES;
+        
     }
     else
         msgHeadLbl.hidden=NO;
+    
+    
+    
+    
     CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
     
     CGSize labelSize = [personalMsgLbl.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:11.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
@@ -145,12 +149,23 @@
                 {
                     if(giftImage.size.width<125 || giftImage.size.height<125){
                         targetImgView.frame= CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y+(giftImage.size.height)/4, giftImage.size.width, giftImage.size.height);
+                        targetImgView.image=giftImage;
+                    }
+                    else{
+                       UIImage *targetedImage= [giftImage imageByScalingProportionallyToSize:CGSizeMake(125, 125)];
+                        targetImgView.frame=CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y, targetedImage.size.width, targetedImage.size.height);
+                        targetImgView.image=targetedImage;
+                        
+                        [self performSelector:@selector(reloadGiftDetails)];
+                        
+                       
                     }
                 }
+                else
+                    targetImgView.image=giftImage;
                 
+                              
                 
-                
-                targetImgView.image=giftImage;
                                  
                 
             });
@@ -159,7 +174,45 @@
     });
     dispatch_release(ImageLoader_Q);
 }
-
+-(void)reloadGiftDetails{
+    giftNameLbl.text=[giftSummaryDict objectForKey:@"GiftName"];
+    giftPriceLbl.text=[giftSummaryDict objectForKey:@"GiftPrice"];
+    
+    giftNameLbl.frame=CGRectMake(giftNameLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2-21, giftNameLbl.frame.size.width, giftNameLbl.frame.size.height);
+    giftPriceLbl.frame=CGRectMake(giftPriceLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2, giftPriceLbl.frame.size.width, giftPriceLbl.frame.size.height);
+    
+    if(msgHeadLbl.hidden){
+        recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, giftImg.frame.origin.y+giftImg.frame.size.height+20, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+    }
+    else{
+        msgHeadLbl.frame=CGRectMake(msgHeadLbl.frame.origin.x, giftImg.frame.origin.y+giftImg.frame.size.height+20, msgHeadLbl.frame.size.width, msgHeadLbl.frame.size.height);
+         personalMsgLbl.frame=CGRectMake(personalMsgLbl.frame.origin.x, msgHeadLbl.frame.origin.y+msgHeadLbl.frame.size.height+2, personalMsgLbl.frame.size.width, personalMsgLbl.frame.size.height);
+        recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, personalMsgLbl.frame.origin.y+personalMsgLbl.frame.size.height+5, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+    }
+        
+    
+    
+    mailGiftToLbl.frame=CGRectMake(mailGiftToLbl.frame.origin.x, recipientAddressHeadLbl.frame.origin.y+recipientAddressHeadLbl.frame.size.height-5, mailGiftToLbl.frame.size.width, mailGiftToLbl.frame.size.height);
+    addressLbl.frame=CGRectMake(addressLbl.frame.origin.x, mailGiftToLbl.frame.origin.y+mailGiftToLbl.frame.size.height-3, addressLbl.frame.size.width, addressLbl.frame.size.height);
+    disclosureLbl.frame=CGRectMake(disclosureLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+10, disclosureLbl.frame.size.width, disclosureLbl.frame.size.height);
+    
+    
+    if(disclosureLbl.frame.size.height+disclosureLbl.frame.origin.y>=376){
+        paymentBtnLbl.frame=CGRectMake(paymentBtnLbl.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+17, paymentBtnLbl.frame.size.width, paymentBtnLbl.frame.size.height);
+        paymentBtn.frame=CGRectMake(paymentBtn.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+10, paymentBtn.frame.size.width, paymentBtn.frame.size.height);
+    }
+    else{
+        paymentBtnLbl.frame=CGRectMake(paymentBtnLbl.frame.origin.x, 381, paymentBtnLbl.frame.size.width, paymentBtnLbl.frame.size.height);
+        paymentBtn.frame=CGRectMake(paymentBtn.frame.origin.x, 374, paymentBtn.frame.size.width, paymentBtn.frame.size.height);
+    }
+    
+    
+    giftSummaryScroll.contentSize=CGSizeMake(320, paymentBtn.frame.origin.y+paymentBtn.frame.size.height+10);
+    
+    
+    
+    
+}
 - (IBAction)backToRecipientForm:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }

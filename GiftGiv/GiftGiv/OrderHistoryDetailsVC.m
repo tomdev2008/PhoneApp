@@ -26,6 +26,8 @@
 @synthesize addressLbl;
 @synthesize orderDetails;
 
+static NSDateFormatter *customDateFormat=nil;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -102,7 +104,7 @@
     }
     eventNameLbl.text=[orderDetails details];
     NSString *dateString=[[[orderDetails orderUpdatedDate] componentsSeparatedByString:@"T"] objectAtIndex:0];
-    statusDateLbl.text=dateString;//[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
+    statusDateLbl.text=[self updateDate:dateString];//[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
     /*if([statusDateLbl.text isEqualToString:@"Today"]||[statusDateLbl.text isEqualToString:@"Yesterday"]||[statusDateLbl.text isEqualToString:@"Tomorrow"]||[statusDateLbl.text isEqualToString:@"Recent"]){
      statusDateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
      statusDateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
@@ -204,11 +206,21 @@
                 {
                     if(giftImage.size.width<125 || giftImage.size.height<125){
                         targetImgView.frame= CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y+(giftImage.size.height)/4, giftImage.size.width, giftImage.size.height);
+                        targetImgView.image=giftImage;
+                    }
+                    else{
+                        UIImage *targetedImage= [giftImage imageByScalingProportionallyToSize:CGSizeMake(125, 125)];
+                        targetImgView.frame=CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y, targetedImage.size.width, targetedImage.size.height);
+                        targetImgView.image=targetedImage;
+                        
+                        [self performSelector:@selector(reloadGiftDetails)];
+                        
+                        
                     }
                 }
-                
+                else
                                
-                targetImgView.image=giftImage; 
+                    targetImgView.image=giftImage; 
                 
                 
             });
@@ -217,6 +229,78 @@
     });
     dispatch_release(ImageLoader_Q);
 }
+-(NSString*)updateDate:(id)sourceDate{
+    if(customDateFormat==nil){
+        customDateFormat=[[NSDateFormatter alloc]init];
+    }
+    NSString *endDateString;
+    
+    if([sourceDate isKindOfClass:[NSString class]]){
+        
+        sourceDate=[NSString stringWithFormat:@"%@",sourceDate];
+        
+        [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+        NSDate *tempDate = [customDateFormat dateFromString:sourceDate];
+        [customDateFormat setDateFormat:@"MMM dd"];
+        endDateString=[customDateFormat stringFromDate:tempDate];
+    }
+    else{
+        [customDateFormat setDateFormat:@"MMM dd"];
+        endDateString=[customDateFormat stringFromDate:(NSDate*)sourceDate];
+    }
+    /*int day=[[[endDateString componentsSeparatedByString:@" "] objectAtIndex:1] intValue];
+    if (day >= 11 && day <= 13) {
+         endDateString=[endDateString stringByAppendingString:@"th"];
+    }
+    switch (day % 10) {
+        case 1:
+            endDateString=[endDateString stringByAppendingString:@"st"];
+            break;
+        case 2:
+            endDateString=[endDateString stringByAppendingString:@"nd"];
+            break;
+        case 3:
+            endDateString=[endDateString stringByAppendingString:@"rd"];
+            break;
+        default:
+            endDateString=[endDateString stringByAppendingString:@"th"];
+            break;
+    }
+    */
+    
+    return endDateString;
+}
+-(void)reloadGiftDetails{
+    
+        
+    giftNameLbl.frame=CGRectMake(giftNameLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2-21, giftNameLbl.frame.size.width, giftNameLbl.frame.size.height);
+    giftPriceLbl.frame=CGRectMake(giftPriceLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2, giftPriceLbl.frame.size.width, giftPriceLbl.frame.size.height);
+    
+    if(msgHeadLbl.hidden){
+        recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, giftImg.frame.origin.y+giftImg.frame.size.height+20, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+    }
+    else{
+        msgHeadLbl.frame=CGRectMake(msgHeadLbl.frame.origin.x, giftImg.frame.origin.y+giftImg.frame.size.height+20, msgHeadLbl.frame.size.width, msgHeadLbl.frame.size.height);
+        messageLbl.frame=CGRectMake(messageLbl.frame.origin.x, msgHeadLbl.frame.origin.y+msgHeadLbl.frame.size.height+2, messageLbl.frame.size.width, messageLbl.frame.size.height);
+        recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, messageLbl.frame.origin.y+messageLbl.frame.size.height+5, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+    }
+    
+    
+    
+    mailGiftToLbl.frame=CGRectMake(mailGiftToLbl.frame.origin.x, recipientAddressHeadLbl.frame.origin.y+recipientAddressHeadLbl.frame.size.height-5, mailGiftToLbl.frame.size.width, mailGiftToLbl.frame.size.height);
+    addressLbl.frame=CGRectMake(addressLbl.frame.origin.x, mailGiftToLbl.frame.origin.y+mailGiftToLbl.frame.size.height-3, addressLbl.frame.size.width, addressLbl.frame.size.height);
+    
+    statusHeadLbl.frame=CGRectMake(statusHeadLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+10, statusHeadLbl.frame.size.width, statusHeadLbl.frame.size.height);
+    statusDateLbl.frame=CGRectMake(statusDateLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+9, statusDateLbl.frame.size.width, statusDateLbl.frame.size.height);
+    statusLbl.frame=CGRectMake(statusLbl.frame.origin.x, statusHeadLbl.frame.origin.y+statusHeadLbl.frame.size.height-3, statusLbl.frame.size.width, statusLbl.frame.size.height);
+    
+    orderDetailsScroll.contentSize=CGSizeMake(320, statusLbl.frame.origin.y+statusLbl.frame.size.height+10);
+      
+    
+    
+}
+
+
 - (IBAction)backToOrdersList:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }

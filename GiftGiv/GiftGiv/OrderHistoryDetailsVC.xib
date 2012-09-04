@@ -176,7 +176,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">BONNIE GIESEN</string>
+						<string key="IBUIText"/>
 						<object class="NSColor" key="IBUITextColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MCAwLjY3MDU4ODIzNTMgMC42NjI3NDUwOTgAA</bytes>
@@ -208,7 +208,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">anniversary</string>
+						<string key="IBUIText"/>
 						<object class="NSColor" key="IBUITextColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MCAwLjY3MDU4ODIzNTMgMC42NjI3NDUwOTgAA</bytes>
@@ -231,7 +231,7 @@
 					<object class="IBUILabel" id="225550857">
 						<reference key="NSNextResponder" ref="917929894"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{157, 181}, {123, 21}}</string>
+						<string key="NSFrame">{{157, 168}, {123, 21}}</string>
 						<reference key="NSSuperview" ref="917929894"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="65932417"/>
@@ -240,7 +240,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">$20</string>
+						<string key="IBUIText"/>
 						<object class="NSColor" key="IBUITextColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MCAwLjY3MDU4ODIzNTMgMC42NjI3NDUwOTgAA</bytes>
@@ -345,7 +345,6 @@
 						<string key="NSFrame">{{18, 51}, {233, 34}}</string>
 						<reference key="NSSuperview" ref="917929894"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -439,7 +438,7 @@
 					<object class="IBUILabel" id="546180863">
 						<reference key="NSNextResponder" ref="917929894"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{157, 161}, {159, 21}}</string>
+						<string key="NSFrame">{{157, 148}, {159, 21}}</string>
 						<reference key="NSSuperview" ref="917929894"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="225550857"/>
@@ -448,7 +447,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">Amazon Gift Card</string>
+						<string key="IBUIText"/>
 						<reference key="IBUITextColor" ref="525323216"/>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
@@ -508,14 +507,10 @@
 					<object class="IBUIImageView" id="352378704">
 						<reference key="NSNextResponder" ref="917929894"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{16, 119}, {125, 125}}</string>
+						<string key="NSFrame">{{16, 106}, {125, 125}}</string>
 						<reference key="NSSuperview" ref="917929894"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="546180863"/>
-						<object class="NSColor" key="IBUIBackgroundColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MCAwLjY3MDU4ODIzNTMgMC42NjI3NDUwOTgAA</bytes>
-						</object>
 						<int key="IBUIContentMode">1</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>

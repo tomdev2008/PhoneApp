@@ -510,7 +510,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">We'll send an e-mail to your recipient to securely ask for their mailing address. Don't worry: we won't give away to surprise.</string>
+						<string key="IBUIText">We'll send an email to your recipient to securely ask for their mailing address. Don't worry: we won't give away to surprise.</string>
 						<reference key="IBUITextColor" ref="84599202"/>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
@@ -531,7 +531,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">Recipient E-mail:</string>
+						<string key="IBUIText">Recipient Email:</string>
 						<reference key="IBUITextColor" ref="84599202"/>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
@@ -1231,6 +1231,14 @@
 					<int key="connectionID">167</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">emailsText</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="751401263"/>
+					</object>
+					<int key="connectionID">169</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">backToGiftDetailsScreen:</string>
 						<reference key="source" ref="944897561"/>
@@ -1753,7 +1761,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">168</int>
+			<int key="maxID">169</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1806,6 +1814,7 @@
 						<string key="confirmBtnLbl">UILabel</string>
 						<string key="emailBgView">UIView</string>
 						<string key="emailTxtFld">UITextField</string>
+						<string key="emailsText">UILabel</string>
 						<string key="eventNameLbl">UILabel</string>
 						<string key="keyboardAccessoryView">UIToolbar</string>
 						<string key="phoneNumBgView">UIView</string>
@@ -1852,6 +1861,10 @@
 						<object class="IBToOneOutletInfo" key="emailTxtFld">
 							<string key="name">emailTxtFld</string>
 							<string key="candidateClassName">UITextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="emailsText">
+							<string key="name">emailsText</string>
+							<string key="candidateClassName">UILabel</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="eventNameLbl">
 							<string key="name">eventNameLbl</string>

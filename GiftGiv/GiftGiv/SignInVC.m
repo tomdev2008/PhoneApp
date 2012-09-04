@@ -40,7 +40,7 @@
     //Check whether network connection is available to login facebook account
     
     if([CheckNetwork connectedToNetwork]){
-        [self showProgressHUD:self.view withMsg:nil];
+        //[self showProgressHUD:self.view withMsg:nil];
         //authorize the application with facebook
         [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
         [[Facebook_GiftGiv sharedSingleton]authorizeOurAppWithFacebook];
@@ -59,10 +59,19 @@
     [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://thegiftgiv.com/terms.html"]];
 }
 #pragma mark - Facebook giftgiv delegates
+- (void)facebookLoggedIn{
+    HomeScreenVC *home=[[HomeScreenVC alloc]initWithNibName:@"HomeScreenVC" bundle:nil];
+    [self.navigationController pushViewController:home animated:NO];
+    [home release];
+}
 - (void)facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{
     //Add user in the database of giftgiv server
     [[NSUserDefaults standardUserDefaults]setObject:userDetails forKey:@"MyFBDetails"];
     //pic url: https://graph.facebook.com/1061420790/picture
+    
+    
+    //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
+    
     
     if([CheckNetwork connectedToNetwork]){
         NSDateFormatter *dateformatter=[[NSDateFormatter alloc]init];
@@ -95,16 +104,17 @@
     
 }
 #pragma mark - Add User Request delegate
--(void) responseForAddUser:(NSMutableString*)response{
-    [[NSUserDefaults standardUserDefaults]setObject:response forKey:@"MyGiftGivUserId"];
+-(void) responseForAddUser:(NSMutableDictionary*)response{
+    if([response objectForKey:@"GiftGivUser"])
+        [[NSUserDefaults standardUserDefaults]setObject:response forKey:@"MyGiftGivUserId"];
     
     [self stopHUD];
     
     //Once facebook logged in, will show Home/Events screen
-    HomeScreenVC *home=[[HomeScreenVC alloc]initWithNibName:@"HomeScreenVC" bundle:nil];
+    /*HomeScreenVC *home=[[HomeScreenVC alloc]initWithNibName:@"HomeScreenVC" bundle:nil];
     [self.navigationController pushViewController:home animated:NO];
     [home release];
-    [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
+    [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];*/
     
 }
 -(void) requestFailed{

@@ -25,6 +25,7 @@ typedef enum apiCall {
 @protocol Facebook_GiftGivDelegate <NSObject>
 
 @optional
+- (void)facebookLoggedIn;
 - (void)facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)userDetails;
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays;
 

@@ -13,6 +13,8 @@
 @synthesize noHistoryLbl;
 @synthesize startCelebBtn;
 
+static NSDateFormatter *customDateFormat=nil;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -91,7 +93,7 @@
 	}
     cell.profileNameLbl.text=[[ordersList objectAtIndex:indexPath.row] recipientName];
     NSString *dateString=[[[[ordersList objectAtIndex:indexPath.row] dateofCreation] componentsSeparatedByString:@"T"] objectAtIndex:0];
-    cell.orderDateLbl.text=dateString;//[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
+    cell.orderDateLbl.text=[self updateDate:dateString];//[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
     /*if([cell.orderDateLbl.text isEqualToString:@"Today"]||[cell.orderDateLbl.text isEqualToString:@"Yesterday"]||[cell.orderDateLbl.text isEqualToString:@"Tomorrow"]||[cell.orderDateLbl.text isEqualToString:@"Recent"]){
      cell.orderDateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
      cell.orderDateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
@@ -135,6 +137,28 @@
     
 	return cell;
 }
+-(NSString*)updateDate:(id)sourceDate{
+    if(customDateFormat==nil){
+        customDateFormat=[[NSDateFormatter alloc]init];
+    }
+    NSString *endDateString;
+    
+    if([sourceDate isKindOfClass:[NSString class]]){
+        
+        sourceDate=[NSString stringWithFormat:@"%@",sourceDate];
+        
+        [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+        NSDate *tempDate = [customDateFormat dateFromString:sourceDate];
+        [customDateFormat setDateFormat:@"MMM dd"];
+        endDateString=[customDateFormat stringFromDate:tempDate];
+    }
+    else{
+        [customDateFormat setDateFormat:@"MMM dd"];
+        endDateString=[customDateFormat stringFromDate:(NSDate*)sourceDate];
+    }
+    return endDateString;
+}
+
 #pragma mark - TableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     //detailed order history

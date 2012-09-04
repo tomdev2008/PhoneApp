@@ -45,7 +45,7 @@
 	[webData release];
 	
 	[xmlParser setDelegate:self];
-    receivedResponse=[[NSMutableString alloc]init];
+    receivedResponse=[[NSMutableDictionary alloc]init];
 	
 	//delegate method to send the response after parsing finished successfully
 	if([xmlParser parse]){
@@ -70,7 +70,7 @@
 #pragma mark xmlParser delegates
 -(void) parser:(NSXMLParser*) parser didStartElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName attributes:(NSDictionary*) attributeDict
 {
-	
+
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string { 
 	
@@ -85,11 +85,11 @@
 {
 	
 	if([argElementName isEqualToString:@"AddGiftGivUserResult" ]){
-        receivedResponse=currentElementValue;
+        [receivedResponse setObject:currentElementValue forKey:@"GiftGivUser"];
 		
 	}
     else if([argElementName isEqualToString:@"AddNormalUserResult" ]){
-        receivedResponse=currentElementValue;
+        [receivedResponse setObject:currentElementValue forKey:@"NormalUser"];
 		
 	}
     

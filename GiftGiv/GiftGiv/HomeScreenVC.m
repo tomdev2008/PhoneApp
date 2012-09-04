@@ -63,6 +63,17 @@ static NSDateFormatter *customDateFormat=nil;
          [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
     }
     
+    
+    [self performSelector:@selector(loadGestures)withObject:nil afterDelay:0.1];
+    
+    
+    eventGroupNum=1;
+    pageControlForEventGroups.currentPage=eventGroupNum-1;
+    
+    [super viewDidLoad];
+    
+}
+-(void)loadGestures{
     UISwipeGestureRecognizer *swipeLeftRecognizer=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipingForEventGroups:)];
     swipeLeftRecognizer.direction=UISwipeGestureRecognizerDirectionLeft;
     [eventsBgView addGestureRecognizer:swipeLeftRecognizer];
@@ -72,12 +83,6 @@ static NSDateFormatter *customDateFormat=nil;
     swipeRightRecognizer.direction=UISwipeGestureRecognizerDirectionRight;
     [eventsBgView addGestureRecognizer:swipeRightRecognizer];
     [swipeRightRecognizer release];
-    
-    eventGroupNum=1;
-    pageControlForEventGroups.currentPage=eventGroupNum-1;
-    
-    [super viewDidLoad];
-    
 }
 -(void)viewWillAppear:(BOOL)animated{
     
@@ -134,6 +139,7 @@ static NSDateFormatter *customDateFormat=nil;
             [eventDict setObject:[[[allEvents objectAtIndex:i]fb_FriendId]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"uid"];
             [eventDict setObject:[[[allEvents objectAtIndex:i]fb_EventId]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"id"];
             [eventDict setObject:[[[allEvents objectAtIndex:i]fb_Name]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"name"];
+                        
             [eventDict setObject:[[[allEvents objectAtIndex:i]eventName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"event_type"];
             [eventDict setObject:[[[[[allEvents objectAtIndex:i]eventdate]componentsSeparatedByString:@"T"]objectAtIndex:0]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"event_date"];
             [eventDict setObject:[[[allEvents objectAtIndex:i]isEventFromQuery]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"isEventFromQuery"];
@@ -145,7 +151,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [newJobEvents addObject:eventDict];
             else if([eventType isEqualToString:@"Congratulations"])
                 [congratsEvents addObject:eventDict];
-            else if([eventType isEqualToString:@"Anniversary"])
+            else if([eventType isEqualToString:@"Relationships"])
                 [anniversaryEvents addObject:eventDict];
             
             [allupcomingEvents addObject:eventDict];
@@ -758,8 +764,18 @@ static NSDateFormatter *customDateFormat=nil;
             details.isPhotoTagged=NO;
         
         NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
-        [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        
+        if([[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+             [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
+            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+        }
+        
+        if([[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+            [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
+            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+        
         [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];                   
@@ -776,8 +792,17 @@ static NSDateFormatter *customDateFormat=nil;
             details.isPhotoTagged=NO;
         
         NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
-        [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        if([[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+            [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        else if([[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
+            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+        }
+        
+        if([[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+            [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        else if([[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
+            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+        
         [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
@@ -795,8 +820,17 @@ static NSDateFormatter *customDateFormat=nil;
             details.isPhotoTagged=NO;
         
         NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
-        [tempInfoDict setObject:[[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        [tempInfoDict setObject:[[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        if([[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+            [tempInfoDict setObject:[[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        else if([[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
+            [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+        }
+        
+        if([[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+            [tempInfoDict setObject:[[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        else if([[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
+            [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+        
         [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
@@ -814,8 +848,17 @@ static NSDateFormatter *customDateFormat=nil;
             details.isPhotoTagged=NO;
         
         NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
-        [tempInfoDict setObject:[[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        [tempInfoDict setObject:[[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        if([[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+            [tempInfoDict setObject:[[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        else if([[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
+            [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+        }
+        
+        if([[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+            [tempInfoDict setObject:[[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        else if([[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
+            [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+        
         [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
@@ -1304,7 +1347,7 @@ static NSDateFormatter *customDateFormat=nil;
         [customDateFormat setDateFormat:@"yyyy-MM-dd"];
         
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
-        [eventDetails setObject:@"relationship status" forKey:@"event_type"];
+        [eventDetails setObject:@"relationships" forKey:@"event_type"];
         [eventDetails setObject:@"" forKey:@"ProfilePicture"];
         [anniversaryEvents addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
@@ -1451,14 +1494,18 @@ static NSDateFormatter *customDateFormat=nil;
     }
     return NO;
 }
+
 #pragma mark - Add User Request delegate
--(void) responseForAddUser:(NSMutableString*)response{
-    
-    //response will return userID.
-    if(birthdayEventUserNoToAddAsUser<[listOfBirthdayEvents count]){
-        birthdayEventUserNoToAddAsUser++;
-        [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];   
+-(void) responseForAddUser:(NSMutableDictionary*)response{
+    if([response objectForKey:@"NormalUser"]){
+        
+        //response will return userID.
+        if(birthdayEventUserNoToAddAsUser<[listOfBirthdayEvents count]){
+            birthdayEventUserNoToAddAsUser++;
+            [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];   
+        }
     }
+    
     
     
     

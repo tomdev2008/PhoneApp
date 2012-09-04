@@ -17,6 +17,7 @@
 @synthesize zipTxtFld;
 @synthesize recipientSMSContentView;
 @synthesize phoneNumBgView;
+@synthesize emailsText;
 @synthesize phoneNumTxtFld;
 @synthesize emailBgView;
 @synthesize emailTxtFld;
@@ -104,7 +105,7 @@
     listOfStates=[[NSMutableArray alloc]initWithArray:[[NSMutableDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ListOfStates" ofType:@"plist"]] objectForKey:@"StateCodes"]];   
     if(isSendElectronically){
         
-        recipientAddressLbl.text=@"   E-mail recipient for address";
+        recipientAddressLbl.text=@"   Recipient email address";
         [self refreshTheFormForOption:1];
         
     }
@@ -207,6 +208,12 @@
             if([recipientSMSContentView superview])
                 [recipientSMSContentView removeFromSuperview];
             if(![recipientemailContentView superview]){
+                if(isSendElectronically){
+                    emailsText.text=@"Please provide recipient's email address. We will send the gift to that address.";
+                }
+                else
+                    emailsText.text=@"We'll send an email to your recipient to securely ask for their mailing address. Don't worry: we won't give away to surprise.";
+                
                 recipientemailContentView.frame=CGRectMake(23, 166, 275, 140);
                 [sendOptionsContentScroll addSubview:recipientemailContentView];
             }
@@ -285,7 +292,7 @@
         if(![emailTxtFld.text isEqualToString:@""]){
             if(![self validateMail:emailTxtFld.text]){
                 //emailTxtFld.textColor=[UIColor redColor];
-                AlertWithMessageAndDelegate(@"GiftGiv", @"Invalid mail ID", nil);
+                AlertWithMessageAndDelegate(@"GiftGiv", @"Invalid email address", nil);
             }
         }
         
@@ -412,7 +419,10 @@
     UIActionSheet *mediaActions=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles: nil];
     if(!isSendElectronically)
         [mediaActions addButtonWithTitle:@"I know the address"];
-    [mediaActions addButtonWithTitle:@"E-mail recipient for address"];
+    if(isSendElectronically)
+        [mediaActions addButtonWithTitle:@"Recipient email address"];
+    else
+        [mediaActions addButtonWithTitle:@"Email recipient for address"];
     [mediaActions addButtonWithTitle:@"SMS recipient for address"];
     [mediaActions addButtonWithTitle:@"Cancel"];
     mediaActions.cancelButtonIndex = mediaActions.numberOfButtons - 1;
@@ -427,7 +437,7 @@
         case 0:
             if(isSendElectronically){
                 [self refreshTheFormForOption:1];
-                //recipientAddressLbl.text=@"   E-mail recipient for address";
+                //recipientAddressLbl.text=@"   Email recipient for address";
             }
             else{
                 [self refreshTheFormForOption:0];
@@ -443,7 +453,7 @@
             }
             else{
                 [self refreshTheFormForOption:1];
-                //recipientAddressLbl.text=@"   E-mail recipient for address";
+                //recipientAddressLbl.text=@"   Email recipient for address";
             }
             recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[actionSheet buttonTitleAtIndex:buttonIndex]];
             break;
@@ -530,10 +540,10 @@
                 
             }
             else
-                AlertWithMessageAndDelegate(@"GiftGiv", @"Invalid mail ID", nil);
+                AlertWithMessageAndDelegate(@"GiftGiv", @"Invalid email address", nil);
         }
         else{
-            AlertWithMessageAndDelegate(@"GiftGiv", @"Please provide a recipient mail ID", nil);
+            AlertWithMessageAndDelegate(@"GiftGiv", @"Please provide recipient's email address", nil);
         }
     }
     else if([recipientSMSContentView superview]){
@@ -669,6 +679,7 @@
     [self setStatePickerBgView:nil];
     [self setStatesPicker:nil];
     [self setStateSelSegmentCntl:nil];
+    [self setEmailsText:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -712,6 +723,7 @@
     [statesPicker release];
     [stateSelSegmentCntl release];
     [sendingInfoDict release];
+    [emailsText release];
     [super dealloc];
 }
 @end

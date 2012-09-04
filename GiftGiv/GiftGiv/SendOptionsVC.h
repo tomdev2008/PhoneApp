@@ -36,6 +36,7 @@
 @property (retain, nonatomic) IBOutlet UITextField *zipTxtFld;
 @property (retain, nonatomic) IBOutlet UIView *recipientSMSContentView;
 @property (retain, nonatomic) IBOutlet UIView *phoneNumBgView;
+@property (retain, nonatomic) IBOutlet UILabel *emailsText;
 @property (retain, nonatomic) IBOutlet UITextField *phoneNumTxtFld;
 @property (retain, nonatomic) IBOutlet UIView *emailBgView;
 @property (retain, nonatomic) IBOutlet UIView *recipientemailContentView;

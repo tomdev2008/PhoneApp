@@ -13,6 +13,7 @@
 #import "GetGiftItemRequest.h"
 #import "OrderObject.h"
 #import "CustomDateDisplay.h"
+#import "UIImage+scaling.h"
 
 @interface OrderHistoryDetailsVC : UIViewController<GetGiftItemDelegate>
 
@@ -38,5 +39,5 @@
 - (IBAction)settingsAction:(id)sender;
 
 - (void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView;
-
+- (NSString*)updateDate:(id)sourceDate;
 @end

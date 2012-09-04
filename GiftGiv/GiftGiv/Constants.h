@@ -25,7 +25,7 @@
 
 #define events_category_1 @"all upcoming"
 #define events_category_2 @"birthdays"
-#define events_category_3 @"anniversaries"
+#define events_category_3 @"relationships"
 #define events_category_4 @"new job"
 #define events_category_5 @"congratulations"
 
