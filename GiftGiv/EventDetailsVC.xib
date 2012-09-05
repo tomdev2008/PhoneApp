@@ -102,6 +102,7 @@
 						<string key="NSFrame">{{0, 120}, {320, 290}}</string>
 						<reference key="NSSuperview" ref="525918083"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="323533347"/>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -174,7 +175,7 @@
 					<object class="IBUIImageView" id="854160294">
 						<reference key="NSNextResponder" ref="525918083"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{122, 3}, {76, 40}}</string>
+						<string key="NSFrame">{{127, 4}, {68, 36}}</string>
 						<reference key="NSSuperview" ref="525918083"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="613133904"/>
@@ -193,6 +194,10 @@
 						<reference key="NSSuperview" ref="525918083"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="171127018"/>
+						<object class="NSColor" key="IBUIBackgroundColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MCAwLjY3MDU4ODIzNTMgMC42NjI3NDUwOTgAA</bytes>
+						</object>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
@@ -202,7 +207,7 @@
 						<string key="NSFrame">{{281, 78}, {20, 16}}</string>
 						<reference key="NSSuperview" ref="525918083"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="323533347"/>
+						<reference key="NSNextKeyView" ref="273210449"/>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
@@ -213,7 +218,7 @@
 					<object class="IBUILabel" id="171127018">
 						<reference key="NSNextResponder" ref="525918083"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{70, 66}, {206, 21}}</string>
+						<string key="NSFrame">{{73, 66}, {200, 21}}</string>
 						<reference key="NSSuperview" ref="525918083"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="900791719"/>
@@ -242,7 +247,7 @@
 					<object class="IBUILabel" id="900791719">
 						<reference key="NSNextResponder" ref="525918083"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{70, 87}, {115, 21}}</string>
+						<string key="NSFrame">{{73, 87}, {115, 21}}</string>
 						<reference key="NSSuperview" ref="525918083"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1056021533"/>
@@ -297,6 +302,7 @@
 						<string key="NSFrame">{{197, 417}, {97, 25}}</string>
 						<reference key="NSSuperview" ref="525918083"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -366,6 +372,7 @@
 				<string key="NSFrameSize">{310, 100}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">1</int>
 					<bytes key="NSRGB">MSAxIDEAA</bytes>
@@ -397,6 +404,7 @@
 				<string key="NSFrameSize">{300, 170}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView"/>
 				<int key="IBUIContentMode">1</int>
 				<bool key="IBUIUserInteractionEnabled">NO</bool>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -653,6 +661,13 @@
 				<string key="-2.CustomClassName">UIResponder</string>
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="32.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<array key="32.IBUserGuides">
+					<object class="IBUserGuide">
+						<reference key="view" ref="525918083"/>
+						<double key="location">160</double>
+						<int key="affinity">0</int>
+					</object>
+				</array>
 				<string key="33.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="34.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="35.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

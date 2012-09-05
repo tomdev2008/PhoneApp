@@ -51,8 +51,8 @@
 @property (retain, nonatomic) IBOutlet CustomPageControl *pageControlForEventGroups;
 @property (retain, nonatomic) IBOutlet UITableView *eventsTable;
 @property (retain, nonatomic) IBOutlet UILabel *eventTitleLbl;
-@property (retain, nonatomic) IBOutlet UILabel *eventTitle_2_Lbl;
-@property (retain, nonatomic) IBOutlet UITableView *events_2_Table;
+//@property (retain, nonatomic) IBOutlet UILabel *eventTitle_2_Lbl;
+//@property (retain, nonatomic) IBOutlet UITableView *events_2_Table;
 
 - (IBAction)settingsAction:(id)sender;
 - (IBAction)pageControlActionForEventGroups:(id)sender;

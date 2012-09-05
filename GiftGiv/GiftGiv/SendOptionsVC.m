@@ -66,7 +66,7 @@
     
     eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
-    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
+    profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
     
     
     dispatch_queue_t ImageLoader_Q;
@@ -119,7 +119,7 @@
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-    profileNameLbl.frame=CGRectMake(57, 19, profileName_new_size.width, 21);
+    profileNameLbl.frame=CGRectMake(60, 19, profileName_new_size.width, 21);
     
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
