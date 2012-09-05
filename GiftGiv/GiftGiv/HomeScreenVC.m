@@ -13,8 +13,8 @@
 @synthesize pageControlForEventGroups;
 @synthesize eventsTable;
 @synthesize eventTitleLbl;
-@synthesize eventTitle_2_Lbl;
-@synthesize events_2_Table;
+//@synthesize eventTitle_2_Lbl;
+//@synthesize events_2_Table;
 
 static NSDateFormatter *customDateFormat=nil;
 
@@ -92,7 +92,7 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     [eventsTable reloadData];
-    [events_2_Table reloadData];
+    ////[events_2_Table reloadData];
     [super viewWillAppear:YES];
 }
 -(void)makeRequestToGetEvents{
@@ -161,7 +161,7 @@ static NSDateFormatter *customDateFormat=nil;
         //NSLog(@"%@",allupcomingEvents);
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
-        [self performSelector:@selector(updateNextColumnTitle)];
+        //[self performSelector:@selector(updateNextColumnTitle)];
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
@@ -183,7 +183,7 @@ static NSDateFormatter *customDateFormat=nil;
         //[self stopHUD];
         
         [eventsTable reloadData];
-        [events_2_Table reloadData];
+        //////[events_2_Table reloadData];
     }
     else{
         if([CheckNetwork connectedToNetwork]){
@@ -244,11 +244,11 @@ static NSDateFormatter *customDateFormat=nil;
     
     eventTitleLbl.text=[categoryTitles objectAtIndex:eventGroupNum-1];
     
-    [self performSelector:@selector(updateNextColumnTitle)];
+    //[self performSelector:@selector(updateNextColumnTitle)];
     
     
     [eventsTable reloadData];
-    [events_2_Table reloadData];
+    ////[events_2_Table reloadData];
 }
 -(void)checkTotalNumberOfGroups{
     totalGroups=0;
@@ -329,7 +329,7 @@ static NSDateFormatter *customDateFormat=nil;
             
         }
     }
-    else if([tableView isEqual:events_2_Table]){
+    /*else if([tableView isEqual:events_2_Table]){
         if([eventTitle_2_Lbl.text isEqualToString:events_category_1]){
             
             return [allupcomingEvents count];
@@ -352,7 +352,7 @@ static NSDateFormatter *customDateFormat=nil;
             
         }
     }
-    
+    */
     return 0;
 }
 
@@ -435,7 +435,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         return cell;
     }
-    else if([tableView isEqual:events_2_Table]){
+    /*else if([tableView isEqual:events_2_Table]){
         
         static NSString *cellIdentifier_2;
         cellIdentifier_2=[NSString stringWithFormat:@"Cell_2_%d",indexPath.row];
@@ -510,7 +510,7 @@ static NSDateFormatter *customDateFormat=nil;
         cell_two.dateLbl.frame= CGRectMake(cell_two.eventNameLbl.frame.origin.x+3+cell_two.eventNameLbl.frame.size.width, 30, eventDate_newSize.width, 21); 
         
         return cell_two;
-    }
+    }*/
 	return nil;
 }
 -(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath{
@@ -951,11 +951,11 @@ static NSDateFormatter *customDateFormat=nil;
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
         
-        [self performSelector:@selector(updateNextColumnTitle)];
+        //[self performSelector:@selector(updateNextColumnTitle)];
         
         
         [eventsTable reloadData];
-        [events_2_Table reloadData];
+        ////[events_2_Table reloadData];
         birthdayEventUserNoToAddAsUser=1;
         shouldLoadingPicsStop=NO;
         
@@ -967,19 +967,18 @@ static NSDateFormatter *customDateFormat=nil;
     
     
 }
--(void)updateNextColumnTitle{
+/*-(void)updateNextColumnTitle{
     int nextGroupNum=eventGroupNum;
     
     if(eventGroupNum==[categoryTitles count]){
         nextGroupNum=1;
     }
-    /*else if(eventGroupNum==1)
-        nextGroupNum=[categoryTitles count];*/
+    
     else
         nextGroupNum++;
-    NSLog(@"next group..%d",nextGroupNum);
-    eventTitle_2_Lbl.text=[categoryTitles objectAtIndex:nextGroupNum-1];
-}
+   // NSLog(@"next group..%d",nextGroupNum);
+   // eventTitle_2_Lbl.text=[categoryTitles objectAtIndex:nextGroupNum-1];
+}*/
 -(void)loadProfilePictures{
     int upcomingEventsCount=[allupcomingEvents count];
     int birthdayEventsCount=[listOfBirthdayEvents count];
@@ -1013,7 +1012,7 @@ static NSDateFormatter *customDateFormat=nil;
                                 [[allupcomingEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
                             [self loadImageForEventAtIndexNum:i forTable:eventsTable];
-                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
+                            //[self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1053,7 +1052,7 @@ static NSDateFormatter *customDateFormat=nil;
                                 [[listOfBirthdayEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
                             [self loadImageForEventAtIndexNum:i forTable:eventsTable];
-                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
+                            //[self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1093,7 +1092,7 @@ static NSDateFormatter *customDateFormat=nil;
                                 [[anniversaryEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
                             [self loadImageForEventAtIndexNum:i forTable:eventsTable];
-                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
+                            //[self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1132,7 +1131,7 @@ static NSDateFormatter *customDateFormat=nil;
                                 [[newJobEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
                             [self loadImageForEventAtIndexNum:i forTable:eventsTable];
-                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
+                            //[self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1171,7 +1170,7 @@ static NSDateFormatter *customDateFormat=nil;
                                 [[congratsEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
                             [self loadImageForEventAtIndexNum:i forTable:eventsTable];
-                            [self loadImageForEventAtIndexNum:i forTable:events_2_Table];
+                            //[self loadImageForEventAtIndexNum:i forTable:events_2_Table];
                             
                         });
                     }
@@ -1188,12 +1187,12 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 -(void) loadImageForEventAtIndexNum:(int)index forTable:(UITableView*)table{
-    /*[table beginUpdates];
+    [table beginUpdates];
     
     [table reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:index inSection:0], nil] withRowAnimation:UITableViewRowAnimationNone];
     
-    [table endUpdates];*/
-    [table reloadData];
+    [table endUpdates];
+    //[table reloadData];
 }
 
 -(void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails{
@@ -1252,7 +1251,7 @@ static NSDateFormatter *customDateFormat=nil;
     [allupcomingEvents addObject:eventDetails];
     [self performSelector:@selector(checkTotalNumberOfGroups)];
     
-    [self performSelector:@selector(updateNextColumnTitle)];
+    //[self performSelector:@selector(updateNextColumnTitle)];
     
     if([allupcomingEvents count]>1)
         [self sortEvents:allupcomingEvents eventCategory:1];
@@ -1263,7 +1262,7 @@ static NSDateFormatter *customDateFormat=nil;
     shouldLoadingPicsStop=YES;
     [self loadProfilePictures];
     [eventsTable reloadData];
-    [events_2_Table reloadData];
+    ////[events_2_Table reloadData];
     
     
 }
@@ -1309,7 +1308,7 @@ static NSDateFormatter *customDateFormat=nil;
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
-        [self performSelector:@selector(updateNextColumnTitle)];
+       // [self performSelector:@selector(updateNextColumnTitle)];
         if([allupcomingEvents count])
             [self sortEvents:allupcomingEvents eventCategory:1];
         if([newJobEvents count])
@@ -1320,7 +1319,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [self loadProfilePictures];
         [eventsTable reloadData];
-        [events_2_Table reloadData];
+        ////[events_2_Table reloadData];
         
     }
     
@@ -1352,7 +1351,7 @@ static NSDateFormatter *customDateFormat=nil;
         [anniversaryEvents addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
-        [self performSelector:@selector(updateNextColumnTitle)];
+        //[self performSelector:@selector(updateNextColumnTitle)];
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
@@ -1365,7 +1364,7 @@ static NSDateFormatter *customDateFormat=nil;
         [self loadProfilePictures];
         
         [eventsTable reloadData];
-        [events_2_Table reloadData];
+        ////[events_2_Table reloadData];
         
     }
 }
@@ -1394,7 +1393,7 @@ static NSDateFormatter *customDateFormat=nil;
         [congratsEvents addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
-        [self performSelector:@selector(updateNextColumnTitle)];
+        //[self performSelector:@selector(updateNextColumnTitle)];
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
@@ -1407,7 +1406,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [self loadProfilePictures];
         [eventsTable reloadData];
-        [events_2_Table reloadData];
+        ////[events_2_Table reloadData];
         
     }
 }
@@ -1467,7 +1466,7 @@ static NSDateFormatter *customDateFormat=nil;
     [sortDescriptor release];
     
     [eventsTable reloadData];
-    [events_2_Table reloadData];
+    ////[events_2_Table reloadData];
 	
 }
 #pragma mark - Check Event existance
@@ -1551,8 +1550,8 @@ static NSDateFormatter *customDateFormat=nil;
     [self setEventTitleLbl:nil];
     [self setPageControlForEventGroups:nil];
     [self setEventsTable:nil];
-    [self setEventTitle_2_Lbl:nil];
-    [self setEvents_2_Table:nil];
+    //[self setEventTitle_2_Lbl:nil];
+    //[self setEvents_2_Table:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -1583,8 +1582,8 @@ static NSDateFormatter *customDateFormat=nil;
     [eventTitleLbl release];
     [pageControlForEventGroups release];
     [eventsTable release];
-    [eventTitle_2_Lbl release];
-    [events_2_Table release];
+    //[eventTitle_2_Lbl release];
+   // [events_2_Table release];
     [super dealloc];
 }
 
