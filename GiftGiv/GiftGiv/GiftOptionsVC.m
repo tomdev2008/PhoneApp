@@ -8,8 +8,8 @@
 
 #import "GiftOptionsVC.h"
 
-//#define NUMBER_OF_ITEMS 20
-//#define NUMBER_OF_VISIBLE_ITEMS 5
+#define NUMBER_OF_ITEMS 20
+#define NUMBER_OF_VISIBLE_ITEMS 5
 //#define ITEM_SPACING 130
 
 
@@ -21,8 +21,7 @@
 @synthesize profileNameLbl;
 @synthesize eventNameLbl;
 @synthesize giftsList;
-@synthesize categoryTitleLbl;
-//@synthesize category_iScroll;
+@synthesize category_iScroll;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -47,13 +46,13 @@
 {
     [super viewDidLoad];
     
-    //category_iScroll.clipsToBounds=YES;
+    category_iScroll.clipsToBounds=YES;
     
     [self showProgressHUD:self.view withMsg:nil];
     
     eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
-    profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
+    profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     
     
     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
@@ -104,7 +103,7 @@
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-    profileNameLbl.frame=CGRectMake(60, 63, profileName_new_size.width, 21);
+    profileNameLbl.frame=CGRectMake(57, 63, profileName_new_size.width, 21);
     
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
@@ -129,6 +128,128 @@
 }
 
 
+#pragma mark - iCarousel methods
+
+- (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel1
+{
+    category_iScroll.contentOffset=CGSizeMake(-(category_iScroll.frame.size.width/3.2),0);
+    category_iScroll.centerItemWhenSelected=YES;
+    
+    return [giftCategoriesList count];
+}
+
+- (NSUInteger)numberOfVisibleItemsInCarousel:(iCarousel *)carousel
+{
+    //limit the number of items views loaded concurrently (for performance reasons)
+    //this also affects the appearance of circular-type carousels
+    return NUMBER_OF_VISIBLE_ITEMS;
+}
+
+- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view
+{
+    
+    UILabel *label = (UILabel *)view;
+	if (label == nil)
+	{
+        label = [[[UILabel alloc]init] autorelease];
+               
+		label.font=[UIFont fontWithName:@"Helvetica-Light" size:25.0];
+        label.textAlignment=UITextAlignmentLeft;
+		
+	}
+    NSString *titleStr=[[giftCategoriesList objectAtIndex:index]catName];
+   
+    label.frame = CGRectMake(0.0f, 2.0f, giftCatItemSpace, 40);
+    
+    label.textColor=[UIColor grayColor];
+   
+    label.text=titleStr;
+    return label;
+}
+- (BOOL)carousel:(iCarousel *)carousel shouldSelectItemAtIndex:(NSInteger)index{
+    if(index==[carousel currentItemIndex])
+        return NO;
+    return YES;
+}
+- (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index{
+    
+    if(giftCatNum<index+1){
+        giftCatNum=index+1;
+        [self swipingForGiftCategories:1];
+    }
+    else if(giftCatNum>index+1){
+        giftCatNum=index+1;
+        [self swipingForGiftCategories:0];
+    }
+    
+    giftCategoryPageControl.currentPage=giftCatNum-1;
+    
+}
+
+
+- (CGFloat)carouselItemWidth:(iCarousel *)carousel
+{
+    /*NSLog(@"visible items..%d,%d",[carousel currentItemIndex],[carousel numberOfItems]);
+     int current, next_1,next_2;
+     current=[carousel currentItemIndex];
+     if([carousel currentItemIndex]==[giftCategoriesList count]-1){
+     next_1=0;
+     next_2=1;
+     
+     }
+     else if([carousel currentItemIndex]>=0){
+     next_1=current+1;
+     next_2=current+2;
+     
+     }
+     if(!currentWidth){
+     currentWidth=YES;
+     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+     CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:current]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+     
+     //usually this should be slightly wider than the item views
+     return giftCatTitleSize.width+10;
+     
+     }
+     else if(!next_1_Width){
+     next_1_Width=YES;
+     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+     CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:next_1]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+     
+     //usually this should be slightly wider than the item views
+     return giftCatTitleSize.width+10;
+     }
+     else if(!next_2_Width){
+     next_2_Width=YES;
+     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+     CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:next_2]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+     
+     //usually this should be slightly wider than the item views
+     return giftCatTitleSize.width+10;
+     }
+     
+     if([[carousel visibleItemViews] count]){
+     for(UIView *innerView in [carousel visibleItemViews]){
+     int indexNum=[carousel indexOfItemView:innerView];
+     NSLog(@"number..%d",[carousel indexOfItemView:innerView]); 
+     UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
+     CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:indexNum]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
+     
+     //usually this should be slightly wider than the item views
+     return giftCatTitleSize.width+10;
+     } 
+     }*/
+    //else 
+    return giftCatItemSpace+5;
+    //NSLog(@"gift...%d",[carousel currentItemIndex]);
+    //ITEM_SPACING;
+}
+
+- (BOOL)carouselShouldWrap:(iCarousel *)carousel
+{
+    return YES;
+}
+#pragma mark -
 /*-(void)loadDynamicCategories{
  
  UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
@@ -310,9 +431,9 @@
     giftCategoryPageControl.currentPage=giftCatNum-1;
     
     
-    //[category_iScroll reloadData];
+    [category_iScroll reloadData];
     
-    //[(UILabel*)[category_iScroll itemViewAtIndex:0] setTextColor:[UIColor blackColor]];
+    [(UILabel*)[category_iScroll itemViewAtIndex:0] setTextColor:[UIColor blackColor]];
     
     giftCatNum=1;
     [self reloadTheContentForGifts];
@@ -322,7 +443,6 @@
 
 -(void)reloadTheContentForGifts{
     
-    categoryTitleLbl.text=[[giftCategoriesList objectAtIndex:giftCatNum-1] catName];
     
     if([giftsList count] && giftsList!=nil){
         [giftsList removeAllObjects];
@@ -425,18 +545,18 @@
     /*UIButton*targetBtn=(UIButton*)[giftCategoriesScroll viewWithTag:giftCatNum];
      [targetBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];*/
     
-    /*[category_iScroll reloadData];
+    [category_iScroll reloadData];
     [(UILabel*)[category_iScroll itemViewAtIndex:giftCatNum-1] setTextColor:[UIColor blackColor]];
     
     category_iScroll.scrollEnabled=YES;
     [category_iScroll scrollToItemAtIndex:giftCatNum-1 animated:YES];
-    category_iScroll.scrollEnabled=NO;*/
+    category_iScroll.scrollEnabled=NO;
     //Scroll the category titles to visible on the screen
     //giftCategoriesScroll.scrollEnabled=YES;
     //[giftCategoriesScroll scrollRectToVisible:targetBtn.frame animated:YES];
     //giftCategoriesScroll.scrollEnabled=NO;       
     [giftsTable.layer addAnimation:tranAnimationForGiftCategories forKey:@"groupAnimation"];
-    [categoryTitleLbl.layer addAnimation:tranAnimationForGiftCategories forKey:@"groupAnimation"];
+    
     [self reloadTheContentForGifts];
     
     [giftsTable reloadData];
@@ -626,8 +746,7 @@
     [self setGiftCategoriesScroll:nil];
     [self setGiftsList:nil];
     
-    //[self setCategory_iScroll:nil];
-    [self setCategoryTitleLbl:nil];
+    [self setCategory_iScroll:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -660,8 +779,7 @@
     
     [giftsList release];
     
-    //[category_iScroll release];
-    [categoryTitleLbl release];
+    [category_iScroll release];
     [super dealloc];
 }
 

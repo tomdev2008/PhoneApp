@@ -92,7 +92,7 @@
     //Dynamic[fit] label width respected to the size of the text
     CGSize eventName_maxSize = CGSizeMake(115, 21);
     CGSize eventName_new_size=[eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-    eventNameLbl.frame=CGRectMake(73, 87, eventName_new_size.width, 21);
+    eventNameLbl.frame=CGRectMake(70, 87, eventName_new_size.width, 21);
     
     CGSize eventDate_maxSize = CGSizeMake(88, 21);
     CGSize eventDate_newSize = [eventDateLbl.text sizeWithFont:eventDateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
@@ -104,7 +104,7 @@
 }
 #pragma mark -Facebook delegates
 - (void)facebookDidRequestFailed{
-    //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
+    [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
     AlertWithMessageAndDelegate(@"Oops!",@"Something went wrong, please try agin later", nil);
@@ -113,7 +113,7 @@
     
     //NSLog(@"%@",eventDetails);
     
-    //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
+    [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     
     
     

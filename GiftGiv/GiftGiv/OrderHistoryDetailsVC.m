@@ -56,7 +56,7 @@ static NSDateFormatter *customDateFormat=nil;
     [self.view addSubview:orderDetailsScroll];
     
     profilePic.image=orderDetails.profilePicImg;
-    profileNameLbl.text=[orderDetails.recipientName uppercaseString];
+    profileNameLbl.text=orderDetails.recipientName;
     //eventNameLbl.text=orderDetails.
     
     
@@ -84,23 +84,23 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     if([[orderDetails status] isEqualToString:@"-1"]){
-        statusLbl.text=@"Waiting for recipient reply";
+        statusLbl.text=@"waiting for recipient reply";
     }
     else if([[orderDetails status] isEqualToString:@"0"]){
         
-        statusLbl.text=@"Pending at store";
+        statusLbl.text=@"pending at store";
     }
     else if([[orderDetails status] isEqualToString:@"1"]){
         
-        statusLbl.text=@"Dispatched";
+        statusLbl.text=@"dispatched";
     }
     else if([[orderDetails status] isEqualToString:@"2"]){
         
-        statusLbl.text=@"Delivered";
+        statusLbl.text=@"delivered";
     }
     else if([[orderDetails status] isEqualToString:@"3"]){
         
-        statusLbl.text=@"Returned";
+        statusLbl.text=@"returned";
     }
     eventNameLbl.text=[orderDetails details];
     NSString *dateString=[[[orderDetails orderUpdatedDate] componentsSeparatedByString:@"T"] objectAtIndex:0];
@@ -125,7 +125,7 @@ static NSDateFormatter *customDateFormat=nil;
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-    profileNameLbl.frame=CGRectMake(60, 19, profileName_new_size.width, 21);
+    profileNameLbl.frame=CGRectMake(57, 19, profileName_new_size.width, 21);
     
     CGSize eventName_maxSize = CGSizeMake(320-(profileNameLbl.frame.origin.x+profileNameLbl.frame.size.width+3),21);//123, 21);
     CGSize eventName_newSize = [eventNameLbl.text sizeWithFont:eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];

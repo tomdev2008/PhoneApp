@@ -16,9 +16,9 @@
 #import "GiftCategoriesRequest.h"
 #import "GiftItemsRequest.h"
 #import "MBProgressHUD.h"
-//#import "iCarousel.h"
+#import "iCarousel.h"
 
-@interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate>{
+@interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate,iCarouselDataSource, iCarouselDelegate>{
     
     int giftCatNum;
     int totalCats;
@@ -32,8 +32,7 @@
     
     float giftCatItemSpace;
 }
-@property (retain, nonatomic) IBOutlet UILabel *categoryTitleLbl;
-//@property (retain, nonatomic) IBOutlet iCarousel *category_iScroll;
+@property (retain, nonatomic) IBOutlet iCarousel *category_iScroll;
 
 @property (retain, nonatomic) IBOutlet UIImageView *profilePicImg;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;

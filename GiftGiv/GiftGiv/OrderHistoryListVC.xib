@@ -120,7 +120,7 @@
 					<object class="IBUIImageView" id="829642749">
 						<reference key="NSNextResponder" ref="1059628427"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{127, 4}, {68, 36}}</string>
+						<string key="NSFrame">{{122, 2}, {76, 40}}</string>
 						<reference key="NSSuperview" ref="1059628427"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="594236085"/>
@@ -138,7 +138,6 @@
 						<string key="NSFrame">{{13, 56}, {164, 37}}</string>
 						<reference key="NSSuperview" ref="1059628427"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="29395894"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -170,7 +169,6 @@
 						<string key="NSFrame">{{14, 107}, {274, 21}}</string>
 						<reference key="NSSuperview" ref="1059628427"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -202,7 +200,6 @@
 						<string key="NSFrame">{{10, 123}, {114, 31}}</string>
 						<reference key="NSSuperview" ref="1059628427"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="490085916"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
@@ -235,7 +232,6 @@
 						<string key="NSFrame">{{10, 101}, {300, 358}}</string>
 						<reference key="NSSuperview" ref="1059628427"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="1027795033"/>
 						<reference key="IBUIBackgroundColor" ref="530466856"/>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
