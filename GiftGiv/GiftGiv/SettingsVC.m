@@ -34,16 +34,19 @@
 {
     [super viewDidLoad];
     
+    fb_giftgiv_settings=[[Facebook_GiftGiv alloc]init];
+    fb_giftgiv_settings.fbGiftGivDelegate=self;
+    
 }
 - (IBAction)backToHomeScreen:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)logoutFacebook:(id)sender {
-    if([[[Facebook_GiftGiv sharedSingleton] facebook] isSessionValid]){
+    if([[fb_giftgiv_settings facebook] isSessionValid]){
         if([CheckNetwork connectedToNetwork]){
-            [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-            [[Facebook_GiftGiv sharedSingleton]logoutOfFacebook];
+            
+            [fb_giftgiv_settings logoutOfFacebook];
         }
         else{
             AlertWithMessageAndDelegate(@"GiftGiv", @"Please check your network settings", nil);
@@ -58,8 +61,8 @@
 - (void)facebookDidLoggedOut{
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     //[[NSUserDefaults standardUserDefaults]removeObjectForKey:@"FBAccessTokenKey"];
-    [[[Facebook_GiftGiv sharedSingleton]facebook]setAccessToken:nil];
-    [[Facebook_GiftGiv sharedSingleton]releaseFacebook];
+    [[fb_giftgiv_settings facebook]setAccessToken:nil];
+    [fb_giftgiv_settings releaseFacebook];
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
     
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
@@ -67,6 +70,7 @@
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     }
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"MyGiftGivUserId"];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 #pragma mark -
@@ -109,7 +113,8 @@
 
 
 - (void)dealloc {
-    
+    fb_giftgiv_settings.fbGiftGivDelegate=nil;
+    [fb_giftgiv_settings release];
     [super dealloc];
 }
 

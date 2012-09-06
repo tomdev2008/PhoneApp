@@ -12,10 +12,17 @@
 #import "SendOptionsVC.h"
 #import "GiftItemObject.h"
 
-@interface GiftCardDetailsVC : UIViewController<UIActionSheetDelegate>{
+@interface GiftCardDetailsVC : UIViewController{
     CGPoint svos;
     int selectedPriceRow;
+    int selectedElectronicPhysicRow;
+    NSMutableArray *electronicPhysicalList;
 }
+- (IBAction)electronicPhysicNavigatorAction:(id)sender;
+- (IBAction)electronicPhysicSelDone:(id)sender;
+@property (retain, nonatomic) IBOutlet UISegmentedControl *electronicPhysicSelNavigator;
+@property (retain, nonatomic) IBOutlet UIPickerView *electronicPhysPicker;
+@property (retain, nonatomic) IBOutlet UIView *electrnicalPhysicalBgView;
 @property (retain, nonatomic) NSMutableArray *priceListArray;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;
 @property (retain, nonatomic) IBOutlet UILabel *eventNameLbl;

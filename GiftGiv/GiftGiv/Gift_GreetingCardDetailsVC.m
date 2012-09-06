@@ -136,7 +136,7 @@
 }
 
 -(void)zoomInOutForCards:(UITapGestureRecognizer*)tapRecog{
-    CGPoint tapLocation=[tapRecog locationInView:self.view];
+    CGPoint tapLocation=[tapRecog locationInView:giftDetailsContentScroll];
     
     //zoom out
     if([zoomInImgView superview]){

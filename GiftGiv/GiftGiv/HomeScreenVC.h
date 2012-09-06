@@ -44,7 +44,7 @@
     
     NSMutableArray *categoryTitles;
     BOOL shouldLoadingPicsStop;
-    
+    Facebook_GiftGiv *fb_giftgiv_home;
 }
 
 @property (retain, nonatomic) IBOutlet UIView *eventsBgView;

@@ -31,7 +31,8 @@
 
 - (void)viewDidLoad
 {
-    
+    fb_giftgiv=[[Facebook_GiftGiv alloc]init];
+    fb_giftgiv.fbGiftGivDelegate=self;
     [super viewDidLoad];
     
 }
@@ -42,8 +43,11 @@
     if([CheckNetwork connectedToNetwork]){
         //[self showProgressHUD:self.view withMsg:nil];
         //authorize the application with facebook
-        [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-        [[Facebook_GiftGiv sharedSingleton]authorizeOurAppWithFacebook];
+        //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+        
+        
+        
+        [fb_giftgiv authorizeOurAppWithFacebook];
         
     }
     
@@ -106,8 +110,8 @@
 #pragma mark - Add User Request delegate
 -(void) responseForAddUser:(NSMutableDictionary*)response{
     if([response objectForKey:@"GiftGivUser"])
-        [[NSUserDefaults standardUserDefaults]setObject:response forKey:@"MyGiftGivUserId"];
-    
+        [[NSUserDefaults standardUserDefaults]setObject:[response objectForKey:@"GiftGivUser"] forKey:@"MyGiftGivUserId"];
+    //NSLog(@"gift giv..%@",[[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]);
     [self stopHUD];
     
     //Once facebook logged in, will show Home/Events screen
@@ -165,7 +169,7 @@
 }
 
 - (void)dealloc {
-    
+    [fb_giftgiv release];
     [super dealloc];
 }
 

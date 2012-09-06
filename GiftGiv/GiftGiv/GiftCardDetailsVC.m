@@ -21,6 +21,9 @@
 @synthesize giftImg;
 @synthesize giftNameLbl;
 @synthesize priceRangePickerBgView;
+@synthesize electronicPhysicSelNavigator;
+@synthesize electronicPhysPicker;
+@synthesize electrnicalPhysicalBgView;
 @synthesize priceListArray;
 @synthesize giftItemInfo;
 @synthesize prevNextSegmentControl;
@@ -42,12 +45,18 @@
     
     // Release any cached data, images, etc that aren't in use.
 }
-
+-(void) viewWillDisappear:(BOOL)animated{
+    if([electrnicalPhysicalBgView superview])
+        [electrnicalPhysicalBgView removeFromSuperview];
+    [super viewWillDisappear:YES];
+}
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    electronicPhysicalList=[[NSMutableArray alloc]initWithObjects:@"Electronically",@"Physically", nil];
     
     eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
@@ -207,8 +216,8 @@
     
 }
 - (IBAction)sendMediaAction:(id)sender {
-    giftDetailsScroll.userInteractionEnabled=NO;
-    UIActionSheet *mediaActions=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Electronically",@"Physically", nil];
+    
+    /*UIActionSheet *mediaActions=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Electronically",@"Physically", nil];
     [mediaActions showInView:self.view];
     [mediaActions release];
     [giftDetailsScroll setContentOffset:svos animated:YES];
@@ -220,7 +229,45 @@
 	pt.x = 0;
 	
     pt.y-=25;
+	[giftDetailsScroll setContentOffset:pt animated:YES];*/
+    
+    for(UIView *subview in [giftDetailsScroll subviews]){
+        if([subview isKindOfClass:[UIButton class]]){
+            [(UIButton*)subview setUserInteractionEnabled:NO];
+        }
+        if([subview isKindOfClass:[UITextField class]]){
+            [(UITextField*)subview setUserInteractionEnabled:NO];
+        }
+    }
+    giftDetailsScroll.userInteractionEnabled=NO;
+    svos = giftDetailsScroll.contentOffset;
+	CGPoint pt;
+	CGRect rc = [sendMediaLbl bounds];
+	rc = [sendMediaLbl convertRect:rc toView:giftDetailsScroll];
+	pt = rc.origin;
+	pt.x = 0;
+	
+    pt.y-=25;
 	[giftDetailsScroll setContentOffset:pt animated:YES];
+    if(electrnicalPhysicalBgView.hidden)
+        electrnicalPhysicalBgView.hidden=NO;
+    if(![electrnicalPhysicalBgView superview]){
+        electrnicalPhysicalBgView.frame=CGRectMake(0, 220, 320, 260);
+        [self.view.window addSubview:electrnicalPhysicalBgView];
+    }
+    
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = 0.3f;
+    animation.type = kCATransitionMoveIn;
+    animation.subtype=kCATransitionFromTop;
+    [electrnicalPhysicalBgView.layer addAnimation:animation forKey:@"animation"];
+    [electronicPhysPicker selectRow:selectedElectronicPhysicRow inComponent:0 animated:YES];
+    if(selectedElectronicPhysicRow==0){
+        [electronicPhysicSelNavigator setEnabled:NO forSegmentAtIndex:0];
+        [electronicPhysicSelNavigator setEnabled:YES forSegmentAtIndex:1];
+    }
+    
 }
 - (void)textViewDidBeginEditing:(UITextView *)textView{
     for(UIView *subview in [giftDetailsScroll subviews]){
@@ -260,7 +307,7 @@
     [self.navigationController pushViewController:sendOptions animated:YES];
     [sendOptions release];
 }
-#pragma mark - Actionsheet delegate
+/*#pragma mark - Actionsheet delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     switch (buttonIndex) {
@@ -276,7 +323,7 @@
     [giftDetailsScroll setContentOffset:svos animated:YES];
     giftDetailsScroll.userInteractionEnabled=YES;
 }
-#pragma mark -
+#pragma mark -*/
 - (IBAction)previousNextPriceSegmentAction:(id)sender {
     
     switch ([(UISegmentedControl*)sender selectedSegmentIndex]) {
@@ -344,69 +391,151 @@
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-	
-	return [priceListArray count];
+    if([pickerView isEqual:pricePicker])
+	    return [priceListArray count];
+    
+    else
+        return [electronicPhysicalList count];
     
 }
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
 	
     //customized view for the picker with check mark as selection
-    
-	if (view == nil)
-	{
-        view = [[[UIView alloc] init] autorelease];
-        UILabel *priceLabel=[[UILabel alloc]init];
-        [priceLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
-		[priceLabel setBackgroundColor:[UIColor clearColor]];
-		[priceLabel setFrame:CGRectMake(30, 0, 280, 30)];
-        [priceLabel setTag:999];
-        UILabel *checkMarkLbl=[[UILabel alloc]init];
-        [checkMarkLbl setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
-        [checkMarkLbl setTag:888];
-		[checkMarkLbl setBackgroundColor:[UIColor clearColor]];
-		[checkMarkLbl setFrame:CGRectMake(5, 0, 30, 30)];
-        [checkMarkLbl setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
-        UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(priceSelectedByPicker:)];
-        [tapGesture setNumberOfTapsRequired:1];
-        [view addGestureRecognizer:tapGesture];
-        [tapGesture release];
+    if([pickerView isEqual:pricePicker]){
+        if (view == nil)
+        {
+            view = [[[UIView alloc] init] autorelease];
+            UILabel *priceLabel=[[UILabel alloc]init];
+            [priceLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+            [priceLabel setBackgroundColor:[UIColor clearColor]];
+            [priceLabel setFrame:CGRectMake(30, 0, 280, 30)];
+            [priceLabel setTag:999];
+            UILabel *checkMarkLbl=[[UILabel alloc]init];
+            [checkMarkLbl setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+            [checkMarkLbl setTag:888];
+            [checkMarkLbl setBackgroundColor:[UIColor clearColor]];
+            [checkMarkLbl setFrame:CGRectMake(5, 0, 30, 30)];
+            [checkMarkLbl setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+            UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(priceSelectedByPicker:)];
+            [tapGesture setNumberOfTapsRequired:1];
+            [view addGestureRecognizer:tapGesture];
+            [tapGesture release];
+            
+            [view addSubview:checkMarkLbl];
+            [view addSubview:priceLabel];
+            
+            [priceLabel release];
+            [checkMarkLbl release];
+            
+            
+        }
+        view.tag=row;
+        if(row==selectedPriceRow){
+            [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+            
+        }
+        else{
+            [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor blackColor]];        
+        }
         
-        [view addSubview:checkMarkLbl];
-        [view addSubview:priceLabel];
+        [(UILabel*)[view viewWithTag:999] setText:[NSString stringWithFormat:@"  $%@",[priceListArray objectAtIndex:row]]];
         
-        [priceLabel release];
-        [checkMarkLbl release];
-        
-        
-	}
-    view.tag=row;
-    if(row==selectedPriceRow){
-        [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
-        
-    }
-    else{
-        [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor blackColor]];        
-    }
-    
-    [(UILabel*)[view viewWithTag:999] setText:[NSString stringWithFormat:@"  $%@",[priceListArray objectAtIndex:row]]];
-    
-    for(UIView *subview in [view subviews]){
-        if([subview isKindOfClass:[UILabel class]]){
-            if([(UILabel*)subview viewWithTag:888]){
-                if(row==selectedPriceRow)
-                    [(UILabel*)subview setText:@"✓"];
-                else
-                    [(UILabel*)subview setText:@""];
+        for(UIView *subview in [view subviews]){
+            if([subview isKindOfClass:[UILabel class]]){
+                if([(UILabel*)subview viewWithTag:888]){
+                    if(row==selectedPriceRow)
+                        [(UILabel*)subview setText:@"✓"];
+                    else
+                        [(UILabel*)subview setText:@""];
+                }
+                
             }
             
         }
         
+        return view;
+    }
+	else{
+        if (view == nil)
+        {
+            view = [[[UIView alloc] init] autorelease];
+            UILabel *priceLabel=[[UILabel alloc]init];
+            [priceLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+            [priceLabel setBackgroundColor:[UIColor clearColor]];
+            [priceLabel setFrame:CGRectMake(30, 0, 280, 30)];
+            [priceLabel setTag:999];
+            UILabel *checkMarkLbl=[[UILabel alloc]init];
+            [checkMarkLbl setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+            [checkMarkLbl setTag:888];
+            [checkMarkLbl setBackgroundColor:[UIColor clearColor]];
+            [checkMarkLbl setFrame:CGRectMake(5, 0, 30, 30)];
+            [checkMarkLbl setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+            UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(electronicPhySelectionByPicker:)];
+            [tapGesture setNumberOfTapsRequired:1];
+            [view addGestureRecognizer:tapGesture];
+            [tapGesture release];
+            
+            [view addSubview:checkMarkLbl];
+            [view addSubview:priceLabel];
+            
+            [priceLabel release];
+            [checkMarkLbl release];
+            
+            
+        }
+        view.tag=row;
+        if(row==selectedElectronicPhysicRow){
+            [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+            
+        }
+        else{
+            [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor blackColor]];        
+        }
+        
+        [(UILabel*)[view viewWithTag:999] setText:[NSString stringWithFormat:@"  %@",[electronicPhysicalList objectAtIndex:row]]];
+        
+        for(UIView *subview in [view subviews]){
+            if([subview isKindOfClass:[UILabel class]]){
+                if([(UILabel*)subview viewWithTag:888]){
+                    if(row==selectedElectronicPhysicRow)
+                        [(UILabel*)subview setText:@"✓"];
+                    else
+                        [(UILabel*)subview setText:@""];
+                }
+                
+            }
+            
+        }
+        
+        return view;
     }
     
-	return view;
+}
+
+#pragma mark -
+-(void)electronicPhySelectionByPicker:(UITapGestureRecognizer*)sender{
+    
+    selectedElectronicPhysicRow=[sender.view tag];
+    [electronicPhysPicker selectRow:selectedElectronicPhysicRow inComponent:0 animated:YES];
+    
+    [electronicPhysPicker reloadComponent:0];
+    
+    if(selectedElectronicPhysicRow>0 && selectedElectronicPhysicRow<[electronicPhysicalList count]-1){
+        [electronicPhysicSelNavigator setEnabled:YES forSegmentAtIndex:0];
+        [electronicPhysicSelNavigator setEnabled:YES forSegmentAtIndex:1];
+        
+    }
+    
+    else if(selectedElectronicPhysicRow==0){
+        [electronicPhysicSelNavigator setEnabled:NO forSegmentAtIndex:0];
+        [electronicPhysicSelNavigator setEnabled:YES forSegmentAtIndex:1];
+    }
+    else if(selectedElectronicPhysicRow==[electronicPhysicalList count]-1){
+        [electronicPhysicSelNavigator setEnabled:YES forSegmentAtIndex:0];
+        [electronicPhysicSelNavigator setEnabled:NO forSegmentAtIndex:1];
+    }
     
 }
-#pragma mark -
 -(void)priceSelectedByPicker:(UITapGestureRecognizer*)sender{
     //NSLog(@"%d",[sender.view tag]);
     
@@ -448,6 +577,9 @@
     [self setPricePicker:nil];
     
     [self setPrevNextSegmentControl:nil];
+    [self setElectrnicalPhysicalBgView:nil];
+    [self setElectronicPhysPicker:nil];
+    [self setElectronicPhysicSelNavigator:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -461,6 +593,7 @@
 
 
 - (void)dealloc {
+    [electronicPhysicalList release];
     [giftItemInfo release];
     [giftDetailsScroll release];
     [profilePic release];
@@ -477,7 +610,72 @@
     [pricePicker release];
     [priceListArray release];
     [prevNextSegmentControl release];
+    [electrnicalPhysicalBgView release];
+    [electronicPhysPicker release];
+    [electronicPhysicSelNavigator release];
     [super dealloc];
 }
 
+- (IBAction)electronicPhysicNavigatorAction:(id)sender {
+    switch ([(UISegmentedControl*)sender selectedSegmentIndex]) {
+            //previous
+        case 0:
+            
+            if(selectedElectronicPhysicRow>0){
+                [(UISegmentedControl*)sender setEnabled:YES forSegmentAtIndex:1];
+                selectedElectronicPhysicRow--;                
+            }
+            
+            if(selectedElectronicPhysicRow==0){
+                [(UISegmentedControl*)sender setEnabled:NO forSegmentAtIndex:0];
+            }
+            
+            break;
+            //next
+        case 1:
+            if(selectedElectronicPhysicRow<[electronicPhysicalList count]-1){
+                selectedElectronicPhysicRow++;
+                [(UISegmentedControl*)sender setEnabled:YES forSegmentAtIndex:0];
+                
+            }
+            
+            if(selectedElectronicPhysicRow==[electronicPhysicalList count]-1){
+                [(UISegmentedControl*)sender setEnabled:NO forSegmentAtIndex:1];
+            }
+            
+            break;
+            
+            
+    }
+    [(UISegmentedControl*)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
+    [electronicPhysPicker selectRow:selectedElectronicPhysicRow inComponent:0 animated:YES];
+    [electronicPhysPicker reloadComponent:0];
+}
+
+- (IBAction)electronicPhysicSelDone:(id)sender {
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = 0.3f;
+    animation.type = kCATransitionPush;
+    animation.subtype=kCATransitionFromBottom;
+    [electrnicalPhysicalBgView.layer addAnimation:animation forKey:@"animation"];
+    electrnicalPhysicalBgView.hidden=YES;
+    [giftDetailsScroll setContentOffset:svos animated:YES];
+    giftDetailsScroll.userInteractionEnabled=YES;
+    
+    for(UIView *subview in [giftDetailsScroll subviews]){
+        if([subview isKindOfClass:[UIButton class]]){
+            [(UIButton*)subview setUserInteractionEnabled:YES];
+        }
+        if([subview isKindOfClass:[UITextField class]]){
+            [(UITextField*)subview setUserInteractionEnabled:YES];
+        }
+    }
+    
+    
+    sendMediaLbl.text=[NSString stringWithFormat:@"   %@",[electronicPhysicalList objectAtIndex:selectedElectronicPhysicRow]];
+    
+    [giftDetailsScroll setContentOffset:svos animated:YES];
+    
+}
 @end

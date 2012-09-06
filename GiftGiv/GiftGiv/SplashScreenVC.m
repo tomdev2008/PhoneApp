@@ -38,11 +38,16 @@
 -(void)viewWillAppear:(BOOL)animated{
     
     //Check whether facebook session is valid or not, Based on the availability load either splash screen or Home/Events screen
-    if([[[Facebook_GiftGiv sharedSingleton] facebook] isSessionValid]){
+    
+    Facebook_GiftGiv *fb_giftgiv=[[Facebook_GiftGiv alloc]init];
+        
+    if([[fb_giftgiv facebook] isSessionValid]){
         [self performSelector:@selector(loadHomeScreen) withObject:nil afterDelay:2.0];
     }
     else
         [self performSelector:@selector(loadSignInScreen) withObject:nil afterDelay:2.0];
+    
+    [fb_giftgiv release];
     
     [super viewWillAppear:YES];
 }

@@ -31,6 +31,9 @@
 @synthesize cityBgView;
 @synthesize cityTxtFld;
 @synthesize stateLbl;
+@synthesize addressEmailSMSSelPickerBgView;
+@synthesize addressMailSMSPicker;
+@synthesize addEmailSMSSegment;
 @synthesize profilePic;
 @synthesize statePickerBgView;
 @synthesize stateSelSegmentCntl;
@@ -103,19 +106,25 @@
     //list of states (postal abbreviations) collected from http://www.stateabbreviations.us/
     
     listOfStates=[[NSMutableArray alloc]initWithArray:[[NSMutableDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ListOfStates" ofType:@"plist"]] objectForKey:@"StateCodes"]];   
+    listOfSendOptions=[[NSMutableArray alloc]initWithCapacity:2];
     if(isSendElectronically){
         
+        [listOfSendOptions addObject:@"Recipient email address"];
+             
         recipientAddressLbl.text=@"   Recipient email address";
         [self refreshTheFormForOption:1];
         
     }
     else{
+        [listOfSendOptions addObject:@"I know the address"];
+        
+        [listOfSendOptions addObject:@"Email recipient for address"];
         
         recipientAddressLbl.text=@"   I know the address";
         [self refreshTheFormForOption:0];
         
     }
-    
+    [listOfSendOptions addObject:@"SMS recipient for address"];
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
@@ -326,66 +335,134 @@
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-	
-	return [listOfStates count];
+	if([pickerView isEqual:statesPicker])
+        return [listOfStates count];
+    else{
+        return [listOfSendOptions count];
+        /*if(!isSendElectronically)
+            [mediaActions addButtonWithTitle:@"I know the address"];
+        if(isSendElectronically)
+            [mediaActions addButtonWithTitle:@"Recipient email address"];
+        else
+            [mediaActions addButtonWithTitle:@"Email recipient for address"];
+        
+        [mediaActions addButtonWithTitle:@"SMS recipient for address"];*/
+        
+    }
     
 }
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
 	
     //customized view for the picker with check mark as selection
-    
-	if (view == nil)
-	{
-        view = [[[UIView alloc] init] autorelease];
-        UILabel *priceLabel=[[UILabel alloc]init];
-        [priceLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
-		[priceLabel setBackgroundColor:[UIColor clearColor]];
-		[priceLabel setFrame:CGRectMake(30, 0, 280, 30)];
-        [priceLabel setTag:999];
-        UILabel *checkMarkLbl=[[UILabel alloc]init];
-        [checkMarkLbl setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
-        [checkMarkLbl setTag:888];
-		[checkMarkLbl setBackgroundColor:[UIColor clearColor]];
-		[checkMarkLbl setFrame:CGRectMake(5, 0, 30, 30)];
-        [checkMarkLbl setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
-        UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(stateSelectedByPicker:)];
-        [tapGesture setNumberOfTapsRequired:1];
-        [view addGestureRecognizer:tapGesture];
-        [tapGesture release];
+    if([pickerView isEqual:statesPicker]){
+        if (view == nil)
+        {
+            view = [[[UIView alloc] init] autorelease];
+            UILabel *priceLabel=[[UILabel alloc]init];
+            [priceLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+            [priceLabel setBackgroundColor:[UIColor clearColor]];
+            [priceLabel setFrame:CGRectMake(30, 0, 280, 30)];
+            [priceLabel setTag:999];
+            UILabel *checkMarkLbl=[[UILabel alloc]init];
+            [checkMarkLbl setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+            [checkMarkLbl setTag:888];
+            [checkMarkLbl setBackgroundColor:[UIColor clearColor]];
+            [checkMarkLbl setFrame:CGRectMake(5, 0, 30, 30)];
+            [checkMarkLbl setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+            UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(stateSelectedByPicker:)];
+            [tapGesture setNumberOfTapsRequired:1];
+            [view addGestureRecognizer:tapGesture];
+            [tapGesture release];
+            
+            [view addSubview:checkMarkLbl];
+            [view addSubview:priceLabel];
+            
+            [priceLabel release];
+            [checkMarkLbl release];
+            
+            
+        }
+        view.tag=row;
+        if(row==selectedStateRow){
+            [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+            
+        }
+        else{
+            [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor blackColor]];        
+        }
         
-        [view addSubview:checkMarkLbl];
-        [view addSubview:priceLabel];
+        [(UILabel*)[view viewWithTag:999] setText:[NSString stringWithFormat:@"  %@",[listOfStates objectAtIndex:row]]];
         
-        [priceLabel release];
-        [checkMarkLbl release];
-        
-        
-	}
-    view.tag=row;
-    if(row==selectedStateRow){
-        [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
-        
-    }
-    else{
-        [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor blackColor]];        
-    }
-    
-    [(UILabel*)[view viewWithTag:999] setText:[NSString stringWithFormat:@"  %@",[listOfStates objectAtIndex:row]]];
-    
-    for(UIView *subview in [view subviews]){
-        if([subview isKindOfClass:[UILabel class]]){
-            if([(UILabel*)subview viewWithTag:888]){
-                if(row==selectedStateRow)
-                    [(UILabel*)subview setText:@"✓"];
-                else
-                    [(UILabel*)subview setText:@""];
+        for(UIView *subview in [view subviews]){
+            if([subview isKindOfClass:[UILabel class]]){
+                if([(UILabel*)subview viewWithTag:888]){
+                    if(row==selectedStateRow)
+                        [(UILabel*)subview setText:@"✓"];
+                    else
+                        [(UILabel*)subview setText:@""];
+                }
+                
             }
             
         }
         
+        return view;
     }
-    
-	return view;
+    else{
+        if (view == nil)
+        {
+            view = [[[UIView alloc] init] autorelease];
+            UILabel *priceLabel=[[UILabel alloc]init];
+            [priceLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+            [priceLabel setBackgroundColor:[UIColor clearColor]];
+            [priceLabel setFrame:CGRectMake(30, 0, 280, 30)];
+            [priceLabel setTag:999];
+            UILabel *checkMarkLbl=[[UILabel alloc]init];
+            [checkMarkLbl setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+            [checkMarkLbl setTag:888];
+            [checkMarkLbl setBackgroundColor:[UIColor clearColor]];
+            [checkMarkLbl setFrame:CGRectMake(5, 0, 30, 30)];
+            [checkMarkLbl setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+            UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addressOptionSelectedByPicker:)];
+            [tapGesture setNumberOfTapsRequired:1];
+            [view addGestureRecognizer:tapGesture];
+            [tapGesture release];
+            
+            [view addSubview:checkMarkLbl];
+            [view addSubview:priceLabel];
+            
+            [priceLabel release];
+            [checkMarkLbl release];
+            
+            
+        }
+        view.tag=row;
+        if(row==selectedSendOptionRow){
+            [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor colorWithRed:0.274 green:0.51 blue:0.71 alpha:1.0]];
+            
+        }
+        else{
+            [(UILabel*)[view viewWithTag:999] setTextColor:[UIColor blackColor]];        
+        }
+        
+        [(UILabel*)[view viewWithTag:999] setText:[NSString stringWithFormat:@"  %@",[listOfSendOptions objectAtIndex:row]]];
+        
+        for(UIView *subview in [view subviews]){
+            if([subview isKindOfClass:[UILabel class]]){
+                if([(UILabel*)subview viewWithTag:888]){
+                    if(row==selectedSendOptionRow)
+                        [(UILabel*)subview setText:@"✓"];
+                    else
+                        [(UILabel*)subview setText:@""];
+                }
+                
+            }
+            
+        }
+        
+        return view;
+    }
+	
     
 }
 #pragma mark -
@@ -412,11 +489,71 @@
     }
     
 }
-
+-(void)addressOptionSelectedByPicker:(UITapGestureRecognizer*)sender{
+    
+    selectedSendOptionRow=[sender.view tag];
+    [addressMailSMSPicker selectRow:selectedSendOptionRow inComponent:0 animated:YES];
+    
+    [addressMailSMSPicker reloadComponent:0];
+    
+    if(selectedSendOptionRow>0 && selectedSendOptionRow<[listOfSendOptions count]-1){
+        [addEmailSMSSegment setEnabled:YES forSegmentAtIndex:0];
+        [addEmailSMSSegment setEnabled:YES forSegmentAtIndex:1];
+        
+    }
+    
+    else if(selectedSendOptionRow==0){
+        [addEmailSMSSegment setEnabled:NO forSegmentAtIndex:0];
+        [addEmailSMSSegment setEnabled:YES forSegmentAtIndex:1];
+    }
+    else if(selectedSendOptionRow==[listOfSendOptions count]-1){
+        [addEmailSMSSegment setEnabled:YES forSegmentAtIndex:0];
+        [addEmailSMSSegment setEnabled:NO forSegmentAtIndex:1];
+    }
+    
+}
 
 - (IBAction)recipientAddressOptionAction:(id)sender {
     
-    UIActionSheet *mediaActions=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles: nil];
+    
+    for(UIView *subview in [sendOptionsContentScroll subviews]){
+        if([subview isKindOfClass:[UIButton class]]){
+            [(UIButton*)subview setUserInteractionEnabled:NO];
+        }
+        if([subview isKindOfClass:[UITextField class]]){
+            [(UITextField*)subview setUserInteractionEnabled:NO];
+        }
+    }
+    sendOptionsContentScroll.userInteractionEnabled=NO;
+    svos = sendOptionsContentScroll.contentOffset;
+	CGPoint pt;
+	CGRect rc = [recipientAddressLbl bounds];
+	rc = [recipientAddressLbl convertRect:rc toView:sendOptionsContentScroll];
+	pt = rc.origin;
+	pt.x = 0;
+	
+    pt.y-=15;
+	[sendOptionsContentScroll setContentOffset:pt animated:YES];
+    if(addressEmailSMSSelPickerBgView.hidden)
+        addressEmailSMSSelPickerBgView.hidden=NO;
+    if(![addressEmailSMSSelPickerBgView superview]){
+        addressEmailSMSSelPickerBgView.frame=CGRectMake(0, 220, 320, 260);
+        [self.view.window addSubview:addressEmailSMSSelPickerBgView];
+    }
+    
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = 0.3f;
+    animation.type = kCATransitionMoveIn;
+    animation.subtype=kCATransitionFromTop;
+    [addressEmailSMSSelPickerBgView.layer addAnimation:animation forKey:@"animation"];
+    [addressMailSMSPicker selectRow:selectedSendOptionRow inComponent:0 animated:YES];
+    if(selectedSendOptionRow==0){
+        [addEmailSMSSegment setEnabled:NO forSegmentAtIndex:0];
+        [addEmailSMSSegment setEnabled:YES forSegmentAtIndex:1];
+    }
+    
+    /*UIActionSheet *mediaActions=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles: nil];
     if(!isSendElectronically)
         [mediaActions addButtonWithTitle:@"I know the address"];
     if(isSendElectronically)
@@ -427,9 +564,9 @@
     [mediaActions addButtonWithTitle:@"Cancel"];
     mediaActions.cancelButtonIndex = mediaActions.numberOfButtons - 1;
     [mediaActions showInView:self.view];
-    [mediaActions release];
+    [mediaActions release];*/
 }
-#pragma mark - Actionsheet delegate
+/*#pragma mark - Actionsheet delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     switch (buttonIndex) {
@@ -471,7 +608,7 @@
     //[giftDetailsScroll setContentOffset:svos animated:YES];
     //giftDetailsScroll.userInteractionEnabled=YES;
 }
-#pragma mark -
+#pragma mark -*/
 - (IBAction)stateSelectionAction:(id)sender {
     for(UIView *subview in [sendOptionsContentScroll subviews]){
         if([subview isKindOfClass:[UIButton class]]){
@@ -648,7 +785,14 @@
     [statesPicker reloadComponent:0];
 }
 #pragma mark -
+-(void)viewWillDisappear:(BOOL)animated{
+    if([addressEmailSMSSelPickerBgView superview])
+        [addressEmailSMSSelPickerBgView removeFromSuperview];
+    if([statePickerBgView superview])
+        [statePickerBgView removeFromSuperview];
 
+    [super viewWillDisappear:animated];
+}
 - (void)viewDidUnload
 {
     [self setProfilePic:nil];
@@ -680,6 +824,9 @@
     [self setStatesPicker:nil];
     [self setStateSelSegmentCntl:nil];
     [self setEmailsText:nil];
+    [self setAddressEmailSMSSelPickerBgView:nil];
+    [self setAddressMailSMSPicker:nil];
+    [self setAddEmailSMSSegment:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -692,6 +839,8 @@
 }
 
 - (void)dealloc {
+        
+    [listOfSendOptions release];
     [profilePic release];
     [profileNameLbl release];
     [eventNameLbl release];
@@ -724,6 +873,113 @@
     [stateSelSegmentCntl release];
     [sendingInfoDict release];
     [emailsText release];
+    [addressEmailSMSSelPickerBgView release];
+    [addressMailSMSPicker release];
+    [addEmailSMSSegment release];
     [super dealloc];
+}
+- (IBAction)addressEmailSMSSelDoneAction:(id)sender {
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = 0.3f;
+    animation.type = kCATransitionPush;
+    animation.subtype=kCATransitionFromBottom;
+    [addressEmailSMSSelPickerBgView.layer addAnimation:animation forKey:@"animation"];
+    addressEmailSMSSelPickerBgView.hidden=YES;
+    [sendOptionsContentScroll setContentOffset:svos animated:YES];
+    sendOptionsContentScroll.userInteractionEnabled=YES;
+    
+    for(UIView *subview in [sendOptionsContentScroll subviews]){
+        if([subview isKindOfClass:[UIButton class]]){
+            [(UIButton*)subview setUserInteractionEnabled:YES];
+        }
+        if([subview isKindOfClass:[UITextField class]]){
+            [(UITextField*)subview setUserInteractionEnabled:YES];
+        }
+    }
+    
+    
+    recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[listOfSendOptions objectAtIndex:selectedSendOptionRow]];
+    
+    [sendOptionsContentScroll setContentOffset:svos animated:YES];
+    switch (selectedSendOptionRow) {
+            
+        case 0:
+            if(isSendElectronically){
+                [self refreshTheFormForOption:1];
+                //recipientAddressLbl.text=@"   Email recipient for address";
+            }
+            else{
+                [self refreshTheFormForOption:0];
+                //recipientAddressLbl.text=@"   I know the address";
+            }
+            //recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[actionSheet buttonTitleAtIndex:buttonIndex]];
+            break;
+            
+        case 1:
+            if(isSendElectronically){
+                [self refreshTheFormForOption:2];
+                //recipientAddressLbl.text=@"   SMS recipient for address";
+            }
+            else{
+                [self refreshTheFormForOption:1];
+                //recipientAddressLbl.text=@"   Email recipient for address";
+            }
+            //recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[actionSheet buttonTitleAtIndex:buttonIndex]];
+            break;
+            //SMS
+        case 2:
+            if(!isSendElectronically){
+                [self refreshTheFormForOption:2];
+                //recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[actionSheet buttonTitleAtIndex:buttonIndex]];
+                //recipientAddressLbl.text=@"   SMS recipient for address";
+            }
+            
+            break;
+    }
+    
+    
+    
+    
+    
+    
+}
+
+- (IBAction)addressEmailSMSNavigatorAction:(id)sender {
+    
+    switch ([(UISegmentedControl*)sender selectedSegmentIndex]) {
+            //previous
+        case 0:
+            
+            if(selectedSendOptionRow>0){
+                [(UISegmentedControl*)sender setEnabled:YES forSegmentAtIndex:1];
+                selectedSendOptionRow--;                
+            }
+            
+            if(selectedSendOptionRow==0){
+                [(UISegmentedControl*)sender setEnabled:NO forSegmentAtIndex:0];
+            }
+            
+            break;
+            //next
+        case 1:
+            if(selectedSendOptionRow<[listOfSendOptions count]-1){
+                selectedSendOptionRow++;
+                [(UISegmentedControl*)sender setEnabled:YES forSegmentAtIndex:0];
+                
+            }
+            
+            if(selectedSendOptionRow==[listOfSendOptions count]-1){
+                [(UISegmentedControl*)sender setEnabled:NO forSegmentAtIndex:1];
+            }
+            
+            break;
+            
+            
+    }
+    [(UISegmentedControl*)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
+    [addressMailSMSPicker selectRow:selectedSendOptionRow inComponent:0 animated:YES];
+    [addressMailSMSPicker reloadComponent:0];
+    
 }
 @end

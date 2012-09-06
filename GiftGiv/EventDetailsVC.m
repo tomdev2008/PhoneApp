@@ -44,7 +44,8 @@
 {
     [super viewDidLoad];
     
-    
+    fb_giftgiv_eventDetails=[[Facebook_GiftGiv alloc]init];
+    fb_giftgiv_eventDetails.fbGiftGivDelegate=self;
     listOfComments=[[NSMutableArray alloc]init];
     
     eventNameLbl.text=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
@@ -82,8 +83,8 @@
     if([CheckNetwork connectedToNetwork]){
         [self showProgressHUD:self.view withMsg:nil];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-        [[Facebook_GiftGiv sharedSingleton] getEventDetails:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"msgID"]];
+        //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+        [fb_giftgiv_eventDetails getEventDetails:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"msgID"]];
         
     }
     
@@ -111,7 +112,7 @@
 }
 - (void)receivedDetailedEventInfo:(NSMutableDictionary*)eventDetails{
     
-    //NSLog(@"%@",eventDetails);
+    NSLog(@"details..%@",eventDetails);
     
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     
@@ -364,6 +365,8 @@
 }
 
 - (void)dealloc {
+    [fb_giftgiv_eventDetails setFbGiftGivDelegate:nil];
+    [fb_giftgiv_eventDetails release];
     [listOfComments release];
     
     [profileImgView release];

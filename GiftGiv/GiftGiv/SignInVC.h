@@ -18,6 +18,7 @@
 @interface SignInVC : UIViewController<Facebook_GiftGivDelegate,MBProgressHUDDelegate,AddUserRequestDelegate>
 {
     MBProgressHUD *HUD;
+    Facebook_GiftGiv *fb_giftgiv;
 }
 
 - (IBAction)logInAction:(id)sender;

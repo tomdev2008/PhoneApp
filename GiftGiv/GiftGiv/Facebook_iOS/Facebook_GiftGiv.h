@@ -59,7 +59,7 @@ typedef enum apiCall {
 @property (nonatomic, retain) Facebook *facebook;
 @property (nonatomic, assign) id <Facebook_GiftGivDelegate>fbGiftGivDelegate;
 
-+ (Facebook_GiftGiv *)sharedSingleton;
+//+ (Facebook_GiftGiv *)sharedSingleton;
 - (Facebook *)facebook;
 - (void)extendAccessTokenIfNeeded;
 - (void)authorizeOurAppWithFacebook;

@@ -19,6 +19,7 @@
     MBProgressHUD *HUD;
     NSMutableArray *listOfComments;
     BOOL shouldLoadingPicsStop;
+    Facebook_GiftGiv *fb_giftgiv_eventDetails;
     
 }
 @property (retain, nonatomic) IBOutlet UIImageView *profileImgView;

@@ -12,7 +12,9 @@
 #import "ApplicationHelpers.h"
 
 @interface SettingsVC : UIViewController<Facebook_GiftGivDelegate>
-
+{
+    Facebook_GiftGiv *fb_giftgiv_settings;
+}
 - (IBAction)backToHomeScreen:(id)sender;
 - (IBAction)logoutFacebook:(id)sender;
 - (IBAction)internalLinkActions:(id)sender;

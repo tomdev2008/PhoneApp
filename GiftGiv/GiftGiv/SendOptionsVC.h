@@ -11,11 +11,18 @@
 #import "ApplicationHelpers.h"
 #import "GiftSummaryVC.h"
 
-@interface SendOptionsVC : UIViewController<UIActionSheetDelegate>{
+@interface SendOptionsVC : UIViewController{
     CGPoint svos;
     NSMutableArray *listOfStates;
+    NSMutableArray *listOfSendOptions;
     int selectedStateRow;
+    int selectedSendOptionRow;
 }
+- (IBAction)addressEmailSMSSelDoneAction:(id)sender;
+- (IBAction)addressEmailSMSNavigatorAction:(id)sender;
+@property (retain, nonatomic) IBOutlet UIView *addressEmailSMSSelPickerBgView;
+@property (retain, nonatomic) IBOutlet UIPickerView *addressMailSMSPicker;
+@property (retain, nonatomic) IBOutlet UISegmentedControl *addEmailSMSSegment;
 
 @property (retain, nonatomic) IBOutlet UIImageView *profilePic;
 @property (retain, nonatomic) IBOutlet UIView *statePickerBgView;

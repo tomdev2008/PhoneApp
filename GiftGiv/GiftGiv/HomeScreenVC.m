@@ -40,6 +40,8 @@ static NSDateFormatter *customDateFormat=nil;
 
 - (void)viewDidLoad
 {
+    fb_giftgiv_home=[[Facebook_GiftGiv alloc]init];
+    fb_giftgiv_home.fbGiftGivDelegate=self;
     
     categoryTitles=[[NSMutableArray alloc]init];
     listOfBirthdayEvents=[[NSMutableArray alloc]init];
@@ -86,9 +88,21 @@ static NSDateFormatter *customDateFormat=nil;
 }
 -(void)viewWillAppear:(BOOL)animated{
     
-    if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"]){
-        //[self showProgressHUD:self.view withMsg:nil];
-        [self performSelector:@selector(makeRequestToGetEvents)];
+    if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
+        
+        if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
+            //[self showProgressHUD:self.view withMsg:nil];
+            [self performSelector:@selector(makeRequestToGetEvents)];
+        }
+        
+        else{
+            if([CheckNetwork connectedToNetwork]){
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+                [fb_giftgiv_home listOfBirthdayEvents];
+                
+            }
+        }
     }
     
     [eventsTable reloadData];
@@ -98,6 +112,7 @@ static NSDateFormatter *customDateFormat=nil;
 -(void)makeRequestToGetEvents{
     if([CheckNetwork connectedToNetwork]){
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
+        //NSLog(@"gift home id..%@",[[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]);
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetEvents>\n<tem:userId>%@</tem:userId>\n<tem:typeEventList>Display</tem:typeEventList>\n</tem:GetEvents>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"]];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
@@ -188,8 +203,8 @@ static NSDateFormatter *customDateFormat=nil;
     else{
         if([CheckNetwork connectedToNetwork]){
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-            [[Facebook_GiftGiv sharedSingleton] listOfBirthdayEvents];
+            //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+            [fb_giftgiv_home listOfBirthdayEvents];
             
         }
     }
@@ -747,7 +762,7 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-        //NSLog(@"%@",tempInfoDict);
+        NSLog(@" temp dict..%@",tempInfoDict);
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
@@ -912,7 +927,7 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark - Facebook Events delegate
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays{
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    [[Facebook_GiftGiv sharedSingleton] getAllFriendsWithTheirDetails];
+    [fb_giftgiv_home getAllFriendsWithTheirDetails];
     if([listOfBirthdays count]){
         //NSLog(@"%@",listOfBirthdays);
         if([listOfBirthdayEvents count])
@@ -1564,8 +1579,8 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 - (void)dealloc {
-    [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
-    
+    [fb_giftgiv_home setFbGiftGivDelegate:nil];
+    [fb_giftgiv_home release];
     if(currentiOSVersion<6.0){
         [pageActiveImage release];
         [pageInactiveImage release]; 

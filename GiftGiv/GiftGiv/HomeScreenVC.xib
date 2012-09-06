@@ -104,10 +104,9 @@
 							<object class="IBUILabel" id="371192751">
 								<reference key="NSNextResponder" ref="1032165074"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{13, 5}, {297, 42}}</string>
+								<string key="NSFrame">{{13, 8}, {297, 42}}</string>
 								<reference key="NSSuperview" ref="1032165074"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<int key="IBUIContentMode">7</int>
@@ -139,7 +138,6 @@
 								<string key="NSFrame">{{10, 59}, {300, 280}}</string>
 								<reference key="NSSuperview" ref="1032165074"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<object class="NSColor" key="IBUIBackgroundColor" id="655337850">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MQA</bytes>
@@ -173,7 +171,6 @@
 						<string key="NSFrame">{{0, 416}, {320, 44}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -423,6 +420,21 @@
 						<reference key="view" ref="1032165074"/>
 						<double key="location">160</double>
 						<int key="affinity">0</int>
+					</object>
+					<object class="IBUserGuide">
+						<reference key="view" ref="1032165074"/>
+						<double key="location">20</double>
+						<int key="affinity">1</int>
+					</object>
+					<object class="IBUserGuide">
+						<reference key="view" ref="1032165074"/>
+						<double key="location">45</double>
+						<int key="affinity">1</int>
+					</object>
+					<object class="IBUserGuide">
+						<reference key="view" ref="1032165074"/>
+						<double key="location">60</double>
+						<int key="affinity">1</int>
 					</object>
 				</array>
 				<string key="34.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

@@ -70,7 +70,15 @@
 #pragma mark xmlParser delegates
 -(void) parser:(NSXMLParser*) parser didStartElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName attributes:(NSDictionary*) attributeDict
 {
-
+    if([argElementName isEqualToString:@"AddGiftGivUserResult"]){
+        if([receivedResponse count])
+            [receivedResponse removeAllObjects];
+    }
+    if([argElementName isEqualToString:@"AddNormalUserResult"]){
+        if([receivedResponse count])
+            [receivedResponse removeAllObjects];
+    }
+    
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string { 
 	

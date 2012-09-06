@@ -65,7 +65,7 @@
         [[[self.navController viewControllers] objectAtIndex:1]viewWillAppear:YES];
     }
     else if([[[self.navController viewControllers] objectAtIndex:2] isKindOfClass:[HomeScreenVC class]]){
-        [[[self.navController viewControllers] objectAtIndex:1]viewWillAppear:YES];
+        [[[self.navController viewControllers] objectAtIndex:2]viewWillAppear:YES];
     }
     
     /*
@@ -82,7 +82,9 @@
     // it's a good practice to refresh the access token also when the app becomes active.
     // This gives apps that seldom make api calls a higher chance of having a non expired
     // access token.
-    [[[Facebook_GiftGiv sharedSingleton] facebook] extendAccessTokenIfNeeded];
+    Facebook_GiftGiv *fb_gift=[[Facebook_GiftGiv alloc]init];
+    [[fb_gift facebook] extendAccessTokenIfNeeded];
+    [fb_gift release];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -92,6 +94,8 @@
      Save data if appropriate.
      See also applicationDidEnterBackground:.
      */
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
     
 }
 

@@ -21,11 +21,11 @@
 
 @synthesize facebook,fbGiftGivDelegate;
 
-static Facebook_GiftGiv *sharedInstance = nil;
+//static Facebook_GiftGiv *sharedInstance = nil;
 static NSDateFormatter *standardDateFormatter = nil;
 
 #pragma mark Facebook_GiftGiv class methods
-+ (Facebook_GiftGiv *)sharedSingleton
+/*+ (Facebook_GiftGiv *)sharedSingleton
 {
 #ifdef DEBUGX
 	NSLog(@"%s", __FUNCTION__);
@@ -40,11 +40,12 @@ static NSDateFormatter *standardDateFormatter = nil;
         
         return sharedInstance;// Facebook_GiftGiv singleton
     } 
-}
+}*/
+
 
 - (Facebook *)facebook{
     if (facebook==nil) {
-        facebook = [[Facebook alloc] initWithAppId:KFacebookAppId andDelegate:sharedInstance];
+        facebook = [[Facebook alloc] initWithAppId:KFacebookAppId andDelegate:self];
         // Check and retrieve authorization information
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *fbAccessToken=[defaults objectForKey:@"FBAccessTokenKey"];
@@ -112,7 +113,7 @@ static NSDateFormatter *standardDateFormatter = nil;
  */
 
 - (void)fbDidLogin {
-    [self storeAuthData:[self.facebook accessToken] expiresAt:[self.facebook expirationDate]];
+    [self storeAuthData:[[self facebook] accessToken] expiresAt:[[self facebook] expirationDate]];
     [fbGiftGivDelegate facebookLoggedIn];
     [self apiFQLIMe];
     
@@ -223,7 +224,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                    @"SELECT uid,first_name,last_name,birthday_date FROM user WHERE uid=me()", @"query",
                                    nil];
     currentAPICall=kAPIGetUserDetails;
-    FBRequest *aboutMeReq=[facebook requestWithMethodName:@"fql.query"
+    FBRequest *aboutMeReq=[[self facebook] requestWithMethodName:@"fql.query"
                                                 andParams:params
                                             andHttpMethod:@"POST"
                                               andDelegate:self];
@@ -245,7 +246,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                        getBirthdaysQuery, @"query",
                                        nil];
         
-        FBRequest *birthdaysReq=[facebook requestWithMethodName:@"fql.query"
+        FBRequest *birthdaysReq=[[self facebook] requestWithMethodName:@"fql.query"
                                                       andParams:params
                                                   andHttpMethod:@"POST"
                                                     andDelegate:self];
@@ -287,7 +288,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                        getFriendsQuery, @"query",
                                        nil];
         
-        FBRequest *friendsReq=[facebook requestWithMethodName:@"fql.query"
+        FBRequest *friendsReq=[[self facebook] requestWithMethodName:@"fql.query"
                                                     andParams:params
                                                 andHttpMethod:@"POST"
                                                   andDelegate:self];
@@ -297,7 +298,7 @@ static NSDateFormatter *standardDateFormatter = nil;
 }
 - (void)getEventDetails:(NSString*)statusID{
     
-    getDetailedEventReq=[facebook requestWithGraphPath:[NSString stringWithFormat:@"%@",statusID] andDelegate:self];
+    getDetailedEventReq=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@",statusID] andDelegate:self];
 }
 #pragma mark - FBRequestDelegate methods
 
@@ -362,10 +363,10 @@ static NSDateFormatter *standardDateFormatter = nil;
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                     currentAPICall=kAPIGetJSONForStatuses;
                     //last 2 days
-                    FBRequest *fbReqStatuses=[facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
+                    FBRequest *fbReqStatuses=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
                     [fbRequestsArray addObject:fbReqStatuses];
                     [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqStatuses url]];
-                    FBRequest *fbReqPhotos=[facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/photos?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
+                    FBRequest *fbReqPhotos=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@/photos?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
                     [fbRequestsArray addObject:fbReqPhotos];
                     [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqPhotos url]];  
                     

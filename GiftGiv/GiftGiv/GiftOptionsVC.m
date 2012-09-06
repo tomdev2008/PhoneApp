@@ -566,8 +566,9 @@
     int rowNum=[(GiftCustomCell*)[(UIButton*)sender superview] tag];
     int columNum=[sender tag];
     GiftItemObject *selectedGift=[giftsList objectAtIndex:(rowNum*2+columNum)-1];
-    
-    if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName] isEqualToString:@"gift cards"]){
+
+    //gift cards
+    if([[selectedGift.giftPrice componentsSeparatedByString:@";"] count]>1){
         GiftCardDetailsVC *giftCardDetails=[[GiftCardDetailsVC alloc]initWithNibName:@"GiftCardDetailsVC" bundle:nil];
         giftCardDetails.giftItemInfo=selectedGift;
         [self.navigationController pushViewController:giftCardDetails animated:YES];
@@ -576,9 +577,9 @@
     else{
         
         Gift_GreetingCardDetailsVC *greetingCardDetails=[[Gift_GreetingCardDetailsVC alloc]initWithNibName:@"Gift_GreetingCardDetailsVC" bundle:nil];
-        if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName] isEqualToString:@"flowers"])
+        if(![selectedGift.giftImageBackSideUrl length])
             greetingCardDetails.isGreetingCard=NO;
-        else if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName] isEqualToString:@"cards"])
+        else if([selectedGift.giftImageBackSideUrl length])
             greetingCardDetails.isGreetingCard=YES;
         greetingCardDetails.giftItemInfo=selectedGift;
         [self.navigationController pushViewController:greetingCardDetails animated:YES];
