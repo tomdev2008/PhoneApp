@@ -553,10 +553,10 @@ static NSDateFormatter *customDateFormat=nil;
     NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
     if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
         cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-        cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+        //cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
     }
     else{
-        cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+        //cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
         cell.dateLbl.textColor=[UIColor blackColor];
     }
     cell.dateLbl.text=dateDisplay;
