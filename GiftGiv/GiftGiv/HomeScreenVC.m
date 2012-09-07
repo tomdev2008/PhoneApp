@@ -167,7 +167,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [newJobEvents addObject:eventDict];
             else if([eventType isEqualToString:@"Congratulations"])
                 [congratsEvents addObject:eventDict];
-            else if([eventType isEqualToString:@"Relationships"])
+            else if([eventType isEqualToString:@"Relationship"])
                 [anniversaryEvents addObject:eventDict];
             
             [allupcomingEvents addObject:eventDict];

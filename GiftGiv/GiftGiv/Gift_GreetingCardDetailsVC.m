@@ -90,7 +90,7 @@
     if(isGreetingCard)
         [giftDetailsContentScroll setContentSize:CGSizeMake(320, 814)];
     else
-        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 610)];
+        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 580)];
     personalMsgTxt.inputAccessoryView=msgInputAccessoryView;
     
     //Dynamic[fit] label width respected to the size of the text
