@@ -7,7 +7,7 @@
 //
 
 //Facebook APP ID
-#define KFacebookAppId @"208184389305114"
+#define KFacebookAppId /*@"410784185600350"*/@"208184389305114"
 
 //Device currect OS version, which we used for page control color dots
 #define currentiOSVersion [[[UIDevice currentDevice] systemVersion] doubleValue]

@@ -124,7 +124,7 @@
 }
 
 -(void)loadImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
-    NSLog(@"%@",imgURL);
+    //NSLog(@"%@",imgURL);
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
@@ -233,7 +233,7 @@
 //This method is called when a device reference token could not be fetched.
 - (void)couldNotFetchDeviceReferenceToken {
 	//optionally check the errorMessage property to see what the problem was
-	NSLog(@"DEVICE REFERENCE TOKEN ERROR: %@", [PayPal getPayPalInst].errorMessage);
+	//NSLog(@"DEVICE REFERENCE TOKEN ERROR: %@", [PayPal getPayPalInst].errorMessage);
 	
 	//clear any previously-stored token
 	[ECNetworkHandler sharedInstance].deviceReferenceToken = @"";

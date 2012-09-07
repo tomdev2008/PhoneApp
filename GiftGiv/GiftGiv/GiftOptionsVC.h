@@ -16,7 +16,6 @@
 #import "GiftCategoriesRequest.h"
 #import "GiftItemsRequest.h"
 #import "MBProgressHUD.h"
-//#import "iCarousel.h"
 
 @interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate>{
     
@@ -27,28 +26,24 @@
     UIImage* pageActiveImage;
     UIImage* pageInactiveImage;
     NSMutableArray *giftCategoriesList;
-    
-    NSMutableArray *flowersList,*giftCarsList,*greetingCardsList;
-    
-    float giftCatItemSpace;
+    NSMutableArray *listOfAllGiftItems;
+    NSMutableArray *currentGiftItems;
+        
 }
 @property (retain, nonatomic) IBOutlet UILabel *categoryTitleLbl;
-//@property (retain, nonatomic) IBOutlet iCarousel *category_iScroll;
+@property (retain, nonatomic) IBOutlet UIView *giftItemsBgView;
 
 @property (retain, nonatomic) IBOutlet UIImageView *profilePicImg;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;
 @property (retain, nonatomic) IBOutlet UILabel *eventNameLbl;
 @property (retain, nonatomic) IBOutlet UITableView *giftsTable;
 @property (retain, nonatomic) IBOutlet CustomPageControl *giftCategoryPageControl;
-@property (retain, nonatomic) IBOutlet UIScrollView *giftCategoriesScroll;
 
-@property (retain, nonatomic) NSMutableArray *giftsList;
 
 - (IBAction)backToEvents:(id)sender;
 - (IBAction)giftCategoriesPaeControlAction:(id)sender;
 
 - (void)swipingForGiftCategories:(int)swipeDirectionNum;
-- (void)reloadTheContentForGifts;
 
 - (CATransition *)getAnimationForGiftCategories:(NSString *)animationType;
 
@@ -58,5 +53,7 @@
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
 - (void) stopHUD;
 #pragma mark -
+
+-(void)loadCurrentGiftItemsForCategory :(NSString*)categoryId;
 
 @end

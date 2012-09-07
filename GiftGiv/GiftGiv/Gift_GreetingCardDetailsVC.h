@@ -16,6 +16,7 @@
     CGPoint svos;
     
 }
+@property (retain, nonatomic) IBOutlet UIView *detailsBgView;
 @property (retain, nonatomic) IBOutlet UIScrollView *giftDetailsContentScroll;
 @property (retain, nonatomic) IBOutlet UIImageView *profilePic;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;

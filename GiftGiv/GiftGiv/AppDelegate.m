@@ -60,13 +60,20 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    if([[self.navController viewControllers] count]>1)
+    {
+        if([[[self.navController viewControllers] objectAtIndex:1] isKindOfClass:[HomeScreenVC class]]){
+            [[[self.navController viewControllers] objectAtIndex:1]viewWillAppear:YES];
+        }
+        else if([[self.navController viewControllers] count]>2){
+            if([[[self.navController viewControllers] objectAtIndex:2] isKindOfClass:[HomeScreenVC class]]){
+                [[[self.navController viewControllers] objectAtIndex:2]viewWillAppear:YES];
+            }
+        }
+         
+    }
     
-    if([[[self.navController viewControllers] objectAtIndex:1] isKindOfClass:[HomeScreenVC class]]){
-        [[[self.navController viewControllers] objectAtIndex:1]viewWillAppear:YES];
-    }
-    else if([[[self.navController viewControllers] objectAtIndex:2] isKindOfClass:[HomeScreenVC class]]){
-        [[[self.navController viewControllers] objectAtIndex:2]viewWillAppear:YES];
-    }
+    
     
     /*
      Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.

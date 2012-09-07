@@ -99,6 +99,7 @@ static NSDateFormatter *customDateFormat=nil;
             if([CheckNetwork connectedToNetwork]){
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+                
                 [fb_giftgiv_home listOfBirthdayEvents];
                 
             }
@@ -762,7 +763,7 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-        NSLog(@" temp dict..%@",tempInfoDict);
+        //NSLog(@" temp dict..%@",tempInfoDict);
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
@@ -923,13 +924,14 @@ static NSDateFormatter *customDateFormat=nil;
     OrderHistoryListVC *orders=[[OrderHistoryListVC alloc]initWithNibName:@"OrderHistoryListVC" bundle:nil];
     [self.navigationController pushViewController:orders animated:YES];
     [orders release];
+    
 }
 #pragma mark - Facebook Events delegate
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays{
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     [fb_giftgiv_home getAllFriendsWithTheirDetails];
     if([listOfBirthdays count]){
-        //NSLog(@"%@",listOfBirthdays);
+        
         if([listOfBirthdayEvents count])
             [listOfBirthdayEvents removeAllObjects];
         [listOfBirthdayEvents addObjectsFromArray:listOfBirthdays];
@@ -1202,12 +1204,12 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 -(void) loadImageForEventAtIndexNum:(int)index forTable:(UITableView*)table{
-    [table beginUpdates];
+    /*[table beginUpdates];
     
     [table reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:index inSection:0], nil] withRowAnimation:UITableViewRowAnimationNone];
     
-    [table endUpdates];
-    //[table reloadData];
+    [table endUpdates];*/
+    [table reloadData];
 }
 
 -(void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails{
@@ -1579,8 +1581,9 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 - (void)dealloc {
+    
     [fb_giftgiv_home setFbGiftGivDelegate:nil];
-    [fb_giftgiv_home release];
+    //[fb_giftgiv_home release];
     if(currentiOSVersion<6.0){
         [pageActiveImage release];
         [pageInactiveImage release]; 

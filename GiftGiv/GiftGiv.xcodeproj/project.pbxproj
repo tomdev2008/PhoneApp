@@ -45,7 +45,6 @@
 		7E3E0EAE15E5361100B77007 /* GiftCategoriesRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E0EAB15E5361100B77007 /* GiftCategoriesRequest.m */; };
 		7E3E0EAF15E5361100B77007 /* GiftCategoryObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E0EAD15E5361100B77007 /* GiftCategoryObject.m */; };
 		7E46474415DE47BD00BAFFD4 /* profilepic_dummy.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */; };
-		7E54556615EFD3CD0000D2F5 /* iCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E54556415EFD3CD0000D2F5 /* iCarousel.m */; };
 		7E58440F15CBD533005E35D4 /* SuccessVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E58440D15CBD533005E35D4 /* SuccessVC.m */; };
 		7E58441015CBD533005E35D4 /* SuccessVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E58440E15CBD533005E35D4 /* SuccessVC.xib */; };
 		7E58441515CBDD69005E35D4 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E58441315CBDD69005E35D4 /* SettingsVC.m */; };
@@ -218,8 +217,6 @@
 		7E3E0EAC15E5361100B77007 /* GiftCategoryObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftCategoryObject.h; sourceTree = "<group>"; };
 		7E3E0EAD15E5361100B77007 /* GiftCategoryObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftCategoryObject.m; sourceTree = "<group>"; };
 		7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profilepic_dummy.png; sourceTree = "<group>"; };
-		7E54556415EFD3CD0000D2F5 /* iCarousel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iCarousel.m; sourceTree = "<group>"; };
-		7E54556515EFD3CD0000D2F5 /* iCarousel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iCarousel.h; sourceTree = "<group>"; };
 		7E58440C15CBD533005E35D4 /* SuccessVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuccessVC.h; sourceTree = "<group>"; };
 		7E58440D15CBD533005E35D4 /* SuccessVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuccessVC.m; sourceTree = "<group>"; };
 		7E58440E15CBD533005E35D4 /* SuccessVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SuccessVC.xib; sourceTree = "<group>"; };
@@ -566,19 +563,19 @@
 		7E2D17A615D1290F00E78FF0 /* Backend Services */ = {
 			isa = PBXGroup;
 			children = (
-				7EFBF54915EFB6C4000D3279 /* GetEvents */,
-				7E04C02615ED0E4200C5C385 /* DetailedGiftitem */,
-				7E04C01E15ED0DD300C5C385 /* OrdersList */,
-				7E06A54615EBE56F00EB236B /* GetUser */,
-				7E06A54515EBE56300EB236B /* AddOrder */,
-				7E06A54415EBE55A00EB236B /* SendEmail */,
-				7E06A54315EBE54800EB236B /* SendSMS */,
-				7ECD8F8D15E7C8D800E9B0C7 /* Paypal */,
-				7E3E0EA915E535FA00B77007 /* GiftCategories */,
-				7E3E0EA115E535D600B77007 /* GiftItems */,
 				7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */,
 				7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */,
+				7ECD8F8D15E7C8D800E9B0C7 /* Paypal */,
 				7E2D17AA15D1296F00E78FF0 /* Add User */,
+				7E3E0EA115E535D600B77007 /* GiftItems */,
+				7E3E0EA915E535FA00B77007 /* GiftCategories */,
+				7E04C02615ED0E4200C5C385 /* DetailedGiftitem */,
+				7E06A54515EBE56300EB236B /* AddOrder */,
+				7E06A54615EBE56F00EB236B /* GetUser */,
+				7E06A54415EBE55A00EB236B /* SendEmail */,
+				7E06A54315EBE54800EB236B /* SendSMS */,
+				7E04C01E15ED0DD300C5C385 /* OrdersList */,
+				7EFBF54915EFB6C4000D3279 /* GetEvents */,
 			);
 			name = "Backend Services";
 			sourceTree = "<group>";
@@ -612,15 +609,6 @@
 				7E3E0EAD15E5361100B77007 /* GiftCategoryObject.m */,
 			);
 			name = GiftCategories;
-			sourceTree = "<group>";
-		};
-		7E54556215EFD3B60000D2F5 /* iCarousel */ = {
-			isa = PBXGroup;
-			children = (
-				7E54556515EFD3CD0000D2F5 /* iCarousel.h */,
-				7E54556415EFD3CD0000D2F5 /* iCarousel.m */,
-			);
-			name = iCarousel;
 			sourceTree = "<group>";
 		};
 		7E58440A15CBD51D005E35D4 /* Success */ = {
@@ -940,7 +928,6 @@
 		7EDC191115BFB75A00FF7789 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				7E54556215EFD3B60000D2F5 /* iCarousel */,
 				7EE0260715BD8FFE003B9C74 /* GiftOptionsVC.h */,
 				7EE0260815BD8FFE003B9C74 /* GiftOptionsVC.m */,
 				7EE0260915BD8FFE003B9C74 /* GiftOptionsVC.xib */,
@@ -1207,7 +1194,6 @@
 				7E04C02C15ED0E6F00C5C385 /* GetDetailedGiftItemObject.m in Sources */,
 				7EFBF54F15EFB6FE000D3279 /* GetEventsRequest.m in Sources */,
 				7EFBF55015EFB6FE000D3279 /* EventObject.m in Sources */,
-				7E54556615EFD3CD0000D2F5 /* iCarousel.m in Sources */,
 				7ED088E115F5E2820056160C /* UIImage+scaling.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

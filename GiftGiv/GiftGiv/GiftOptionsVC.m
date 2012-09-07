@@ -8,21 +8,17 @@
 
 #import "GiftOptionsVC.h"
 
-//#define NUMBER_OF_ITEMS 20
-//#define NUMBER_OF_VISIBLE_ITEMS 5
-//#define ITEM_SPACING 130
-
 
 @implementation GiftOptionsVC
 @synthesize giftsTable;
 @synthesize giftCategoryPageControl;
-@synthesize giftCategoriesScroll;
+@synthesize giftItemsBgView;
 @synthesize profilePicImg;
 @synthesize profileNameLbl;
 @synthesize eventNameLbl;
-@synthesize giftsList;
+
 @synthesize categoryTitleLbl;
-//@synthesize category_iScroll;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,19 +42,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    //category_iScroll.clipsToBounds=YES;
-    
+        
     [self showProgressHUD:self.view withMsg:nil];
     
     eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
     profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
-    
-    
-    UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
-    CGSize giftCatTitleSize=[@"gift cards" sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
-    giftCatItemSpace=giftCatTitleSize.width;
+        
     
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
@@ -114,52 +104,20 @@
     
     UISwipeGestureRecognizer *swipeLeftRecognizer=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeGestureForGiftCats:)];
     swipeLeftRecognizer.direction=UISwipeGestureRecognizerDirectionLeft;
-    [giftsTable addGestureRecognizer:swipeLeftRecognizer];
+    [giftItemsBgView addGestureRecognizer:swipeLeftRecognizer];
     [swipeLeftRecognizer release];
     
     UISwipeGestureRecognizer *swipeRightRecognizer=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeGestureForGiftCats:)];
     swipeRightRecognizer.direction=UISwipeGestureRecognizerDirectionRight;
-    [giftsTable addGestureRecognizer:swipeRightRecognizer];
+    [giftItemsBgView addGestureRecognizer:swipeRightRecognizer];
     [swipeRightRecognizer release];
     
     
     [self makeRequestToGetCategories];
     
-    //[self reloadTheContentForGifts];
+
 }
 
-
-/*-(void)loadDynamicCategories{
- 
- UIFont *catTitleFont=[UIFont fontWithName:@"Helvetica-Light" size:25];
- 
- int xOriginForButton=0;
- totalCats=[giftCategoriesList count];
- 
- //Gift categories
- for(int i=0;i<totalCats;i++){
- 
- //dynamic button width based on the title for it
- CGSize giftCatTitleSize=[[[giftCategoriesList objectAtIndex:i]catName] sizeWithFont:catTitleFont constrainedToSize:CGSizeMake(MAXFLOAT, 40) lineBreakMode:UILineBreakModeWordWrap];
- UIButton *giftCatBtn=[[UIButton alloc]initWithFrame:CGRectMake(xOriginForButton, 2, giftCatTitleSize.width, 40)];
- giftCatBtn.tag=i+1;
- [giftCatBtn addTarget:self action:@selector(categoryActions:) forControlEvents:UIControlEventTouchUpInside];
- [giftCatBtn.titleLabel setFont:catTitleFont];
- [giftCatBtn setTitle:[[giftCategoriesList objectAtIndex:i]catName] forState:UIControlStateNormal];
- if(i==0)
- [giftCatBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
- else
- [giftCatBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
- [giftCategoriesScroll addSubview:giftCatBtn];
- 
- [giftCategoriesScroll setContentSize:CGSizeMake(xOriginForButton+giftCatTitleSize.width, 44)];
- xOriginForButton=xOriginForButton+giftCatTitleSize.width+10;
- [giftCatBtn release];
- }
- giftCategoryPageControl.numberOfPages=totalCats;    
- giftCatNum=1;
- giftCategoryPageControl.currentPage=giftCatNum-1;
- }*/
 -(void)makeRequestToGetCategories{
     
     if([CheckNetwork connectedToNetwork]){
@@ -220,129 +178,60 @@
 }
 #pragma mark - Gift Items
 -(void) responseForGiftItems:(NSMutableArray*)listOfGifts{
+    if([listOfAllGiftItems count]){
+        [listOfAllGiftItems removeAllObjects];
+        [listOfAllGiftItems release];
+        listOfAllGiftItems=nil;
+    }
+    if(listOfAllGiftItems==nil){
+        listOfAllGiftItems=[[NSMutableArray alloc]init];
+    }
+    [listOfAllGiftItems addObjectsFromArray:listOfGifts];
     
-    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-    
-    if(flowersList!=nil){
-        if([flowersList count]){
-            [flowersList removeAllObjects];
-        }
-        [flowersList release];
-        flowersList=nil;
-    }
-    if(greetingCardsList!=nil){
-        if([greetingCardsList count]){
-            [greetingCardsList removeAllObjects];
-        }
-        [greetingCardsList release];
-        greetingCardsList=nil;
-    }
-    if(giftCarsList!=nil){
-        if([giftCarsList count]){
-            [giftCarsList removeAllObjects];
-        }
-        [giftCarsList release];
-        giftCarsList=nil;
-    }
-    int categoriesCount=[giftCategoriesList count];
-    if([listOfGifts count]){
-        
-        for(GiftItemObject *giftItem in listOfGifts){
-            
-            for(int i=0;i<categoriesCount;i++){
-                
-                if([giftItem.giftCategoryId isEqualToString:[[giftCategoriesList objectAtIndex:i]catId]]){
-                    
-                    if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"flowers"]){
-                        if(flowersList==nil){
-                            flowersList=[[NSMutableArray alloc]init];
-                        }
-                        
-                        [flowersList addObject:giftItem];
-                        break;
-                    }
-                    if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"gift cards"]){
-                        if(giftCarsList==nil){
-                            giftCarsList=[[NSMutableArray alloc]init];
-                        }
-                        
-                        [giftCarsList addObject:giftItem];
-                        break;
-                    }
-                    if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"cards"]){
-                        if(greetingCardsList==nil){
-                            greetingCardsList=[[NSMutableArray alloc]init];
-                        }
-                        
-                        [greetingCardsList addObject:giftItem];
-                        break;
-                    }
-                    
-                }
-            }
-            
-        }
-    }
-    
-    
-    for(int i=0;i<[giftCategoriesList count];i++){
-        if(![flowersList count]){
-            
-            if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"flowers"]){
-                [giftCategoriesList removeObject:[giftCategoriesList objectAtIndex:i]];
-            }
-        }
-        if(greetingCardsList==nil){
-            if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"cards"]){
-                [giftCategoriesList removeObject:[giftCategoriesList objectAtIndex:i]];
-            }
-        }
-        if(giftCarsList==nil){
-            if([[[giftCategoriesList objectAtIndex:i] catName] isEqualToString:@"gift cards"]){
-                [giftCategoriesList removeObject:[giftCategoriesList objectAtIndex:i]];
-            }
-        }
-        
-    }
     totalCats=[giftCategoriesList count];
     giftCategoryPageControl.numberOfPages=totalCats;    
     giftCatNum=1;
     giftCategoryPageControl.currentPage=giftCatNum-1;
     
     
-    //[category_iScroll reloadData];
     
-    //[(UILabel*)[category_iScroll itemViewAtIndex:0] setTextColor:[UIColor blackColor]];
+    [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
     
-    giftCatNum=1;
-    [self reloadTheContentForGifts];
+    
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+    
+    
     [self stopHUD];
+}
+-(void)loadCurrentGiftItemsForCategory :(NSString*)categoryId{
+    
+    if(currentGiftItems!=nil){
+        if([currentGiftItems count])
+            [currentGiftItems removeAllObjects];
+        [currentGiftItems release];
+        currentGiftItems=nil;
+    }
+    
+    if([listOfAllGiftItems count]){
+        
+        for(GiftItemObject *giftItem in listOfAllGiftItems){
+            
+            if([categoryId isEqualToString:giftItem.giftCategoryId]){
+                if(currentGiftItems==nil){
+                    currentGiftItems=[[NSMutableArray alloc]init];
+                }
+                
+                [currentGiftItems addObject:giftItem];
+            }
+                     
+        }
+    }
+    
+    categoryTitleLbl.text=[[giftCategoriesList objectAtIndex:giftCatNum-1] catName];
+    [giftsTable reloadData];
 }
 #pragma mark -
 
--(void)reloadTheContentForGifts{
-    
-    categoryTitleLbl.text=[[giftCategoriesList objectAtIndex:giftCatNum-1] catName];
-    
-    if([giftsList count] && giftsList!=nil){
-        [giftsList removeAllObjects];
-        [giftsList release];
-        giftsList=nil;
-        
-    }
-    
-    if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName]isEqualToString:@"flowers"]){
-        giftsList=[[NSMutableArray alloc]initWithArray:flowersList];
-    }
-    else if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName]isEqualToString:@"gift cards"]){
-        giftsList=[[NSMutableArray alloc]initWithArray:giftCarsList];
-    }
-    else if([[[giftCategoriesList objectAtIndex:giftCatNum-1] catName]isEqualToString:@"cards"]){
-        giftsList=[[NSMutableArray alloc]initWithArray:greetingCardsList];
-    }
-    
-    [giftsTable reloadData];    
-}
 -(void)swipeGestureForGiftCats:(UISwipeGestureRecognizer*)swipeRecognizer{
     
     if(totalCats>1){
@@ -416,32 +305,11 @@
         tranAnimationForGiftCategories=[self getAnimationForGiftCategories:kCATransitionFromLeft];
     }
     
-    
-    for(UIView *subview in [giftCategoriesScroll subviews]){
-        if([subview isKindOfClass:[UILabel class]]){
-            [(UILabel*)subview setTextColor:[UIColor grayColor]];
-        }
-    }
-    /*UIButton*targetBtn=(UIButton*)[giftCategoriesScroll viewWithTag:giftCatNum];
-     [targetBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];*/
-    
-    /*[category_iScroll reloadData];
-    [(UILabel*)[category_iScroll itemViewAtIndex:giftCatNum-1] setTextColor:[UIColor blackColor]];
-    
-    category_iScroll.scrollEnabled=YES;
-    [category_iScroll scrollToItemAtIndex:giftCatNum-1 animated:YES];
-    category_iScroll.scrollEnabled=NO;*/
-    //Scroll the category titles to visible on the screen
-    //giftCategoriesScroll.scrollEnabled=YES;
-    //[giftCategoriesScroll scrollRectToVisible:targetBtn.frame animated:YES];
-    //giftCategoriesScroll.scrollEnabled=NO;       
-    [giftsTable.layer addAnimation:tranAnimationForGiftCategories forKey:@"groupAnimation"];
-    [categoryTitleLbl.layer addAnimation:tranAnimationForGiftCategories forKey:@"groupAnimation"];
-    [self reloadTheContentForGifts];
-    
-    [giftsTable reloadData];
-    //[giftsTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    
+          
+    [giftItemsBgView.layer addAnimation:tranAnimationForGiftCategories forKey:@"groupAnimation"];
+   
+    [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
+        
 }
 -(CATransition *)getAnimationForGiftCategories:(NSString *)animationType{
     CATransition *easeInAnimation = [CATransition animation];
@@ -462,10 +330,10 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if([giftsList count]%2==0)
-        return [giftsList count]/2;
+    if([currentGiftItems count]%2==0)
+        return [currentGiftItems count]/2;
     else
-        return [giftsList count]/2+1;
+        return [currentGiftItems count]/2+1;
     
 }
 
@@ -494,17 +362,17 @@
 		
 	}
     cell.tag=indexPath.row;
-    cell.giftTitle_one.text=[[giftsList objectAtIndex:(indexPath.row*2)] giftTitle];
+    cell.giftTitle_one.text=[[currentGiftItems objectAtIndex:(indexPath.row*2)] giftTitle];
     
-    NSArray *priceArray_one=[[[giftsList objectAtIndex:(indexPath.row*2)] giftPrice] componentsSeparatedByString:@";"];
+    NSArray *priceArray_one=[[[currentGiftItems objectAtIndex:(indexPath.row*2)] giftPrice] componentsSeparatedByString:@";"];
     
     if([priceArray_one count]>1){
         ;
         cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@ - $%@",[priceArray_one objectAtIndex:0],[priceArray_one objectAtIndex:[priceArray_one count]-1]];
     }
     else
-        cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",[[giftsList objectAtIndex:(indexPath.row*2)] giftPrice]];
-    UIImage *tempImg_one=[[giftsList objectAtIndex:(indexPath.row*2)]giftThumbnail];
+        cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",[[currentGiftItems objectAtIndex:(indexPath.row*2)] giftPrice]];
+    UIImage *tempImg_one=[[currentGiftItems objectAtIndex:(indexPath.row*2)]giftThumbnail];
     if(tempImg_one.size.width==160 && tempImg_one.size.height==120){
         cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+12,cell.giftImg_one.frame.origin.y+25 , 100, 75);
     }
@@ -514,27 +382,25 @@
     else if(tempImg_one.size.width==110 && tempImg_one.size.height==150){
         cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+28,cell.giftImg_one.frame.origin.y+15 , 69, 94);
     }
-    
-    //[cell.giftIcon_one setImage:[[giftsList objectAtIndex:(indexPath.row*2)]giftThumbnail] forState:UIControlStateNormal];
-    //NSLog(@"%@",NSStringFromCGSize([[[giftsList objectAtIndex:(indexPath.row*2)]giftThumbnail] size]));
+   
     [cell.giftImg_one setImage:tempImg_one];
     
-    if([giftsList count]>(indexPath.row*2)+1){
+    if([currentGiftItems count]>(indexPath.row*2)+1){
         cell.giftIcon_two.hidden=NO;
         cell.giftPrice_two.hidden=NO;
         cell.giftTitle_two.hidden=NO;
-        cell.giftTitle_two.text=[[giftsList objectAtIndex:(indexPath.row*2)+1]giftTitle];
+        cell.giftTitle_two.text=[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]giftTitle];
         
-        NSArray *priceArray_two=[[[giftsList objectAtIndex:(indexPath.row*2)+1] giftPrice] componentsSeparatedByString:@";"];
+        NSArray *priceArray_two=[[[currentGiftItems objectAtIndex:(indexPath.row*2)+1] giftPrice] componentsSeparatedByString:@";"];
         
         if([priceArray_two count]>1){
             
             cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@ - $%@",[priceArray_two objectAtIndex:0],[priceArray_two objectAtIndex:[priceArray_two count]-1]];
         }
         else
-            cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",[[giftsList objectAtIndex:(indexPath.row*2)+1] giftPrice]];
+            cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",[[currentGiftItems objectAtIndex:(indexPath.row*2)+1] giftPrice]];
         
-        UIImage *tempImg_two=[[giftsList objectAtIndex:(indexPath.row*2)+1]giftThumbnail];
+        UIImage *tempImg_two=[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]giftThumbnail];
         
         if(tempImg_two.size.width==160 && tempImg_two.size.height==120){
             cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+12,cell.giftImg_two.frame.origin.y+25 , 100, 75);
@@ -546,8 +412,7 @@
             cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+28,cell.giftImg_two.frame.origin.y+15 , 69, 94);
         }
         
-        
-        //[cell.giftIcon_two setImage:[[giftsList objectAtIndex:(indexPath.row*2)+1]giftThumbnail] forState:UIControlStateNormal];
+      
         [cell.giftImg_two setImage:tempImg_two];
     }
     
@@ -565,7 +430,7 @@
     
     int rowNum=[(GiftCustomCell*)[(UIButton*)sender superview] tag];
     int columNum=[sender tag];
-    GiftItemObject *selectedGift=[giftsList objectAtIndex:(rowNum*2+columNum)-1];
+    GiftItemObject *selectedGift=[currentGiftItems objectAtIndex:(rowNum*2+columNum)-1];
 
     //gift cards
     if([[selectedGift.giftPrice componentsSeparatedByString:@";"] count]>1){
@@ -624,11 +489,8 @@
     [self setEventNameLbl:nil];
     [self setGiftCategoryPageControl:nil];
     [self setGiftsTable:nil];
-    [self setGiftCategoriesScroll:nil];
-    [self setGiftsList:nil];
-    
-    //[self setCategory_iScroll:nil];
     [self setCategoryTitleLbl:nil];
+    [self setGiftItemsBgView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -652,17 +514,29 @@
         [giftCategoriesList release];
         giftCategoriesList=nil;
     }
+    if([listOfAllGiftItems count])
+        [listOfAllGiftItems removeAllObjects];
+    if(listOfAllGiftItems!=nil){
+        [listOfAllGiftItems release];
+        listOfAllGiftItems=nil;
+    }
+    
+    if([currentGiftItems count])
+        [currentGiftItems removeAllObjects];
+    if(currentGiftItems!=nil){
+        [currentGiftItems release];
+        currentGiftItems=nil;
+    }
+    
+    
     [profilePicImg release];
     [profileNameLbl release];
     [eventNameLbl release];
     [giftCategoryPageControl release];
     [giftsTable release];
-    [giftCategoriesScroll release];
     
-    [giftsList release];
-    
-    //[category_iScroll release];
     [categoryTitleLbl release];
+    [giftItemsBgView release];
     [super dealloc];
 }
 

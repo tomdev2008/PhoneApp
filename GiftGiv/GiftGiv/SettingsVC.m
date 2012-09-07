@@ -59,10 +59,10 @@
 }
 #pragma mark - Facebook Logout delegate
 - (void)facebookDidLoggedOut{
+    NSLog(@"seetings facebook log out..");
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     //[[NSUserDefaults standardUserDefaults]removeObjectForKey:@"FBAccessTokenKey"];
-    [[fb_giftgiv_settings facebook]setAccessToken:nil];
-    [fb_giftgiv_settings releaseFacebook];
+    
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
     
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
@@ -113,8 +113,13 @@
 
 
 - (void)dealloc {
+    
+    [[fb_giftgiv_settings facebook]setAccessToken:nil];
+    [fb_giftgiv_settings releaseFacebook];
+    
     fb_giftgiv_settings.fbGiftGivDelegate=nil;
     [fb_giftgiv_settings release];
+    
     [super dealloc];
 }
 

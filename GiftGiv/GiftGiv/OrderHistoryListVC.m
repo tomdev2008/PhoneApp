@@ -93,15 +93,7 @@ static NSDateFormatter *customDateFormat=nil;
 	}
     cell.profileNameLbl.text=[[ordersList objectAtIndex:indexPath.row] recipientName];
     NSString *dateString=[[[[ordersList objectAtIndex:indexPath.row] dateofCreation] componentsSeparatedByString:@"T"] objectAtIndex:0];
-    cell.orderDateLbl.text=[self updateDate:dateString];//[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:dateString];
-    /*if([cell.orderDateLbl.text isEqualToString:@"Today"]||[cell.orderDateLbl.text isEqualToString:@"Yesterday"]||[cell.orderDateLbl.text isEqualToString:@"Tomorrow"]||[cell.orderDateLbl.text isEqualToString:@"Recent"]){
-     cell.orderDateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-     cell.orderDateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-     }
-     else{
-     cell.orderDateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
-     cell.orderDateLbl.textColor=[UIColor blackColor];
-     }*/
+    cell.orderDateLbl.text=[self updateDate:dateString];
     cell.profilePic.image=[(OrderObject*)[ordersList objectAtIndex:indexPath.row] profilePicImg];
     
     if([[[ordersList objectAtIndex:indexPath.row] status] isEqualToString:@"-1"]){

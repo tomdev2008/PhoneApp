@@ -40,7 +40,7 @@
 	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     [theXML release];
   	NSString *convertedStr=[updated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-    NSLog(@"%@",convertedStr);
+    //NSLog(@"%@",convertedStr);
     //[theXML release];
     webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
     

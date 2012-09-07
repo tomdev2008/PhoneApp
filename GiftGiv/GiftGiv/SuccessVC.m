@@ -43,7 +43,7 @@
     
     float tableHeight=[upcomingEvents count]*60;
     
-    upcomingEventsTable.frame=CGRectMake(upcomingEventsTable.frame.origin.x, upcomingEventsTable.frame.origin.y, 280, tableHeight);
+    upcomingEventsTable.frame=CGRectMake(upcomingEventsTable.frame.origin.x, upcomingEventsTable.frame.origin.y, upcomingEventsTable.frame.size.width, tableHeight);
     
     contentScroll.contentSize=CGSizeMake(320, upcomingEventsTable.frame.origin.y+upcomingEventsTable.frame.size.height);
     
@@ -145,29 +145,34 @@
         }
         else{
             cell.profileNameLbl.text=[[upcomingEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
-            
-            cell.bubbleIconForCommentsBtn.hidden=YES;
+            if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
+                if([[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
+                    cell.bubbleIconForCommentsBtn.hidden=NO;
+                else
+                    cell.bubbleIconForCommentsBtn.hidden=YES;
+            }
+            else {
+                cell.bubbleIconForCommentsBtn.hidden=YES;
+            }
         }
-        
-        NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
-        if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
-            cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-            cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-        }
-        else{
-            cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
-            cell.dateLbl.textColor=[UIColor blackColor];
-        }
-        
-        
-        cell.dateLbl.text=dateDisplay;
         cell.eventNameLbl.text=[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"];
         
         
+        NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+        if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
+            cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+            //cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+        }
+        else{
+            //cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+            cell.dateLbl.textColor=[UIColor blackColor];
+        }
+        cell.dateLbl.text=dateDisplay;
         
         if([[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
             cell.profileImg.image=[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
         }
+                     
         
     }
     //Dynamic[fit] label width respected to the size of the text
@@ -200,15 +205,12 @@
     
     [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
     
-    //NSLog(@"%@",tempInfoDict);
     
     [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
     
-    //details.basicInfoForMsg=tempInfoDict;
     [tempInfoDict release];
     
-    
-    
+     
     
     [self.navigationController pushViewController:giftOptions animated:YES];
     [giftOptions release];
@@ -222,7 +224,6 @@
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     }
     
-    
     if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
         details.isPhotoTagged=YES;
     }
@@ -230,16 +231,24 @@
         details.isPhotoTagged=NO;
     
     NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-    [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-    [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+    
+    if([[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+        [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+    else if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"])
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
+    if([[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+        [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+    else if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+    
     [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
     [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+    
     [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-    NSLog(@"%@",tempInfoDict);
+    //NSLog(@" temp dict..%@",tempInfoDict);
     
     [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
     
-    //details.basicInfoForMsg=tempInfoDict;
     [tempInfoDict release];
     
     

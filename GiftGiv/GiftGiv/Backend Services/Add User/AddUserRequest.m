@@ -40,7 +40,7 @@
 	NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
     
     NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
-    NSLog(@"XML...%@",theXML);
+    //NSLog(@"XML...%@",theXML);
     [theXML release];
 	[webData release];
 	

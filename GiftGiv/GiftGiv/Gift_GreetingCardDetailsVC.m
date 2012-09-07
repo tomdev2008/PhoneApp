@@ -9,6 +9,7 @@
 #import "Gift_GreetingCardDetailsVC.h"
 
 @implementation Gift_GreetingCardDetailsVC
+@synthesize detailsBgView;
 @synthesize giftDetailsContentScroll;
 @synthesize profilePic;
 @synthesize profileNameLbl;
@@ -64,6 +65,7 @@
         backGreetingImg.hidden=NO;
         [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:frontGreetingImg];
         [self loadGiftImage:[giftItemInfo giftImageBackSideUrl] forAnObject:backGreetingImg];
+        detailsBgView.frame=CGRectMake(0, 589, 320, 225);
         
     }
     else{
@@ -73,7 +75,7 @@
         backGreetingImg.hidden=YES;
         flowerImgView.hidden=NO;
         [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:flowerImgView];
-        
+        detailsBgView.frame=CGRectMake(0, 355, 320, 225);
     }
     
     UITapGestureRecognizer *tapRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(zoomInOutForCards:)];
@@ -85,8 +87,10 @@
     greetingPrice.text=[NSString stringWithFormat:@"$%@",[giftItemInfo giftPrice]];
     giftDetailsContentScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsContentScroll];
-    
-    [giftDetailsContentScroll setContentSize:CGSizeMake(320, 610)];
+    if(isGreetingCard)
+        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 814)];
+    else
+        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 610)];
     personalMsgTxt.inputAccessoryView=msgInputAccessoryView;
     
     //Dynamic[fit] label width respected to the size of the text
@@ -140,7 +144,7 @@
     
     //zoom out
     if([zoomInImgView superview]){
-        if(CGRectContainsPoint(zoomInImgView.frame, tapLocation))
+        //if(CGRectContainsPoint(zoomInImgView.frame, tapLocation))
             [zoomInImgView removeFromSuperview];
     }
     else{
@@ -236,6 +240,7 @@
     [self setMsgInputAccessoryView:nil];
     [self setFlowerImgView:nil];
     [self setZoomInImgView:nil];
+    [self setDetailsBgView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -263,6 +268,7 @@
     [msgInputAccessoryView release];
     [flowerImgView release];
     [zoomInImgView release];
+    [detailsBgView release];
     [super dealloc];
 }
 

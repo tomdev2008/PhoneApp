@@ -22,7 +22,7 @@
 
 - (id)initWithURL:(NSString *)theURL returnURL:(NSString *)theReturnURL cancelURL:(NSString *)theCancelURL giftItem:(NSMutableDictionary*)gift {
     if (self = [super init]) {
-        NSLog(@"gift.. %@",gift);
+        //NSLog(@"gift.. %@",gift);
         self.selectedGift=gift;
 		self.startURL = theURL;
 		self.returnURL = theReturnURL;
@@ -132,7 +132,7 @@
     //Send request to add an order
     if([CheckNetwork connectedToNetwork]){
         
-        NSString *soapmsgFormat;
+        NSString *soapmsgFormat=@"";
         if([selectedGift objectForKey:@"RecipientAddress"]){
             //statusCode=@"0";
             NSArray *address=[[selectedGift objectForKey:@"RecipientAddress"] componentsSeparatedByString:@","];
@@ -154,7 +154,7 @@
         
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        NSLog(@"%@",soapRequestString);
+        //NSLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddOrder"];
         
         AddOrderRequest *addOrder=[[AddOrderRequest alloc]init];
