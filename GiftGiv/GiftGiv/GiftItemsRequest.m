@@ -114,9 +114,9 @@
         currentElementValue=(NSMutableString*)[[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
         
         giftItem.giftThumbnailUrl=currentElementValue;
-        NSData *imgData=[NSData dataWithContentsOfURL:[NSURL URLWithString:currentElementValue]];
+        /*NSData *imgData=[NSData dataWithContentsOfURL:[NSURL URLWithString:currentElementValue]];
         if(imgData!=nil)
-            giftItem.giftThumbnail=[UIImage imageWithData:imgData];
+            giftItem.giftThumbnail=[UIImage imageWithData:imgData];*/
     }
     else if([argElementName isEqualToString:@"CategoryId"]){
         
@@ -129,8 +129,12 @@
     
     
     else if([argElementName isEqualToString:@"Item_Master"]){
-        [listOfGiftItems addObject:giftItem];
+        NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:1];
+        [tempDict setObject:giftItem forKey:@"GiftDetails"];
+        [listOfGiftItems addObject:tempDict];
         [giftItem release];
+        [tempDict release];
+
     }
 	currentElementValue=nil;
 	[currentElementValue release];

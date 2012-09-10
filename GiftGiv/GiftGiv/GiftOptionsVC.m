@@ -117,7 +117,47 @@
     
 
 }
-
+-(void)retrieveGiftThumbnails{
+    
+    int giftItemsCount=[listOfAllGiftItems count];
+   
+    for(int i=0;i<giftItemsCount;i++){
+        dispatch_queue_t ImageLoader_Q;
+        ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+        dispatch_async(ImageLoader_Q, ^{
+            
+            NSString *urlStr=[[[listOfAllGiftItems objectAtIndex:i]objectForKey:@"GiftDetails"] giftThumbnailUrl];
+            
+            NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+            UIImage *thumbnail = [UIImage imageWithData:data];
+            
+            if(thumbnail==nil){
+                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                    
+                    
+                    
+                    //profilePicImg.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
+                    
+                });
+                
+            }
+            else {
+                
+                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                    NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[listOfAllGiftItems objectAtIndex:i]];
+                    [tempDict setObject:thumbnail forKey:@"GiftThumbnail"];
+                    [listOfAllGiftItems replaceObjectAtIndex:i withObject:tempDict];
+                    [tempDict release];                   
+                    [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
+                });
+            }
+            
+        });
+        dispatch_release(ImageLoader_Q);
+    }
+     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+    
+}
 -(void)makeRequestToGetCategories{
     
     if([CheckNetwork connectedToNetwork]){
@@ -197,10 +237,9 @@
     
     [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
     
-    
-    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-    
-    
+    [self performSelector:@selector(retrieveGiftThumbnails)];    
+      
+
     [self stopHUD];
 }
 -(void)loadCurrentGiftItemsForCategory :(NSString*)categoryId{
@@ -214,14 +253,14 @@
     
     if([listOfAllGiftItems count]){
         
-        for(GiftItemObject *giftItem in listOfAllGiftItems){
+        for(NSMutableDictionary *giftItemDict in listOfAllGiftItems){
             
-            if([categoryId isEqualToString:giftItem.giftCategoryId]){
+            if([categoryId isEqualToString:[[giftItemDict objectForKey:@"GiftDetails"]giftCategoryId]]){
                 if(currentGiftItems==nil){
                     currentGiftItems=[[NSMutableArray alloc]init];
                 }
                 
-                [currentGiftItems addObject:giftItem];
+                [currentGiftItems addObject:giftItemDict];
             }
                      
         }
@@ -362,58 +401,67 @@
 		
 	}
     cell.tag=indexPath.row;
-    cell.giftTitle_one.text=[[currentGiftItems objectAtIndex:(indexPath.row*2)] giftTitle];
+    cell.giftTitle_one.text=[[[currentGiftItems objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftTitle];
     
-    NSArray *priceArray_one=[[[currentGiftItems objectAtIndex:(indexPath.row*2)] giftPrice] componentsSeparatedByString:@";"];
+    NSArray *priceArray_one=[[[[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftDetails"] giftPrice] componentsSeparatedByString:@";"];
     
     if([priceArray_one count]>1){
         ;
         cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@ - $%@",[priceArray_one objectAtIndex:0],[priceArray_one objectAtIndex:[priceArray_one count]-1]];
     }
     else
-        cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",[[currentGiftItems objectAtIndex:(indexPath.row*2)] giftPrice]];
-    UIImage *tempImg_one=[[currentGiftItems objectAtIndex:(indexPath.row*2)]giftThumbnail];
-    if(tempImg_one.size.width==160 && tempImg_one.size.height==120){
-        cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+12,cell.giftImg_one.frame.origin.y+25 , 100, 75);
+        cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",[[[currentGiftItems objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftPrice]];
+    UIImage *tempImg_one=nil;;
+    if([[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftThumbnail"])
+        tempImg_one=[[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftThumbnail"];
+    if(tempImg_one!=nil){
+        if(tempImg_one.size.width==160 && tempImg_one.size.height==120){
+            cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+12,cell.giftImg_one.frame.origin.y+25 , 100, 75);
+        }
+        else if(tempImg_one.size.width==160 && tempImg_one.size.height==172){
+            cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+12,cell.giftImg_one.frame.origin.y+8 , 100, 108);
+        }
+        else if(tempImg_one.size.width==110 && tempImg_one.size.height==150){
+            cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+28,cell.giftImg_one.frame.origin.y+15 , 69, 94);
+        }
+        
+        [cell.giftImg_one setImage:tempImg_one];
     }
-    else if(tempImg_one.size.width==160 && tempImg_one.size.height==172){
-        cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+12,cell.giftImg_one.frame.origin.y+8 , 100, 108);
-    }
-    else if(tempImg_one.size.width==110 && tempImg_one.size.height==150){
-        cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+28,cell.giftImg_one.frame.origin.y+15 , 69, 94);
-    }
-   
-    [cell.giftImg_one setImage:tempImg_one];
+    
     
     if([currentGiftItems count]>(indexPath.row*2)+1){
         cell.giftIcon_two.hidden=NO;
         cell.giftPrice_two.hidden=NO;
         cell.giftTitle_two.hidden=NO;
-        cell.giftTitle_two.text=[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]giftTitle];
+        cell.giftTitle_two.text=[[[currentGiftItems objectAtIndex:(indexPath.row*2)+1] objectForKey:@"GiftDetails"]giftTitle];
         
-        NSArray *priceArray_two=[[[currentGiftItems objectAtIndex:(indexPath.row*2)+1] giftPrice] componentsSeparatedByString:@";"];
+        NSArray *priceArray_two=[[[[currentGiftItems objectAtIndex:(indexPath.row*2)+1] objectForKey:@"GiftDetails"]giftPrice] componentsSeparatedByString:@";"];
         
         if([priceArray_two count]>1){
             
             cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@ - $%@",[priceArray_two objectAtIndex:0],[priceArray_two objectAtIndex:[priceArray_two count]-1]];
         }
         else
-            cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",[[currentGiftItems objectAtIndex:(indexPath.row*2)+1] giftPrice]];
-        
-        UIImage *tempImg_two=[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]giftThumbnail];
-        
-        if(tempImg_two.size.width==160 && tempImg_two.size.height==120){
-            cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+12,cell.giftImg_two.frame.origin.y+25 , 100, 75);
+            cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",[[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftPrice]];
+        UIImage *tempImg_two=nil;
+        if([[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftThumbnail"]){
+            tempImg_two=[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftThumbnail"];
         }
-        else if(tempImg_two.size.width==160 && tempImg_two.size.height==172){
-            cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+12,cell.giftImg_two.frame.origin.y+8 , 100, 108);
+        if(tempImg_two!=nil){
+            if(tempImg_two.size.width==160 && tempImg_two.size.height==120){
+                cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+12,cell.giftImg_two.frame.origin.y+25 , 100, 75);
+            }
+            else if(tempImg_two.size.width==160 && tempImg_two.size.height==172){
+                cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+12,cell.giftImg_two.frame.origin.y+8 , 100, 108);
+            }
+            else if(tempImg_two.size.width==110 && tempImg_two.size.height==150){
+                cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+28,cell.giftImg_two.frame.origin.y+15 , 69, 94);
+            }
+            
+            
+            [cell.giftImg_two setImage:tempImg_two];
         }
-        else if(tempImg_two.size.width==110 && tempImg_two.size.height==150){
-            cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+28,cell.giftImg_two.frame.origin.y+15 , 69, 94);
-        }
-        
-      
-        [cell.giftImg_two setImage:tempImg_two];
+                
     }
     
     else{
@@ -430,7 +478,7 @@
     
     int rowNum=[(GiftCustomCell*)[(UIButton*)sender superview] tag];
     int columNum=[sender tag];
-    GiftItemObject *selectedGift=[currentGiftItems objectAtIndex:(rowNum*2+columNum)-1];
+    GiftItemObject *selectedGift=[[currentGiftItems objectAtIndex:(rowNum*2+columNum)-1]objectForKey:@"GiftDetails"];
 
     //gift cards
     if([[selectedGift.giftPrice componentsSeparatedByString:@";"] count]>1){

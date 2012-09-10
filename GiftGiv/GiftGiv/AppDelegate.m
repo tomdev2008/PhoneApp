@@ -23,6 +23,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+        
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
+    
+    
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
     [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackOpaque];
@@ -96,6 +101,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    
     /*
      Called when the application is about to terminate.
      Save data if appropriate.

@@ -56,7 +56,7 @@ static NSDateFormatter *customDateFormat=nil;
     [self.view addSubview:orderDetailsScroll];
     
     profilePic.image=orderDetails.profilePicImg;
-    profileNameLbl.text=[orderDetails.recipientName uppercaseString];
+    profileNameLbl.text=orderDetails.recipientName;
     //eventNameLbl.text=orderDetails.
     
     
