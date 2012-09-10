@@ -187,7 +187,7 @@
     SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
     sendOptions.isSendElectronically=NO;
     NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
-    [giftAndSenderInfo setObject:profileNameLbl.text forKey:@"RecipientName"];
+    [giftAndSenderInfo setObject:[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] forKey:@"RecipientName"];
     [giftAndSenderInfo setObject:eventNameLbl.text forKey:@"EventName"];
     [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
     [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
