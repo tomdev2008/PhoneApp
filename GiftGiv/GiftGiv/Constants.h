@@ -2,12 +2,13 @@
 //  Constants.h
 //  GiftGiv
 //
+
 //  Created by Srinivas G on 19/07/12.
 //  Copyright (c) 2012 Teleparadigm Networks Limited. All rights reserved.
 //
 
 //Facebook APP ID
-#define KFacebookAppId /*@"410784185600350"*/@"208184389305114"
+#define KFacebookAppId /*@"410784185600350"*/@"363735827035251"
 
 //Device currect OS version, which we used for page control color dots
 #define currentiOSVersion [[[UIDevice currentDevice] systemVersion] doubleValue]
