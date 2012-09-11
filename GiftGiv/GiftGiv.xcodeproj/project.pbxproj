@@ -38,6 +38,7 @@
 		7E1D728715B809F00008D19C /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D727B15B809EF0008D19C /* SBJsonWriter.m */; };
 		7E1D728F15B80B920008D19C /* Facebook_GiftGiv.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D728E15B80B920008D19C /* Facebook_GiftGiv.m */; };
 		7E1D729415B80C860008D19C /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D729315B80C860008D19C /* MBProgressHUD.m */; };
+		7E2047CF15FF1150005EB9C1 /* Readme.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7E2047CE15FF1150005EB9C1 /* Readme.txt */; };
 		7E2D17A915D1295200E78FF0 /* AddUserRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D17A815D1295200E78FF0 /* AddUserRequest.m */; };
 		7E2D17B015D12A0100E78FF0 /* CoomonRequestCreationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */; };
 		7E3E0EA715E535F600B77007 /* GiftItemsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E0EA415E535F600B77007 /* GiftItemsRequest.m */; };
@@ -204,6 +205,7 @@
 		7E1D729015B80BEA0008D19C /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		7E1D729215B80C860008D19C /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		7E1D729315B80C860008D19C /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		7E2047CE15FF1150005EB9C1 /* Readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
 		7E2D17A715D1295200E78FF0 /* AddUserRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddUserRequest.h; path = "Backend Services/Add User/AddUserRequest.h"; sourceTree = "<group>"; };
 		7E2D17A815D1295200E78FF0 /* AddUserRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddUserRequest.m; path = "Backend Services/Add User/AddUserRequest.m"; sourceTree = "<group>"; };
 		7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoomonRequestCreationObject.h; path = "Backend Services/CoomonRequestCreationObject.h"; sourceTree = "<group>"; };
@@ -897,6 +899,7 @@
 				7ED149EB15CFF384007CBDBF /* Order History */,
 				7E2D17A615D1290F00E78FF0 /* Backend Services */,
 				7ED7EA2315B6F1EE008DFDE3 /* Supporting Files */,
+				7E2047CE15FF1150005EB9C1 /* Readme.txt */,
 			);
 			path = GiftGiv;
 			sourceTree = "<group>";
@@ -1104,6 +1107,7 @@
 				7E46474415DE47BD00BAFFD4 /* profilepic_dummy.png in Resources */,
 				7ED8587615F478A3007F28F9 /* giftbutton_new@2x.png in Resources */,
 				7ED8587815F478AB007F28F9 /* giftbutton_new.png in Resources */,
+				7E2047CF15FF1150005EB9C1 /* Readme.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
