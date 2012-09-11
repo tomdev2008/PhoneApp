@@ -9,6 +9,8 @@
 #import "HomeScreenVC.h"
 
 @implementation HomeScreenVC
+@synthesize searchBar;
+@synthesize searchBgView;
 @synthesize eventsBgView;
 @synthesize pageControlForEventGroups;
 @synthesize eventsTable;
@@ -45,9 +47,14 @@ static NSDateFormatter *customDateFormat=nil;
     
     categoryTitles=[[NSMutableArray alloc]init];
     listOfBirthdayEvents=[[NSMutableArray alloc]init];
-    newJobEvents=[[NSMutableArray alloc]init];
+    /*newJobEvents=[[NSMutableArray alloc]init];
     anniversaryEvents=[[NSMutableArray alloc]init];
     congratsEvents=[[NSMutableArray alloc]init];
+    */
+    eventsToCelebrateArray=[[NSMutableArray alloc]init];
+    facebookContactsArray=[[NSMutableArray alloc]init];
+    linkedInContactsArray=[[NSMutableArray alloc]init];
+    
     allupcomingEvents=[[NSMutableArray alloc]init];
     
     eventTitleLbl.text=events_category_1;
@@ -143,12 +150,18 @@ static NSDateFormatter *customDateFormat=nil;
             [allupcomingEvents removeAllObjects];
         if([listOfBirthdayEvents count])
             [listOfBirthdayEvents removeAllObjects];
-        if([newJobEvents count])
+        /*if([newJobEvents count])
             [newJobEvents removeAllObjects];
         if([congratsEvents count])
             [congratsEvents removeAllObjects];
         if([anniversaryEvents count])
-            [anniversaryEvents removeAllObjects];
+            [anniversaryEvents removeAllObjects];*/
+        if([eventsToCelebrateArray count])
+            [eventsToCelebrateArray removeAllObjects];
+        if([facebookContactsArray count])
+            [facebookContactsArray removeAllObjects];
+        if([linkedInContactsArray count])
+            [linkedInContactsArray removeAllObjects];
         
         for (int i=0;i<eventsCount;i++){
             NSMutableDictionary *eventDict=[[NSMutableDictionary alloc]init];
@@ -164,11 +177,11 @@ static NSDateFormatter *customDateFormat=nil;
             if([eventType isEqualToString:@"Birthday"])
                 [listOfBirthdayEvents addObject:eventDict];
             else if([eventType isEqualToString:@"New Job"])
-                [newJobEvents addObject:eventDict];
+                [eventsToCelebrateArray addObject:eventDict];
             else if([eventType isEqualToString:@"Congratulations"])
-                [congratsEvents addObject:eventDict];
+                [eventsToCelebrateArray addObject:eventDict];
             else if([eventType isEqualToString:@"Relationship"])
-                [anniversaryEvents addObject:eventDict];
+                [eventsToCelebrateArray addObject:eventDict];
             
             [allupcomingEvents addObject:eventDict];
             [eventDict release];
@@ -183,12 +196,14 @@ static NSDateFormatter *customDateFormat=nil;
             [self sortEvents:allupcomingEvents eventCategory:1];
         if([listOfBirthdayEvents count]>1)
             [self sortEvents:listOfBirthdayEvents eventCategory:2];
-        if([newJobEvents count]>1)
+        /*if([newJobEvents count]>1)
             [self sortEvents:newJobEvents eventCategory:4];
         if([congratsEvents count]>1)
             [self sortEvents:congratsEvents eventCategory:5];
         if([anniversaryEvents count]>1)
-            [self sortEvents:anniversaryEvents eventCategory:3];
+            [self sortEvents:anniversaryEvents eventCategory:3];*/
+        if([eventsToCelebrateArray count]>1)
+            [self sortEvents:eventsToCelebrateArray eventCategory:3];
         
         [[NSUserDefaults standardUserDefaults]setObject:allupcomingEvents forKey:@"AllUpcomingEvents"];
         //eventTitleLbl.text=events_category_1;
@@ -280,7 +295,7 @@ static NSDateFormatter *customDateFormat=nil;
         [categoryTitles addObject:events_category_2];
         totalGroups++;
     }
-    if([anniversaryEvents count]){
+    /*if([anniversaryEvents count]){
         
         [categoryTitles addObject:events_category_3];
         totalGroups++;
@@ -296,7 +311,19 @@ static NSDateFormatter *customDateFormat=nil;
         [categoryTitles addObject:events_category_5];
         totalGroups++;
     }
-    
+    */
+    if([eventsToCelebrateArray count]){
+        [categoryTitles addObject:events_category_3];
+        totalGroups++;
+    }
+    if([facebookContactsArray count]){
+        [categoryTitles addObject:events_category_4];
+        totalGroups++;
+    }
+    if([linkedInContactsArray count]){
+        [categoryTitles addObject:events_category_5];
+        totalGroups++;
+    }
     pageControlForEventGroups.numberOfPages=totalGroups;
     pageControlForEventGroups.currentPage=eventGroupNum-1;
     
@@ -333,15 +360,15 @@ static NSDateFormatter *customDateFormat=nil;
             
         }
         if([eventTitleLbl.text isEqualToString:events_category_3]){
-            return [anniversaryEvents count];
+            return [eventsToCelebrateArray count];
             
         }
         if([eventTitleLbl.text isEqualToString:events_category_4]){
-            return [newJobEvents count];
+            return [facebookContactsArray count];
             
         }
         if([eventTitleLbl.text isEqualToString:events_category_5]){
-            return [congratsEvents count];
+            return [linkedInContactsArray count];
             
         }
     }
@@ -411,9 +438,9 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else if([eventTitleLbl.text isEqualToString:events_category_3]){
             
-            if([anniversaryEvents count]){
+            if([eventsToCelebrateArray count]){
                 //NSLog(@"list of anniversaries..%@",anniversaryEvents);
-                [self loadEventsData:anniversaryEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                [self loadEventsData:eventsToCelebrateArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
                 
                 
             }
@@ -421,18 +448,18 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else if([eventTitleLbl.text isEqualToString:events_category_4]){
             
-            if([newJobEvents count]){
+            if([facebookContactsArray count]){
                 //NSLog(@"list of newJobEvents..%@",newJobEvents);
-                [self loadEventsData:newJobEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];   
+                [self loadEventsData:facebookContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];   
             }
             
         }
         else if([eventTitleLbl.text isEqualToString:events_category_5]){
             
-            if([congratsEvents count]){
+            if([linkedInContactsArray count]){
                // NSLog(@"list of congratsEvents..%@",congratsEvents);
                 
-                [self loadEventsData:congratsEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                [self loadEventsData:linkedInContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
                 
             }
             
@@ -569,6 +596,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     
 }
+
 /*-(NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate{
  
  if(customDateFormat==nil){
@@ -671,17 +699,17 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else if([eventTitleLbl.text isEqualToString:events_category_3]){
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-            if([[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
             }
             else{
-                [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
             }
             
             
-            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
@@ -689,17 +717,17 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else if([eventTitleLbl.text isEqualToString:events_category_4]){
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-            if([[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                [tempInfoDict setObject:[[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                [tempInfoDict setObject:[[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                [tempInfoDict setObject:[[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                [tempInfoDict setObject:[[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
             }
             else{
-                [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
             }
             
             
-            [tempInfoDict setObject:[[newJobEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
             
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
@@ -708,17 +736,17 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else if([eventTitleLbl.text isEqualToString:events_category_5]){
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-            if([[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                [tempInfoDict setObject:[[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                [tempInfoDict setObject:[[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                [tempInfoDict setObject:[[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                [tempInfoDict setObject:[[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
             }
             else{
-                [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
             }
             
             
-            [tempInfoDict setObject:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
@@ -733,6 +761,33 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 
+#pragma mark -
+- (IBAction)showSearchView:(id)sender {
+    searchBgView.frame=CGRectMake(0, 0, 320, 416);
+    if(![searchBgView superview]){
+        
+        [self.view addSubview:searchBgView];
+    }
+    [searchBar becomeFirstResponder];
+}
+
+- (IBAction)showOtherAccountToLogin:(id)sender {
+    
+}
+
+- (IBAction)searchCancelAction:(id)sender {
+    [searchBar resignFirstResponder];
+    [searchBgView removeFromSuperview];
+    
+}
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar_1{
+    [searchBar resignFirstResponder];
+    searchBgView.frame=CGRectMake(0, 0, 320, 44);
+}
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar_1{
+    searchBgView.frame=CGRectMake(0, 0, 320, 416);
+    [searchBar becomeFirstResponder];
+}
 #pragma mark -
 -(void)eventDetailsAction:(id)sender{
     
@@ -801,27 +856,27 @@ static NSDateFormatter *customDateFormat=nil;
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_3]){
-        if([[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+        if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"picture"]){
             details.isPhotoTagged=YES;
         }
         else
             details.isPhotoTagged=NO;
         
         NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
-        if([[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
-            [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        else if([[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
-            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+        if([[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+            [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+        else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"]){
+            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
         }
         
-        if([[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
-            [tempInfoDict setObject:[[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        else if([[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
-            [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+        if([[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+            [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+        else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"])
+            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
         
-        [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
-        [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
-        [tempInfoDict setObject:[[anniversaryEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+        [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+        [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+        [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
@@ -829,7 +884,7 @@ static NSDateFormatter *customDateFormat=nil;
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_4]){
-        if([[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+        /*if([[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
             details.isPhotoTagged=YES;
         }
         else
@@ -853,11 +908,11 @@ static NSDateFormatter *customDateFormat=nil;
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
-        [tempInfoDict release];
+        [tempInfoDict release];*/
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_5]){
-        if([[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+        /*if([[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
             details.isPhotoTagged=YES;
         }
         else
@@ -880,7 +935,7 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
-        [tempInfoDict release];
+        [tempInfoDict release];*/
         
     }
     
@@ -930,6 +985,7 @@ static NSDateFormatter *customDateFormat=nil;
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays{
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     [fb_giftgiv_home getAllFriendsWithTheirDetails];
+    
     if([listOfBirthdays count]){
         
         if([listOfBirthdayEvents count])
@@ -939,6 +995,7 @@ static NSDateFormatter *customDateFormat=nil;
         int countOfBirthdays=[listOfBirthdayEvents count];
         
         for (int i=0;i<countOfBirthdays;i++){
+            
             NSMutableDictionary *tempDict=[listOfBirthdayEvents objectAtIndex:i];
             NSArray *dateComponents=[[tempDict objectForKey:@"birthday_date"] componentsSeparatedByString:@"/"];
             if([dateComponents count]!=3){
@@ -999,9 +1056,9 @@ static NSDateFormatter *customDateFormat=nil;
 -(void)loadProfilePictures{
     int upcomingEventsCount=[allupcomingEvents count];
     int birthdayEventsCount=[listOfBirthdayEvents count];
-    int anniversaryEventscount=[anniversaryEvents count];
-    int newjobEventsCount=[newJobEvents count];
-    int congratsEventsCount=[congratsEvents count];
+    int eventsCelebCount=[eventsToCelebrateArray count];
+    int facebookContactsCount=[facebookContactsArray count];
+    int linkedInContactsCount=[linkedInContactsArray count];
     
     
     for(int i=0;i<upcomingEventsCount;i++){
@@ -1084,20 +1141,20 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     
-    for(int i=0;i<anniversaryEventscount;i++){
+    for(int i=0;i<eventsCelebCount;i++){
         
-        if(![[[anniversaryEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        if(![[[eventsToCelebrateArray objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
             dispatch_queue_t ImageLoader_Q;
             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
             dispatch_async(ImageLoader_Q, ^{
                 NSString *urlStr;
-                if([[anniversaryEvents objectAtIndex:i]objectForKey:@"uid"])
-                    urlStr=FacebookPicURL([[anniversaryEvents objectAtIndex:i]objectForKey:@"uid"]);
+                if([[eventsToCelebrateArray objectAtIndex:i]objectForKey:@"uid"])
+                    urlStr=FacebookPicURL([[eventsToCelebrateArray objectAtIndex:i]objectForKey:@"uid"]);
                 else
-                    urlStr=FacebookPicURL([[[anniversaryEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
+                    urlStr=FacebookPicURL([[[eventsToCelebrateArray objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
                 NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
                 if(data==nil){
-                    [[anniversaryEvents objectAtIndex:i] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    [[eventsToCelebrateArray objectAtIndex:i] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
                 }
                 else {
                     UIImage *thumbnail = [UIImage imageWithData:data];
@@ -1106,7 +1163,7 @@ static NSDateFormatter *customDateFormat=nil;
                         
                         dispatch_sync(dispatch_get_main_queue(), ^(void) {
                             if(!shouldLoadingPicsStop)
-                                [[anniversaryEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
+                                [[eventsToCelebrateArray objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
                             [self loadImageForEventAtIndexNum:i forTable:eventsTable];
                             //[self loadImageForEventAtIndexNum:i forTable:events_2_Table];
@@ -1123,20 +1180,20 @@ static NSDateFormatter *customDateFormat=nil;
         }
     }
     
-    for(int i=0;i<newjobEventsCount;i++){
+    for(int i=0;i<facebookContactsCount;i++){
         
-        if(![[[newJobEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        if(![[[facebookContactsArray objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
             dispatch_queue_t ImageLoader_Q;
             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
             dispatch_async(ImageLoader_Q, ^{
                 NSString *urlStr;
-                if([[newJobEvents objectAtIndex:i]objectForKey:@"uid"])
-                    urlStr=FacebookPicURL([[newJobEvents objectAtIndex:i]objectForKey:@"uid"]);
+                if([[facebookContactsArray objectAtIndex:i]objectForKey:@"uid"])
+                    urlStr=FacebookPicURL([[facebookContactsArray objectAtIndex:i]objectForKey:@"uid"]);
                 else
-                    urlStr=FacebookPicURL([[[newJobEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
+                    urlStr=FacebookPicURL([[[facebookContactsArray objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
                 NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
                 if(data==nil){
-                    [[newJobEvents objectAtIndex:i] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    [[facebookContactsArray objectAtIndex:i] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
                 }
                 else {
                     UIImage *thumbnail = [UIImage imageWithData:data];
@@ -1145,7 +1202,7 @@ static NSDateFormatter *customDateFormat=nil;
                         
                         dispatch_sync(dispatch_get_main_queue(), ^(void) {
                             if(!shouldLoadingPicsStop)
-                                [[newJobEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
+                                [[facebookContactsArray objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
                             [self loadImageForEventAtIndexNum:i forTable:eventsTable];
                             //[self loadImageForEventAtIndexNum:i forTable:events_2_Table];
@@ -1162,20 +1219,20 @@ static NSDateFormatter *customDateFormat=nil;
         }
     }
     
-    for(int i=0;i<congratsEventsCount;i++){
+    for(int i=0;i<linkedInContactsCount;i++){
         
-        if(![[[congratsEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        if(![[[linkedInContactsArray objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
             dispatch_queue_t ImageLoader_Q;
             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
             dispatch_async(ImageLoader_Q, ^{
                 NSString *urlStr;
-                if([[congratsEvents objectAtIndex:i]objectForKey:@"uid"])
-                    urlStr=FacebookPicURL([[congratsEvents objectAtIndex:i]objectForKey:@"uid"]);
+                if([[linkedInContactsArray objectAtIndex:i]objectForKey:@"uid"])
+                    urlStr=FacebookPicURL([[linkedInContactsArray objectAtIndex:i]objectForKey:@"uid"]);
                 else
-                    urlStr=FacebookPicURL([[[congratsEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
+                    urlStr=FacebookPicURL([[[linkedInContactsArray objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
                 NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
                 if(data==nil){
-                    [[congratsEvents objectAtIndex:i] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    [[linkedInContactsArray objectAtIndex:i] setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
                 }
                 else {
                     UIImage *thumbnail = [UIImage imageWithData:data];
@@ -1184,7 +1241,7 @@ static NSDateFormatter *customDateFormat=nil;
                         
                         dispatch_sync(dispatch_get_main_queue(), ^(void) {
                             if(!shouldLoadingPicsStop)
-                                [[congratsEvents objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
+                                [[linkedInContactsArray objectAtIndex:i] setObject:thumbnail forKey:@"ProfilePicture"];
                             shouldLoadingPicsStop=NO;
                             [self loadImageForEventAtIndexNum:i forTable:eventsTable];
                             //[self loadImageForEventAtIndexNum:i forTable:events_2_Table];
@@ -1321,15 +1378,15 @@ static NSDateFormatter *customDateFormat=nil;
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
         [eventDetails setObject:@"new job" forKey:@"event_type"];
         [eventDetails setObject:@"" forKey:@"ProfilePicture"];
-        [newJobEvents addObject:eventDetails];
+        [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
        // [self performSelector:@selector(updateNextColumnTitle)];
         if([allupcomingEvents count])
             [self sortEvents:allupcomingEvents eventCategory:1];
-        if([newJobEvents count])
-            [self sortEvents:newJobEvents eventCategory:4];
+        if([eventsToCelebrateArray count])
+            [self sortEvents:eventsToCelebrateArray eventCategory:3];
         shouldLoadingPicsStop=YES;
         
         [self storeAllupcomingsForSuccessScreen];
@@ -1365,15 +1422,15 @@ static NSDateFormatter *customDateFormat=nil;
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
         [eventDetails setObject:@"relationships" forKey:@"event_type"];
         [eventDetails setObject:@"" forKey:@"ProfilePicture"];
-        [anniversaryEvents addObject:eventDetails];
+        [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         //[self performSelector:@selector(updateNextColumnTitle)];
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
-        if([anniversaryEvents count]>1)
-            [self sortEvents:anniversaryEvents eventCategory:3];
+        if([eventsToCelebrateArray count]>1)
+            [self sortEvents:eventsToCelebrateArray eventCategory:3];
         shouldLoadingPicsStop=YES;
         
         [self storeAllupcomingsForSuccessScreen];
@@ -1407,15 +1464,15 @@ static NSDateFormatter *customDateFormat=nil;
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
         [eventDetails setObject:@"congratulations" forKey:@"event_type"];
         [eventDetails setObject:@"" forKey:@"ProfilePicture"];
-        [congratsEvents addObject:eventDetails];
+        [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         //[self performSelector:@selector(updateNextColumnTitle)];
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
-        if([congratsEvents count]>1)
-            [self sortEvents:congratsEvents eventCategory:5];
+        if([eventsToCelebrateArray count]>1)
+            [self sortEvents:eventsToCelebrateArray eventCategory:3];
         
         shouldLoadingPicsStop=YES;
         
@@ -1462,19 +1519,19 @@ static NSDateFormatter *customDateFormat=nil;
             
             [listOfBirthdayEvents replaceObjectsInRange:NSMakeRange(0, [listOfBirthdayEvents count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
             break;
-            //anniversaries
+            //events to celebrate
         case 3:
             
-            [anniversaryEvents replaceObjectsInRange:NSMakeRange(0, [anniversaryEvents count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+            [eventsToCelebrateArray replaceObjectsInRange:NSMakeRange(0, [eventsToCelebrateArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
             
             break;
-            //new job
+            //facebook contacts
         case 4:
-            [newJobEvents replaceObjectsInRange:NSMakeRange(0, [newJobEvents count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+            [facebookContactsArray replaceObjectsInRange:NSMakeRange(0, [facebookContactsArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
             break;
-            //congratulations
+            //linkedIn contacts
         case 5:
-            [congratsEvents replaceObjectsInRange:NSMakeRange(0, [congratsEvents count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+            [linkedInContactsArray replaceObjectsInRange:NSMakeRange(0, [linkedInContactsArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
             break;
             
     }
@@ -1489,7 +1546,7 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark - Check Event existance
 -(BOOL)checkWhetherEventExistInTheListOfEvents:(NSMutableDictionary*)eventsData{
     
-    for (NSDictionary *existEvents in newJobEvents){
+    /*for (NSDictionary *existEvents in newJobEvents){
         NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
         NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventsData objectForKey:@"from"]objectForKey:@"id"]];
         if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
@@ -1503,6 +1560,12 @@ static NSDateFormatter *customDateFormat=nil;
             return YES;
     }
     for (NSDictionary *existEvents in congratsEvents){
+        NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
+        NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventsData objectForKey:@"from"]objectForKey:@"id"]];
+        if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
+            return YES;
+    }*/
+    for (NSDictionary *existEvents in eventsToCelebrateArray){
         NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
         NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventsData objectForKey:@"from"]objectForKey:@"id"]];
         if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
@@ -1569,6 +1632,8 @@ static NSDateFormatter *customDateFormat=nil;
     [self setEventsTable:nil];
     //[self setEventTitle_2_Lbl:nil];
     //[self setEvents_2_Table:nil];
+    [self setSearchBgView:nil];
+    [self setSearchBar:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -1590,9 +1655,9 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     [listOfBirthdayEvents release];
-    [newJobEvents release];
-    [anniversaryEvents release];
-    [congratsEvents release];
+    [eventsToCelebrateArray release];
+    [facebookContactsArray release];
+    [linkedInContactsArray release];
     [allupcomingEvents release];
     
     [categoryTitles release];
@@ -1602,6 +1667,8 @@ static NSDateFormatter *customDateFormat=nil;
     [eventsTable release];
     //[eventTitle_2_Lbl release];
    // [events_2_Table release];
+    [searchBgView release];
+    [searchBar release];
     [super dealloc];
 }
 

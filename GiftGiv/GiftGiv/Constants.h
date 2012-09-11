@@ -26,9 +26,9 @@
 
 #define events_category_1 @"all upcoming"
 #define events_category_2 @"birthdays"
-#define events_category_3 @"relationships"
-#define events_category_4 @"new job"
-#define events_category_5 @"congratulations"
+#define events_category_3 @"events to celebrate"//@"relationships"
+#define events_category_4 @"facebook contacts"//@"new job"
+#define events_category_5 @"linkedIn contacts"//@"congratulations"
 
 // Paypal API
 #define MERCHANT_USERNAME @"giftgivco_api1.gmail.com"

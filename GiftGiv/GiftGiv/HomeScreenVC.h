@@ -25,7 +25,7 @@
 #import "GetEventsRequest.h"
 
 
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate>
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate>
 
 {
     int eventGroupNum;
@@ -37,10 +37,13 @@
     
     int birthdayEventUserNoToAddAsUser;
     NSMutableArray *listOfBirthdayEvents; 
-    NSMutableArray *anniversaryEvents; 
+    /*NSMutableArray *anniversaryEvents; 
     NSMutableArray *newJobEvents; 
-    NSMutableArray *congratsEvents;
+    NSMutableArray *congratsEvents;*/
     NSMutableArray *allupcomingEvents;
+    NSMutableArray *eventsToCelebrateArray;
+    NSMutableArray *facebookContactsArray; 
+    NSMutableArray *linkedInContactsArray;
     
     NSMutableArray *categoryTitles;
     BOOL shouldLoadingPicsStop;
@@ -53,7 +56,9 @@
 @property (retain, nonatomic) IBOutlet UILabel *eventTitleLbl;
 //@property (retain, nonatomic) IBOutlet UILabel *eventTitle_2_Lbl;
 //@property (retain, nonatomic) IBOutlet UITableView *events_2_Table;
+@property (retain, nonatomic) IBOutlet UISearchBar *searchBar;
 
+@property (retain, nonatomic) IBOutlet UIView *searchBgView;
 - (IBAction)settingsAction:(id)sender;
 - (IBAction)pageControlActionForEventGroups:(id)sender;
 - (IBAction)showListOfOrders:(id)sender;
@@ -77,6 +82,9 @@
 #pragma mark -
 
 -(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath;
+- (IBAction)showSearchView:(id)sender;
+- (IBAction)showOtherAccountToLogin:(id)sender;
+- (IBAction)searchCancelAction:(id)sender;
 
 -(void) loadImageForEventAtIndexNum:(int)index forTable:(UITableView*)table;
 
