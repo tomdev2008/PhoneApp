@@ -23,9 +23,9 @@
 #import "OrderHistoryListVC.h"
 #import "MBProgressHUD.h"
 #import "GetEventsRequest.h"
+#import "FacebookContactsReq.h"
 
-
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate>
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate>
 
 {
     int eventGroupNum;

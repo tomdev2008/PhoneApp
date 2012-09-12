@@ -129,6 +129,8 @@
 		7ED8587815F478AB007F28F9 /* giftbutton_new.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ED8587715F478AB007F28F9 /* giftbutton_new.png */; };
 		7EDC191715BFB79300FF7789 /* GiftCardDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDC191515BFB79300FF7789 /* GiftCardDetailsVC.m */; };
 		7EDC191815BFB79300FF7789 /* GiftCardDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EDC191615BFB79300FF7789 /* GiftCardDetailsVC.xib */; };
+		7EDD4884160061B500F72BEB /* FacebookContactsReq.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDD4883160061B500F72BEB /* FacebookContactsReq.m */; };
+		7EDD488716006BFB00F72BEB /* FacebookContactObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDD488616006BFB00F72BEB /* FacebookContactObject.m */; };
 		7EE025F715BD5F21003B9C74 /* CommentsCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE025F615BD5F21003B9C74 /* CommentsCustomCell.m */; };
 		7EE025F915BD5F3E003B9C74 /* CommentsCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EE025F815BD5F3E003B9C74 /* CommentsCustomCell.xib */; };
 		7EE0260215BD60B4003B9C74 /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE025FE15BD60B4003B9C74 /* OHAttributedLabel.m */; };
@@ -347,6 +349,10 @@
 		7EDC191415BFB79300FF7789 /* GiftCardDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftCardDetailsVC.h; sourceTree = "<group>"; };
 		7EDC191515BFB79300FF7789 /* GiftCardDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftCardDetailsVC.m; sourceTree = "<group>"; };
 		7EDC191615BFB79300FF7789 /* GiftCardDetailsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GiftCardDetailsVC.xib; sourceTree = "<group>"; };
+		7EDD4882160061B500F72BEB /* FacebookContactsReq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FacebookContactsReq.h; path = "Backend Services/FacebookContacts/FacebookContactsReq.h"; sourceTree = "<group>"; };
+		7EDD4883160061B500F72BEB /* FacebookContactsReq.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FacebookContactsReq.m; path = "Backend Services/FacebookContacts/FacebookContactsReq.m"; sourceTree = "<group>"; };
+		7EDD488516006BFA00F72BEB /* FacebookContactObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FacebookContactObject.h; path = "Backend Services/FacebookContacts/FacebookContactObject.h"; sourceTree = "<group>"; };
+		7EDD488616006BFB00F72BEB /* FacebookContactObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FacebookContactObject.m; path = "Backend Services/FacebookContacts/FacebookContactObject.m"; sourceTree = "<group>"; };
 		7EE025F515BD5F21003B9C74 /* CommentsCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsCustomCell.h; sourceTree = "<group>"; };
 		7EE025F615BD5F21003B9C74 /* CommentsCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsCustomCell.m; sourceTree = "<group>"; };
 		7EE025F815BD5F3E003B9C74 /* CommentsCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommentsCustomCell.xib; sourceTree = "<group>"; };
@@ -565,6 +571,7 @@
 		7E2D17A615D1290F00E78FF0 /* Backend Services */ = {
 			isa = PBXGroup;
 			children = (
+				7EDD48801600617A00F72BEB /* Facebook Contacts */,
 				7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */,
 				7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */,
 				7ECD8F8D15E7C8D800E9B0C7 /* Paypal */,
@@ -947,6 +954,17 @@
 			name = "Gift Details";
 			sourceTree = "<group>";
 		};
+		7EDD48801600617A00F72BEB /* Facebook Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				7EDD4882160061B500F72BEB /* FacebookContactsReq.h */,
+				7EDD4883160061B500F72BEB /* FacebookContactsReq.m */,
+				7EDD488516006BFA00F72BEB /* FacebookContactObject.h */,
+				7EDD488616006BFB00F72BEB /* FacebookContactObject.m */,
+			);
+			name = "Facebook Contacts";
+			sourceTree = "<group>";
+		};
 		7EE025F315BD5E94003B9C74 /* Comments's custom cell */ = {
 			isa = PBXGroup;
 			children = (
@@ -1199,6 +1217,8 @@
 				7EFBF54F15EFB6FE000D3279 /* GetEventsRequest.m in Sources */,
 				7EFBF55015EFB6FE000D3279 /* EventObject.m in Sources */,
 				7ED088E115F5E2820056160C /* UIImage+scaling.m in Sources */,
+				7EDD4884160061B500F72BEB /* FacebookContactsReq.m in Sources */,
+				7EDD488716006BFB00F72BEB /* FacebookContactObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
