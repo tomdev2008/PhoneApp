@@ -45,6 +45,8 @@
     NSMutableArray *facebookContactsArray; 
     NSMutableArray *linkedInContactsArray;
     
+    NSMutableArray *tempSearchArray;
+    
     NSMutableArray *categoryTitles;
     BOOL shouldLoadingPicsStop;
     Facebook_GiftGiv *fb_giftgiv_home;

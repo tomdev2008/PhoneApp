@@ -504,7 +504,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                         BOOL isEventsFromCommentsFound=NO;
                                         for(int j=0;j<commentsCount;j++){
                                             NSString *commentsStr=[[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
-                                            NSLog(@"comments..%@",commentsStr);
+                                            //NSLog(@"comments..%@",commentsStr);
                                             
                                             
                                             if(!isEventsFromCommentsFound){

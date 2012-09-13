@@ -35,15 +35,16 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
 	
 	  
-    NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
-	[webData release];
-	NSString *upDated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
-    [theXML release];
-  	NSString *convertedStr=[upDated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+    //NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
+	//[webData release];
+	//NSString *upDated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
+    //[theXML release];
+  	//NSString *convertedStr=[upDated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
     //NSLog(@"converted.%@",convertedStr);
-    webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
+    //webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
     
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
+    [webData release];
 	[xmlParser setDelegate:self];
     receivedResponse=[[NSMutableArray alloc]init];
 	
@@ -70,11 +71,14 @@
 #pragma mark xmlParser delegates
 -(void) parser:(NSXMLParser*) parser didStartElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName attributes:(NSDictionary*) attributeDict
 {
-    
+    NSLog(@"%@,%@",argElementName,attributeDict);
     if([argElementName isEqualToString:@"FacebookUser"]){
         fbContact=[[FacebookContactObject alloc]init];
     }
         
+}
+- (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock{
+    NSLog(@"found cdata");
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string { 
 	

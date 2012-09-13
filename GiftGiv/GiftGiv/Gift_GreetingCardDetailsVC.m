@@ -14,6 +14,8 @@
 @synthesize profilePic;
 @synthesize profileNameLbl;
 @synthesize backGreetingImg;
+@synthesize dodBgView;
+@synthesize dodPicker;
 @synthesize eventNameLbl;
 @synthesize frontGreetingImg;
 @synthesize frontLbl;
@@ -26,6 +28,9 @@
 @synthesize personalMsgTxt;
 @synthesize isGreetingCard;
 @synthesize giftItemInfo;
+@synthesize dateLabel;
+
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -65,7 +70,7 @@
         backGreetingImg.hidden=NO;
         [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:frontGreetingImg];
         [self loadGiftImage:[giftItemInfo giftImageBackSideUrl] forAnObject:backGreetingImg];
-        detailsBgView.frame=CGRectMake(0, 589, 320, 225);
+        detailsBgView.frame=CGRectMake(0, 589, 320, 300);
         
     }
     else{
@@ -75,7 +80,7 @@
         backGreetingImg.hidden=YES;
         flowerImgView.hidden=NO;
         [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:flowerImgView];
-        detailsBgView.frame=CGRectMake(0, 355, 320, 225);
+        detailsBgView.frame=CGRectMake(0, 355, 320, 300);
     }
     
     UITapGestureRecognizer *tapRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(zoomInOutForCards:)];
@@ -88,9 +93,9 @@
     giftDetailsContentScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsContentScroll];
     if(isGreetingCard)
-        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 814)];
+        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 889)];
     else
-        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 580)];
+        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 655)];
     personalMsgTxt.inputAccessoryView=msgInputAccessoryView;
     
     //Dynamic[fit] label width respected to the size of the text
@@ -106,8 +111,75 @@
     [personalMsgTxt.layer setCornerRadius:6.0];
     [personalMsgTxt.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
     [personalMsgTxt.layer setBorderWidth:1.0];
+    
+    [dateLabel.layer setCornerRadius:6.0];
+    [dateLabel.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
+    [dateLabel.layer setBorderWidth:1.0];
+    
+    
+    monthsArray=[[NSMutableArray alloc]init];
+    daysArray=[[NSMutableArray alloc]init];
+   
+   
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+    int month=[components month];
+    int day=[components day];
+    
+    for(int i=0;i<12;i++){
+        if(month>12)
+            month=1;
+        [monthsArray addObject:[NSString stringWithFormat:@"%d",month]];
+        month++;
+    }
+    for(int i=0;i<31;i++){
+        if(day>31)
+            day=1;
+        [daysArray addObject:[NSString stringWithFormat:@"%d",day]];
+        day++;
+    }
+    dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
 }
-
+-(NSString *)getMonthName:(int)monthNum{
+    switch (monthNum) {
+        case 1:
+            return @"January";
+            break;
+        case 2:
+            return @"February";
+            break;
+        case 3:
+            return @"March";
+            break;
+        case 4:
+            return @"April";
+            break;
+        case 5:
+            return @"May";
+            break;
+        case 6:
+            return @"June";
+            break;
+        case 7:
+            return @"July";
+            break;
+        case 8:
+            return @"August";
+            break;
+        case 9:
+            return @"September";
+            break;
+        case 10:
+            return @"October";
+            break;
+        case 11:
+            return @"November";
+            break;
+        case 12:
+            return @"December";
+            break;
+    }
+    return nil;
+}
 -(void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
     
     dispatch_queue_t ImageLoader_Q;
@@ -184,6 +256,8 @@
     
 }
 - (IBAction)sendOptionsScreenAction:(id)sender {
+    
+    
     SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
     sendOptions.isSendElectronically=NO;
     NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
@@ -194,6 +268,8 @@
     [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
     [giftAndSenderInfo setObject:greetingPrice.text forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
+    
+    [giftAndSenderInfo setObject:@"" forKey:@"DateOfDelivery"];
     
     sendOptions.sendingInfoDict=giftAndSenderInfo;
     [giftAndSenderInfo release];
@@ -222,10 +298,50 @@
 - (IBAction)backToListOfGiftsAction:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
+-(void) viewWillDisappear:(BOOL)animated{
+    if([dodBgView superview])
+        [dodBgView removeFromSuperview];
+}
+#pragma mark -
+- (IBAction)showDatePicker:(id)sender{
+    for(UIView *subview in [giftDetailsContentScroll subviews]){
+        if([subview isKindOfClass:[UIButton class]]){
+            [(UIButton*)subview setUserInteractionEnabled:NO];
+        }
+        if([subview isKindOfClass:[UITextField class]]){
+            [(UITextField*)subview setUserInteractionEnabled:NO];
+        }
+    }
+    giftDetailsContentScroll.userInteractionEnabled=NO;
+    svos = giftDetailsContentScroll.contentOffset;
+	CGPoint pt;
+	CGRect rc = [dateLabel bounds];
+	rc = [dateLabel convertRect:rc toView:giftDetailsContentScroll];
+	pt = rc.origin;
+	pt.x = 0;
+	
+    pt.y-=45;
+	[giftDetailsContentScroll setContentOffset:pt animated:YES];
+    if(dodBgView.hidden)
+        dodBgView.hidden=NO;
+    if(![dodBgView superview]){
+        dodBgView.frame=CGRectMake(0, 220, 320, 260);
+        [self.view.window addSubview:dodBgView];
+    }
+    
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = 0.3f;
+    animation.type = kCATransitionMoveIn;
+    animation.subtype=kCATransitionFromTop;
+    [dodBgView.layer addAnimation:animation forKey:@"animation"];
+    
+    
+}
 #pragma mark -
 - (void)viewDidUnload
 {
-    
+    [self setDateLabel:nil];
     [self setGiftDetailsContentScroll:nil];
     [self setProfilePic:nil];
     [self setProfileNameLbl:nil];
@@ -241,6 +357,8 @@
     [self setFlowerImgView:nil];
     [self setZoomInImgView:nil];
     [self setDetailsBgView:nil];
+    [self setDodBgView:nil];
+    [self setDodPicker:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -253,6 +371,7 @@
 }
 
 - (void)dealloc {
+    [dateLabel release];
     [giftItemInfo release];
     [giftDetailsContentScroll release];
     [profilePic release];
@@ -269,7 +388,81 @@
     [flowerImgView release];
     [zoomInImgView release];
     [detailsBgView release];
+    [dodBgView release];
+    [dodPicker release];
     [super dealloc];
 }
 
+- (IBAction)dodPickerAction:(id)sender {
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = 0.3f;
+    animation.type = kCATransitionPush;
+    animation.subtype=kCATransitionFromBottom;
+    [dodBgView.layer addAnimation:animation forKey:@"animation"];
+    dodBgView.hidden=YES;
+    [giftDetailsContentScroll setContentOffset:svos animated:YES];
+    giftDetailsContentScroll.userInteractionEnabled=YES;
+    
+    for(UIView *subview in [giftDetailsContentScroll subviews]){
+        if([subview isKindOfClass:[UIButton class]]){
+            [(UIButton*)subview setUserInteractionEnabled:YES];
+        }
+        if([subview isKindOfClass:[UITextField class]]){
+            [(UITextField*)subview setUserInteractionEnabled:YES];
+        }
+    }
+    
+    switch ([sender tag]) {
+            //Cancel
+        case 1:
+            
+            break;
+            //Done
+        case 2:
+        {
+            NSString *monthNum=[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]];
+            NSString *dayNum=[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]];
+            NSString *dateLblString=[NSString stringWithFormat:@"   %@ %@",[self getMonthName:[monthNum intValue]],dayNum];
+            if([dodPicker selectedRowInComponent:0]==0 && [dodPicker selectedRowInComponent:1]==0)
+                dateLblString=[dateLblString stringByAppendingString:@" (Immediately)"];
+            dateLabel.text=dateLblString;
+        }
+            
+            break;
+    }
+    
+}
+#pragma mark - PickerViewDatasource
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+	return 2;
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+	if(component==0)
+        return 12;
+    else
+        return 31;
+        
+}
+- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component{
+    if(component==0){
+        return 180;
+    }
+    else
+        return 100;
+}
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
+    
+    if(component==0)
+        return [self getMonthName:[[monthsArray objectAtIndex:row]intValue]];
+    else if(component==1)
+        return [daysArray objectAtIndex:row];
+
+    return nil;
+}
+#pragma mark -
 @end
