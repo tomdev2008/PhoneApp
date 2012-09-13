@@ -27,6 +27,8 @@
 @synthesize isGreetingCard;
 @synthesize giftItemInfo;
 
+static NSDateFormatter *dateFormatter=nil;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -194,6 +196,15 @@
     [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
     [giftAndSenderInfo setObject:greetingPrice.text forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
+    
+    if(dateFormatter==nil){
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+        
+    }
+    
+    
+    [giftAndSenderInfo setObject:[dateFormatter stringFromDate:[NSDate date]] forKey:@"DateOfDelivery"];
     
     sendOptions.sendingInfoDict=giftAndSenderInfo;
     [giftAndSenderInfo release];

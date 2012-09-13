@@ -29,6 +29,8 @@
 @synthesize prevNextSegmentControl;
 @synthesize pricePicker;
 
+static NSDateFormatter *dateFormatter=nil;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -301,7 +303,14 @@
     [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
     [giftAndSenderInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
-    
+    if(dateFormatter==nil){
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+        
+    }
+     
+   
+    [giftAndSenderInfo setObject:[dateFormatter stringFromDate:[NSDate date]] forKey:@"DateOfDelivery"];
     sendOptions.sendingInfoDict=giftAndSenderInfo;
     [giftAndSenderInfo release];
     [self.navigationController pushViewController:sendOptions animated:YES];
