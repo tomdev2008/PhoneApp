@@ -65,7 +65,8 @@
     
     [self loadImage:[giftSummaryDict objectForKey:@"GiftImgUrl"] forAnObject:giftImg];
     
-    
+    giftNameLbl.text=[giftSummaryDict objectForKey:@"GiftName"];
+    giftPriceLbl.text=[giftSummaryDict objectForKey:@"GiftPrice"];
    
     
     profileNameLbl.text=[[giftSummaryDict objectForKey:@"RecipientName"] uppercaseString];
@@ -175,8 +176,7 @@
     dispatch_release(ImageLoader_Q);
 }
 -(void)reloadGiftDetails{
-    giftNameLbl.text=[giftSummaryDict objectForKey:@"GiftName"];
-    giftPriceLbl.text=[giftSummaryDict objectForKey:@"GiftPrice"];
+    
     
     giftNameLbl.frame=CGRectMake(giftNameLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2-21, giftNameLbl.frame.size.width, giftNameLbl.frame.size.height);
     giftPriceLbl.frame=CGRectMake(giftPriceLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2, giftPriceLbl.frame.size.width, giftPriceLbl.frame.size.height);
