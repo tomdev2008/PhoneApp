@@ -240,7 +240,7 @@ static NSDateFormatter *standardDateFormatter = nil;
         NSString *endDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:14]; //next 15 days as it like windows phone logic
         
         
-        NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND birthday_date >= \"%@\" AND birthday_date <= \"%@\" ORDER BY birthday_date ASC",startDate,endDate];
+        NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND birthday_date >= \"%@\" AND birthday_date <= \"%@\" ORDER BY birthday_date ASC",startDate,endDate];
         //NSLog(@"%@",getBirthdaysQuery);
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                        getBirthdaysQuery, @"query",
@@ -282,7 +282,7 @@ static NSDateFormatter *standardDateFormatter = nil;
         currentAPICall=kAPIGetAllFriends;
         
         
-        NSString *getFriendsQuery=@"SELECT uid, name, first_name, last_name, birthday_date from user where uid in (SELECT uid2 FROM friend WHERE uid1=me())";
+        NSString *getFriendsQuery=@"SELECT uid, name, first_name, last_name, birthday_date, pic_square from user where uid in (SELECT uid2 FROM friend WHERE uid1=me())";
         //NSLog(@"%@",getFriendsQuery);
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                        getFriendsQuery, @"query",
@@ -337,7 +337,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                 break;
                 //Received all friends details
             case kAPIGetAllFriends:
-                
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 if(friendUserIds!=nil && [friendUserIds count]){
                     [friendUserIds removeAllObjects];
                     [friendUserIds release];
@@ -360,7 +360,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                 
                 
                 for (NSDictionary *friendDict in (NSMutableArray*)result){
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                     currentAPICall=kAPIGetJSONForStatuses;
                     //last 2 days
                     FBRequest *fbReqStatuses=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
@@ -380,7 +380,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                 //json
                 
                 if([result isKindOfClass:[NSDictionary class]]){
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                     
                     //parse the json feed to check the number of comments and likes, If it has more than 25 comments then check for the event text (for photos, 15 comments)
                     int totalCountForMessagesOrPhotos=[[result objectForKey:@"data"]count];
@@ -504,7 +504,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                         BOOL isEventsFromCommentsFound=NO;
                                         for(int j=0;j<commentsCount;j++){
                                             NSString *commentsStr=[[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
-                                            NSLog(@"comments..%@",commentsStr);
+                                            //NSLog(@"comments..%@",commentsStr);
                                             
                                             
                                             if(!isEventsFromCommentsFound){
@@ -553,7 +553,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                             
                         }
                     }
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];     
+                    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];     
                 }
                 break;
                 

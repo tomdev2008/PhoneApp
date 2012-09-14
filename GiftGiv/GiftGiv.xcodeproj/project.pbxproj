@@ -1310,8 +1310,8 @@
 		7ED7EA3715B6F1EE008DFDE3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Kushal Shah (943J346PMJ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kushal Shah (943J346PMJ)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Pavan  Kumar (MAVWRGZ8P7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Pavan  Kumar (MAVWRGZ8P7)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1325,8 +1325,8 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "B2F634E3-F464-49C3-83CF-BE2DE7222063";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B2F634E3-F464-49C3-83CF-BE2DE7222063";
+				PROVISIONING_PROFILE = "DF50156B-918F-46AB-9C1C-BC96130F799C";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DF50156B-918F-46AB-9C1C-BC96130F799C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
