@@ -12,15 +12,19 @@
 #import "SendOptionsVC.h"
 #import "GiftItemObject.h"
 
-@interface GiftCardDetailsVC : UIViewController{
+@interface GiftCardDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate>{
     CGPoint svos;
     int selectedPriceRow;
     int selectedElectronicPhysicRow;
     NSMutableArray *electronicPhysicalList;
+    NSMutableArray *monthsArray,*daysArray;
 }
 - (IBAction)electronicPhysicNavigatorAction:(id)sender;
 - (IBAction)electronicPhysicSelDone:(id)sender;
 @property (retain, nonatomic) IBOutlet UISegmentedControl *electronicPhysicSelNavigator;
+@property (retain, nonatomic) IBOutlet UIView *dodBgView;
+@property (retain, nonatomic) IBOutlet UIPickerView *dodPicker;
+@property (retain, nonatomic) IBOutlet UILabel *dateLabel;
 @property (retain, nonatomic) IBOutlet UIPickerView *electronicPhysPicker;
 @property (retain, nonatomic) IBOutlet UIView *electrnicalPhysicalBgView;
 @property (retain, nonatomic) NSMutableArray *priceListArray;
@@ -40,7 +44,9 @@
 @property (retain, nonatomic) IBOutlet UIPickerView *pricePicker;
 @property (retain, nonatomic) GiftItemObject *giftItemInfo;
 
-
+- (IBAction)dodPickerAction:(id)sender;
+- (IBAction)showDatePicker:(id)sender;
+- (NSString *)getMonthName:(int)monthNum;
 - (IBAction)messageKeyBoardAction:(id)sender;
 - (IBAction)senderDetailsScreenAction:(id)sender;
 - (IBAction)sendMediaAction:(id)sender;

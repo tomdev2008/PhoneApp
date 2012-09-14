@@ -59,7 +59,8 @@
     eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
     profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
-    
+    giftNameLbl.text=[giftSummaryDict objectForKey:@"GiftName"];
+    giftPriceLbl.text=[giftSummaryDict objectForKey:@"GiftPrice"];
     
     [self loadImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
     
@@ -156,10 +157,10 @@
                         targetImgView.frame=CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y, targetedImage.size.width, targetedImage.size.height);
                         targetImgView.image=targetedImage;
                         
-                        [self performSelector:@selector(reloadGiftDetails)];
-                        
+                         [self performSelector:@selector(reloadGiftDetails)];                    
                        
                     }
+                    
                 }
                 else
                     targetImgView.image=giftImage;
@@ -175,9 +176,7 @@
     dispatch_release(ImageLoader_Q);
 }
 -(void)reloadGiftDetails{
-    giftNameLbl.text=[giftSummaryDict objectForKey:@"GiftName"];
-    giftPriceLbl.text=[giftSummaryDict objectForKey:@"GiftPrice"];
-    
+       
     giftNameLbl.frame=CGRectMake(giftNameLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2-21, giftNameLbl.frame.size.width, giftNameLbl.frame.size.height);
     giftPriceLbl.frame=CGRectMake(giftPriceLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2, giftPriceLbl.frame.size.width, giftPriceLbl.frame.size.height);
     

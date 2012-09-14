@@ -257,6 +257,15 @@
 }
 - (IBAction)sendOptionsScreenAction:(id)sender {
     
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+    int month=[components month];
+    int year=[components year];
+    
+     
+    int selectedMonth=[[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]] intValue];
+    int selectedDay=[[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]] intValue];
+    if(selectedMonth<month)
+        year++;
     
     SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
     sendOptions.isSendElectronically=NO;
@@ -269,7 +278,7 @@
     [giftAndSenderInfo setObject:greetingPrice.text forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
     
-    [giftAndSenderInfo setObject:@"" forKey:@"DateOfDelivery"];
+    [giftAndSenderInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
     
     sendOptions.sendingInfoDict=giftAndSenderInfo;
     [giftAndSenderInfo release];
@@ -371,6 +380,8 @@
 }
 
 - (void)dealloc {
+    [monthsArray release];
+    [daysArray release];
     [dateLabel release];
     [giftItemInfo release];
     [giftDetailsContentScroll release];
@@ -450,18 +461,56 @@
 }
 - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component{
     if(component==0){
-        return 180;
+        return 200;
     }
     else
         return 100;
 }
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
+/*- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
     
     if(component==0)
         return [self getMonthName:[[monthsArray objectAtIndex:row]intValue]];
     else if(component==1)
         return [daysArray objectAtIndex:row];
 
+    return nil;
+}*/
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
+    if([pickerView isEqual:dodPicker]){
+        if(component==0){
+            if (view == nil)
+            {
+                view = [[[UIView alloc] init] autorelease];
+                UILabel *monthLabel=[[UILabel alloc]init];
+                [monthLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+                [monthLabel setBackgroundColor:[UIColor clearColor]];
+                [monthLabel setFrame:CGRectMake(40, 0, 180, 44)];
+                [monthLabel setTag:777];
+                [monthLabel setTextColor:[UIColor blackColor]];
+                [view addSubview:monthLabel];
+                
+                [monthLabel release];
+            }
+            [(UILabel*)[view viewWithTag:777] setText:[self getMonthName:[[monthsArray objectAtIndex:row]intValue]]];
+        }
+        else{
+            if (view == nil)
+            {
+                view = [[[UIView alloc] init] autorelease];
+                UILabel *dayLabel=[[UILabel alloc]init];
+                [dayLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+                [dayLabel setBackgroundColor:[UIColor clearColor]];
+                [dayLabel setFrame:CGRectMake(40, 0, 100, 44)];
+                [dayLabel setTag:111];
+                [view addSubview:dayLabel];
+                
+                [dayLabel release];
+            }
+            [(UILabel*)[view viewWithTag:111] setText:[daysArray objectAtIndex:row]];
+        }
+        
+        return view;
+    }
     return nil;
 }
 #pragma mark -

@@ -42,13 +42,14 @@ static NSDateFormatter *customDateFormat=nil;
     noHistoryLbl.hidden=YES;
     
     ordersList=[[NSMutableArray alloc]init];
-    [self showProgressHUD:self.view withMsg:nil];
+    
     // Do any additional setup after loading the view from its nib.
     [self performSelector:@selector(makeRequestToGetOrders) withObject:nil afterDelay:0.1];
 }
 
 -(void)makeRequestToGetOrders{
     if([CheckNetwork connectedToNetwork]){
+        [self showProgressHUD:self.view withMsg:nil];
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetOrdersandUserDetails>\n<tem:senderId>%@</tem:senderId>\n</tem:GetOrdersandUserDetails>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"]];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
@@ -61,6 +62,7 @@ static NSDateFormatter *customDateFormat=nil;
         [ordersReq release];
     }
     else{
+        [self stopHUD];
         AlertWithMessageAndDelegate(@"GiftGiv", @"Check your network settings", nil);
     }
 }

@@ -97,6 +97,7 @@ static NSDateFormatter *customDateFormat=nil;
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
         
         if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
+            isEventsLoadingFromFB=NO;
             //[self showProgressHUD:self.view withMsg:nil];
             [self performSelector:@selector(makeRequestToGetEvents)];
             
@@ -105,6 +106,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         else{
             if([CheckNetwork connectedToNetwork]){
+                isEventsLoadingFromFB=YES;
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
                 
@@ -168,6 +170,7 @@ static NSDateFormatter *customDateFormat=nil;
         [fbContacts release];
     }
     else{
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         AlertWithMessageAndDelegate(@"Network connectivity", @"Please check your network connection", nil);
     }
 }
@@ -244,6 +247,7 @@ static NSDateFormatter *customDateFormat=nil;
         [getEvents release];
     }
     else{
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         AlertWithMessageAndDelegate(@"Network connectivity", @"Please check your network connection", nil);
     }
 }
@@ -251,28 +255,28 @@ static NSDateFormatter *customDateFormat=nil;
 -(void) receivedAllEvents:(NSMutableArray*)allEvents{
    
     int eventsCount=[allEvents count];
-    
+    if([allupcomingEvents count])
+        [allupcomingEvents removeAllObjects];
+    if([listOfBirthdayEvents count])
+        [listOfBirthdayEvents removeAllObjects];
+    /*if([newJobEvents count])
+     [newJobEvents removeAllObjects];
+     if([congratsEvents count])
+     [congratsEvents removeAllObjects];
+     if([anniversaryEvents count])
+     [anniversaryEvents removeAllObjects];*/
+    if([eventsToCelebrateArray count])
+        [eventsToCelebrateArray removeAllObjects];
+    if([facebookContactsArray count])
+        [facebookContactsArray removeAllObjects];
+    if([linkedInContactsArray count])
+        [linkedInContactsArray removeAllObjects];
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:eventsCount];
-    
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     if(eventsCount){
-        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-        [self stopHUD];
-        if([allupcomingEvents count])
-            [allupcomingEvents removeAllObjects];
-        if([listOfBirthdayEvents count])
-            [listOfBirthdayEvents removeAllObjects];
-        /*if([newJobEvents count])
-            [newJobEvents removeAllObjects];
-        if([congratsEvents count])
-            [congratsEvents removeAllObjects];
-        if([anniversaryEvents count])
-            [anniversaryEvents removeAllObjects];*/
-        if([eventsToCelebrateArray count])
-            [eventsToCelebrateArray removeAllObjects];
-        if([facebookContactsArray count])
-            [facebookContactsArray removeAllObjects];
-        if([linkedInContactsArray count])
-            [linkedInContactsArray removeAllObjects];
+        
+        //[self stopHUD];
+        
         
         for (int i=0;i<eventsCount;i++){
             NSMutableDictionary *eventDict=[[NSMutableDictionary alloc]init];
@@ -336,7 +340,7 @@ static NSDateFormatter *customDateFormat=nil;
         shouldLoadingPicsStop=YES;
         [self loadProfilePictures];     
         
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        
         //[self stopHUD];
         
         [eventsTable reloadData];
@@ -344,6 +348,7 @@ static NSDateFormatter *customDateFormat=nil;
     }
     else{
         if([CheckNetwork connectedToNetwork]){
+            isEventsLoadingFromFB=YES;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
             [fb_giftgiv_home listOfBirthdayEvents];
@@ -797,7 +802,8 @@ static NSDateFormatter *customDateFormat=nil;
             
             
             [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-            
+            if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
@@ -818,7 +824,8 @@ static NSDateFormatter *customDateFormat=nil;
             
             
             [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-            
+            if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
             [tempInfoDict release];
@@ -836,6 +843,9 @@ static NSDateFormatter *customDateFormat=nil;
             
             
             [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            
+            if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
@@ -1150,6 +1160,9 @@ static NSDateFormatter *customDateFormat=nil;
         
         [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
         //NSLog(@" temp dict..%@",tempInfoDict);
+        if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
+            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+        
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
@@ -1180,7 +1193,11 @@ static NSDateFormatter *customDateFormat=nil;
         
         [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
-        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];                   
+        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];   
+        if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
+            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+        
+        
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
         [tempInfoDict release];
@@ -1208,6 +1225,9 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
         [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
         [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+        
+        if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
+            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
@@ -1315,6 +1335,8 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark - Facebook Events delegate
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays{
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    if(!isEventsLoadingFromFB)
+        return;
     [fb_giftgiv_home getAllFriendsWithTheirDetails];
     
     if([listOfBirthdays count]){
@@ -1661,7 +1683,8 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma mark - Events from statuses
 - (void)birthdayEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
-    
+    if(!isEventsLoadingFromFB)
+        return;
     for (NSDictionary *existEvents in listOfBirthdayEvents){
         NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
         NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventDetails objectForKey:@"from"]objectForKey:@"id"]];
@@ -1723,7 +1746,8 @@ static NSDateFormatter *customDateFormat=nil;
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:[allupcomingEvents count]];
 }
 - (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
-    
+    if(!isEventsLoadingFromFB)
+        return;
     if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
         
         if(customDateFormat==nil){
@@ -1767,7 +1791,8 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 - (void)anniversaryEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
-    
+    if(!isEventsLoadingFromFB)
+        return;
     if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
         
         if(customDateFormat==nil){
@@ -1811,6 +1836,8 @@ static NSDateFormatter *customDateFormat=nil;
     }
 }
 - (void)congratsEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
+    if(!isEventsLoadingFromFB)
+        return;
     if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
         
         if(customDateFormat==nil){

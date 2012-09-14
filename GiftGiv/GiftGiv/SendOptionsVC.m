@@ -670,7 +670,6 @@
                 GiftSummaryVC *giftSummary=[[GiftSummaryVC alloc]initWithNibName:@"GiftSummaryVC" bundle:nil];
                 
                 [sendingInfoDict setObject:[emailTxtFld.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"RecipientMailID"];
-                
                 giftSummary.giftSummaryDict=sendingInfoDict;
                 [self.navigationController pushViewController:giftSummary animated:YES];
                 [giftSummary release];

@@ -28,8 +28,10 @@
 @synthesize giftItemInfo;
 @synthesize prevNextSegmentControl;
 @synthesize pricePicker;
+@synthesize dodBgView;
+@synthesize dodPicker;
+@synthesize dateLabel;
 
-static NSDateFormatter *dateFormatter=nil;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -50,6 +52,8 @@ static NSDateFormatter *dateFormatter=nil;
 -(void) viewWillDisappear:(BOOL)animated{
     if([electrnicalPhysicalBgView superview])
         [electrnicalPhysicalBgView removeFromSuperview];
+    if([dodBgView superview])
+        [dodBgView removeFromSuperview];
     [super viewWillDisappear:YES];
 }
 #pragma mark - View lifecycle
@@ -96,7 +100,7 @@ static NSDateFormatter *dateFormatter=nil;
     giftDetailsScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsScroll];
     
-    [giftDetailsScroll setContentSize:CGSizeMake(320, 536)];
+    [giftDetailsScroll setContentSize:CGSizeMake(320, 618)];
     personalMsgTxtView.inputAccessoryView=messageInputAccessoryView;
     
     //Dynamic[fit] label width respected to the size of the text
@@ -141,6 +145,74 @@ static NSDateFormatter *dateFormatter=nil;
     }
     
     
+    [dateLabel.layer setCornerRadius:6.0];
+    [dateLabel.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
+    [dateLabel.layer setBorderWidth:1.0];
+    
+    
+    monthsArray=[[NSMutableArray alloc]init];
+    daysArray=[[NSMutableArray alloc]init];
+    
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+    int month=[components month];
+    int day=[components day];
+    
+    for(int i=0;i<12;i++){
+        if(month>12)
+            month=1;
+        [monthsArray addObject:[NSString stringWithFormat:@"%d",month]];
+        month++;
+    }
+    for(int i=0;i<31;i++){
+        if(day>31)
+            day=1;
+        [daysArray addObject:[NSString stringWithFormat:@"%d",day]];
+        day++;
+    }
+    dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
+    
+}
+-(NSString *)getMonthName:(int)monthNum{
+    switch (monthNum) {
+        case 1:
+            return @"January";
+            break;
+        case 2:
+            return @"February";
+            break;
+        case 3:
+            return @"March";
+            break;
+        case 4:
+            return @"April";
+            break;
+        case 5:
+            return @"May";
+            break;
+        case 6:
+            return @"June";
+            break;
+        case 7:
+            return @"July";
+            break;
+        case 8:
+            return @"August";
+            break;
+        case 9:
+            return @"September";
+            break;
+        case 10:
+            return @"October";
+            break;
+        case 11:
+            return @"November";
+            break;
+        case 12:
+            return @"December";
+            break;
+    }
+    return nil;
 }
 -(void)loadGiftImage{
     dispatch_queue_t ImageLoader_Q;
@@ -195,7 +267,7 @@ static NSDateFormatter *dateFormatter=nil;
 	pt = rc.origin;
 	pt.x = 0;
 	
-    pt.y-=15;
+    pt.y+=10;
 	[giftDetailsScroll setContentOffset:pt animated:YES];
     if(priceRangePickerBgView.hidden)
         priceRangePickerBgView.hidden=NO;
@@ -289,6 +361,15 @@ static NSDateFormatter *dateFormatter=nil;
 	[giftDetailsScroll setContentOffset:pt animated:YES];
 }
 - (IBAction)senderDetailsScreenAction:(id)sender {
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+    int month=[components month];
+    int year=[components year];
+    
+    
+    int selectedMonth=[[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]] intValue];
+    int selectedDay=[[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]] intValue];
+    if(selectedMonth<month)
+        year++;
     SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
     if([[sendMediaLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@"Electronically"]){
         sendOptions.isSendElectronically=YES;
@@ -303,12 +384,8 @@ static NSDateFormatter *dateFormatter=nil;
     [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
     [giftAndSenderInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
-    if(dateFormatter==nil){
-        dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-        
-    }
-    [giftAndSenderInfo setObject:[dateFormatter stringFromDate:[NSDate date]] forKey:@"DateOfDelivery"];
+    [giftAndSenderInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
+    
     sendOptions.sendingInfoDict=giftAndSenderInfo;
     [giftAndSenderInfo release];
     [self.navigationController pushViewController:sendOptions animated:YES];
@@ -393,7 +470,10 @@ static NSDateFormatter *dateFormatter=nil;
 
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
-	return 1;
+    if([pickerView isEqual:dodPicker])
+        return 2;
+    else
+        return 1;
 }
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
@@ -401,12 +481,31 @@ static NSDateFormatter *dateFormatter=nil;
     if([pickerView isEqual:pricePicker])
 	    return [priceListArray count];
     
+    else if ([pickerView isEqual:dodPicker]){
+        if(component==0)
+            return 12;
+        else
+            return 31;
+    }
     else
         return [electronicPhysicalList count];
     
 }
+- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component{
+    if([pickerView isEqual:dodPicker]){
+        if(component==0){
+            return 200;
+        }
+        else
+            return 100;
+    }
+    
+    return 300;
+}
+
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
 	
+    
     //customized view for the picker with check mark as selection
     if([pickerView isEqual:pricePicker]){
         if (view == nil)
@@ -462,7 +561,7 @@ static NSDateFormatter *dateFormatter=nil;
         
         return view;
     }
-	else{
+	else if([pickerView isEqual:electronicPhysPicker]){
         if (view == nil)
         {
             view = [[[UIView alloc] init] autorelease];
@@ -516,7 +615,42 @@ static NSDateFormatter *dateFormatter=nil;
         
         return view;
     }
-    
+    else if([pickerView isEqual:dodPicker]){
+        if(component==0){
+            if (view == nil)
+            {
+                view = [[[UIView alloc] init] autorelease];
+                UILabel *monthLabel=[[UILabel alloc]init];
+                [monthLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+                [monthLabel setBackgroundColor:[UIColor clearColor]];
+                [monthLabel setFrame:CGRectMake(40, 0, 180, 44)];
+                [monthLabel setTag:777];
+                [monthLabel setTextColor:[UIColor blackColor]];
+                [view addSubview:monthLabel];
+                
+                [monthLabel release];
+            }
+             [(UILabel*)[view viewWithTag:777] setText:[self getMonthName:[[monthsArray objectAtIndex:row]intValue]]];
+        }
+        else{
+            if (view == nil)
+            {
+                view = [[[UIView alloc] init] autorelease];
+                UILabel *dayLabel=[[UILabel alloc]init];
+                [dayLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+                [dayLabel setBackgroundColor:[UIColor clearColor]];
+                [dayLabel setFrame:CGRectMake(40, 0, 100, 44)];
+                [dayLabel setTag:111];
+                [view addSubview:dayLabel];
+                
+                [dayLabel release];
+            }
+            [(UILabel*)[view viewWithTag:111] setText:[daysArray objectAtIndex:row]];
+        }
+       
+        return view;
+    }
+    return nil;
 }
 
 #pragma mark -
@@ -569,6 +703,9 @@ static NSDateFormatter *dateFormatter=nil;
 #pragma mark -
 - (void)viewDidUnload
 {
+    [self setDateLabel:nil];
+    [self setDodBgView:nil];
+    [self setDodPicker:nil];
     [self setGiftDetailsScroll:nil];
     [self setProfilePic:nil];
     [self setProfileNameLbl:nil];
@@ -600,6 +737,11 @@ static NSDateFormatter *dateFormatter=nil;
 
 
 - (void)dealloc {
+    [monthsArray release];
+    [daysArray release];
+    [dateLabel release];
+    [dodBgView release];
+    [dodPicker release];
     [electronicPhysicalList release];
     [giftItemInfo release];
     [giftDetailsScroll release];
@@ -683,6 +825,81 @@ static NSDateFormatter *dateFormatter=nil;
     sendMediaLbl.text=[NSString stringWithFormat:@"   %@",[electronicPhysicalList objectAtIndex:selectedElectronicPhysicRow]];
     
     [giftDetailsScroll setContentOffset:svos animated:YES];
+    
+}
+- (IBAction)showDatePicker:(id)sender{
+    for(UIView *subview in [giftDetailsScroll subviews]){
+        if([subview isKindOfClass:[UIButton class]]){
+            [(UIButton*)subview setUserInteractionEnabled:NO];
+        }
+        if([subview isKindOfClass:[UITextField class]]){
+            [(UITextField*)subview setUserInteractionEnabled:NO];
+        }
+    }
+    giftDetailsScroll.userInteractionEnabled=NO;
+    svos = giftDetailsScroll.contentOffset;
+	CGPoint pt;
+	CGRect rc = [dateLabel bounds];
+	rc = [dateLabel convertRect:rc toView:giftDetailsScroll];
+	pt = rc.origin;
+	pt.x = 0;
+	
+    pt.y-=45;
+	[giftDetailsScroll setContentOffset:pt animated:YES];
+    if(dodBgView.hidden)
+        dodBgView.hidden=NO;
+    if(![dodBgView superview]){
+        dodBgView.frame=CGRectMake(0, 220, 320, 260);
+        [self.view.window addSubview:dodBgView];
+    }
+    
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = 0.3f;
+    animation.type = kCATransitionMoveIn;
+    animation.subtype=kCATransitionFromTop;
+    [dodBgView.layer addAnimation:animation forKey:@"animation"];
+    
+    
+}
+- (IBAction)dodPickerAction:(id)sender {
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = 0.3f;
+    animation.type = kCATransitionPush;
+    animation.subtype=kCATransitionFromBottom;
+    [dodBgView.layer addAnimation:animation forKey:@"animation"];
+    dodBgView.hidden=YES;
+    [giftDetailsScroll setContentOffset:svos animated:YES];
+    giftDetailsScroll.userInteractionEnabled=YES;
+    
+    for(UIView *subview in [giftDetailsScroll subviews]){
+        if([subview isKindOfClass:[UIButton class]]){
+            [(UIButton*)subview setUserInteractionEnabled:YES];
+        }
+        if([subview isKindOfClass:[UITextField class]]){
+            [(UITextField*)subview setUserInteractionEnabled:YES];
+        }
+    }
+    
+    switch ([sender tag]) {
+            //Cancel
+        case 1:
+            
+            break;
+            //Done
+        case 2:
+        {
+            NSString *monthNum=[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]];
+            NSString *dayNum=[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]];
+            NSString *dateLblString=[NSString stringWithFormat:@"   %@ %@",[self getMonthName:[monthNum intValue]],dayNum];
+            if([dodPicker selectedRowInComponent:0]==0 && [dodPicker selectedRowInComponent:1]==0)
+                dateLblString=[dateLblString stringByAppendingString:@" (Immediately)"];
+            dateLabel.text=dateLblString;
+        }
+            
+            break;
+    }
     
 }
 @end

@@ -54,9 +54,14 @@
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
         
-        NSString *urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
+        NSString *urlStr;
+        if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"FBProfilePic"])
+            urlStr=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"FBProfilePic"];
+        else 
+            urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
         
         NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+        
         UIImage *thumbnail = [UIImage imageWithData:data];
         
         if(thumbnail==nil){
@@ -174,6 +179,8 @@
         [giftCats release];
     }
     else{
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+        [self stopHUD];
         AlertWithMessageAndDelegate(@"GiftGiv", @"Check your network settings", nil);
     }
     
@@ -198,6 +205,8 @@
             [giftItems release];
         }
         else{
+            [self stopHUD];
+            [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
             AlertWithMessageAndDelegate(@"GiftGiv", @"Check your network settings", nil);
         }
         
@@ -213,6 +222,7 @@
     
 }
 -(void) requestFailed{
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
     AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed", nil);
 }
@@ -239,7 +249,7 @@
     
     [self performSelector:@selector(retrieveGiftThumbnails)];    
       
-
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
 }
 -(void)loadCurrentGiftItemsForCategory :(NSString*)categoryId{
