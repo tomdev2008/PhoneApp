@@ -14,13 +14,24 @@
 -(void)getFBContactsForRequest:(NSMutableURLRequest *)request{
     
 	//Asynchronous URL connection
-	theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+	/*theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 	
 	if( theConnection ){
 		webData = [[NSMutableData alloc] init];
 	}
 	else
-		NSLog(@"theConnection is NULL");
+		NSLog(@"theConnection is NULL");*/
+    webData = [[NSMutableData alloc] initWithContentsOfFile:[[NSBundle mainBundle]pathForResource:@"SampleXML" ofType:@"xml"]];
+    
+    NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
+    [webData release];
+	[xmlParser setDelegate:self];
+    receivedResponse=[[NSMutableArray alloc]init];
+	
+	//delegate method to send the response after parsing finished successfully
+	if([xmlParser parse]){
+		
+	}
 }
 #pragma mark -
 #pragma mark Connection delegates
@@ -34,15 +45,7 @@
 //Connection finished successful
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
 	
-	  
-    //NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
-	//[webData release];
-	//NSString *upDated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
-    //[theXML release];
-  	//NSString *convertedStr=[upDated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-    //NSLog(@"converted.%@",convertedStr);
-    //webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
-    
+	 
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
     [webData release];
 	[xmlParser setDelegate:self];
@@ -50,8 +53,9 @@
 	
 	//delegate method to send the response after parsing finished successfully
 	if([xmlParser parse]){
-		[fbContactsDelegate receivedFBContacts:receivedResponse];
+		//[fbContactsDelegate receivedFBContacts:receivedResponse];
 	}
+    
 	[receivedResponse  release];
 	[xmlParser release];
 	[theConnection release];
@@ -79,6 +83,23 @@
 }
 - (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock{
     NSLog(@"found cdata");
+    
+    NSString *cDataStr=[[NSString alloc]initWithData:CDATABlock encoding:NSUTF8StringEncoding];
+    //NSLog(@"initial..%@",cDataStr);
+    NSString *converted=[cDataStr stringByReplacingOccurrencesOfString:@"<?xml version=\"1.0\" encoding=\"utf-16\"?>\n" withString:@""];
+    
+    //NSLog(@"cDataStr..%@",[converted stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]);
+    NSXMLParser *xmlParser_2=[[NSXMLParser alloc]initWithData:[[converted stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]dataUsingEncoding:NSUTF8StringEncoding]];
+    [cDataStr release];
+    xmlParser_2.delegate=self;
+    if([xmlParser_2 parse]){
+         NSLog(@"parsed successfully");
+        [fbContactsDelegate receivedFBContacts:receivedResponse];
+    }
+
+    [xmlParser_2 release];
+    
+    
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string { 
 	
@@ -91,24 +112,24 @@
 
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
-    NSLog(@"%@",argElementName);
+    //NSLog(@"%@",argElementName);
     if([argElementName isEqualToString:@"UserId"])
         fbContact.userId=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     else if([argElementName isEqualToString:@"firstname"]){
         
-        fbContact.firstname=[[currentElementValue lowercaseString]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        fbContact.firstname=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
     
     
     else if([argElementName isEqualToString:@"lastname"]){
-        fbContact.lastname=[[currentElementValue lowercaseString]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        fbContact.lastname=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
     else if([argElementName isEqualToString:@"profilepicUrl"]){
-        fbContact.profilepicUrl=[[currentElementValue lowercaseString]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        fbContact.profilepicUrl=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
     else if([argElementName isEqualToString:@"dob"]){
-        fbContact.dob=[[currentElementValue lowercaseString]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        fbContact.dob=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
     else if([argElementName isEqualToString:@"FacebookUser"]){
         [receivedResponse addObject:fbContact];

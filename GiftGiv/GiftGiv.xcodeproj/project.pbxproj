@@ -131,6 +131,7 @@
 		7EDC191815BFB79300FF7789 /* GiftCardDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EDC191615BFB79300FF7789 /* GiftCardDetailsVC.xib */; };
 		7EDD4884160061B500F72BEB /* FacebookContactsReq.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDD4883160061B500F72BEB /* FacebookContactsReq.m */; };
 		7EDD488716006BFB00F72BEB /* FacebookContactObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDD488616006BFB00F72BEB /* FacebookContactObject.m */; };
+		7EE008F31607197C0037A06C /* SampleXML.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7EE008F21607197C0037A06C /* SampleXML.xml */; };
 		7EE025F715BD5F21003B9C74 /* CommentsCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE025F615BD5F21003B9C74 /* CommentsCustomCell.m */; };
 		7EE025F915BD5F3E003B9C74 /* CommentsCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EE025F815BD5F3E003B9C74 /* CommentsCustomCell.xib */; };
 		7EE0260215BD60B4003B9C74 /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE025FE15BD60B4003B9C74 /* OHAttributedLabel.m */; };
@@ -353,6 +354,7 @@
 		7EDD4883160061B500F72BEB /* FacebookContactsReq.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FacebookContactsReq.m; path = "Backend Services/FacebookContacts/FacebookContactsReq.m"; sourceTree = "<group>"; };
 		7EDD488516006BFA00F72BEB /* FacebookContactObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FacebookContactObject.h; path = "Backend Services/FacebookContacts/FacebookContactObject.h"; sourceTree = "<group>"; };
 		7EDD488616006BFB00F72BEB /* FacebookContactObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FacebookContactObject.m; path = "Backend Services/FacebookContacts/FacebookContactObject.m"; sourceTree = "<group>"; };
+		7EE008F21607197C0037A06C /* SampleXML.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SampleXML.xml; sourceTree = "<group>"; };
 		7EE025F515BD5F21003B9C74 /* CommentsCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsCustomCell.h; sourceTree = "<group>"; };
 		7EE025F615BD5F21003B9C74 /* CommentsCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsCustomCell.m; sourceTree = "<group>"; };
 		7EE025F815BD5F3E003B9C74 /* CommentsCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommentsCustomCell.xib; sourceTree = "<group>"; };
@@ -957,6 +959,7 @@
 		7EDD48801600617A00F72BEB /* Facebook Contacts */ = {
 			isa = PBXGroup;
 			children = (
+				7EE008F21607197C0037A06C /* SampleXML.xml */,
 				7EDD4882160061B500F72BEB /* FacebookContactsReq.h */,
 				7EDD4883160061B500F72BEB /* FacebookContactsReq.m */,
 				7EDD488516006BFA00F72BEB /* FacebookContactObject.h */,
@@ -1126,6 +1129,7 @@
 				7ED8587615F478A3007F28F9 /* giftbutton_new@2x.png in Resources */,
 				7ED8587815F478AB007F28F9 /* giftbutton_new.png in Resources */,
 				7E2047CF15FF1150005EB9C1 /* Readme.txt in Resources */,
+				7EE008F31607197C0037A06C /* SampleXML.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,6 +14,7 @@
 #import "OrderObject.h"
 #import "CustomDateDisplay.h"
 #import "UIImage+scaling.h"
+#import "ImageAllocationObject.h"
 
 @interface OrderHistoryDetailsVC : UIViewController<GetGiftItemDelegate>
 

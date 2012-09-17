@@ -100,7 +100,7 @@ static NSDateFormatter *customDateFormat=nil;
             isEventsLoadingFromFB=NO;
             //[self showProgressHUD:self.view withMsg:nil];
             [self performSelector:@selector(makeRequestToGetEvents)];
-            
+            [self performSelector:@selector(makeRequestToGetFacebookContacts)];
             
         }
         
@@ -111,10 +111,11 @@ static NSDateFormatter *customDateFormat=nil;
                 //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
                 
                 [fb_giftgiv_home listOfBirthdayEvents];
+                [self performSelector:@selector(makeRequestToGetFacebookContacts) withObject:nil afterDelay:2.0];
                 
             }
         }
-        [self performSelector:@selector(makeRequestToGetFacebookContacts)];
+        
     }
     
     [eventsTable reloadData];
@@ -126,6 +127,7 @@ static NSDateFormatter *customDateFormat=nil;
     [super viewWillAppear:YES];
 }
 -(void)reloadTheEventsScreen{
+    [self performSelector:@selector(makeRequestToGetFacebookContacts)];
     if([allupcomingEvents count]){
         [allupcomingEvents removeAllObjects];
     }
@@ -188,41 +190,33 @@ static NSDateFormatter *customDateFormat=nil;
         
         
         for (int i=0;i<friendsCount;i++){
-            /*NSMutableDictionary *eventDict=[[NSMutableDictionary alloc]init];
-            [eventDict setObject:[[[response objectAtIndex:i]userId]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"uid"];
+            NSMutableDictionary *contactDict=[[NSMutableDictionary alloc]init];
+            [contactDict setObject:[[response objectAtIndex:i]userId] forKey:@"uid"];
             
-            [eventDict setObject:[[[response objectAtIndex:i]fb_Name]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"name"];
+            [contactDict setObject:[NSString stringWithFormat:@"%@ %@",[[response objectAtIndex:i]firstname],[[response objectAtIndex:i]lastname]] forKey:@"name"];
             
-            [eventDict setObject:[[[response objectAtIndex:i]eventName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"event_type"];
-            [eventDict setObject:[[[[[response objectAtIndex:i]eventdate]componentsSeparatedByString:@"T"]objectAtIndex:0]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"event_date"];
-            [eventDict setObject:[[[response objectAtIndex:i]isEventFromQuery]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"isEventFromQuery"];
-            [eventDict setObject:@"" forKey:@"ProfilePicture"];
-            NSString *eventType=[[[response objectAtIndex:i]eventType]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            if([eventType isEqualToString:@"Birthday"])
-                [listOfBirthdayEvents addObject:eventDict];
-            else if([eventType isEqualToString:@"New Job"])
-                [eventsToCelebrateArray addObject:eventDict];
-            else if([eventType isEqualToString:@"Congratulations"])
-                [eventsToCelebrateArray addObject:eventDict];
-            else if([eventType isEqualToString:@"Relationship"])
-                [eventsToCelebrateArray addObject:eventDict];
+            [contactDict setObject:@"" forKey:@"event_type"];
+            [contactDict setObject:@"" forKey:@"event_date"];
             
-            [facebookContactsArray addObject:eventDict];
-            [eventDict release];*/
+            [contactDict setObject:@"" forKey:@"ProfilePicture"];
+            [contactDict setObject:[[response objectAtIndex:i]profilepicUrl] forKey:@"ProfilePicURLToTake"];
+            
+            [facebookContactsArray addObject:contactDict];
+            [contactDict release];
             
         }
-        //NSLog(@"%@",allupcomingEvents);
-        //[self performSelector:@selector(checkTotalNumberOfGroups)];
+        
+        [self performSelector:@selector(checkTotalNumberOfGroups)];
        
         
         //should sort respected to the friend name
-        //if([facebookContactsArray count]>1)
-          //  [self sortEvents:facebookContactsArray eventCategory:4];
+        if([facebookContactsArray count]>1)
+            [self sortEvents:facebookContactsArray eventCategory:4];
         
         
         
-        //shouldLoadingPicsStop=YES;
-        //[self loadProfilePictures];     
+        shouldLoadingPicsStop=YES;
+        [self loadProfilePictures];     
         
            
         
@@ -267,10 +261,7 @@ static NSDateFormatter *customDateFormat=nil;
      [anniversaryEvents removeAllObjects];*/
     if([eventsToCelebrateArray count])
         [eventsToCelebrateArray removeAllObjects];
-    if([facebookContactsArray count])
-        [facebookContactsArray removeAllObjects];
-    if([linkedInContactsArray count])
-        [linkedInContactsArray removeAllObjects];
+    
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:eventsCount];
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     if(eventsCount){
@@ -708,17 +699,19 @@ static NSDateFormatter *customDateFormat=nil;
     }
     cell.eventNameLbl.text=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_type"];
     
+    //if(![[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"] isEqualToString:@""]){
+        NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+        if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
+            cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
+            //cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
+        }
+        else{
+            //cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
+            cell.dateLbl.textColor=[UIColor blackColor];
+        }
+        cell.dateLbl.text=dateDisplay;
+    //}
     
-    NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
-    if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
-        cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
-        //cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
-    }
-    else{
-        //cell.dateLbl.font=[UIFont fontWithName:@"Helvetica" size:7.0];
-        cell.dateLbl.textColor=[UIColor blackColor];
-    }
-    cell.dateLbl.text=dateDisplay;
     
     if([[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
         cell.profileImg.image=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
@@ -1058,10 +1051,10 @@ static NSDateFormatter *customDateFormat=nil;
 }
 - (void)searchBar:(UISearchBar *)searchBar_1 textDidChange:(NSString *)searchText{
     
-    if([searchText isEqualToString:@""]){
+    /*if([searchText isEqualToString:@""]){
         [self performSelector:@selector(reloadTheEventsScreen)];
     }
-    else{
+    else{*/
         if([tempSearchArray count]){
             if([eventTitleLbl.text isEqualToString:events_category_1])
                 [allupcomingEvents removeAllObjects];
@@ -1123,7 +1116,7 @@ static NSDateFormatter *customDateFormat=nil;
             }
         }
        
-    }
+    //}
          
     
     [eventsTable reloadData];
@@ -1563,7 +1556,9 @@ static NSDateFormatter *customDateFormat=nil;
             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
             dispatch_async(ImageLoader_Q, ^{
                 NSString *urlStr;
-                if([[facebookContactsArray objectAtIndex:i]objectForKey:@"uid"])
+                if([[facebookContactsArray objectAtIndex:i] objectForKey:@"ProfilePicURLToTake"])
+                    urlStr=[[facebookContactsArray objectAtIndex:i] objectForKey:@"ProfilePicURLToTake"];
+                else if([[facebookContactsArray objectAtIndex:i]objectForKey:@"uid"])
                     urlStr=FacebookPicURL([[facebookContactsArray objectAtIndex:i]objectForKey:@"uid"]);
                 else
                     urlStr=FacebookPicURL([[[facebookContactsArray objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
@@ -1656,7 +1651,7 @@ static NSDateFormatter *customDateFormat=nil;
     [table reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:index inSection:0], nil] withRowAnimation:UITableViewRowAnimationNone];
     
     [table endUpdates];*/
-    [table reloadData];
+    [eventsTable reloadData];
 }
 
 -(void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails{
@@ -1888,7 +1883,7 @@ static NSDateFormatter *customDateFormat=nil;
 	int eventsCount=[listOfEvents count];
 	for (int i=0; i<eventsCount;i++) {
         
-        if([[[listOfEvents objectAtIndex:i] objectForKey:@"event_date"] isKindOfClass:[NSString class]]){
+        if([[[listOfEvents objectAtIndex:i] objectForKey:@"event_date"] isKindOfClass:[NSString class]]&& ![[[listOfEvents objectAtIndex:i] objectForKey:@"event_date"] isEqualToString:@""]){
             [customDateFormat setDateFormat:@"yyyy-MM-dd"];
             NSDate *date1 =[customDateFormat dateFromString:[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"]];
             [customDateFormat setDateFormat:@"MMM dd"];
@@ -1923,7 +1918,12 @@ static NSDateFormatter *customDateFormat=nil;
             break;
             //facebook contacts
         case 4:
-            [facebookContactsArray replaceObjectsInRange:NSMakeRange(0, [facebookContactsArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+        {
+            NSSortDescriptor *nameSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+            [facebookContactsArray replaceObjectsInRange:NSMakeRange(0, [facebookContactsArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:nameSortDescriptor]]];
+            [nameSortDescriptor release];
+        }
+            
             break;
             //linkedIn contacts
         case 5:

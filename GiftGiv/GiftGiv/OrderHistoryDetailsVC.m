@@ -55,7 +55,8 @@ static NSDateFormatter *customDateFormat=nil;
     orderDetailsScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:orderDetailsScroll];
     
-    profilePic.image=orderDetails.profilePicImg;
+    [self performSelector:@selector(loadProfilePicture)];
+    
     profileNameLbl.text=[orderDetails.recipientName uppercaseString];
     //eventNameLbl.text=orderDetails.
     
@@ -155,6 +156,36 @@ static NSDateFormatter *customDateFormat=nil;
     
     
 }
+-(void)loadProfilePicture{
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+    dispatch_async(ImageLoader_Q, ^{
+        
+        NSString *urlStr=[orderDetails profilePictureUrl];
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+        UIImage *thumbnail = [UIImage imageWithData:data];
+        
+        if(thumbnail==nil){
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                
+                profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+                
+            });
+            
+        }
+        else {
+            
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                
+                profilePic.image=thumbnail;
+                
+            });
+        }
+        
+    });
+    dispatch_release(ImageLoader_Q);
+}
 -(void)getGiftItemDetails{
     if([CheckNetwork connectedToNetwork]){
         
@@ -219,7 +250,7 @@ static NSDateFormatter *customDateFormat=nil;
                     }
                 }
                 else
-                               
+                    
                     targetImgView.image=giftImage; 
                 
                 
@@ -249,30 +280,30 @@ static NSDateFormatter *customDateFormat=nil;
         endDateString=[customDateFormat stringFromDate:(NSDate*)sourceDate];
     }
     /*int day=[[[endDateString componentsSeparatedByString:@" "] objectAtIndex:1] intValue];
-    if (day >= 11 && day <= 13) {
-         endDateString=[endDateString stringByAppendingString:@"th"];
-    }
-    switch (day % 10) {
-        case 1:
-            endDateString=[endDateString stringByAppendingString:@"st"];
-            break;
-        case 2:
-            endDateString=[endDateString stringByAppendingString:@"nd"];
-            break;
-        case 3:
-            endDateString=[endDateString stringByAppendingString:@"rd"];
-            break;
-        default:
-            endDateString=[endDateString stringByAppendingString:@"th"];
-            break;
-    }
-    */
+     if (day >= 11 && day <= 13) {
+     endDateString=[endDateString stringByAppendingString:@"th"];
+     }
+     switch (day % 10) {
+     case 1:
+     endDateString=[endDateString stringByAppendingString:@"st"];
+     break;
+     case 2:
+     endDateString=[endDateString stringByAppendingString:@"nd"];
+     break;
+     case 3:
+     endDateString=[endDateString stringByAppendingString:@"rd"];
+     break;
+     default:
+     endDateString=[endDateString stringByAppendingString:@"th"];
+     break;
+     }
+     */
     
     return endDateString;
 }
 -(void)reloadGiftDetails{
     
-        
+    
     giftNameLbl.frame=CGRectMake(giftNameLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2-21, giftNameLbl.frame.size.width, giftNameLbl.frame.size.height);
     giftPriceLbl.frame=CGRectMake(giftPriceLbl.frame.origin.x, giftImg.frame.origin.y+(giftImg.frame.size.height)/2, giftPriceLbl.frame.size.width, giftPriceLbl.frame.size.height);
     
@@ -295,7 +326,7 @@ static NSDateFormatter *customDateFormat=nil;
     statusLbl.frame=CGRectMake(statusLbl.frame.origin.x, statusHeadLbl.frame.origin.y+statusHeadLbl.frame.size.height-3, statusLbl.frame.size.width, statusLbl.frame.size.height);
     
     orderDetailsScroll.contentSize=CGSizeMake(320, statusLbl.frame.origin.y+statusLbl.frame.size.height+10);
-      
+    
     
     
 }
