@@ -92,28 +92,30 @@ static NSDateFormatter *customDateFormat=nil;
 		cell.selectionStyle=UITableViewCellSelectionStyleNone;
         
 	}
-    cell.profileNameLbl.text=[[ordersList objectAtIndex:indexPath.row] recipientName];
-    NSString *dateString=[[[[ordersList objectAtIndex:indexPath.row] dateofCreation] componentsSeparatedByString:@"T"] objectAtIndex:0];
+    cell.profileNameLbl.text=[[[ordersList objectAtIndex:indexPath.row] objectForKey:@"OrderDetails"] recipientName];
+    NSString *dateString=[[[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] dateofCreation] componentsSeparatedByString:@"T"] objectAtIndex:0];
     cell.orderDateLbl.text=[self updateDate:dateString];
-    cell.profilePic.image=[(OrderObject*)[ordersList objectAtIndex:indexPath.row] profilePicImg];
+   
+    if([[ordersList objectAtIndex:indexPath.row]objectForKey:@"ProfilePicture"])
+        cell.profilePic.image=[[ordersList objectAtIndex:indexPath.row]objectForKey:@"ProfilePicture"];
     
-    if([[[ordersList objectAtIndex:indexPath.row] status] isEqualToString:@"-1"]){
+    if([[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] status] isEqualToString:@"-1"]){
         cell.profileNameLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0];
         cell.orderStatusLbl.text=@"waiting for recipient reply";
     }
-    else if([[[ordersList objectAtIndex:indexPath.row] status] isEqualToString:@"0"]){
+    else if([[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] status] isEqualToString:@"0"]){
         cell.profileNameLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0];
         cell.orderStatusLbl.text=@"pending at store";
     }
-    else if([[[ordersList objectAtIndex:indexPath.row] status] isEqualToString:@"1"]){
+    else if([[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] status] isEqualToString:@"1"]){
         cell.profileNameLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0];
         cell.orderStatusLbl.text=@"dispatched";
     }
-    else if([[[ordersList objectAtIndex:indexPath.row] status] isEqualToString:@"2"]){
+    else if([[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] status] isEqualToString:@"2"]){
         cell.profileNameLbl.textColor=[UIColor blackColor];
         cell.orderStatusLbl.text=@"delivered";
     }
-    else if([[[ordersList objectAtIndex:indexPath.row] status] isEqualToString:@"3"]){
+    else if([[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] status] isEqualToString:@"3"]){
         cell.profileNameLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0];
         cell.orderStatusLbl.text=@"returned";
     }
@@ -151,12 +153,52 @@ static NSDateFormatter *customDateFormat=nil;
     }
     return endDateString;
 }
-
+-(void)retrieveProfilePictures{
+    int ordersListCount=[ordersList count];
+    
+    for(int i=0;i<ordersListCount;i++){
+        dispatch_queue_t ImageLoader_Q;
+        ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+        dispatch_async(ImageLoader_Q, ^{
+            
+            NSString *urlStr=[[[ordersList objectAtIndex:i]objectForKey:@"OrderDetails"] profilePictureUrl];
+            
+            NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+            UIImage *thumbnail = [UIImage imageWithData:data];
+            
+            if(thumbnail==nil){
+                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                    
+                    NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[ordersList objectAtIndex:i]];
+                    [tempDict setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
+                    [ordersList replaceObjectAtIndex:i withObject:tempDict];
+                    [tempDict release]; 
+                                   
+                    [orderHistoryTable reloadData];
+                });
+                
+            }
+            else {
+                
+                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                    NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[ordersList objectAtIndex:i]];
+                    [tempDict setObject:thumbnail forKey:@"ProfilePicture"];
+                    [ordersList replaceObjectAtIndex:i withObject:tempDict];
+                    [tempDict release];  
+                    [orderHistoryTable reloadData];
+                    //[self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
+                });
+            }
+            
+        });
+        dispatch_release(ImageLoader_Q);
+    }
+}
 #pragma mark - TableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     //detailed order history
     OrderHistoryDetailsVC *orderDtls=[[OrderHistoryDetailsVC alloc]initWithNibName:@"OrderHistoryDetailsVC" bundle:nil];
-    orderDtls.orderDetails=[ordersList objectAtIndex:indexPath.row];
+    orderDtls.orderDetails=[[ordersList objectAtIndex:indexPath.row] objectForKey:@"OrderDetails"];
     [self.navigationController pushViewController:orderDtls animated:YES];
     [orderDtls release];
     
@@ -195,6 +237,7 @@ static NSDateFormatter *customDateFormat=nil;
         [ordersList removeAllObjects];
     [ordersList addObjectsFromArray:listOfOrders];
     [orderHistoryTable reloadData];
+    [self performSelector:@selector(retrieveProfilePictures)];
 }
 -(void) requestFailed{
     [self stopHUD];

@@ -55,7 +55,8 @@ static NSDateFormatter *customDateFormat=nil;
     orderDetailsScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:orderDetailsScroll];
     
-    profilePic.image=orderDetails.profilePicImg;
+    [self performSelector:@selector(loadProfilePicture)];
+    
     profileNameLbl.text=[orderDetails.recipientName uppercaseString];
     //eventNameLbl.text=orderDetails.
     
@@ -154,6 +155,36 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     
+}
+-(void)loadProfilePicture{
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+    dispatch_async(ImageLoader_Q, ^{
+        
+        NSString *urlStr=[orderDetails profilePictureUrl];
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+        UIImage *thumbnail = [UIImage imageWithData:data];
+        
+        if(thumbnail==nil){
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                
+               profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+                
+            });
+            
+        }
+        else {
+            
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+
+                profilePic.image=thumbnail;
+
+            });
+        }
+        
+    });
+    dispatch_release(ImageLoader_Q);
 }
 -(void)getGiftItemDetails{
     if([CheckNetwork connectedToNetwork]){

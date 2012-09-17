@@ -88,8 +88,10 @@
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
 	if([argElementName isEqualToString:@"Table"]){
-        [listOfOrders addObject:order];
+        NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithObjectsAndKeys:order,@"OrderDetails", nil];
+        [listOfOrders addObject:tempDict];
         [order release];
+        [tempDict release];
         order=nil;
     }
     else if([argElementName isEqualToString:@"Id"]){
@@ -101,14 +103,14 @@
     
     else if([argElementName isEqualToString:@"ProfilePictureUrl"]){
         order.profilePictureUrl=(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSData *picData=[NSData dataWithContentsOfURL:[NSURL URLWithString:order.profilePictureUrl]];
+        /*NSData *picData=[NSData dataWithContentsOfURL:[NSURL URLWithString:order.profilePictureUrl]];
         //NSLog(@"%@",order.profilePictureUrl);
         if(picData!=nil){
             order.profilePicImg=[UIImage imageWithData:picData];
         }
         else{
             order.profilePicImg=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
-        }
+        }*/
     }
     else if([argElementName isEqualToString:@"RecipientName"]){
         order.recipientName=(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
