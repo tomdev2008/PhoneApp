@@ -107,6 +107,7 @@
 								<string key="NSFrame">{{13, 8}, {297, 42}}</string>
 								<reference key="NSSuperview" ref="1032165074"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="724983811"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<int key="IBUIContentMode">7</int>
@@ -138,6 +139,7 @@
 								<string key="NSFrame">{{10, 59}, {300, 280}}</string>
 								<reference key="NSSuperview" ref="1032165074"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="1005727111"/>
 								<object class="NSColor" key="IBUIBackgroundColor" id="655337850">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MQA</bytes>
@@ -171,6 +173,7 @@
 						<string key="NSFrame">{{0, 416}, {320, 44}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -183,7 +186,7 @@
 							<object class="IBUIBarButtonItem" id="1001622166">
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">giftbutton_new.png</string>
+									<string key="NSResourceName">orderhistoryicon.png</string>
 								</object>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIToolbar" ref="837230259"/>
@@ -517,7 +520,7 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="giftbutton_new.png">{24, 24}</string>
+			<string key="orderhistoryicon.png">{25, 25}</string>
 			<string key="whitelogo.png">{114, 60}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>
