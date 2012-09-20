@@ -78,11 +78,11 @@
     switch ([sender tag]) {
             //mail
         case 1:
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"mailto://contactemail@giftgiv.com"]];
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"mailto://info@thegiftgiv.com"]];
             break;
             //phone
         case 2:
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"tel://(888)123-4567"]];
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"tel://(425)985-3735"]];
             break;
             //terms
         case 3:
@@ -90,7 +90,7 @@
             break;
             //policy
         case 4:
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://thegiftgiv.com/"]];
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://thegiftgiv.com/policies.html"]];
             break;
             
             
