@@ -14,11 +14,13 @@
 #import "MBProgressHUD.h"
 #import "AddUserRequest.h"
 #import "CoomonRequestCreationObject.h"
+#import "LinkedIn_GiftGiv.h"
 
-@interface SignInVC : UIViewController<Facebook_GiftGivDelegate,MBProgressHUDDelegate,AddUserRequestDelegate>
+@interface SignInVC : UIViewController<Facebook_GiftGivDelegate,MBProgressHUDDelegate,AddUserRequestDelegate,LinkedIn_GiftGivDelegate>
 {
     MBProgressHUD *HUD;
     Facebook_GiftGiv *fb_giftgiv;
+    //LinkedIn_GiftGiv *lnkIn_giftgiv;
 }
 
 - (IBAction)logInAction:(id)sender;

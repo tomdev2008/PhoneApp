@@ -307,7 +307,7 @@
 							<object class="IBUIBarButtonItem" id="444921702">
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">giftbutton_new.png</string>
+									<string key="NSResourceName">orderhistoryicon.png</string>
 								</object>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIToolbar" ref="104843742"/>
@@ -599,7 +599,7 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="backbutton.png">{51, 30}</string>
-			<string key="giftbutton_new.png">{24, 24}</string>
+			<string key="orderhistoryicon.png">{25, 25}</string>
 			<string key="whitelogo.png">{114, 60}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>

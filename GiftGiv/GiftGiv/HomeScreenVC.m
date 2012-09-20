@@ -96,25 +96,31 @@ static NSDateFormatter *customDateFormat=nil;
 -(void)viewWillAppear:(BOOL)animated{
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
         
-        if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
-            isEventsLoadingFromFB=NO;
-            //[self showProgressHUD:self.view withMsg:nil];
-            [self performSelector:@selector(makeRequestToGetEvents)];
-            [self performSelector:@selector(makeRequestToGetFacebookContacts)];
-            
-        }
-        
-        else{
-            if([CheckNetwork connectedToNetwork]){
-                isEventsLoadingFromFB=YES;
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-                
-                [fb_giftgiv_home listOfBirthdayEvents];
-                [self performSelector:@selector(makeRequestToGetFacebookContacts) withObject:nil afterDelay:2.0];
+        if([[fb_giftgiv_home facebook]isSessionValid]){
+            if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
+                isEventsLoadingFromFB=NO;
+                //[self showProgressHUD:self.view withMsg:nil];
+                [self performSelector:@selector(makeRequestToGetEvents)];
+                [self performSelector:@selector(makeRequestToGetFacebookContacts)];
                 
             }
+            
+            else{
+                if([CheckNetwork connectedToNetwork]){
+                    isEventsLoadingFromFB=YES;
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                    //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+                    
+                    [fb_giftgiv_home listOfBirthdayEvents];
+                    [self performSelector:@selector(makeRequestToGetFacebookContacts) withObject:nil afterDelay:2.0];
+                    
+                }
+            }
         }
+        else if([[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
+            
+        }
+                
         
     }
     
@@ -127,7 +133,7 @@ static NSDateFormatter *customDateFormat=nil;
     [super viewWillAppear:YES];
 }
 -(void)reloadTheEventsScreen{
-    [self performSelector:@selector(makeRequestToGetFacebookContacts)];
+    //[self performSelector:@selector(makeRequestToGetFacebookContacts)];
     if([allupcomingEvents count]){
         [allupcomingEvents removeAllObjects];
     }
@@ -152,6 +158,34 @@ static NSDateFormatter *customDateFormat=nil;
     [self sortEvents:allupcomingEvents eventCategory:1];
     [self sortEvents:listOfBirthdayEvents eventCategory:2];
     [self sortEvents:eventsToCelebrateArray eventCategory:3];
+    
+    if([facebookContactsArray count]){
+        [facebookContactsArray removeAllObjects];
+        [facebookContactsArray release];
+        facebookContactsArray=nil;
+    }
+    
+    facebookContactsArray=[[NSMutableArray alloc]initWithArray:globalFacebookContacts];
+    
+    if([searchBgView superview]){
+        if([tempSearchArray count]){
+            [tempSearchArray removeAllObjects];
+            [tempSearchArray release];
+            tempSearchArray=nil;
+        }
+        if([eventTitleLbl.text isEqualToString:events_category_1])        
+            tempSearchArray=[[NSMutableArray alloc]initWithArray:allupcomingEvents];
+        else if([eventTitleLbl.text isEqualToString:events_category_2])
+            tempSearchArray=[[NSMutableArray alloc]initWithArray:listOfBirthdayEvents];
+        else if([eventTitleLbl.text isEqualToString:events_category_3])
+            tempSearchArray=[[NSMutableArray alloc]initWithArray:eventsToCelebrateArray];
+        else if([eventTitleLbl.text isEqualToString:events_category_4])
+            tempSearchArray=[[NSMutableArray alloc]initWithArray:facebookContactsArray];
+        else if([eventTitleLbl.text isEqualToString:events_category_5])
+            tempSearchArray=[[NSMutableArray alloc]initWithArray:linkedInContactsArray];
+    }
+    
+    
     
     [eventsTable reloadData];
 }
@@ -213,7 +247,23 @@ static NSDateFormatter *customDateFormat=nil;
         if([facebookContactsArray count]>1)
             [self sortEvents:facebookContactsArray eventCategory:4];
         
-        
+        /*if([searchBgView superview]){
+            
+            if([eventTitleLbl.text isEqualToString:events_category_4]){
+                if([tempSearchArray count]){
+                    [tempSearchArray removeAllObjects];
+                    [tempSearchArray release];
+                    tempSearchArray=nil;
+                }
+                tempSearchArray=[[NSMutableArray alloc]initWithArray:facebookContactsArray];
+            }
+        }*/
+        if([globalFacebookContacts count]){
+            [globalFacebookContacts removeAllObjects];
+            [globalFacebookContacts release];
+            globalFacebookContacts=nil;
+        }
+        globalFacebookContacts=[[NSMutableArray alloc] initWithArray:facebookContactsArray];
         
         shouldLoadingPicsStop=YES;
         [self loadProfilePictures];     
@@ -407,6 +457,7 @@ static NSDateFormatter *customDateFormat=nil;
     totalGroups=0;
     if([categoryTitles count])
         [categoryTitles removeAllObjects];
+    
     if([allupcomingEvents count]){
         
         [categoryTitles addObject:events_category_1];
@@ -1026,7 +1077,7 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     [eventsTable reloadData];
-    [self performSelector:@selector(checkTotalNumberOfGroups)];
+    //[self performSelector:@selector(checkTotalNumberOfGroups)];
     [self loadProfilePictures];
 }
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar_1{
@@ -1051,10 +1102,10 @@ static NSDateFormatter *customDateFormat=nil;
 }
 - (void)searchBar:(UISearchBar *)searchBar_1 textDidChange:(NSString *)searchText{
     
-    /*if([searchText isEqualToString:@""]){
+    if([searchText isEqualToString:@""]){
         [self performSelector:@selector(reloadTheEventsScreen)];
     }
-    else{*/
+    else{
         if([tempSearchArray count]){
             if([eventTitleLbl.text isEqualToString:events_category_1])
                 [allupcomingEvents removeAllObjects];
@@ -1116,7 +1167,7 @@ static NSDateFormatter *customDateFormat=nil;
             }
         }
        
-    //}
+    }
          
     
     [eventsTable reloadData];
@@ -2049,7 +2100,11 @@ static NSDateFormatter *customDateFormat=nil;
         [pageActiveImage release];
         [pageInactiveImage release]; 
     }
-    
+    if([globalFacebookContacts count]){
+        [globalFacebookContacts removeAllObjects];
+        [globalFacebookContacts release];
+        globalFacebookContacts=nil;
+    }
     [listOfBirthdayEvents release];
     [eventsToCelebrateArray release];
     [facebookContactsArray release];

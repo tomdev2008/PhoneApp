@@ -24,6 +24,7 @@
 #import "MBProgressHUD.h"
 #import "GetEventsRequest.h"
 #import "FacebookContactsReq.h"
+#import "LinkedIn_GiftGiv.h"
 
 @interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate>
 
@@ -45,6 +46,7 @@
     NSMutableArray *facebookContactsArray; 
     NSMutableArray *linkedInContactsArray;
     
+    NSMutableArray *globalFacebookContacts;
     NSMutableArray *tempSearchArray;
     
     NSMutableArray *categoryTitles;

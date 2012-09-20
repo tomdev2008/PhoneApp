@@ -10,6 +10,7 @@
 #import "Facebook_GiftGiv.h"
 #import "CheckNetwork.h"
 #import "ApplicationHelpers.h"
+#import "LinkedIn_GiftGiv.h"
 
 @interface SettingsVC : UIViewController<Facebook_GiftGivDelegate>
 {

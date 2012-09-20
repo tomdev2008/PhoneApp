@@ -14,24 +14,14 @@
 -(void)getFBContactsForRequest:(NSMutableURLRequest *)request{
     
 	//Asynchronous URL connection
-	/*theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+	theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 	
 	if( theConnection ){
 		webData = [[NSMutableData alloc] init];
 	}
 	else
-		NSLog(@"theConnection is NULL");*/
-    webData = [[NSMutableData alloc] initWithContentsOfFile:[[NSBundle mainBundle]pathForResource:@"SampleXML" ofType:@"xml"]];
-    
-    NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
-    [webData release];
-	[xmlParser setDelegate:self];
-    receivedResponse=[[NSMutableArray alloc]init];
-	
-	//delegate method to send the response after parsing finished successfully
-	if([xmlParser parse]){
-		
-	}
+		NSLog(@"theConnection is NULL");
+   
 }
 #pragma mark -
 #pragma mark Connection delegates
@@ -49,14 +39,9 @@
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
     [webData release];
 	[xmlParser setDelegate:self];
-    receivedResponse=[[NSMutableArray alloc]init];
-	
-	//delegate method to send the response after parsing finished successfully
-	if([xmlParser parse]){
-		//[fbContactsDelegate receivedFBContacts:receivedResponse];
-	}
     
-	[receivedResponse  release];
+	[xmlParser parse];
+		
 	[xmlParser release];
 	[theConnection release];
 }
@@ -75,13 +60,13 @@
 #pragma mark xmlParser delegates
 -(void) parser:(NSXMLParser*) parser didStartElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName attributes:(NSDictionary*) attributeDict
 {
-    NSLog(@"%@,%@",argElementName,attributeDict);
+    
     if([argElementName isEqualToString:@"FacebookUser"]){
         fbContact=[[FacebookContactObject alloc]init];
     }
         
 }
-- (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock{
+/*- (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock{
     NSLog(@"found cdata");
     
     NSString *cDataStr=[[NSString alloc]initWithData:CDATABlock encoding:NSUTF8StringEncoding];
@@ -100,7 +85,7 @@
     [xmlParser_2 release];
     
     
-}
+}*/
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string { 
 	
 	if(!currentElementValue) 
@@ -112,7 +97,24 @@
 
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
-    //NSLog(@"%@",argElementName);
+    if([argElementName isEqualToString:@"GetFacebookListResult"]){
+        
+        currentElementValue=(NSMutableString*)[currentElementValue stringByReplacingOccurrencesOfString:@"<?xml version=\"1.0\" encoding=\"utf-16\"?>" withString:@""];
+        
+        receivedResponse=[[NSMutableArray alloc]init];
+
+                
+        NSXMLParser *tempParaser=[[NSXMLParser alloc]initWithData:[currentElementValue dataUsingEncoding:NSUTF8StringEncoding]];
+        tempParaser.delegate=self;
+        if([tempParaser parse]){
+            [fbContactsDelegate receivedFBContacts:receivedResponse];
+        }
+        [receivedResponse  release];
+        [tempParaser release];
+        
+    }
+    
+        
     if([argElementName isEqualToString:@"UserId"])
         fbContact.userId=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     

@@ -45,9 +45,15 @@
         //authorize the application with facebook
         //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
         
-        
-        
-        [fb_giftgiv authorizeOurAppWithFacebook];
+        //Facebook
+        if([sender tag]==1)
+            [fb_giftgiv authorizeOurAppWithFacebook];
+
+        //LinkedIn
+        else if([sender tag]==2){
+            [[LinkedIn_GiftGiv sharedSingleton] logInFromView:self];
+            [[LinkedIn_GiftGiv sharedSingleton] setLnkInGiftGivDelegate:self];
+        }
         
     }
     
@@ -105,6 +111,25 @@
 }
 - (void)facebookDidCancelledLogin{
     [self stopHUD];
+    
+}
+#pragma mark -LinkedIn
+- (void)linkedInLoggedIn{
+    HomeScreenVC *home=[[HomeScreenVC alloc]initWithNibName:@"HomeScreenVC" bundle:nil];
+    [self.navigationController pushViewController:home animated:NO];
+    [home release];
+}
+- (void)linkedInLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{
+    
+}
+
+- (void)linkedInDidLoggedOut{
+    
+}
+- (void)linkedInDidRequestFailed{
+    
+}
+- (void)linkedInDidCancelledLogin{
     
 }
 #pragma mark - Add User Request delegate

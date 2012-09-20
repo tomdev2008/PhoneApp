@@ -52,8 +52,21 @@
             AlertWithMessageAndDelegate(@"GiftGiv", @"Please check your network settings", nil);
         }
     }
-    else{
+    /*else{
         AlertWithMessageAndDelegate(@"GiftGiv", @"You are already logged out from facebook", nil); 
+    }*/
+    
+    else if([[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
+        [[LinkedIn_GiftGiv sharedSingleton] logOut];
+        [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
+        
+        if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
+            [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
+        if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+            [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
+        }
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"MyGiftGivUserId"];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     }
     
 }

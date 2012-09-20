@@ -16,6 +16,33 @@
 		7E06A54F15EBE59000EB236B /* AddOrderRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E06A54E15EBE59000EB236B /* AddOrderRequest.m */; };
 		7E06A55415EBE59A00EB236B /* GetUserRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E06A55115EBE59A00EB236B /* GetUserRequest.m */; };
 		7E06A55515EBE59A00EB236B /* UserDetailsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E06A55315EBE59A00EB236B /* UserDetailsObject.m */; };
+		7E0AB510160AE8D1003DD08A /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB4F5160AE8D1003DD08A /* NSMutableURLRequest+Parameters.m */; };
+		7E0AB511160AE8D1003DD08A /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB4F7160AE8D1003DD08A /* NSString+URLEncoding.m */; };
+		7E0AB512160AE8D1003DD08A /* NSURL+Base.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB4F9160AE8D1003DD08A /* NSURL+Base.m */; };
+		7E0AB513160AE8D1003DD08A /* OAAsynchronousDataFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB4FB160AE8D1003DD08A /* OAAsynchronousDataFetcher.m */; };
+		7E0AB514160AE8D1003DD08A /* OAConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB4FD160AE8D1003DD08A /* OAConsumer.m */; };
+		7E0AB515160AE8D1003DD08A /* OADataFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB4FF160AE8D1003DD08A /* OADataFetcher.m */; };
+		7E0AB516160AE8D1003DD08A /* OAHMAC_SHA1SignatureProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB501160AE8D1003DD08A /* OAHMAC_SHA1SignatureProvider.m */; };
+		7E0AB517160AE8D1003DD08A /* OAMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB503160AE8D1003DD08A /* OAMutableURLRequest.m */; };
+		7E0AB518160AE8D1003DD08A /* OAPlaintextSignatureProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB505160AE8D1003DD08A /* OAPlaintextSignatureProvider.m */; };
+		7E0AB519160AE8D1003DD08A /* OARequestParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB507160AE8D1003DD08A /* OARequestParameter.m */; };
+		7E0AB51A160AE8D1003DD08A /* OAServiceTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB509160AE8D1003DD08A /* OAServiceTicket.m */; };
+		7E0AB51B160AE8D1003DD08A /* OAToken_KeychainExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB50C160AE8D1003DD08A /* OAToken_KeychainExtensions.m */; };
+		7E0AB51C160AE8D1003DD08A /* OAToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB50E160AE8D1003DD08A /* OAToken.m */; };
+		7E0AB523160AE8E5003DD08A /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB51D160AE8E5003DD08A /* Base64Transcoder.c */; };
+		7E0AB524160AE8E5003DD08A /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB51F160AE8E5003DD08A /* hmac.c */; };
+		7E0AB525160AE8E5003DD08A /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB521160AE8E5003DD08A /* sha1.c */; };
+		7E0AB537160AE8F3003DD08A /* OAToken+storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB527160AE8F3003DD08A /* OAToken+storage.m */; };
+		7E0AB538160AE8F3003DD08A /* RDLinkedInAuthorizationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB52A160AE8F3003DD08A /* RDLinkedInAuthorizationController.m */; };
+		7E0AB539160AE8F3003DD08A /* RDLinkedInEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB52D160AE8F3003DD08A /* RDLinkedInEngine.m */; };
+		7E0AB53A160AE8F3003DD08A /* RDLinkedInHTTPURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB530160AE8F3003DD08A /* RDLinkedInHTTPURLConnection.m */; };
+		7E0AB53B160AE8F3003DD08A /* RDLinkedInRequestBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB532160AE8F3003DD08A /* RDLinkedInRequestBuilder.m */; };
+		7E0AB53C160AE8F3003DD08A /* RDLinkedInResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB534160AE8F3003DD08A /* RDLinkedInResponseParser.m */; };
+		7E0AB53F160AE90B003DD08A /* LinkedIn_GiftGiv.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0AB53E160AE90B003DD08A /* LinkedIn_GiftGiv.m */; };
+		7E0AB543160AEB93003DD08A /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0AB542160AEB93003DD08A /* libxml2.2.dylib */; };
+		7E0AB544160B02D4003DD08A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0AB540160AEB16003DD08A /* Security.framework */; };
+		7E0AB549160B3D78003DD08A /* orderhistoryicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E0AB548160B3D78003DD08A /* orderhistoryicon.png */; };
+		7E0AB54B160B3D91003DD08A /* orderhistoryicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E0AB54A160B3D91003DD08A /* orderhistoryicon@2x.png */; };
 		7E0FE89815C2CED800EDC79C /* CheckNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0FE89715C2CED800EDC79C /* CheckNetwork.m */; };
 		7E0FE89A15C2CF0A00EDC79C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0FE89915C2CF0A00EDC79C /* SystemConfiguration.framework */; };
 		7E0FE89D15C2CF7B00EDC79C /* ApplicationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0FE89B15C2CF7B00EDC79C /* ApplicationHelpers.m */; };
@@ -125,8 +152,6 @@
 		7ED7EA2D15B6F1EE008DFDE3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED7EA2C15B6F1EE008DFDE3 /* AppDelegate.m */; };
 		7ED7EA3C15B6F292008DFDE3 /* SplashScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED7EA3A15B6F292008DFDE3 /* SplashScreenVC.m */; };
 		7ED7EA3D15B6F292008DFDE3 /* SplashScreenVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7ED7EA3B15B6F292008DFDE3 /* SplashScreenVC.xib */; };
-		7ED8587615F478A3007F28F9 /* giftbutton_new@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ED8587515F478A3007F28F9 /* giftbutton_new@2x.png */; };
-		7ED8587815F478AB007F28F9 /* giftbutton_new.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ED8587715F478AB007F28F9 /* giftbutton_new.png */; };
 		7EDC191715BFB79300FF7789 /* GiftCardDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDC191515BFB79300FF7789 /* GiftCardDetailsVC.m */; };
 		7EDC191815BFB79300FF7789 /* GiftCardDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EDC191615BFB79300FF7789 /* GiftCardDetailsVC.xib */; };
 		7EDD4884160061B500F72BEB /* FacebookContactsReq.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDD4883160061B500F72BEB /* FacebookContactsReq.m */; };
@@ -143,6 +168,8 @@
 		7EE0261115BD9A37003B9C74 /* GiftCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EE0261015BD9A37003B9C74 /* GiftCustomCell.xib */; };
 		7EED2FB315C7A031001160BB /* ListOfStates.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7EED2FB215C7A031001160BB /* ListOfStates.plist */; };
 		7EEE489315E3D92C00E8DB29 /* CustomDateDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EEE489215E3D92C00E8DB29 /* CustomDateDisplay.m */; };
+		7EF056BE16083D530055BC52 /* searchicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EF056BD16083D530055BC52 /* searchicon.png */; };
+		7EF056C116083D760055BC52 /* searchicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EF056C016083D760055BC52 /* searchicon@2x.png */; };
 		7EFBF54F15EFB6FE000D3279 /* GetEventsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFBF54C15EFB6FE000D3279 /* GetEventsRequest.m */; };
 		7EFBF55015EFB6FE000D3279 /* EventObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFBF54E15EFB6FE000D3279 /* EventObject.m */; };
 /* End PBXBuildFile section */
@@ -166,6 +193,63 @@
 		7E06A55115EBE59A00EB236B /* GetUserRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetUserRequest.m; sourceTree = "<group>"; };
 		7E06A55215EBE59A00EB236B /* UserDetailsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDetailsObject.h; sourceTree = "<group>"; };
 		7E06A55315EBE59A00EB236B /* UserDetailsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserDetailsObject.m; sourceTree = "<group>"; };
+		7E0AB4F4160AE8D1003DD08A /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMutableURLRequest+Parameters.h"; path = "LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
+		7E0AB4F5160AE8D1003DD08A /* NSMutableURLRequest+Parameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSMutableURLRequest+Parameters.m"; path = "LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/NSMutableURLRequest+Parameters.m"; sourceTree = "<group>"; };
+		7E0AB4F6160AE8D1003DD08A /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding.h"; path = "LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		7E0AB4F7160AE8D1003DD08A /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding.m"; path = "LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/NSString+URLEncoding.m"; sourceTree = "<group>"; };
+		7E0AB4F8160AE8D1003DD08A /* NSURL+Base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+Base.h"; path = "LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/NSURL+Base.h"; sourceTree = "<group>"; };
+		7E0AB4F9160AE8D1003DD08A /* NSURL+Base.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+Base.m"; path = "LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/NSURL+Base.m"; sourceTree = "<group>"; };
+		7E0AB4FA160AE8D1003DD08A /* OAAsynchronousDataFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAAsynchronousDataFetcher.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAAsynchronousDataFetcher.h; sourceTree = "<group>"; };
+		7E0AB4FB160AE8D1003DD08A /* OAAsynchronousDataFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAAsynchronousDataFetcher.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAAsynchronousDataFetcher.m; sourceTree = "<group>"; };
+		7E0AB4FC160AE8D1003DD08A /* OAConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAConsumer.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAConsumer.h; sourceTree = "<group>"; };
+		7E0AB4FD160AE8D1003DD08A /* OAConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAConsumer.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAConsumer.m; sourceTree = "<group>"; };
+		7E0AB4FE160AE8D1003DD08A /* OADataFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OADataFetcher.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OADataFetcher.h; sourceTree = "<group>"; };
+		7E0AB4FF160AE8D1003DD08A /* OADataFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OADataFetcher.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OADataFetcher.m; sourceTree = "<group>"; };
+		7E0AB500160AE8D1003DD08A /* OAHMAC_SHA1SignatureProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAHMAC_SHA1SignatureProvider.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAHMAC_SHA1SignatureProvider.h; sourceTree = "<group>"; };
+		7E0AB501160AE8D1003DD08A /* OAHMAC_SHA1SignatureProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAHMAC_SHA1SignatureProvider.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAHMAC_SHA1SignatureProvider.m; sourceTree = "<group>"; };
+		7E0AB502160AE8D1003DD08A /* OAMutableURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAMutableURLRequest.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAMutableURLRequest.h; sourceTree = "<group>"; };
+		7E0AB503160AE8D1003DD08A /* OAMutableURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAMutableURLRequest.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAMutableURLRequest.m; sourceTree = "<group>"; };
+		7E0AB504160AE8D1003DD08A /* OAPlaintextSignatureProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAPlaintextSignatureProvider.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAPlaintextSignatureProvider.h; sourceTree = "<group>"; };
+		7E0AB505160AE8D1003DD08A /* OAPlaintextSignatureProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAPlaintextSignatureProvider.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAPlaintextSignatureProvider.m; sourceTree = "<group>"; };
+		7E0AB506160AE8D1003DD08A /* OARequestParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OARequestParameter.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OARequestParameter.h; sourceTree = "<group>"; };
+		7E0AB507160AE8D1003DD08A /* OARequestParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OARequestParameter.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OARequestParameter.m; sourceTree = "<group>"; };
+		7E0AB508160AE8D1003DD08A /* OAServiceTicket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAServiceTicket.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAServiceTicket.h; sourceTree = "<group>"; };
+		7E0AB509160AE8D1003DD08A /* OAServiceTicket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAServiceTicket.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAServiceTicket.m; sourceTree = "<group>"; };
+		7E0AB50A160AE8D1003DD08A /* OASignatureProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OASignatureProviding.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OASignatureProviding.h; sourceTree = "<group>"; };
+		7E0AB50B160AE8D1003DD08A /* OAToken_KeychainExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAToken_KeychainExtensions.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAToken_KeychainExtensions.h; sourceTree = "<group>"; };
+		7E0AB50C160AE8D1003DD08A /* OAToken_KeychainExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAToken_KeychainExtensions.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAToken_KeychainExtensions.m; sourceTree = "<group>"; };
+		7E0AB50D160AE8D1003DD08A /* OAToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAToken.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAToken.h; sourceTree = "<group>"; };
+		7E0AB50E160AE8D1003DD08A /* OAToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OAToken.m; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAToken.m; sourceTree = "<group>"; };
+		7E0AB50F160AE8D1003DD08A /* OAuthConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OAuthConsumer.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/OAuthConsumer.h; sourceTree = "<group>"; };
+		7E0AB51D160AE8E5003DD08A /* Base64Transcoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Base64Transcoder.c; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/Crypto/Base64Transcoder.c; sourceTree = "<group>"; };
+		7E0AB51E160AE8E5003DD08A /* Base64Transcoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Base64Transcoder.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/Crypto/Base64Transcoder.h; sourceTree = "<group>"; };
+		7E0AB51F160AE8E5003DD08A /* hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hmac.c; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/Crypto/hmac.c; sourceTree = "<group>"; };
+		7E0AB520160AE8E5003DD08A /* hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hmac.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/Crypto/hmac.h; sourceTree = "<group>"; };
+		7E0AB521160AE8E5003DD08A /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sha1.c; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/Crypto/sha1.c; sourceTree = "<group>"; };
+		7E0AB522160AE8E5003DD08A /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sha1.h; path = LinkedIn/OAuthConsumeriPhoneLib/OAuthConsumer/Crypto/sha1.h; sourceTree = "<group>"; };
+		7E0AB526160AE8F3003DD08A /* OAToken+storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "OAToken+storage.h"; path = "LinkedIn/LinkedInClientLibrary/OAToken+storage.h"; sourceTree = "<group>"; };
+		7E0AB527160AE8F3003DD08A /* OAToken+storage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "OAToken+storage.m"; path = "LinkedIn/LinkedInClientLibrary/OAToken+storage.m"; sourceTree = "<group>"; };
+		7E0AB528160AE8F3003DD08A /* RDLinkedIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLinkedIn.h; path = LinkedIn/LinkedInClientLibrary/RDLinkedIn.h; sourceTree = "<group>"; };
+		7E0AB529160AE8F3003DD08A /* RDLinkedInAuthorizationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLinkedInAuthorizationController.h; path = LinkedIn/LinkedInClientLibrary/RDLinkedInAuthorizationController.h; sourceTree = "<group>"; };
+		7E0AB52A160AE8F3003DD08A /* RDLinkedInAuthorizationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RDLinkedInAuthorizationController.m; path = LinkedIn/LinkedInClientLibrary/RDLinkedInAuthorizationController.m; sourceTree = "<group>"; };
+		7E0AB52B160AE8F3003DD08A /* RDLinkedInAuthorizationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLinkedInAuthorizationControllerDelegate.h; path = LinkedIn/LinkedInClientLibrary/RDLinkedInAuthorizationControllerDelegate.h; sourceTree = "<group>"; };
+		7E0AB52C160AE8F3003DD08A /* RDLinkedInEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLinkedInEngine.h; path = LinkedIn/LinkedInClientLibrary/RDLinkedInEngine.h; sourceTree = "<group>"; };
+		7E0AB52D160AE8F3003DD08A /* RDLinkedInEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RDLinkedInEngine.m; path = LinkedIn/LinkedInClientLibrary/RDLinkedInEngine.m; sourceTree = "<group>"; };
+		7E0AB52E160AE8F3003DD08A /* RDLinkedInEngineDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLinkedInEngineDelegate.h; path = LinkedIn/LinkedInClientLibrary/RDLinkedInEngineDelegate.h; sourceTree = "<group>"; };
+		7E0AB52F160AE8F3003DD08A /* RDLinkedInHTTPURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLinkedInHTTPURLConnection.h; path = LinkedIn/LinkedInClientLibrary/RDLinkedInHTTPURLConnection.h; sourceTree = "<group>"; };
+		7E0AB530160AE8F3003DD08A /* RDLinkedInHTTPURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RDLinkedInHTTPURLConnection.m; path = LinkedIn/LinkedInClientLibrary/RDLinkedInHTTPURLConnection.m; sourceTree = "<group>"; };
+		7E0AB531160AE8F3003DD08A /* RDLinkedInRequestBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLinkedInRequestBuilder.h; path = LinkedIn/LinkedInClientLibrary/RDLinkedInRequestBuilder.h; sourceTree = "<group>"; };
+		7E0AB532160AE8F3003DD08A /* RDLinkedInRequestBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RDLinkedInRequestBuilder.m; path = LinkedIn/LinkedInClientLibrary/RDLinkedInRequestBuilder.m; sourceTree = "<group>"; };
+		7E0AB533160AE8F3003DD08A /* RDLinkedInResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLinkedInResponseParser.h; path = LinkedIn/LinkedInClientLibrary/RDLinkedInResponseParser.h; sourceTree = "<group>"; };
+		7E0AB534160AE8F3003DD08A /* RDLinkedInResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RDLinkedInResponseParser.m; path = LinkedIn/LinkedInClientLibrary/RDLinkedInResponseParser.m; sourceTree = "<group>"; };
+		7E0AB535160AE8F3003DD08A /* RDLinkedInTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLinkedInTypes.h; path = LinkedIn/LinkedInClientLibrary/RDLinkedInTypes.h; sourceTree = "<group>"; };
+		7E0AB536160AE8F3003DD08A /* RDLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDLogging.h; path = LinkedIn/LinkedInClientLibrary/RDLogging.h; sourceTree = "<group>"; };
+		7E0AB53D160AE90B003DD08A /* LinkedIn_GiftGiv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinkedIn_GiftGiv.h; path = LinkedIn/LinkedIn_GiftGiv.h; sourceTree = "<group>"; };
+		7E0AB53E160AE90B003DD08A /* LinkedIn_GiftGiv.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedIn_GiftGiv.m; path = LinkedIn/LinkedIn_GiftGiv.m; sourceTree = "<group>"; };
+		7E0AB540160AEB16003DD08A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		7E0AB542160AEB93003DD08A /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
+		7E0AB548160B3D78003DD08A /* orderhistoryicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orderhistoryicon.png; sourceTree = "<group>"; };
+		7E0AB54A160B3D91003DD08A /* orderhistoryicon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "orderhistoryicon@2x.png"; sourceTree = "<group>"; };
 		7E0FE89615C2CED800EDC79C /* CheckNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckNetwork.h; sourceTree = "<group>"; };
 		7E0FE89715C2CED800EDC79C /* CheckNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckNetwork.m; sourceTree = "<group>"; };
 		7E0FE89915C2CF0A00EDC79C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -345,8 +429,6 @@
 		7ED7EA3915B6F292008DFDE3 /* SplashScreenVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashScreenVC.h; sourceTree = "<group>"; };
 		7ED7EA3A15B6F292008DFDE3 /* SplashScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashScreenVC.m; sourceTree = "<group>"; };
 		7ED7EA3B15B6F292008DFDE3 /* SplashScreenVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SplashScreenVC.xib; sourceTree = "<group>"; };
-		7ED8587515F478A3007F28F9 /* giftbutton_new@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "giftbutton_new@2x.png"; sourceTree = "<group>"; };
-		7ED8587715F478AB007F28F9 /* giftbutton_new.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = giftbutton_new.png; sourceTree = "<group>"; };
 		7EDC191415BFB79300FF7789 /* GiftCardDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftCardDetailsVC.h; sourceTree = "<group>"; };
 		7EDC191515BFB79300FF7789 /* GiftCardDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftCardDetailsVC.m; sourceTree = "<group>"; };
 		7EDC191615BFB79300FF7789 /* GiftCardDetailsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GiftCardDetailsVC.xib; sourceTree = "<group>"; };
@@ -372,6 +454,8 @@
 		7EED2FB215C7A031001160BB /* ListOfStates.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ListOfStates.plist; sourceTree = "<group>"; };
 		7EEE489115E3D92C00E8DB29 /* CustomDateDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomDateDisplay.h; sourceTree = "<group>"; };
 		7EEE489215E3D92C00E8DB29 /* CustomDateDisplay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomDateDisplay.m; sourceTree = "<group>"; };
+		7EF056BD16083D530055BC52 /* searchicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchicon.png; sourceTree = "<group>"; };
+		7EF056C016083D760055BC52 /* searchicon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "searchicon@2x.png"; sourceTree = "<group>"; };
 		7EFBF54B15EFB6FE000D3279 /* GetEventsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetEventsRequest.h; sourceTree = "<group>"; };
 		7EFBF54C15EFB6FE000D3279 /* GetEventsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetEventsRequest.m; sourceTree = "<group>"; };
 		7EFBF54D15EFB6FE000D3279 /* EventObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventObject.h; sourceTree = "<group>"; };
@@ -383,6 +467,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E0AB544160B02D4003DD08A /* Security.framework in Frameworks */,
+				7E0AB543160AEB93003DD08A /* libxml2.2.dylib in Frameworks */,
 				7ED088E315F5E52F0056160C /* ImageIO.framework in Frameworks */,
 				7E0FE89A15C2CF0A00EDC79C /* SystemConfiguration.framework in Frameworks */,
 				7EE0260515BD6502003B9C74 /* CoreText.framework in Frameworks */,
@@ -455,6 +541,98 @@
 				7E06A55315EBE59A00EB236B /* UserDetailsObject.m */,
 			);
 			name = GetUser;
+			sourceTree = "<group>";
+		};
+		7E0AB4EE160AE79C003DD08A /* LinkedIn */ = {
+			isa = PBXGroup;
+			children = (
+				7E0AB53D160AE90B003DD08A /* LinkedIn_GiftGiv.h */,
+				7E0AB53E160AE90B003DD08A /* LinkedIn_GiftGiv.m */,
+				7E0AB4F1160AE7BA003DD08A /* OAuthConsumeriPhoneLib */,
+				7E0AB4F0160AE7AB003DD08A /* LinkedInClientLibrary */,
+			);
+			name = LinkedIn;
+			sourceTree = "<group>";
+		};
+		7E0AB4F0160AE7AB003DD08A /* LinkedInClientLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				7E0AB526160AE8F3003DD08A /* OAToken+storage.h */,
+				7E0AB527160AE8F3003DD08A /* OAToken+storage.m */,
+				7E0AB528160AE8F3003DD08A /* RDLinkedIn.h */,
+				7E0AB529160AE8F3003DD08A /* RDLinkedInAuthorizationController.h */,
+				7E0AB52A160AE8F3003DD08A /* RDLinkedInAuthorizationController.m */,
+				7E0AB52B160AE8F3003DD08A /* RDLinkedInAuthorizationControllerDelegate.h */,
+				7E0AB52C160AE8F3003DD08A /* RDLinkedInEngine.h */,
+				7E0AB52D160AE8F3003DD08A /* RDLinkedInEngine.m */,
+				7E0AB52E160AE8F3003DD08A /* RDLinkedInEngineDelegate.h */,
+				7E0AB52F160AE8F3003DD08A /* RDLinkedInHTTPURLConnection.h */,
+				7E0AB530160AE8F3003DD08A /* RDLinkedInHTTPURLConnection.m */,
+				7E0AB531160AE8F3003DD08A /* RDLinkedInRequestBuilder.h */,
+				7E0AB532160AE8F3003DD08A /* RDLinkedInRequestBuilder.m */,
+				7E0AB533160AE8F3003DD08A /* RDLinkedInResponseParser.h */,
+				7E0AB534160AE8F3003DD08A /* RDLinkedInResponseParser.m */,
+				7E0AB535160AE8F3003DD08A /* RDLinkedInTypes.h */,
+				7E0AB536160AE8F3003DD08A /* RDLogging.h */,
+			);
+			name = LinkedInClientLibrary;
+			sourceTree = "<group>";
+		};
+		7E0AB4F1160AE7BA003DD08A /* OAuthConsumeriPhoneLib */ = {
+			isa = PBXGroup;
+			children = (
+				7E0AB4F2160AE7C8003DD08A /* OAuthConsumer */,
+			);
+			name = OAuthConsumeriPhoneLib;
+			sourceTree = "<group>";
+		};
+		7E0AB4F2160AE7C8003DD08A /* OAuthConsumer */ = {
+			isa = PBXGroup;
+			children = (
+				7E0AB4F4160AE8D1003DD08A /* NSMutableURLRequest+Parameters.h */,
+				7E0AB4F5160AE8D1003DD08A /* NSMutableURLRequest+Parameters.m */,
+				7E0AB4F6160AE8D1003DD08A /* NSString+URLEncoding.h */,
+				7E0AB4F7160AE8D1003DD08A /* NSString+URLEncoding.m */,
+				7E0AB4F8160AE8D1003DD08A /* NSURL+Base.h */,
+				7E0AB4F9160AE8D1003DD08A /* NSURL+Base.m */,
+				7E0AB4FA160AE8D1003DD08A /* OAAsynchronousDataFetcher.h */,
+				7E0AB4FB160AE8D1003DD08A /* OAAsynchronousDataFetcher.m */,
+				7E0AB4FC160AE8D1003DD08A /* OAConsumer.h */,
+				7E0AB4FD160AE8D1003DD08A /* OAConsumer.m */,
+				7E0AB4FE160AE8D1003DD08A /* OADataFetcher.h */,
+				7E0AB4FF160AE8D1003DD08A /* OADataFetcher.m */,
+				7E0AB500160AE8D1003DD08A /* OAHMAC_SHA1SignatureProvider.h */,
+				7E0AB501160AE8D1003DD08A /* OAHMAC_SHA1SignatureProvider.m */,
+				7E0AB502160AE8D1003DD08A /* OAMutableURLRequest.h */,
+				7E0AB503160AE8D1003DD08A /* OAMutableURLRequest.m */,
+				7E0AB504160AE8D1003DD08A /* OAPlaintextSignatureProvider.h */,
+				7E0AB505160AE8D1003DD08A /* OAPlaintextSignatureProvider.m */,
+				7E0AB506160AE8D1003DD08A /* OARequestParameter.h */,
+				7E0AB507160AE8D1003DD08A /* OARequestParameter.m */,
+				7E0AB508160AE8D1003DD08A /* OAServiceTicket.h */,
+				7E0AB509160AE8D1003DD08A /* OAServiceTicket.m */,
+				7E0AB50A160AE8D1003DD08A /* OASignatureProviding.h */,
+				7E0AB50B160AE8D1003DD08A /* OAToken_KeychainExtensions.h */,
+				7E0AB50C160AE8D1003DD08A /* OAToken_KeychainExtensions.m */,
+				7E0AB50D160AE8D1003DD08A /* OAToken.h */,
+				7E0AB50E160AE8D1003DD08A /* OAToken.m */,
+				7E0AB50F160AE8D1003DD08A /* OAuthConsumer.h */,
+				7E0AB4F3160AE7D3003DD08A /* Crypto */,
+			);
+			name = OAuthConsumer;
+			sourceTree = "<group>";
+		};
+		7E0AB4F3160AE7D3003DD08A /* Crypto */ = {
+			isa = PBXGroup;
+			children = (
+				7E0AB51D160AE8E5003DD08A /* Base64Transcoder.c */,
+				7E0AB51E160AE8E5003DD08A /* Base64Transcoder.h */,
+				7E0AB51F160AE8E5003DD08A /* hmac.c */,
+				7E0AB520160AE8E5003DD08A /* hmac.h */,
+				7E0AB521160AE8E5003DD08A /* sha1.c */,
+				7E0AB522160AE8E5003DD08A /* sha1.h */,
+			);
+			name = Crypto;
 			sourceTree = "<group>";
 		};
 		7E0FE89415C2CEC600EDC79C /* Network Connectivity */ = {
@@ -645,7 +823,8 @@
 		7E5EF71815B929BB00C1D252 /* Retina */ = {
 			isa = PBXGroup;
 			children = (
-				7ED8587515F478A3007F28F9 /* giftbutton_new@2x.png */,
+				7EF056C016083D760055BC52 /* searchicon@2x.png */,
+				7E0AB54A160B3D91003DD08A /* orderhistoryicon@2x.png */,
 				7ECFE0C715BE6E9A002E95E3 /* appicon@2x.png */,
 				7ECFE0D415BE7574002E95E3 /* logoutbutton@2x.png */,
 				7ECFE0D515BE7574002E95E3 /* askagainbutton@2x.png */,
@@ -664,8 +843,9 @@
 		7E5EF71A15B929C300C1D252 /* Normal */ = {
 			isa = PBXGroup;
 			children = (
-				7ED8587715F478AB007F28F9 /* giftbutton_new.png */,
+				7EF056BD16083D530055BC52 /* searchicon.png */,
 				7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */,
+				7E0AB548160B3D78003DD08A /* orderhistoryicon.png */,
 				7ECFE0CA15BE6EAB002E95E3 /* appicon.png */,
 				7ECFE0CC15BE7535002E95E3 /* logoutbutton.png */,
 				7ECFE0CD15BE7535002E95E3 /* askagainbutton.png */,
@@ -879,6 +1059,8 @@
 		7ED7EA1B15B6F1EE008DFDE3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7E0AB542160AEB93003DD08A /* libxml2.2.dylib */,
+				7E0AB540160AEB16003DD08A /* Security.framework */,
 				7ED088E215F5E52F0056160C /* ImageIO.framework */,
 				7E0FE89915C2CF0A00EDC79C /* SystemConfiguration.framework */,
 				7EE0260415BD6502003B9C74 /* CoreText.framework */,
@@ -896,6 +1078,7 @@
 				7E1D729015B80BEA0008D19C /* Constants.h */,
 				7E0FE89E15C2CFF600EDC79C /* Global Alerts */,
 				7E1D729115B80C740008D19C /* MBProgressHUD */,
+				7E0AB4EE160AE79C003DD08A /* LinkedIn */,
 				7E1D726115B809EF0008D19C /* Facebook_iOS */,
 				7E1D724415B7E9BF0008D19C /* App Delegate */,
 				7E0FE89415C2CEC600EDC79C /* Network Connectivity */,
@@ -1126,10 +1309,12 @@
 				7ED149F815CFF3C3007CBDBF /* OrderHistoryDetailsVC.xib in Resources */,
 				7ED149FD15CFF3D1007CBDBF /* OrderHistoryListVC.xib in Resources */,
 				7E46474415DE47BD00BAFFD4 /* profilepic_dummy.png in Resources */,
-				7ED8587615F478A3007F28F9 /* giftbutton_new@2x.png in Resources */,
-				7ED8587815F478AB007F28F9 /* giftbutton_new.png in Resources */,
 				7E2047CF15FF1150005EB9C1 /* Readme.txt in Resources */,
 				7EE008F31607197C0037A06C /* SampleXML.xml in Resources */,
+				7EF056BE16083D530055BC52 /* searchicon.png in Resources */,
+				7EF056C116083D760055BC52 /* searchicon@2x.png in Resources */,
+				7E0AB549160B3D78003DD08A /* orderhistoryicon.png in Resources */,
+				7E0AB54B160B3D91003DD08A /* orderhistoryicon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1223,6 +1408,29 @@
 				7ED088E115F5E2820056160C /* UIImage+scaling.m in Sources */,
 				7EDD4884160061B500F72BEB /* FacebookContactsReq.m in Sources */,
 				7EDD488716006BFB00F72BEB /* FacebookContactObject.m in Sources */,
+				7E0AB510160AE8D1003DD08A /* NSMutableURLRequest+Parameters.m in Sources */,
+				7E0AB511160AE8D1003DD08A /* NSString+URLEncoding.m in Sources */,
+				7E0AB512160AE8D1003DD08A /* NSURL+Base.m in Sources */,
+				7E0AB513160AE8D1003DD08A /* OAAsynchronousDataFetcher.m in Sources */,
+				7E0AB514160AE8D1003DD08A /* OAConsumer.m in Sources */,
+				7E0AB515160AE8D1003DD08A /* OADataFetcher.m in Sources */,
+				7E0AB516160AE8D1003DD08A /* OAHMAC_SHA1SignatureProvider.m in Sources */,
+				7E0AB517160AE8D1003DD08A /* OAMutableURLRequest.m in Sources */,
+				7E0AB518160AE8D1003DD08A /* OAPlaintextSignatureProvider.m in Sources */,
+				7E0AB519160AE8D1003DD08A /* OARequestParameter.m in Sources */,
+				7E0AB51A160AE8D1003DD08A /* OAServiceTicket.m in Sources */,
+				7E0AB51B160AE8D1003DD08A /* OAToken_KeychainExtensions.m in Sources */,
+				7E0AB51C160AE8D1003DD08A /* OAToken.m in Sources */,
+				7E0AB523160AE8E5003DD08A /* Base64Transcoder.c in Sources */,
+				7E0AB524160AE8E5003DD08A /* hmac.c in Sources */,
+				7E0AB525160AE8E5003DD08A /* sha1.c in Sources */,
+				7E0AB537160AE8F3003DD08A /* OAToken+storage.m in Sources */,
+				7E0AB538160AE8F3003DD08A /* RDLinkedInAuthorizationController.m in Sources */,
+				7E0AB539160AE8F3003DD08A /* RDLinkedInEngine.m in Sources */,
+				7E0AB53A160AE8F3003DD08A /* RDLinkedInHTTPURLConnection.m in Sources */,
+				7E0AB53B160AE8F3003DD08A /* RDLinkedInRequestBuilder.m in Sources */,
+				7E0AB53C160AE8F3003DD08A /* RDLinkedInResponseParser.m in Sources */,
+				7E0AB53F160AE90B003DD08A /* LinkedIn_GiftGiv.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1253,6 +1461,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "97023388-5FF4-4687-AE6B-90711B551C20";
@@ -1273,6 +1482,10 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GiftGiv/GiftGiv-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../OAuthConsumeriPhoneLib",
+					/usr/include/libxml2,
+				);
 				INFOPLIST_FILE = "GiftGiv/GiftGiv-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1282,6 +1495,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "97023388-5FF4-4687-AE6B-90711B551C20";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "97023388-5FF4-4687-AE6B-90711B551C20";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../LinkedInClientLibrary";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;
@@ -1306,6 +1520,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PROVISIONING_PROFILE = "97023388-5FF4-4687-AE6B-90711B551C20";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "97023388-5FF4-4687-AE6B-90711B551C20";
@@ -1326,6 +1541,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "97023388-5FF4-4687-AE6B-90711B551C20";
@@ -1346,6 +1562,10 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GiftGiv/GiftGiv-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../OAuthConsumeriPhoneLib",
+					/usr/include/libxml2,
+				);
 				INFOPLIST_FILE = "GiftGiv/GiftGiv-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1355,6 +1575,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "DF50156B-918F-46AB-9C1C-BC96130F799C";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DF50156B-918F-46AB-9C1C-BC96130F799C";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../LinkedInClientLibrary";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1370,6 +1591,10 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GiftGiv/GiftGiv-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../OAuthConsumeriPhoneLib",
+					/usr/include/libxml2,
+				);
 				INFOPLIST_FILE = "GiftGiv/GiftGiv-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1379,6 +1604,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "97023388-5FF4-4687-AE6B-90711B551C20";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "97023388-5FF4-4687-AE6B-90711B551C20";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../LinkedInClientLibrary";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

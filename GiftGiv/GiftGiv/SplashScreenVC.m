@@ -41,7 +41,7 @@
     
     Facebook_GiftGiv *fb_giftgiv=[[Facebook_GiftGiv alloc]init];
         
-    if([[fb_giftgiv facebook] isSessionValid]){
+    if([[fb_giftgiv facebook] isSessionValid] || [[LinkedIn_GiftGiv sharedSingleton]isLinkedInAuthorized]){
         [self performSelector:@selector(loadHomeScreen) withObject:nil afterDelay:2.0];
     }
     else
