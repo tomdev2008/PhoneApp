@@ -120,6 +120,33 @@
     [home release];
 }
 - (void)linkedInLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{
+    NSLog(@"profile received.....%@",userDetails);
+    
+    
+    /*
+     {
+     "date-of-birth" =     {
+     day = ;
+     month = ;
+     year = ;
+     }; //Not mandatory
+     "email-address" = "";
+     "first-name" = "";
+     headline = "";
+     id = "";
+     "last-name" = "";
+     "picture-url" = ""; //Not mandatory
+     }
+     */
+    
+    
+    [[NSUserDefaults standardUserDefaults]setObject:userDetails forKey:@"MyLinkedInDetails"];
+           
+    
+    if([CheckNetwork connectedToNetwork]){
+        //[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInAccessToken"];
+                
+    }
     
 }
 

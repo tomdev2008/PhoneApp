@@ -79,9 +79,9 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 
 
 - (void)fetchProfile {
-    NSLog(@"login..");
+    
     self.fetchConnection = [self.engine profileForCurrentUser];
-    NSLog(@"fetch..%@",self.fetchConnection);
+    
 }
 #pragma mark - RDLinkedInEngineDelegate
 
@@ -102,8 +102,9 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestSucceeded:(RDLinkedInConnectionID *)identifier withResults:(id)results {
     //NSLog(@"++ LinkedIn engine reports success for connection %@", identifier);
     if( identifier == self.fetchConnection ) {
-        NSDictionary* profile = results;
-        NSLog(@"profile %@",profile);
+        NSMutableDictionary* profile = results;
+        
+        [lnkInGiftGivDelegate linkedInLoggedInWithUserDetails:profile];
     }
     else if (identifier == self.shareConnection) {
         [[NSNotificationCenter defaultCenter] postNotificationName:SHARE_COMPLETED_NOTIFICATION object:nil];

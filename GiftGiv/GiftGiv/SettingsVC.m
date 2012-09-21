@@ -59,6 +59,8 @@
     else if([[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
         [[LinkedIn_GiftGiv sharedSingleton] logOut];
         [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
+       
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInAccessToken"];
         
         if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
             [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];

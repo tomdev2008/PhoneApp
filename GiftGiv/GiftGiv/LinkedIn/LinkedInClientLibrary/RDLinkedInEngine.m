@@ -15,7 +15,7 @@
 #import "RDLogging.h"
 
 static NSString *const kAPIBaseURL           = @"http://api.linkedin.com";
-static NSString *const kOAuthRequestTokenURL = @"https://api.linkedin.com/uas/oauth/requestToken";
+static NSString *const kOAuthRequestTokenURL = /*@"https://api.linkedin.com/uas/oauth/requestToken?scope=r_fullprofile%2Br_emailaddress";/*/@"https://api.linkedin.com/uas/oauth/requestToken";
 static NSString *const kOAuthAccessTokenURL  = @"https://api.linkedin.com/uas/oauth/accessToken";
 static NSString *const kOAuthAuthorizeURL    = @"https://www.linkedin.com/uas/oauth/authorize";
 static NSString *const kOAuthInvalidateURL   = @"https://api.linkedin.com/uas/oauth/invalidateToken";
@@ -148,7 +148,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 #pragma mark profile methods
 
 - (RDLinkedInConnectionID *)profileForCurrentUser {
-  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~"]];
+  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~:(id,first-name,last-name,headline,picture-url,date-of-birth,email-address)"]];
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 
@@ -255,11 +255,19 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 
 - (void)sendTokenRequestWithURL:(NSURL *)url token:(OAToken *)token onSuccess:(SEL)successSel onFail:(SEL)failSel {
   OAMutableURLRequest* request = [[[OAMutableURLRequest alloc] initWithURL:url consumer:rdOAuthConsumer token:token realm:nil signatureProvider:nil] autorelease];
+    /*if(!token){
+        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_fullprofile"] autorelease]]];
+    }*/
+    
 	if( !request ) return;
 	
   [request setHTTPMethod:@"POST"];
 	if( rdOAuthVerifier.length ) token.pin = rdOAuthVerifier;
 	
+    if(!token){
+        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_fullprofile r_emailaddress"] autorelease]]];
+    }
+    
   OADataFetcher* fetcher = [[[OADataFetcher alloc] init] autorelease];	
   [fetcher fetchDataWithRequest:request delegate:self didFinishSelector:successSel didFailSelector:failSel];
 }
@@ -304,8 +312,10 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   
   [rdOAuthAccessToken release];
   rdOAuthAccessToken = [[OAToken alloc] initWithHTTPResponseBody:dataString];
-  //RDLOG(@"  access token set %@", rdOAuthAccessToken.key);
-  
+  RDLOG(@"  access token set %@", rdOAuthAccessToken.key);
+    [[NSUserDefaults standardUserDefaults]setObject:rdOAuthRequestToken.key forKey:@"LinkedInAccessToken"];
+    
+    
   if( [rdDelegate respondsToSelector:@selector(linkedInEngineAccessToken:setAccessToken:)] ) {
     [rdDelegate linkedInEngineAccessToken:self setAccessToken:rdOAuthAccessToken];
   }

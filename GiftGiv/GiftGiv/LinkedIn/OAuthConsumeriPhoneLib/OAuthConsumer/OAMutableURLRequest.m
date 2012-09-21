@@ -38,6 +38,7 @@
             realm:(NSString *)aRealm
 signatureProvider:(id<OASignatureProviding, NSObject>)aProvider 
 {
+    NSLog(@"url...%@",aUrl);
     if (self = [super initWithURL:aUrl
 					  cachePolicy:NSURLRequestReloadIgnoringCacheData
 				  timeoutInterval:10.0])
