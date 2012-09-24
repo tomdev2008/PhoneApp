@@ -89,19 +89,36 @@ static NSDateFormatter *customDateFormat=nil;
 -(void)viewWillAppear:(BOOL)animated{
     
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
+        if([allupcomingEvents count])
+            [allupcomingEvents removeAllObjects];
+        if([listOfBirthdayEvents count])
+            [listOfBirthdayEvents removeAllObjects];
+        if([newJobEvents count])
+            [newJobEvents removeAllObjects];
+        if([congratsEvents count])
+            [congratsEvents removeAllObjects];
+        if([anniversaryEvents count])
+            [anniversaryEvents removeAllObjects];
+        
+        [self performSelector:@selector(checkTotalNumberOfGroups)];
+        
+        [eventsTable reloadData]; 
         
         if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
             //[self showProgressHUD:self.view withMsg:nil];
             isEventsLoadingFromFB=NO;
+                               
+            [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"IsLoadingFromFacebook"];
             [self performSelector:@selector(makeRequestToGetEvents)];
         }
         
         else{
             if([CheckNetwork connectedToNetwork]){
                 isEventsLoadingFromFB=YES;
+               
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-                
+                [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"IsLoadingFromFacebook"];
                 [fb_giftgiv_home listOfBirthdayEvents];
                 
             }
@@ -208,6 +225,7 @@ static NSDateFormatter *customDateFormat=nil;
             isEventsLoadingFromFB=YES;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+            [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"IsLoadingFromFacebook"];
             [fb_giftgiv_home listOfBirthdayEvents];
             
         }

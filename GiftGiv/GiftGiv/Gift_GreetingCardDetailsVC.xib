@@ -43,7 +43,6 @@
 				<string key="NSFrameSize">{320, 460}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">1</int>
 					<bytes key="NSRGB">MCAwLjY3MDU4ODIzNTMgMC42NjI3NDUwOTgAA</bytes>
@@ -53,7 +52,7 @@
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
 			<object class="IBUIView" id="165620635">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIToolbar" id="947307470">
@@ -65,7 +64,6 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{6, 7}, {51, 30}}</string>
 								<reference key="NSSuperview" ref="947307470"/>
-								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="172139388"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -104,7 +102,6 @@
 						</array>
 						<string key="NSFrameSize">{320, 44}</string>
 						<reference key="NSSuperview" ref="165620635"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="852905068"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
@@ -127,8 +124,6 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{127, 4}, {68, 36}}</string>
 						<reference key="NSSuperview" ref="165620635"/>
-						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<int key="IBUIContentMode">1</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -139,8 +134,6 @@
 					</object>
 				</array>
 				<string key="NSFrame">{{0, 20}, {320, 460}}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="947307470"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">3</int>
@@ -189,7 +182,7 @@
 						</object>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
-						<float key="IBUIMinimumFontSize">10</float>
+						<float key="IBUIMinimumFontSize">13</float>
 						<object class="IBUIFontDescription" key="IBUIFontDescription" id="158795981">
 							<string key="name">Helvetica-Bold</string>
 							<string key="family">Helvetica</string>
@@ -427,7 +420,6 @@
 								<string key="NSFrame">{{188, 176}, {121, 40}}</string>
 								<reference key="NSSuperview" ref="719495508"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">2</int>
