@@ -53,6 +53,15 @@ static NSDateFormatter *standardDateFormatter = nil;
         if (fbAccessToken && fbExpirationDateKey) {
             self.facebook.accessToken = fbAccessToken;
             self.facebook.expirationDate = fbExpirationDateKey;
+            
+            if([fbRequestsArray count]){
+                for(FBRequest *request in fbRequestsArray){
+                    [request  cancelConnection];
+                }
+                [fbRequestsArray removeAllObjects];
+            }
+            
+            
             //NSLog(@"AccessToken= %@ \n ExpirationDate= %@", facebook.accessToken, facebook.expirationDate);
             fbRequestsArray=[[NSMutableArray alloc]init];
         }
@@ -61,8 +70,12 @@ static NSDateFormatter *standardDateFormatter = nil;
 }
 - (void) releaseFacebook{
     if(facebook!=nil){
-        if([fbRequestsArray count])
+        if([fbRequestsArray count]){
+            for(FBRequest *request in fbRequestsArray){
+                [request  cancelConnection];
+            }
             [fbRequestsArray removeAllObjects];
+        }
         if(fbRequestsArray!=nil){
             [fbRequestsArray release];
             fbRequestsArray=nil;
@@ -331,7 +344,10 @@ static NSDateFormatter *standardDateFormatter = nil;
                 [fbGiftGivDelegate facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)result];
                 break;
             case kAPIGetBirthdayEvents:
+                if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
+                    return;
                 
+                if([result isKindOfClass:[NSArray class]])
                 [fbGiftGivDelegate receivedBirthDayEvents:(NSMutableArray *)result];
                 
                 break;
@@ -358,8 +374,14 @@ static NSDateFormatter *standardDateFormatter = nil;
                     birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"wish you", @"belated", @"birthday wishes", @"have a lovely birthday", @"happy birthday", @"many happy returns of the day",nil];/*@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];*/
                 }
                 
-                
+                if(![result isKindOfClass:[NSArray class]])
+                    return;
                 for (NSDictionary *friendDict in (NSMutableArray*)result){
+                    if(![friendDict isKindOfClass:[NSDictionary class]])
+                        return;
+                    
+                    if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
+                        return;
                     //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                     currentAPICall=kAPIGetJSONForStatuses;
                     //last 2 days
@@ -380,6 +402,8 @@ static NSDateFormatter *standardDateFormatter = nil;
                 //json
                 
                 if([result isKindOfClass:[NSDictionary class]]){
+                    if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
+                        return;
                     //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                     
                     //parse the json feed to check the number of comments and likes, If it has more than 25 comments then check for the event text (for photos, 15 comments)

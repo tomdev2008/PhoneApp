@@ -19,6 +19,7 @@
 
 @property (nonatomic, retain) RDLinkedInEngine* engine;
 @property (nonatomic, retain) RDLinkedInConnectionID* fetchConnection;
+@property (nonatomic, retain) RDLinkedInConnectionID* getConnections;
 @property (nonatomic, retain) RDLinkedInConnectionID* shareConnection;
 - (void)fetchProfile;
 
@@ -30,7 +31,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 
 
 @synthesize engine;
-@synthesize fetchConnection;
+@synthesize fetchConnection,getConnections;
 @synthesize shareConnection;
 @synthesize lnkInGiftGivDelegate;
 
@@ -83,6 +84,9 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
     self.fetchConnection = [self.engine profileForCurrentUser];
     
 }
+- (void)getNetworkConnections{
+    self.getConnections = [self.engine  myconnections];
+}
 #pragma mark - RDLinkedInEngineDelegate
 
 - (void)linkedInEngineAccessToken:(RDLinkedInEngine *)engine setAccessToken:(OAToken *)token {
@@ -103,11 +107,14 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
     //NSLog(@"++ LinkedIn engine reports success for connection %@", identifier);
     if( identifier == self.fetchConnection ) {
         NSMutableDictionary* profile = results;
-        
         [lnkInGiftGivDelegate linkedInLoggedInWithUserDetails:profile];
     }
     else if (identifier == self.shareConnection) {
         [[NSNotificationCenter defaultCenter] postNotificationName:SHARE_COMPLETED_NOTIFICATION object:nil];
+    }
+    else if (identifier == self.getConnections){
+        
+        [lnkInGiftGivDelegate receivedNetworkConnections:(NSMutableDictionary*)results];
     }
 }
 

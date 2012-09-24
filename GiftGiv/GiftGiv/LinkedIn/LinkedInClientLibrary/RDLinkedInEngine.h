@@ -60,7 +60,7 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 // API methods
 - (RDLinkedInConnectionID *)profileForCurrentUser;
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID;
-
+- (RDLinkedInConnectionID *)myconnections;
 - (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus;
 /**
  * \fn - (RDLinkedInConnectionID *)shareUrl:(NSString *)submittedUrl imageUrl:(NSString *)submittedImageUrl title:(NSString*)title comment:(NSString*)comment

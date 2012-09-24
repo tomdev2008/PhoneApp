@@ -20,6 +20,7 @@
 - (void)linkedInDidLoggedOut;
 - (void)linkedInDidRequestFailed;
 - (void)linkedInDidCancelledLogin;
+- (void)receivedNetworkConnections:(NSMutableDictionary*)connections;
 @end
 
 
@@ -29,5 +30,6 @@
 + (LinkedIn_GiftGiv *)sharedSingleton;
 - (BOOL) isLinkedInAuthorized;
 - (void)logInFromView:(id)viwController;
+- (void)getNetworkConnections;
 - (void)logOut;
 @end

@@ -26,7 +26,7 @@
 #import "FacebookContactsReq.h"
 #import "LinkedIn_GiftGiv.h"
 
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate>
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate>
 
 {
     int eventGroupNum;

@@ -94,12 +94,26 @@ static NSDateFormatter *customDateFormat=nil;
     [swipeRightRecognizer release];
 }
 -(void)viewWillAppear:(BOOL)animated{
+    [[LinkedIn_GiftGiv sharedSingleton] getNetworkConnections];
+    [[LinkedIn_GiftGiv sharedSingleton] setLnkInGiftGivDelegate:self];
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
+        if([allupcomingEvents count])
+            [allupcomingEvents removeAllObjects];
+        if([listOfBirthdayEvents count])
+            [listOfBirthdayEvents removeAllObjects];
+        if([eventsToCelebrateArray count])
+            [eventsToCelebrateArray removeAllObjects];
+        if([facebookContactsArray count])
+            [facebookContactsArray removeAllObjects];
         
+        [self performSelector:@selector(checkTotalNumberOfGroups)];
+        
+        [eventsTable reloadData]; 
         if([[fb_giftgiv_home facebook]isSessionValid]){
             if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
                 isEventsLoadingFromFB=NO;
                 //[self showProgressHUD:self.view withMsg:nil];
+                [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"IsLoadingFromFacebook"];
                 [self performSelector:@selector(makeRequestToGetEvents)];
                 [self performSelector:@selector(makeRequestToGetFacebookContacts)];
                 
@@ -110,7 +124,7 @@ static NSDateFormatter *customDateFormat=nil;
                     isEventsLoadingFromFB=YES;
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-                    
+                    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"IsLoadingFromFacebook"];
                     [fb_giftgiv_home listOfBirthdayEvents];
                     [self performSelector:@selector(makeRequestToGetFacebookContacts) withObject:nil afterDelay:2.0];
                     
@@ -391,6 +405,7 @@ static NSDateFormatter *customDateFormat=nil;
         if([CheckNetwork connectedToNetwork]){
             isEventsLoadingFromFB=YES;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"IsLoadingFromFacebook"];
             //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
             [fb_giftgiv_home listOfBirthdayEvents];
             
@@ -2019,6 +2034,11 @@ static NSDateFormatter *customDateFormat=nil;
             return YES;
     }
     return NO;
+}
+
+#pragma mark - LinkedIn delegate
+- (void)receivedNetworkConnections:(NSMutableDictionary*)connections{
+    NSLog(@"connections... %@",connections);
 }
 
 #pragma mark - Add User Request delegate

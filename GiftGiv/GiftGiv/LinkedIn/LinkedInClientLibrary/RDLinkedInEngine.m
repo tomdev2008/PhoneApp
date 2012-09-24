@@ -50,6 +50,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 - (id)initWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret delegate:(id<RDLinkedInEngineDelegate>)delegate {
   self = [super init];
   if( self != nil ) {
+      NSLog(@"oaconsumer...key=%@ and secret=%@..",consumerKey,consumerSecret);
     rdDelegate = delegate;
     rdOAuthConsumer = [[OAConsumer alloc] initWithKey:consumerKey secret:consumerSecret];
     rdConnections = [[NSMutableDictionary alloc] init];
@@ -143,13 +144,17 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"oauth_token" value:rdOAuthRequestToken.key] autorelease]]];	
   return request;
 }
-
-
+#pragma mark - network connections
+- (RDLinkedInConnectionID *)myconnections {
+    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/connections"]];
+    return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
+}
 #pragma mark profile methods
 
 - (RDLinkedInConnectionID *)profileForCurrentUser {
-  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~:(id,first-name,last-name,headline,picture-url,date-of-birth,email-address)"]];
+  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~:(id,first-name,last-name,headline,picture-url,date-of-birth,email-address,three-current-positions)"]];
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
+  
 }
 
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID {
@@ -265,7 +270,10 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 	if( rdOAuthVerifier.length ) token.pin = rdOAuthVerifier;
 	
     if(!token){
-        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_fullprofile r_emailaddress"] autorelease]]];
+        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_basicprofile r_network"] autorelease]]]; 
+        /* r_network ==> Connections
+         r_nus ==> updates
+         */
     }
     
   OADataFetcher* fetcher = [[[OADataFetcher alloc] init] autorelease];	

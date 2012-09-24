@@ -112,7 +112,6 @@
 						<string key="NSFrame">{{127, 4}, {68, 36}}</string>
 						<reference key="NSSuperview" ref="683770239"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<int key="IBUIContentMode">1</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -173,7 +172,7 @@
 						</object>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
-						<float key="IBUIMinimumFontSize">10</float>
+						<float key="IBUIMinimumFontSize">13</float>
 						<object class="IBUIFontDescription" key="IBUIFontDescription" id="317708369">
 							<string key="name">Helvetica-Bold</string>
 							<string key="family">Helvetica</string>
@@ -365,7 +364,6 @@
 						<string key="NSFrame">{{178, 407}, {121, 40}}</string>
 						<reference key="NSSuperview" ref="479698573"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">2</int>
