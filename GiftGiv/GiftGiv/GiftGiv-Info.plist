@@ -14,7 +14,7 @@
 		<string>appicon@2x.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.tpdm.TestApps</string>
+	<string>thegiftgiv.com</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

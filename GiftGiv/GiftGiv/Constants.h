@@ -13,7 +13,7 @@
 //Device currect OS version, which we used for page control color dots
 #define currentiOSVersion [[[UIDevice currentDevice] systemVersion] doubleValue]
 
-#define WebServiceURL @"http://giftgivstage.cloudapp.net/giftgivservice/Service.svc"
+#define WebServiceURL @"http://giftgiv.cloudapp.net/giftgivservice/Service.svc"
 //Staging: http://giftgivstage.cloudapp.net/giftgivservice/Service.svc?wsdl
 //Local: http://10.11.32.211:81/Service.svc?wsdl
 //Production: http://giftgiv.cloudapp.net/GiftGivService/Service.svc
