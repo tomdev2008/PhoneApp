@@ -21,6 +21,8 @@
 @property (nonatomic, retain) RDLinkedInConnectionID* fetchConnection;
 @property (nonatomic, retain) RDLinkedInConnectionID* getConnections;
 @property (nonatomic, retain) RDLinkedInConnectionID* shareConnection;
+@property (nonatomic, retain) RDLinkedInConnectionID* getNetworkUpdates;
+
 - (void)fetchProfile;
 
 @end
@@ -31,7 +33,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 
 
 @synthesize engine;
-@synthesize fetchConnection,getConnections;
+@synthesize fetchConnection,getConnections,getNetworkUpdates;
 @synthesize shareConnection;
 @synthesize lnkInGiftGivDelegate;
 
@@ -87,6 +89,9 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 - (void)getNetworkConnections{
     self.getConnections = [self.engine  myconnections];
 }
+- (void)getMemberNetworkUpdates:(NSString*)memberId{
+    self.getNetworkUpdates = [self.engine memberNetworkUpdates:memberId];
+}
 #pragma mark - RDLinkedInEngineDelegate
 
 - (void)linkedInEngineAccessToken:(RDLinkedInEngine *)engine setAccessToken:(OAToken *)token {
@@ -104,6 +109,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 }
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestSucceeded:(RDLinkedInConnectionID *)identifier withResults:(id)results {
+    NSLog(@"identifier..%@",identifier);
     //NSLog(@"++ LinkedIn engine reports success for connection %@", identifier);
     if( identifier == self.fetchConnection ) {
         NSMutableDictionary* profile = results;
@@ -114,12 +120,22 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
     }
     else if (identifier == self.getConnections){
         
-        [lnkInGiftGivDelegate receivedNetworkConnections:(NSMutableDictionary*)results];
+        //[lnkInGiftGivDelegate receivedNetworkConnections:(NSMutableDictionary*)results];
+        //int personsCount=[[results objectForKey:@"person"] count];
+        NSMutableArray *persons=[results objectForKey:@"person"];
+        //for(int i=0;i<personsCount;i++){
+            [self getMemberNetworkUpdates:[[persons objectAtIndex:0]objectForKey:@"id"]];
+        //}
+        
+        
+    }
+    else if (identifier == self.getNetworkUpdates){
+        NSLog(@"updates..%@",results);
     }
 }
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestFailed:(RDLinkedInConnectionID *)identifier withError:(NSError *)error {
-    //NSLog(@"++ LinkedIn engine reports failure for connection %@\n%@", identifier, [error localizedDescription]);
+    NSLog(@"++ LinkedIn engine reports failure for connection %@\n%@", identifier, [error localizedDescription]);
     
     if (identifier == self.shareConnection) {
         [[NSNotificationCenter defaultCenter] postNotificationName:SHARE_FAILED_NOTIFICATION object:error];

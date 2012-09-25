@@ -149,6 +149,11 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
     NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/connections"]];
     return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
+
+- (RDLinkedInConnectionID *)memberNetworkUpdates:(NSString*)memberID {
+    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@/network/updates?scope=self",memberID]];
+    return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
+}
 #pragma mark profile methods
 
 - (RDLinkedInConnectionID *)profileForCurrentUser {
@@ -270,7 +275,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 	if( rdOAuthVerifier.length ) token.pin = rdOAuthVerifier;
 	
     if(!token){
-        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_basicprofile r_network"] autorelease]]]; 
+        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_basicprofile r_network rw_nus"] autorelease]]]; 
         /* r_network ==> Connections
          r_nus ==> updates
          */

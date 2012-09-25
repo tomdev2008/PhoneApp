@@ -32,4 +32,5 @@
 - (void)logInFromView:(id)viwController;
 - (void)getNetworkConnections;
 - (void)logOut;
+- (void)getMemberNetworkUpdates:(NSString*)memberId;
 @end
