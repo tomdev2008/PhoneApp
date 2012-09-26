@@ -151,13 +151,17 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 
 - (RDLinkedInConnectionID *)memberNetworkUpdates:(NSString*)memberID {
-    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@/network/updates?scope=self",memberID]];
+   //http://api.linkedin.com/v1/people/id=12345:(first-name,last-name)
+    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@:(first-name,last-name,headline,picture-url,current-share,positions)",memberID]];
+    
+    
+    //NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@/network/updates?scope=self",memberID]];
     return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 #pragma mark profile methods
 
 - (RDLinkedInConnectionID *)profileForCurrentUser {
-  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~:(id,first-name,last-name,headline,picture-url,date-of-birth,email-address,three-current-positions)"]];
+  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~:(id,first-name,last-name,headline,picture-url,date-of-birth,email-address,three-current-positions,current-share,positions)"]];
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
   
 }

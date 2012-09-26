@@ -57,7 +57,7 @@
     int upcomingEventsCount=[upcomingEvents count];
     for(int i=0;i<upcomingEventsCount;i++){
         
-        if(![[[upcomingEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        if(![[[upcomingEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]] || ![[[upcomingEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
             dispatch_queue_t ImageLoader_Q;
             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
             dispatch_async(ImageLoader_Q, ^{
@@ -171,6 +171,9 @@
         
         if([[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
             cell.profileImg.image=[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
+        }
+        else if([[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
+            cell.profileImg.image=[UIImage imageWithData:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"]];
         }
                      
         

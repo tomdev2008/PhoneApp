@@ -47,12 +47,16 @@
     NSMutableArray *linkedInContactsArray;
     
     NSMutableArray *globalFacebookContacts;
-    NSMutableArray *tempSearchArray;
+   
+           
+    NSMutableArray *searchUpcomingEventsArray,*searchBirthdayEvents,*searchEventsToCelebrateArray,*searchFBContactsArray,*searchLkdContactsArray;
+    
     
     NSMutableArray *categoryTitles;
     BOOL shouldLoadingPicsStop;
     Facebook_GiftGiv *fb_giftgiv_home;
     BOOL isEventsLoadingFromFB;
+    BOOL isSearchEnabled;
 }
 
 @property (retain, nonatomic) IBOutlet UIView *eventsBgView;

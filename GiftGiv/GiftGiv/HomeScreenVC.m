@@ -60,6 +60,14 @@ static NSDateFormatter *customDateFormat=nil;
     eventTitleLbl.text=events_category_1;
     
     
+    searchUpcomingEventsArray=[[NSMutableArray alloc]init];
+    searchBirthdayEvents=[[NSMutableArray alloc]init];
+    searchEventsToCelebrateArray=[[NSMutableArray alloc]init];
+    searchFBContactsArray=[[NSMutableArray alloc]init];
+    searchLkdContactsArray=[[NSMutableArray alloc]init];
+    
+    
+    
     if(currentiOSVersion<6.0){
         pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
         pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
@@ -97,6 +105,22 @@ static NSDateFormatter *customDateFormat=nil;
     [[LinkedIn_GiftGiv sharedSingleton] getNetworkConnections];
     [[LinkedIn_GiftGiv sharedSingleton] setLnkInGiftGivDelegate:self];
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
+        if([searchBgView superview]){
+            [searchBgView removeFromSuperview];
+            isSearchEnabled=NO;
+        }
+        if([searchBirthdayEvents count])
+            [searchBirthdayEvents removeAllObjects];
+        if([searchUpcomingEventsArray count])
+            [searchUpcomingEventsArray removeAllObjects];
+        if([searchEventsToCelebrateArray count])
+            [searchEventsToCelebrateArray removeAllObjects];
+        if([searchFBContactsArray count])
+            [searchFBContactsArray removeAllObjects];
+        if([searchLkdContactsArray count])
+            [searchLkdContactsArray removeAllObjects];
+        
+        
         if([allupcomingEvents count])
             [allupcomingEvents removeAllObjects];
         if([listOfBirthdayEvents count])
@@ -105,6 +129,8 @@ static NSDateFormatter *customDateFormat=nil;
             [eventsToCelebrateArray removeAllObjects];
         if([facebookContactsArray count])
             [facebookContactsArray removeAllObjects];
+        if([linkedInContactsArray count])
+            [linkedInContactsArray removeAllObjects];
         
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
@@ -126,7 +152,7 @@ static NSDateFormatter *customDateFormat=nil;
                     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
                     [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"IsLoadingFromFacebook"];
                     [fb_giftgiv_home listOfBirthdayEvents];
-                    [self performSelector:@selector(makeRequestToGetFacebookContacts) withObject:nil afterDelay:2.0];
+                    [self performSelector:@selector(makeRequestToGetFacebookContacts) withObject:nil afterDelay:3.0];
                     
                 }
             }
@@ -146,7 +172,7 @@ static NSDateFormatter *customDateFormat=nil;
     ////[events_2_Table reloadData];
     [super viewWillAppear:YES];
 }
--(void)reloadTheEventsScreen{
+/*-(void)reloadTheEventsScreen{
     //[self performSelector:@selector(makeRequestToGetFacebookContacts)];
     if([allupcomingEvents count]){
         [allupcomingEvents removeAllObjects];
@@ -181,28 +207,12 @@ static NSDateFormatter *customDateFormat=nil;
     
     facebookContactsArray=[[NSMutableArray alloc]initWithArray:globalFacebookContacts];
     
-    if([searchBgView superview]){
-        if([tempSearchArray count]){
-            [tempSearchArray removeAllObjects];
-            [tempSearchArray release];
-            tempSearchArray=nil;
-        }
-        if([eventTitleLbl.text isEqualToString:events_category_1])        
-            tempSearchArray=[[NSMutableArray alloc]initWithArray:allupcomingEvents];
-        else if([eventTitleLbl.text isEqualToString:events_category_2])
-            tempSearchArray=[[NSMutableArray alloc]initWithArray:listOfBirthdayEvents];
-        else if([eventTitleLbl.text isEqualToString:events_category_3])
-            tempSearchArray=[[NSMutableArray alloc]initWithArray:eventsToCelebrateArray];
-        else if([eventTitleLbl.text isEqualToString:events_category_4])
-            tempSearchArray=[[NSMutableArray alloc]initWithArray:facebookContactsArray];
-        else if([eventTitleLbl.text isEqualToString:events_category_5])
-            tempSearchArray=[[NSMutableArray alloc]initWithArray:linkedInContactsArray];
-    }
+    
     
     
     
     [eventsTable reloadData];
-}
+}*/
 #pragma mark -
 -(void)makeRequestToGetFacebookContacts{
     if([CheckNetwork connectedToNetwork]){
@@ -473,45 +483,58 @@ static NSDateFormatter *customDateFormat=nil;
     if([categoryTitles count])
         [categoryTitles removeAllObjects];
     
-    if([allupcomingEvents count]){
+    if([searchBgView superview]){
+        if([searchUpcomingEventsArray count]){
+            
+            [categoryTitles addObject:events_category_1];
+            totalGroups++;
+        }
+        if([searchBirthdayEvents count]){
+            
+            [categoryTitles addObject:events_category_2];
+            totalGroups++;
+        }
         
-        [categoryTitles addObject:events_category_1];
-        totalGroups++;
+        if([searchEventsToCelebrateArray count]){
+            [categoryTitles addObject:events_category_3];
+            totalGroups++;
+        }
+        if([searchFBContactsArray count]){
+            [categoryTitles addObject:events_category_4];
+            totalGroups++;
+        }
+        if([searchLkdContactsArray count]){
+            [categoryTitles addObject:events_category_5];
+            totalGroups++;
+        }
     }
-    if([listOfBirthdayEvents count]){
+    else{
+        if([allupcomingEvents count]){
+            
+            [categoryTitles addObject:events_category_1];
+            totalGroups++;
+        }
+        if([listOfBirthdayEvents count]){
+            
+            [categoryTitles addObject:events_category_2];
+            totalGroups++;
+        }
         
-        [categoryTitles addObject:events_category_2];
-        totalGroups++;
-    }
-    /*if([anniversaryEvents count]){
-        
-        [categoryTitles addObject:events_category_3];
-        totalGroups++;
-    }    
-    if([newJobEvents count]){
-        
-        [categoryTitles addObject:events_category_4];
-        totalGroups++;
+        if([eventsToCelebrateArray count]){
+            [categoryTitles addObject:events_category_3];
+            totalGroups++;
+        }
+        if([facebookContactsArray count]){
+            [categoryTitles addObject:events_category_4];
+            totalGroups++;
+        }
+        if([linkedInContactsArray count]){
+            [categoryTitles addObject:events_category_5];
+            totalGroups++;
+        }
     }
     
-    if([congratsEvents count]){
-        
-        [categoryTitles addObject:events_category_5];
-        totalGroups++;
-    }
-    */
-    if([eventsToCelebrateArray count]){
-        [categoryTitles addObject:events_category_3];
-        totalGroups++;
-    }
-    if([facebookContactsArray count]){
-        [categoryTitles addObject:events_category_4];
-        totalGroups++;
-    }
-    if([linkedInContactsArray count]){
-        [categoryTitles addObject:events_category_5];
-        totalGroups++;
-    }
+    
     pageControlForEventGroups.numberOfPages=totalGroups;
     pageControlForEventGroups.currentPage=eventGroupNum-1;
     
@@ -539,51 +562,37 @@ static NSDateFormatter *customDateFormat=nil;
 	
     if([tableView isEqual:eventsTable]){
         if([eventTitleLbl.text isEqualToString:events_category_1]){
-            
+            if(isSearchEnabled)
+                return [searchUpcomingEventsArray count];
             return [allupcomingEvents count];
             
         }
         if([eventTitleLbl.text isEqualToString:events_category_2]){
+            if(isSearchEnabled)
+                return [searchBirthdayEvents count];
             return [listOfBirthdayEvents count];
             
         }
         if([eventTitleLbl.text isEqualToString:events_category_3]){
+            if(isSearchEnabled)
+                return [searchEventsToCelebrateArray count];
             return [eventsToCelebrateArray count];
             
         }
         if([eventTitleLbl.text isEqualToString:events_category_4]){
+            if(isSearchEnabled)
+                return [searchFBContactsArray count];
             return [facebookContactsArray count];
             
         }
         if([eventTitleLbl.text isEqualToString:events_category_5]){
+            if(isSearchEnabled)
+                return [searchLkdContactsArray count];
             return [linkedInContactsArray count];
             
         }
     }
-    /*else if([tableView isEqual:events_2_Table]){
-        if([eventTitle_2_Lbl.text isEqualToString:events_category_1]){
-            
-            return [allupcomingEvents count];
-            
-        }
-        if([eventTitle_2_Lbl.text isEqualToString:events_category_2]){
-            return [listOfBirthdayEvents count];
-            
-        }
-        if([eventTitle_2_Lbl.text isEqualToString:events_category_3]){
-            return [anniversaryEvents count];
-            
-        }
-        if([eventTitle_2_Lbl.text isEqualToString:events_category_4]){
-            return [newJobEvents count];
-            
-        }
-        if([eventTitle_2_Lbl.text isEqualToString:events_category_5]){
-            return [congratsEvents count];
-            
-        }
-    }
-    */
+  
     return 0;
 }
 
@@ -608,48 +617,96 @@ static NSDateFormatter *customDateFormat=nil;
             
         }
         if([eventTitleLbl.text isEqualToString:events_category_1]){
-            if([allupcomingEvents count]){
-                //NSLog(@"upcoming..%@",allupcomingEvents);
-                [self loadEventsData:allupcomingEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
-                
+            if(isSearchEnabled){
+                if([searchUpcomingEventsArray count]){
+                    //NSLog(@"upcoming..%@",allupcomingEvents);
+                    [self loadEventsData:searchUpcomingEventsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    
+                }
             }
+            else{
+                if([allupcomingEvents count]){
+                    //NSLog(@"upcoming..%@",allupcomingEvents);
+                    [self loadEventsData:allupcomingEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    
+                }
+            }
+            
         }
         else if([eventTitleLbl.text isEqualToString:events_category_2]){
-            
-            if([listOfBirthdayEvents count]){
-                //NSLog(@"list of birthdays..%@",listOfBirthdayEvents);
-                [self loadEventsData:listOfBirthdayEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
-                
-                
+            if(isSearchEnabled){
+                if([searchBirthdayEvents count]){
+                    //NSLog(@"upcoming..%@",allupcomingEvents);
+                    [self loadEventsData:searchBirthdayEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    
+                }
             }
+            else{
+                if([listOfBirthdayEvents count]){
+                    //NSLog(@"list of birthdays..%@",listOfBirthdayEvents);
+                    [self loadEventsData:listOfBirthdayEvents withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    
+                    
+                }
+            }
+            
             
         }
         else if([eventTitleLbl.text isEqualToString:events_category_3]){
             
-            if([eventsToCelebrateArray count]){
-                //NSLog(@"list of anniversaries..%@",anniversaryEvents);
-                [self loadEventsData:eventsToCelebrateArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
-                
-                
+            if([searchBgView superview]){
+                if([searchEventsToCelebrateArray count]){
+                    //NSLog(@"upcoming..%@",allupcomingEvents);
+                    [self loadEventsData:searchEventsToCelebrateArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    
+                }
             }
+            else{
+                if([eventsToCelebrateArray count]){
+                    //NSLog(@"list of anniversaries..%@",anniversaryEvents);
+                    [self loadEventsData:eventsToCelebrateArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    
+                    
+                }
+            }
+            
+            
             
         }
         else if([eventTitleLbl.text isEqualToString:events_category_4]){
-            
-            if([facebookContactsArray count]){
-                //NSLog(@"list of newJobEvents..%@",newJobEvents);
-                [self loadEventsData:facebookContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];   
+            if(isSearchEnabled){
+                if([searchFBContactsArray count]){
+                    //NSLog(@"upcoming..%@",allupcomingEvents);
+                    [self loadEventsData:searchFBContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    
+                }
             }
+            else{
+                if([facebookContactsArray count]){
+                    //NSLog(@"list of newJobEvents..%@",newJobEvents);
+                    [self loadEventsData:facebookContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];   
+                }
+            }
+            
             
         }
         else if([eventTitleLbl.text isEqualToString:events_category_5]){
-            
-            if([linkedInContactsArray count]){
-               // NSLog(@"list of congratsEvents..%@",congratsEvents);
-                
-                [self loadEventsData:linkedInContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
-                
+            if(isSearchEnabled){
+                if([searchLkdContactsArray count]){
+                    //NSLog(@"upcoming..%@",allupcomingEvents);
+                    [self loadEventsData:searchLkdContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    
+                }
             }
+            else{
+                if([linkedInContactsArray count]){
+                    // NSLog(@"list of congratsEvents..%@",congratsEvents);
+                    
+                    [self loadEventsData:linkedInContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    
+                }
+            }
+            
             
         }
         
@@ -781,6 +838,9 @@ static NSDateFormatter *customDateFormat=nil;
     
     if([[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
         cell.profileImg.image=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
+    }
+    else if([[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
+        cell.profileImg.image=[UIImage imageWithData:[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"]];
     }
     
     
@@ -974,19 +1034,23 @@ static NSDateFormatter *customDateFormat=nil;
     [searchBar resignFirstResponder];
     searchBar.text=@"";
     [searchBgView removeFromSuperview];
-    [self performSelector:@selector(reloadTheEventsScreen)];
-    [self loadProfilePictures];
+    isSearchEnabled=NO;
+    [self performSelector:@selector(checkTotalNumberOfGroups)];
+    //[self performSelector:@selector(reloadTheEventsScreen)];
+    //[self loadProfilePictures];
+    [eventsTable reloadData];
 }
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar_1{
-    if([tempSearchArray count]){
+    /*if([tempSearchArray count]){
         [tempSearchArray removeAllObjects];
         [tempSearchArray release];
         tempSearchArray=nil;
-    }
+    }*/
     [searchBar resignFirstResponder];
     searchBgView.frame=CGRectMake(0, 0, 320, 44);
-    
-    if([allupcomingEvents count]){
+    [self performSelector:@selector(checkTotalNumberOfGroups)];
+    [eventsTable reloadData];
+    /*if([allupcomingEvents count]){
         
         [allupcomingEvents removeAllObjects];
         
@@ -1090,13 +1154,47 @@ static NSDateFormatter *customDateFormat=nil;
         }
         [tempEventsToCeleb release];
     }
+    if([facebookContactsArray count]){
+        NSMutableArray *tempEventsToCeleb=[[NSMutableArray alloc]initWithArray:facebookContactsArray];
+        
+        [facebookContactsArray removeAllObjects];
+        
+        for (NSMutableDictionary *event in tempEventsToCeleb)
+        {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                      @"(SELF contains[cd] %@)", searchBar.text];
+            
+            if([event objectForKey:@"from"]){
+                
+                [[[event objectForKey:@"from"] objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                BOOL resultName = [predicate evaluateWithObject:[[event objectForKey:@"from"] objectForKey:@"name"]];
+                
+                if(resultName)
+                {
+                    [facebookContactsArray addObject:event];
+                }
+            }
+            else{
+                //NSLog(@"name.. %@,%@",[event objectForKey:@"name"],searchText);
+                [[event objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                BOOL resultName = [predicate evaluateWithObject:[event objectForKey:@"name"]];
+                if(resultName)
+                    
+                {
+                    [facebookContactsArray addObject:event];
+                }
+            }  
+            
+        }
+        [tempEventsToCeleb release];
+    }
     
     [eventsTable reloadData];
     //[self performSelector:@selector(checkTotalNumberOfGroups)];
-    [self loadProfilePictures];
+    [self loadProfilePictures];*/
 }
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar_1{
-    if([tempSearchArray count]){
+    /*if([tempSearchArray count]){
         [tempSearchArray removeAllObjects];
         [tempSearchArray release];
         tempSearchArray=nil;
@@ -1110,30 +1208,22 @@ static NSDateFormatter *customDateFormat=nil;
     else if([eventTitleLbl.text isEqualToString:events_category_4])
         tempSearchArray=[[NSMutableArray alloc]initWithArray:facebookContactsArray];
     else if([eventTitleLbl.text isEqualToString:events_category_5])
-        tempSearchArray=[[NSMutableArray alloc]initWithArray:linkedInContactsArray];
+        tempSearchArray=[[NSMutableArray alloc]initWithArray:linkedInContactsArray];*/
     
     searchBgView.frame=CGRectMake(0, 0, 320, 416);
     [searchBar becomeFirstResponder];
 }
 - (void)searchBar:(UISearchBar *)searchBar_1 textDidChange:(NSString *)searchText{
-    
+    isSearchEnabled=YES;
     if([searchText isEqualToString:@""]){
-        [self performSelector:@selector(reloadTheEventsScreen)];
+        isSearchEnabled=NO;
+        //[self performSelector:@selector(reloadTheEventsScreen)];
     }
     else{
-        if([tempSearchArray count]){
-            if([eventTitleLbl.text isEqualToString:events_category_1])
-                [allupcomingEvents removeAllObjects];
-            else if([eventTitleLbl.text isEqualToString:events_category_2])
-                [listOfBirthdayEvents removeAllObjects];
-            else if([eventTitleLbl.text isEqualToString:events_category_3])
-                [eventsToCelebrateArray removeAllObjects];
-            else if([eventTitleLbl.text isEqualToString:events_category_4])
-                [facebookContactsArray removeAllObjects];
-            else if([eventTitleLbl.text isEqualToString:events_category_5])
-                [linkedInContactsArray removeAllObjects];
-            
-            for (NSMutableDictionary *event in tempSearchArray)
+        //if([tempSearchArray count]){
+        if([allupcomingEvents count]){
+            [searchUpcomingEventsArray removeAllObjects];
+            for (NSMutableDictionary *event in allupcomingEvents)
             {
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:
                                           @"(SELF contains[cd] %@)", searchBar.text];
@@ -1145,17 +1235,8 @@ static NSDateFormatter *customDateFormat=nil;
                     
                     if(resultName)
                     {
-                        if([eventTitleLbl.text isEqualToString:events_category_1])
-                            [allupcomingEvents addObject:event];
-                        else if([eventTitleLbl.text isEqualToString:events_category_2])
-                            [listOfBirthdayEvents addObject:event];
-                        else if([eventTitleLbl.text isEqualToString:events_category_3])
-                            [eventsToCelebrateArray addObject:event];
-                        else if([eventTitleLbl.text isEqualToString:events_category_4])
-                            [facebookContactsArray addObject:event];
-                        else if([eventTitleLbl.text isEqualToString:events_category_5])
-                            [linkedInContactsArray addObject:event];
-                       
+                        [searchUpcomingEventsArray addObject:event];
+                        
                     }
                 }
                 else{
@@ -1165,22 +1246,157 @@ static NSDateFormatter *customDateFormat=nil;
                     if(resultName)
                         
                     {
-                        if([eventTitleLbl.text isEqualToString:events_category_1])
-                            [allupcomingEvents addObject:event];
-                        else if([eventTitleLbl.text isEqualToString:events_category_2])
-                            [listOfBirthdayEvents addObject:event];
-                        else if([eventTitleLbl.text isEqualToString:events_category_3])
-                            [eventsToCelebrateArray addObject:event];
-                        else if([eventTitleLbl.text isEqualToString:events_category_4])
-                            [facebookContactsArray addObject:event];
-                        else if([eventTitleLbl.text isEqualToString:events_category_5])
-                            [linkedInContactsArray addObject:event];
+                        [searchUpcomingEventsArray addObject:event];
+                        
                         
                     }
                 }  
                 
             }
         }
+                
+        if([listOfBirthdayEvents count]){
+            [searchBirthdayEvents removeAllObjects];
+            for (NSMutableDictionary *event in listOfBirthdayEvents)
+            {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                          @"(SELF contains[cd] %@)", searchBar.text];
+                
+                if([event objectForKey:@"from"]){
+                    
+                    [[[event objectForKey:@"from"] objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                    BOOL resultName = [predicate evaluateWithObject:[[event objectForKey:@"from"] objectForKey:@"name"]];
+                    
+                    if(resultName)
+                    {
+                        [searchBirthdayEvents addObject:event];
+                        
+                    }
+                }
+                else{
+                    //NSLog(@"name.. %@,%@",[event objectForKey:@"name"],searchText);
+                    [[event objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                    BOOL resultName = [predicate evaluateWithObject:[event objectForKey:@"name"]];
+                    if(resultName)
+                        
+                    {
+                        [searchBirthdayEvents addObject:event];
+                        
+                        
+                    }
+                }  
+                
+            }
+        }
+            
+        if([eventsToCelebrateArray count]){
+            [searchEventsToCelebrateArray removeAllObjects];
+            for (NSMutableDictionary *event in eventsToCelebrateArray)
+            {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                          @"(SELF contains[cd] %@)", searchBar.text];
+                
+                if([event objectForKey:@"from"]){
+                    
+                    [[[event objectForKey:@"from"] objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                    BOOL resultName = [predicate evaluateWithObject:[[event objectForKey:@"from"] objectForKey:@"name"]];
+                    
+                    if(resultName)
+                    {
+                        [searchEventsToCelebrateArray addObject:event];
+                        
+                    }
+                }
+                else{
+                    //NSLog(@"name.. %@,%@",[event objectForKey:@"name"],searchText);
+                    [[event objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                    BOOL resultName = [predicate evaluateWithObject:[event objectForKey:@"name"]];
+                    if(resultName)
+                        
+                    {
+                        [searchEventsToCelebrateArray addObject:event];
+                        
+                        
+                    }
+                }  
+                
+            }
+        }
+              
+        if([facebookContactsArray count]){
+            [searchFBContactsArray removeAllObjects];
+            for (NSMutableDictionary *event in facebookContactsArray)
+            {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                          @"(SELF contains[cd] %@)", searchBar.text];
+                
+                if([event objectForKey:@"from"]){
+                    
+                    [[[event objectForKey:@"from"] objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                    BOOL resultName = [predicate evaluateWithObject:[[event objectForKey:@"from"] objectForKey:@"name"]];
+                    
+                    if(resultName)
+                    {
+                        [searchFBContactsArray addObject:event];
+                        
+                    }
+                }
+                else{
+                    //NSLog(@"name.. %@,%@",[event objectForKey:@"name"],searchText);
+                    [[event objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                    BOOL resultName = [predicate evaluateWithObject:[event objectForKey:@"name"]];
+                    if(resultName)
+                        
+                    {
+                        [searchFBContactsArray addObject:event];
+                        
+                        
+                    }
+                }  
+                
+            }
+        }
+          
+        if([linkedInContactsArray count]){
+            [searchFBContactsArray removeAllObjects];
+            
+            for (NSMutableDictionary *event in linkedInContactsArray)
+            {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                          @"(SELF contains[cd] %@)", searchBar.text];
+                
+                if([event objectForKey:@"from"]){
+                    
+                    [[[event objectForKey:@"from"] objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                    BOOL resultName = [predicate evaluateWithObject:[[event objectForKey:@"from"] objectForKey:@"name"]];
+                    
+                    if(resultName)
+                    {
+                        [searchLkdContactsArray addObject:event];
+                        
+                    }
+                }
+                else{
+                    //NSLog(@"name.. %@,%@",[event objectForKey:@"name"],searchText);
+                    [[event objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                    BOOL resultName = [predicate evaluateWithObject:[event objectForKey:@"name"]];
+                    if(resultName)
+                        
+                    {
+                        [searchLkdContactsArray addObject:event];
+                        
+                        
+                    }
+                }  
+                
+            }
+            
+            
+        }
+                
+            
+          
+        //}
        
     }
          
@@ -1475,7 +1691,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     for(int i=0;i<upcomingEventsCount;i++){
         
-        if(![[[allupcomingEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        if(![[[allupcomingEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]] || ![[[allupcomingEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
             dispatch_queue_t ImageLoader_Q;
             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
             dispatch_async(ImageLoader_Q, ^{
@@ -1524,7 +1740,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     for(int i=0;i<birthdayEventsCount;i++){
         
-        if(![[[listOfBirthdayEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        if(![[[listOfBirthdayEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]] || ![[[listOfBirthdayEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
             dispatch_queue_t ImageLoader_Q;
             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
             dispatch_async(ImageLoader_Q, ^{
@@ -1571,7 +1787,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     for(int i=0;i<eventsCelebCount;i++){
         
-        if(![[[eventsToCelebrateArray objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        if(![[[eventsToCelebrateArray objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]] || ![[[eventsToCelebrateArray objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
             dispatch_queue_t ImageLoader_Q;
             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
             dispatch_async(ImageLoader_Q, ^{
@@ -1617,7 +1833,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     for(int i=0;i<facebookContactsCount;i++){
         
-        if(![[[facebookContactsArray objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        if(![[[facebookContactsArray objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]] || ![[[facebookContactsArray objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
             dispatch_queue_t ImageLoader_Q;
             ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
             dispatch_async(ImageLoader_Q, ^{
@@ -1794,10 +2010,15 @@ static NSDateFormatter *customDateFormat=nil;
 }
 -(void)storeAllupcomingsForSuccessScreen{
     NSMutableArray *tempArray=[[NSMutableArray alloc]initWithArray:allupcomingEvents];
-    for(NSMutableDictionary *eventDict in tempArray ){
-        [eventDict setObject:@"" forKey:@"ProfilePicture"];
-    }
     
+        
+    for(NSMutableDictionary *eventDict in tempArray ){
+        if([[eventDict objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]])
+            [eventDict setObject:UIImagePNGRepresentation([eventDict objectForKey:@"ProfilePicture"])  forKey:@"ProfilePicture"];
+        else if(![[eventDict objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]])
+            [eventDict setObject:@"" forKey:@"ProfilePicture"];
+    }
+   
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"]){
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"AllUpcomingEvents"];
     }
@@ -2037,9 +2258,9 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 #pragma mark - LinkedIn delegate
-- (void)receivedNetworkConnections:(NSMutableDictionary*)connections{
+/*- (void)receivedNetworkConnections:(NSMutableDictionary*)connections{
     NSLog(@"connections... %@",connections);
-}
+}*/
 
 #pragma mark - Add User Request delegate
 -(void) responseForAddUser:(NSMutableDictionary*)response{
@@ -2115,6 +2336,11 @@ static NSDateFormatter *customDateFormat=nil;
 - (void)dealloc {
     
     [fb_giftgiv_home setFbGiftGivDelegate:nil];
+    [searchBirthdayEvents release];
+    [searchUpcomingEventsArray release];
+    [searchLkdContactsArray release];
+    [searchFBContactsArray release];
+    [searchEventsToCelebrateArray release];
     //[fb_giftgiv_home release];
     if(currentiOSVersion<6.0){
         [pageActiveImage release];

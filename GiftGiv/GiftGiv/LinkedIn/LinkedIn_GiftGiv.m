@@ -21,7 +21,7 @@
 @property (nonatomic, retain) RDLinkedInConnectionID* fetchConnection;
 @property (nonatomic, retain) RDLinkedInConnectionID* getConnections;
 @property (nonatomic, retain) RDLinkedInConnectionID* shareConnection;
-@property (nonatomic, retain) RDLinkedInConnectionID* getNetworkUpdates;
+@property (nonatomic, retain) RDLinkedInConnectionID* memberProfileConnection;
 
 - (void)fetchProfile;
 
@@ -33,7 +33,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 
 
 @synthesize engine;
-@synthesize fetchConnection,getConnections,getNetworkUpdates;
+@synthesize fetchConnection,getConnections,memberProfileConnection;
 @synthesize shareConnection;
 @synthesize lnkInGiftGivDelegate;
 
@@ -89,8 +89,8 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 - (void)getNetworkConnections{
     self.getConnections = [self.engine  myconnections];
 }
-- (void)getMemberNetworkUpdates:(NSString*)memberId{
-    self.getNetworkUpdates = [self.engine memberNetworkUpdates:memberId];
+- (void)getMemberProfile:(NSString*)memberId{
+    self.memberProfileConnection = [self.engine memberNetworkUpdates:memberId];
 }
 #pragma mark - RDLinkedInEngineDelegate
 
@@ -120,16 +120,29 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
     }
     else if (identifier == self.getConnections){
         
+        if([listOfConnections count]){
+            [listOfConnections removeAllObjects];
+            [listOfConnections release];
+            listOfConnections=nil;
+        }
+        listOfConnections=[[NSMutableArray alloc]initWithArray:[results objectForKey:@"person"]];
+        currentConnectionNum=0;
+        totalConnectionsCount=[listOfConnections count];
         //[lnkInGiftGivDelegate receivedNetworkConnections:(NSMutableDictionary*)results];
-        //int personsCount=[[results objectForKey:@"person"] count];
-        NSMutableArray *persons=[results objectForKey:@"person"];
-        //for(int i=0;i<personsCount;i++){
-            [self getMemberNetworkUpdates:[[persons objectAtIndex:0]objectForKey:@"id"]];
-        //}
+        
+        
+        [self getMemberProfile:[[listOfConnections objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
+        
         
         
     }
-    else if (identifier == self.getNetworkUpdates){
+    else if (identifier == self.memberProfileConnection){
+       
+        if(currentConnectionNum<totalConnectionsCount-1){
+            currentConnectionNum++;
+            [self getMemberProfile:[[listOfConnections objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
+        }
+        
         NSLog(@"updates..%@",results);
     }
 }
