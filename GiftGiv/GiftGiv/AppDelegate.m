@@ -55,6 +55,8 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+    
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
     

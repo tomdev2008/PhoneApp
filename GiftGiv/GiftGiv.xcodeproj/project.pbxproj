@@ -166,6 +166,7 @@
 		7EE0260B15BD8FFE003B9C74 /* GiftOptionsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EE0260915BD8FFE003B9C74 /* GiftOptionsVC.xib */; };
 		7EE0260F15BD9A26003B9C74 /* GiftCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0260E15BD9A26003B9C74 /* GiftCustomCell.m */; };
 		7EE0261115BD9A37003B9C74 /* GiftCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EE0261015BD9A37003B9C74 /* GiftCustomCell.xib */; };
+		7EE51BED1614695100EF3E9F /* GetCachesPathForTargetFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE51BEC1614695100EF3E9F /* GetCachesPathForTargetFile.m */; };
 		7EED2FB315C7A031001160BB /* ListOfStates.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7EED2FB215C7A031001160BB /* ListOfStates.plist */; };
 		7EEE489315E3D92C00E8DB29 /* CustomDateDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EEE489215E3D92C00E8DB29 /* CustomDateDisplay.m */; };
 		7EF056BE16083D530055BC52 /* searchicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EF056BD16083D530055BC52 /* searchicon.png */; };
@@ -451,6 +452,8 @@
 		7EE0260D15BD9A26003B9C74 /* GiftCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftCustomCell.h; sourceTree = "<group>"; };
 		7EE0260E15BD9A26003B9C74 /* GiftCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiftCustomCell.m; sourceTree = "<group>"; };
 		7EE0261015BD9A37003B9C74 /* GiftCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GiftCustomCell.xib; sourceTree = "<group>"; };
+		7EE51BEB1614695100EF3E9F /* GetCachesPathForTargetFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetCachesPathForTargetFile.h; sourceTree = "<group>"; };
+		7EE51BEC1614695100EF3E9F /* GetCachesPathForTargetFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetCachesPathForTargetFile.m; sourceTree = "<group>"; };
 		7EED2FB215C7A031001160BB /* ListOfStates.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ListOfStates.plist; sourceTree = "<group>"; };
 		7EEE489115E3D92C00E8DB29 /* CustomDateDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomDateDisplay.h; sourceTree = "<group>"; };
 		7EEE489215E3D92C00E8DB29 /* CustomDateDisplay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomDateDisplay.m; sourceTree = "<group>"; };
@@ -1075,6 +1078,8 @@
 		7ED7EA2215B6F1EE008DFDE3 /* GiftGiv */ = {
 			isa = PBXGroup;
 			children = (
+				7EE51BEB1614695100EF3E9F /* GetCachesPathForTargetFile.h */,
+				7EE51BEC1614695100EF3E9F /* GetCachesPathForTargetFile.m */,
 				7E1D729015B80BEA0008D19C /* Constants.h */,
 				7E0FE89E15C2CFF600EDC79C /* Global Alerts */,
 				7E1D729115B80C740008D19C /* MBProgressHUD */,
@@ -1431,6 +1436,7 @@
 				7E0AB53B160AE8F3003DD08A /* RDLinkedInRequestBuilder.m in Sources */,
 				7E0AB53C160AE8F3003DD08A /* RDLinkedInResponseParser.m in Sources */,
 				7E0AB53F160AE90B003DD08A /* LinkedIn_GiftGiv.m in Sources */,
+				7EE51BED1614695100EF3E9F /* GetCachesPathForTargetFile.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

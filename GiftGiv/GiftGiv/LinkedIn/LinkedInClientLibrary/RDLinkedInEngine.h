@@ -60,9 +60,9 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 // API methods
 - (RDLinkedInConnectionID *)profileForCurrentUser;
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID;
-- (RDLinkedInConnectionID *)myconnections;
-- (RDLinkedInConnectionID *)memberNetworkUpdates:(NSString*)memberID;
-- (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus;
+//- (RDLinkedInConnectionID *)myconnections;
+- (RDLinkedInConnectionID *)networkUpdatesWithType:(NSString*)typeName;
+//- (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus;
 /**
  * \fn - (RDLinkedInConnectionID *)shareUrl:(NSString *)submittedUrl imageUrl:(NSString *)submittedImageUrl title:(NSString*)title comment:(NSString*)comment
  * \brief	This method is able to share a content.
@@ -73,6 +73,6 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
  * \return	RDLinkedInConnectionID*
  * \see http://developer.linkedin.com/docs/DOC-1212
  */
-- (RDLinkedInConnectionID *)shareUrl:(NSString *)submittedUrl imageUrl:(NSString *)submittedImageUrl title:(NSString*)title comment:(NSString*)comment;
+//- (RDLinkedInConnectionID *)shareUrl:(NSString *)submittedUrl imageUrl:(NSString *)submittedImageUrl title:(NSString*)title comment:(NSString*)comment;
 
 @end

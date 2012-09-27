@@ -25,6 +25,7 @@
 #import "GetEventsRequest.h"
 #import "FacebookContactsReq.h"
 #import "LinkedIn_GiftGiv.h"
+#import "GetCachesPathForTargetFile.h"
 
 @interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate>
 
@@ -38,9 +39,7 @@
     
     int birthdayEventUserNoToAddAsUser;
     NSMutableArray *listOfBirthdayEvents; 
-    /*NSMutableArray *anniversaryEvents; 
-    NSMutableArray *newJobEvents; 
-    NSMutableArray *congratsEvents;*/
+  
     NSMutableArray *allupcomingEvents;
     NSMutableArray *eventsToCelebrateArray;
     NSMutableArray *facebookContactsArray; 
@@ -53,10 +52,11 @@
     
     
     NSMutableArray *categoryTitles;
-    BOOL shouldLoadingPicsStop;
     Facebook_GiftGiv *fb_giftgiv_home;
     BOOL isEventsLoadingFromFB;
     BOOL isSearchEnabled;
+    NSOperationQueue *picturesOperationQueue;
+    
 }
 
 @property (retain, nonatomic) IBOutlet UIView *eventsBgView;
@@ -83,7 +83,6 @@
 
 - (void)sortEvents:(NSMutableArray*)listOfEvents eventCategory:(int)catNum;
 
-- (void)loadProfilePictures;
 - (void)storeAllupcomingsForSuccessScreen;
 #pragma mark - Progress HUD
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
@@ -92,9 +91,7 @@
 
 -(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath;
 - (IBAction)showSearchView:(id)sender;
-- (IBAction)showOtherAccountToLogin:(id)sender;
 - (IBAction)searchCancelAction:(id)sender;
 
--(void) loadImageForEventAtIndexNum:(int)index forTable:(UITableView*)table;
-
+-(void) makeRequestToLoadImagesUsingOperations;
 @end

@@ -12,16 +12,16 @@
 #import "AppDelegate.h"
 #import "RDLinkedIn.h"
 
-#define SHARE_COMPLETED_NOTIFICATION @"LinkedInShareSuccess"
-#define SHARE_FAILED_NOTIFICATION @"LinkedInShareFailed"
+//#define SHARE_COMPLETED_NOTIFICATION @"LinkedInShareSuccess"
+//#define SHARE_FAILED_NOTIFICATION @"LinkedInShareFailed"
 
 @interface LinkedIn_GiftGiv ()
 
 @property (nonatomic, retain) RDLinkedInEngine* engine;
-@property (nonatomic, retain) RDLinkedInConnectionID* fetchConnection;
-@property (nonatomic, retain) RDLinkedInConnectionID* getConnections;
-@property (nonatomic, retain) RDLinkedInConnectionID* shareConnection;
-@property (nonatomic, retain) RDLinkedInConnectionID* memberProfileConnection;
+@property (nonatomic, retain) RDLinkedInConnectionID* fetchCurrentUserProfile;
+@property (nonatomic, retain) RDLinkedInConnectionID* fetchMemberProfile;
+//@property (nonatomic, retain) RDLinkedInConnectionID* shareConnection;
+@property (nonatomic, retain) RDLinkedInConnectionID* fetchNetworkUpdates;
 
 - (void)fetchProfile;
 
@@ -33,8 +33,8 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 
 
 @synthesize engine;
-@synthesize fetchConnection,getConnections,memberProfileConnection;
-@synthesize shareConnection;
+@synthesize fetchCurrentUserProfile,fetchMemberProfile,fetchNetworkUpdates;
+//@synthesize shareConnection;
 @synthesize lnkInGiftGivDelegate;
 
 #pragma mark LinkedInShareHelper class methods
@@ -83,14 +83,16 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 
 - (void)fetchProfile {
     
-    self.fetchConnection = [self.engine profileForCurrentUser];
+    self.fetchCurrentUserProfile = [self.engine profileForCurrentUser];
     
 }
-- (void)getNetworkConnections{
-    self.getConnections = [self.engine  myconnections];
-}
+
 - (void)getMemberProfile:(NSString*)memberId{
-    self.memberProfileConnection = [self.engine memberNetworkUpdates:memberId];
+    self.fetchMemberProfile = [self.engine profileForPersonWithID:memberId];
+}
+
+- (void)getMyNetworkUpdatesWithType:(NSString*)type{
+    self.fetchNetworkUpdates = [self.engine networkUpdatesWithType:type];
 }
 #pragma mark - RDLinkedInEngineDelegate
 
@@ -109,50 +111,74 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 }
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestSucceeded:(RDLinkedInConnectionID *)identifier withResults:(id)results {
-    NSLog(@"identifier..%@",identifier);
+   // NSLog(@"identifier..%@",identifier);
     //NSLog(@"++ LinkedIn engine reports success for connection %@", identifier);
-    if( identifier == self.fetchConnection ) {
+    if( identifier == self.fetchCurrentUserProfile ) {
         NSMutableDictionary* profile = results;
         [lnkInGiftGivDelegate linkedInLoggedInWithUserDetails:profile];
     }
-    else if (identifier == self.shareConnection) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SHARE_COMPLETED_NOTIFICATION object:nil];
-    }
-    else if (identifier == self.getConnections){
-        
-        if([listOfConnections count]){
-            [listOfConnections removeAllObjects];
-            [listOfConnections release];
-            listOfConnections=nil;
+    
+    else if (identifier == self.fetchNetworkUpdates){
+        if([networkUpdates count]){
+            [networkUpdates removeAllObjects];
+            [networkUpdates release];
+            networkUpdates=nil;
         }
-        listOfConnections=[[NSMutableArray alloc]initWithArray:[results objectForKey:@"person"]];
+        networkUpdates=[[NSMutableArray alloc]init];
+        
+        NSMutableArray *tempUpdates=[[NSMutableArray alloc]initWithArray:[results objectForKey:@"update"]];
+        
+        for (NSMutableDictionary *updateDict in tempUpdates) {
+            
+            if([updateDict objectForKey:@"updated-fields"]){
+                if([[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]){
+                    int update_field_count=[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] count];
+                   // NSLog(@"feed..%@, \nClass:%@",[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"],[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] class]);
+                    if([[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]isKindOfClass:[NSArray class]]){
+                        for(int i=0;i<update_field_count;i++){
+                           
+                            if([[[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]objectAtIndex:i] objectForKey:@"name"] isEqualToString:@"person/positions"]){
+                              
+                                [networkUpdates addObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"]];
+                                break;
+                            }
+                        }
+                    }
+                    else if([[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]isKindOfClass:[NSDictionary class]]){
+                        
+                        if([[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] objectForKey:@"name"] isEqualToString:@"person/positions"]){
+                            [networkUpdates addObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"]];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
         currentConnectionNum=0;
-        totalConnectionsCount=[listOfConnections count];
-        //[lnkInGiftGivDelegate receivedNetworkConnections:(NSMutableDictionary*)results];
+        totalConnectionsCount=[networkUpdates count];
         
-        
-        [self getMemberProfile:[[listOfConnections objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
-        
-        
-        
+        [self getMemberProfile:[networkUpdates objectAtIndex:currentConnectionNum]];
+               
     }
-    else if (identifier == self.memberProfileConnection){
+    else if (identifier == self.fetchMemberProfile){
        
+        NSLog(@"%@",results);  
+        
+        
         if(currentConnectionNum<totalConnectionsCount-1){
             currentConnectionNum++;
-            [self getMemberProfile:[[listOfConnections objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
+            [self getMemberProfile:[networkUpdates objectAtIndex:currentConnectionNum]];
         }
         
-        NSLog(@"updates..%@",results);
+       // NSLog(@"updates..%@",results);
     }
 }
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestFailed:(RDLinkedInConnectionID *)identifier withError:(NSError *)error {
     NSLog(@"++ LinkedIn engine reports failure for connection %@\n%@", identifier, [error localizedDescription]);
     
-    if (identifier == self.shareConnection) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SHARE_FAILED_NOTIFICATION object:error];
-    }
+   
 }
 
 

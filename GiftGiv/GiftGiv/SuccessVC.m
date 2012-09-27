@@ -169,11 +169,43 @@
         }
         cell.dateLbl.text=dateDisplay;
         
-        if([[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
+        /*if([[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
             cell.profileImg.image=[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
         }
         else if([[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
             cell.profileImg.image=[UIImage imageWithData:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"]];
+        }*/
+        
+        if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+            
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"]]];
+            NSFileManager *fm=[NSFileManager defaultManager];
+            if([fm fileExistsAtPath:filePath]){
+                cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
+            }
+            
+            
+        }
+        else{
+            if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]){
+                
+                NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]]];
+                NSFileManager *fm=[NSFileManager defaultManager];
+                if([fm fileExistsAtPath:filePath]){
+                    cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
+                }
+                
+            }
+            
+            else if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]){
+                NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]]];
+                NSFileManager *fm=[NSFileManager defaultManager];
+                if([fm fileExistsAtPath:filePath]){
+                    cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
+                }
+                
+            }
+            
         }
                      
         

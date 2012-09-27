@@ -145,33 +145,41 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   return request;
 }
 #pragma mark - network connections
-- (RDLinkedInConnectionID *)myconnections {
-    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/connections"]];
+/*- (RDLinkedInConnectionID *)myconnections {
+    //NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/connections"]];
+    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/network/updates:(updated-fields,update-content:(person:(id,first-name,last-name,picture-url,positions)))?type=PRFU"]];
     return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 
 - (RDLinkedInConnectionID *)memberNetworkUpdates:(NSString*)memberID {
+   // memberID=@"VOZkTy-9wu";
    //http://api.linkedin.com/v1/people/id=12345:(first-name,last-name)
     NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@:(first-name,last-name,headline,picture-url,current-share,positions)",memberID]];
     
     
     //NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@/network/updates?scope=self",memberID]];
     return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
-}
+}*/
 #pragma mark profile methods
 
 - (RDLinkedInConnectionID *)profileForCurrentUser {
-  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~:(id,first-name,last-name,headline,picture-url,date-of-birth,email-address,three-current-positions,current-share,positions)"]];
+    
+  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~:(id,first-name,last-name,headline,picture-url,positions)"]];
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
   
 }
-
+- (RDLinkedInConnectionID *)networkUpdatesWithType:(NSString*)typeName{
+//    http://api.linkedin.com/v1/people/~/network/updates:(update-content:(person:(id,headline)))?type=PRFU
+     NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/~/network/updates:(updated-fields,update-content:(person:(id,positions)))?type=%@",typeName]];
+    return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
+}
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID {
-  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@", [memberID stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@:(id,first-name,last-name,headline,picture-url,positions)",memberID]];
+  //NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@", [memberID stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 
-- (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus {
+/*- (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus {
   NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/current-status"]];
   newStatus = [newStatus length] > kRDLinkedInMaxStatusLength ? [newStatus substringToIndex:kRDLinkedInMaxStatusLength] : newStatus;
   NSData* body = [RDLinkedInRequestBuilder buildSimpleRequestWithRootNode:@"current-status" content:newStatus];
@@ -182,7 +190,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/shares"]];
 
   comment = [comment length] > kRDLinkedInMaxStatusLength ? [comment substringToIndex:kRDLinkedInMaxStatusLength] : comment;
-
+*/
   /*NSString *xml = [[NSString alloc] initWithFormat:@"			\
 				   <share>										\
 				   <comment>%@</comment>						\
@@ -199,7 +207,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 				   title,
 				   submittedUrl,
 				   submittedImageUrl];*/
-    NSString *xml = [[NSString alloc] initWithFormat:@"<share><comment>%@</comment><content><title>%@</title><submitted-url>%@</submitted-url><submitted-image-url>%@</submitted-image-url></content><visibility><code>anyone</code></visibility></share>",comment,title,submittedUrl,submittedImageUrl];
+    /*NSString *xml = [[NSString alloc] initWithFormat:@"<share><comment>%@</comment><content><title>%@</title><submitted-url>%@</submitted-url><submitted-image-url>%@</submitted-image-url></content><visibility><code>anyone</code></visibility></share>",comment,title,submittedUrl,submittedImageUrl];
 	
   // Cleaning the XML content
   xml = [xml stringByReplacingOccurrencesOfString:@"\n" withString:@""];
@@ -213,9 +221,9 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   //NSLog(@"xml=%@", xml);
   //NSLog(@"data=%@", data);
 	
-  return [self sendAPIRequestWithURL:url HTTPMethod:@"POST" body:data];
-}
-
+  return [self sendAPIRequestWithURL:url HTTPMethod:@"POST" body:data];*/
+/*}
+*/
 #pragma mark private
 
 - (RDLinkedInConnectionID *)sendAPIRequestWithURL:(NSURL *)url HTTPMethod:(NSString *)method body:(NSData *)body {
@@ -279,7 +287,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 	if( rdOAuthVerifier.length ) token.pin = rdOAuthVerifier;
 	
     if(!token){
-        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_basicprofile r_network rw_nus"] autorelease]]]; 
+        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_basicprofile rw_nus"] autorelease]]]; 
         /* r_network ==> Connections
          r_nus ==> updates
          */

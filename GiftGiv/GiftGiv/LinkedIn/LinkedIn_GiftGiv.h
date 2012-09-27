@@ -20,12 +20,13 @@
 - (void)linkedInDidLoggedOut;
 - (void)linkedInDidRequestFailed;
 - (void)linkedInDidCancelledLogin;
+- (void)receivedLinkedInNewEvent:(NSMutableDictionary*)result;
 //- (void)receivedNetworkConnections:(NSMutableDictionary*)connections;
 @end
 
 
 @interface LinkedIn_GiftGiv : NSObject<RDLinkedInEngineDelegate, RDLinkedInAuthorizationControllerDelegate>{
-     NSMutableArray *listOfConnections;
+     NSMutableArray *networkUpdates;
     int currentConnectionNum,totalConnectionsCount;
 }
 @property (nonatomic, assign) id <LinkedIn_GiftGivDelegate>lnkInGiftGivDelegate;
@@ -33,7 +34,7 @@
 + (LinkedIn_GiftGiv *)sharedSingleton;
 - (BOOL) isLinkedInAuthorized;
 - (void)logInFromView:(id)viwController;
-- (void)getNetworkConnections;
+- (void)getMyNetworkUpdatesWithType:(NSString*)type;
 - (void)logOut;
 - (void)getMemberProfile:(NSString*)memberId;
 @end

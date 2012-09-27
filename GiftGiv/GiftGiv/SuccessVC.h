@@ -12,6 +12,7 @@
 #import "GiftOptionsVC.h"
 #import "CustomDateDisplay.h"
 #import "OrderHistoryListVC.h"
+#import "GetCachesPathForTargetFile.h"
 
 @interface SuccessVC : UIViewController<UITableViewDelegate,UITableViewDataSource>
 {
