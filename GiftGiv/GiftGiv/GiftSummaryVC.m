@@ -126,11 +126,22 @@
 
 -(void)loadImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
     //NSLog(@"%@",imgURL);
+    __block NSString *tempImgURL=imgURL;
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
         
-        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imgURL]];
+        if([targetImgView isEqual:profilePic]){
+            
+            if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"]){
+                tempImgURL=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"];
+            }
+            else
+                tempImgURL=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
+        }
+        
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:tempImgURL]];
         UIImage *giftImage = [UIImage imageWithData:data];
         
         if(giftImage==nil){
@@ -243,7 +254,7 @@
 - (IBAction)paymentBtnAction:(id)sender {
     
     [self showProgressHUD:self.view withMsg:nil];
-    [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_LIVE withDelegate:self];
+    [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_SANDBOX withDelegate:self];
     
     
 }

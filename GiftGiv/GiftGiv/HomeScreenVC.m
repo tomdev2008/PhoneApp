@@ -106,6 +106,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
         [picturesOperationQueue cancelAllOperations];
+        [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
         if([searchBgView superview]){
             [searchBgView removeFromSuperview];
             isSearchEnabled=NO;
@@ -249,7 +250,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         for(int i=0;i<[globalFacebookContacts count];i++){
             
-            NSString *urlStr_id;
+            NSString *urlStr_id=@"";
             if([[globalFacebookContacts objectAtIndex:i]objectForKey:@"uid"])
                 urlStr_id=[[globalFacebookContacts objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL            if(urlStr_id){
                 
@@ -313,18 +314,13 @@ static NSDateFormatter *customDateFormat=nil;
 -(void) receivedAllEvents:(NSMutableArray*)allEvents{
    
     int eventsCount=[allEvents count];
-    if([allupcomingEvents count])
+    /*if([allupcomingEvents count])
         [allupcomingEvents removeAllObjects];
     if([listOfBirthdayEvents count])
         [listOfBirthdayEvents removeAllObjects];
-    /*if([newJobEvents count])
-     [newJobEvents removeAllObjects];
-     if([congratsEvents count])
-     [congratsEvents removeAllObjects];
-     if([anniversaryEvents count])
-     [anniversaryEvents removeAllObjects];*/
+   
     if([eventsToCelebrateArray count])
-        [eventsToCelebrateArray removeAllObjects];
+        [eventsToCelebrateArray removeAllObjects];*/
     
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:eventsCount];
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
@@ -394,7 +390,7 @@ static NSDateFormatter *customDateFormat=nil;
                       
         for(int i=0;i<[allupcomingEvents count];i++){
            
-            NSString *urlStr_id;
+            NSString *urlStr_id=nil;
             if([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"])
                 urlStr_id=[[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]);
             else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"from"])
@@ -475,18 +471,18 @@ static NSDateFormatter *customDateFormat=nil;
         UIImage *thumbnail = [UIImage imageWithData:data];
         
         if(thumbnail==nil){
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                               
-                
-            });
+//            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+//                               
+//                
+//            });
             
         }
         else {
-            
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
+            [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
+
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
                 
-                NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
-                [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
                 
                 [eventsTable reloadData];
             });
@@ -727,7 +723,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else if([eventTitleLbl.text isEqualToString:events_category_3]){
             
-            if([searchBgView superview]){
+            if(isSearchEnabled){
                 if([searchEventsToCelebrateArray count]){
                     //NSLog(@"upcoming..%@",allupcomingEvents);
                     [self loadEventsData:searchEventsToCelebrateArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
@@ -1030,7 +1026,8 @@ static NSDateFormatter *customDateFormat=nil;
             [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
             if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
                 [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
-            
+            if([[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
             [tempInfoDict release];
@@ -1056,6 +1053,10 @@ static NSDateFormatter *customDateFormat=nil;
             [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
             if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
                 [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+           
+            if([[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
+            
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
             [tempInfoDict release];
@@ -1080,7 +1081,8 @@ static NSDateFormatter *customDateFormat=nil;
             
             if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
-            
+            if([[eventsToCelebrateArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
             [tempInfoDict release];
@@ -1102,7 +1104,8 @@ static NSDateFormatter *customDateFormat=nil;
             
             
             [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-            
+            if([[facebookContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
@@ -1125,6 +1128,9 @@ static NSDateFormatter *customDateFormat=nil;
             
             
             [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+            
+            if([[linkedInContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
@@ -1633,7 +1639,7 @@ static NSDateFormatter *customDateFormat=nil;
 -(void) makeRequestToLoadImagesUsingOperations{
     for(int i=0;i<[allupcomingEvents count];i++){
         
-        NSString *urlStr_id;
+        NSString *urlStr_id=nil;
         if([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"])
             urlStr_id=[[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]);
         else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"from"])
@@ -1906,6 +1912,7 @@ static NSDateFormatter *customDateFormat=nil;
         customDateFormat=[[NSDateFormatter alloc]init];
     }
 	int eventsCount=[listOfEvents count];
+   
 	for (int i=0; i<eventsCount;i++) {
         
         if([[[listOfEvents objectAtIndex:i] objectForKey:@"event_date"] isKindOfClass:[NSString class]]&& ![[[listOfEvents objectAtIndex:i] objectForKey:@"event_date"] isEqualToString:@""]){
@@ -1996,9 +2003,40 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 #pragma mark - LinkedIn delegate
+- (void)linkedInDidLoggedOut{
+    //if(![[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    //}
+}
 - (void)receivedLinkedInNewEvent:(NSMutableDictionary*)result{
     
-    NSLog(@"%@",result);
+    NSMutableDictionary *linkedInEvent=[[NSMutableDictionary alloc]init];
+    [linkedInEvent setObject:[result objectForKey:@"id"] forKey:@"linkedIn_id"];
+    [linkedInEvent setObject:[NSString stringWithFormat:@"%@ %@",[result objectForKey:@"first-name"],[result objectForKey:@"last-name"]] forKey:@"name"];
+    [linkedInEvent setObject:@"new job" forKey:@"event_type"];
+    NSMutableDictionary *startDateDict=[[[result objectForKey:@"positions"]objectForKey:@"position"] objectForKey:@"start-date"];
+    [linkedInEvent setObject:[NSString stringWithFormat:@"%@-%@-01",[startDateDict objectForKey:@"year"],[startDateDict objectForKey:@"month"]] forKey:@"event_date"];
+    if([result objectForKey:@"picture-url"])
+        [linkedInEvent setObject:[result objectForKey:@"picture-url"] forKey:@"pic_url"];
+    else
+        [linkedInEvent setObject:@"" forKey:@"pic_url"];
+    [linkedInEvent setObject:@"" forKey:@"ProfilePicture"];
+    
+    
+    [eventsToCelebrateArray addObject:linkedInEvent];
+    [allupcomingEvents addObject:linkedInEvent];
+    [linkedInEvent release];
+    [self performSelector:@selector(checkTotalNumberOfGroups)];
+    
+    [self storeAllupcomingsForSuccessScreen];
+    
+    if([allupcomingEvents count]>1)
+        [self sortEvents:allupcomingEvents eventCategory:1];
+    if([eventsToCelebrateArray count]>1)
+        [self sortEvents:eventsToCelebrateArray eventCategory:3];
+    
+    [self makeRequestToLoadImagesUsingOperations];
+    [eventsTable reloadData];
     
     
 }

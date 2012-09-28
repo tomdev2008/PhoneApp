@@ -11,13 +11,19 @@
 #import "CheckNetwork.h"
 #import "ApplicationHelpers.h"
 #import "LinkedIn_GiftGiv.h"
+#import "MBProgressHUD.h"
 
-@interface SettingsVC : UIViewController<Facebook_GiftGivDelegate>
+@interface SettingsVC : UIViewController<Facebook_GiftGivDelegate,LinkedIn_GiftGivDelegate,MBProgressHUDDelegate>
 {
     Facebook_GiftGiv *fb_giftgiv_settings;
+     MBProgressHUD *HUD;
 }
+@property (retain, nonatomic) IBOutlet UIScrollView *settinsScroll;
 - (IBAction)backToHomeScreen:(id)sender;
-- (IBAction)logoutFacebook:(id)sender;
 - (IBAction)internalLinkActions:(id)sender;
-
+- (IBAction)syncActions:(id)sender;
+#pragma mark - progress hud
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
+- (void)stopHUD;
+#pragma mark -
 @end

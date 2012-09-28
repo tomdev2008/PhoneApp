@@ -182,11 +182,22 @@
 }
 -(void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
     
+    __block NSString *tempImageURL=imgURL;
+    
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
         
-        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imgURL]];
+        if([targetImgView isEqual:profilePic]){
+            
+            if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"]){
+                tempImageURL=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"];
+            }
+            else
+                tempImageURL=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
+        }
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:tempImageURL]];
         UIImage *giftImg = [UIImage imageWithData:data];
         
         if(giftImg==nil){

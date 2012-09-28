@@ -233,10 +233,16 @@
         [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
     }
     else{
-        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+        if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"])
+            [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+        else if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+            [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
         [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
     }
-    
+    if([[upcomingEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
+    if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
     
     [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
     

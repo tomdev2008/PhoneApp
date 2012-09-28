@@ -92,7 +92,7 @@
   rdWebView.scalesPageToFit = YES;
   rdWebView.dataDetectorTypes = UIDataDetectorTypeNone;
   [self.view addSubview:rdWebView];
-  [self.view addSubview:_closeButton];
+  //[self.view addSubview:_closeButton];
   [self displayAuthorization];
 }
 

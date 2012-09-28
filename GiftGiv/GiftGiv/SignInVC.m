@@ -49,11 +49,6 @@
         if([sender tag]==1)
             [fb_giftgiv authorizeOurAppWithFacebook];
 
-        //LinkedIn
-        else if([sender tag]==2){
-            [[LinkedIn_GiftGiv sharedSingleton] logInFromView:self];
-            [[LinkedIn_GiftGiv sharedSingleton] setLnkInGiftGivDelegate:self];
-        }
         
     }
     
@@ -113,52 +108,7 @@
     [self stopHUD];
     
 }
-#pragma mark -LinkedIn
-- (void)linkedInLoggedIn{
-    HomeScreenVC *home=[[HomeScreenVC alloc]initWithNibName:@"HomeScreenVC" bundle:nil];
-    [self.navigationController pushViewController:home animated:NO];
-    [home release];
-}
-- (void)linkedInLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{
-    NSLog(@"profile received.....%@",userDetails);
-    
-    
-    /*
-     {
-     "date-of-birth" =     {
-     day = ;
-     month = ;
-     year = ;
-     }; //Not mandatory
-     "email-address" = "";
-     "first-name" = "";
-     headline = "";
-     id = "";
-     "last-name" = "";
-     "picture-url" = ""; //Not mandatory
-     }
-     */
-    
-    
-    [[NSUserDefaults standardUserDefaults]setObject:userDetails forKey:@"MyLinkedInDetails"];
-           
-    
-    if([CheckNetwork connectedToNetwork]){
-        //[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInAccessToken"];
-                
-    }
-    
-}
 
-- (void)linkedInDidLoggedOut{
-    
-}
-- (void)linkedInDidRequestFailed{
-    
-}
-- (void)linkedInDidCancelledLogin{
-    
-}
 #pragma mark - Add User Request delegate
 -(void) responseForAddUser:(NSMutableDictionary*)response{
     NSLog(@"add user..%@,%@",response,[[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]);
