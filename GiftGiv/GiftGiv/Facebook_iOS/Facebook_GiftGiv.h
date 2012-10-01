@@ -54,8 +54,9 @@ typedef enum apiCall {
     
     NSMutableArray *fbRequestsArray;
     FBRequest *getDetailedEventReq;
+    //NSOperationQueue *fbOperationQueue;
 }
-
+@property (nonatomic, retain) NSMutableArray *fbRequestsArray;
 @property (nonatomic, retain) Facebook *facebook;
 @property (nonatomic, assign) id <Facebook_GiftGivDelegate>fbGiftGivDelegate;
 

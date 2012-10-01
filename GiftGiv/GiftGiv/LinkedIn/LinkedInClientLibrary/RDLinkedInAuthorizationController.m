@@ -86,7 +86,7 @@
     | UIViewAutoresizingFlexibleBottomMargin;
     
   
-  rdWebView = [[UIWebView alloc] initWithFrame:CGRectMake(10, /*rdNavBar.frame.size.height*/10, self.view.bounds.size.width-20, self.view.bounds.size.height - 20/*rdNavBar.frame.size.height*/)];
+  rdWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, /*rdNavBar.frame.size.height*/0, 320,460/*rdNavBar.frame.size.height*/)];
   rdWebView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
   rdWebView.delegate = self;
   rdWebView.scalesPageToFit = YES;
@@ -181,6 +181,7 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
    // RDLOG(@"URL = %@",request.URL.absoluteString);
   NSString* host = [[request.URL host] lowercaseString];
+ 
   if( [@"linkedin_oauth" isEqualToString:host] ) {
     if( [[request.URL path] isEqualToString:@"/success"] ) {
       // cancel button will redirect to callback URL with an argument, so check that first
@@ -207,7 +208,10 @@
     if( ![[request.URL path] hasPrefix:@"/uas/"] ) {
       [[UIApplication sharedApplication] openURL:request.URL];
     }
+     
   }
+    else
+        [self cancel];
   return YES;
 }
 

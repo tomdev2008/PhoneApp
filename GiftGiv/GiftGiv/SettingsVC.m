@@ -41,9 +41,12 @@
     
     [(UIButton*)[settinsScroll viewWithTag:11] setUserInteractionEnabled:NO];
     [(UIButton*)[settinsScroll viewWithTag:11] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [(UIButton*)[settinsScroll viewWithTag:11] setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
     if([[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
+        [(UIButton*)[settinsScroll viewWithTag:12]setBackgroundImage:[UIImage imageNamed:@"largegraybutton.png"] forState:UIControlStateNormal];
         [(UIButton*)[settinsScroll viewWithTag:12] setUserInteractionEnabled:NO];
         [(UIButton*)[settinsScroll viewWithTag:12] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [(UIButton*)[settinsScroll viewWithTag:12] setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }
     
 }

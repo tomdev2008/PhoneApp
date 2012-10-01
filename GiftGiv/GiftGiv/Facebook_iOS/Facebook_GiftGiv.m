@@ -19,7 +19,7 @@
 
 @implementation Facebook_GiftGiv 
 
-@synthesize facebook,fbGiftGivDelegate;
+@synthesize facebook,fbGiftGivDelegate,fbRequestsArray;
 
 //static Facebook_GiftGiv *sharedInstance = nil;
 static NSDateFormatter *standardDateFormatter = nil;
@@ -353,6 +353,17 @@ static NSDateFormatter *standardDateFormatter = nil;
                 break;
                 //Received all friends details
             case kAPIGetAllFriends:
+                
+                /*if(fbOperationQueue)
+                    [fbOperationQueue cancelAllOperations];
+                else
+                    fbOperationQueue=[[NSOperationQueue alloc]init];*/
+                
+                [fbRequestsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    FBRequest*reqObj= (FBRequest*)obj ;
+                    [reqObj.connection cancel];
+                }];
+                
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 if(friendUserIds!=nil && [friendUserIds count]){
                     [friendUserIds removeAllObjects];
@@ -587,6 +598,15 @@ static NSDateFormatter *standardDateFormatter = nil;
 	
     
 }
+-(void)dealloc{
+    //[fbOperationQueue cancelAllOperations];
+    //[fbOperationQueue release];
+    if(fbRequestsArray){
+        [fbRequestsArray removeAllObjects];
 
+        [fbRequestsArray release];
+    }
+    [super dealloc];
+}
 
 @end

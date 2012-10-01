@@ -130,20 +130,21 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
         networkUpdates=[[NSMutableArray alloc]init];
         
         NSMutableArray *tempUpdates=[[NSMutableArray alloc]initWithArray:[results objectForKey:@"update"]];
-        NSLog(@"%d",[tempUpdates count]);
+        //NSLog(@"Updates..%@",tempUpdates);
+        //NSLog(@"%d",[tempUpdates count]);
         for (NSMutableDictionary *updateDict in tempUpdates) {
             
             if([updateDict objectForKey:@"updated-fields"]){
                 if([[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]){
                     int update_field_count=[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] count];
-                   // NSLog(@"feed..%@, \nClass:%@",[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"],[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] class]);
+                    //NSLog(@"feed..%@, \nClass:%@",[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"],[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] class]);
                     if([[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]isKindOfClass:[NSArray class]]){
                         for(int i=0;i<update_field_count;i++){
                            
                             if([[[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]objectAtIndex:i] objectForKey:@"name"] isEqualToString:@"person/positions"]){
                                 NSLog(@"update-field found,i=%d",i);
                                 [networkUpdates addObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"]];
-                                break;
+                               // break;
                             }
                         }
                     }
@@ -152,7 +153,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                         if([[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] objectForKey:@"name"] isEqualToString:@"person/positions"]){
                             NSLog(@"update-field found");
                             [networkUpdates addObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"]];
-                            break;
+                            //break;
                         }
                     }
                 }
@@ -162,14 +163,15 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
         
         currentConnectionNum=0;
         totalConnectionsCount=[networkUpdates count];
-        
-        [self getMemberProfile:[networkUpdates objectAtIndex:currentConnectionNum]];
+        if(totalConnectionsCount)
+            [self getMemberProfile:[networkUpdates objectAtIndex:currentConnectionNum]];
                
     }
     else if (identifier == self.fetchMemberProfile){
-       
+        
         if([results isKindOfClass:[NSDictionary class]]){
             if([[results objectForKey:@"positions"] objectForKey:@"position"]){
+                //NSLog(@"position..%@",[[results objectForKey:@"positions"] objectForKey:@"position"]);
                 if([[[results objectForKey:@"positions"] objectForKey:@"position"]isKindOfClass:[NSArray class]]){
                     for(NSDictionary *tempDict in [[results objectForKey:@"positions"] objectForKey:@"position"]){
                         if([tempDict objectForKey:@"is-current"]){
@@ -186,9 +188,16 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                                     if([[startDateDict objectForKey:@"year"] intValue]==currentYear){
                                         
                                         if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-12){
+                                        //    NSMutableDictionary *tempResults=[[NSMutableDictionary alloc] initWithDictionary:results];
+                                          //  [tempResults 
+                                            
+                                            [[results objectForKey:@"positions"] setObject:tempDict forKey:@"position"];
+                                            
                                             
                                             //send it to events to celebrate group
+                                                                                      
                                             [lnkInGiftGivDelegate receivedLinkedInNewEvent:(NSMutableDictionary*)results];
+                                            break;
                                         }
                                         
                                     }
@@ -208,15 +217,24 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                             int currentYear=[components year];
                             [gregorianCalendar release];
                             
-                            if([[startDateDict objectForKey:@"year"] intValue]==currentYear){
-                                
-                                if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-12){
+                            if([startDateDict objectForKey:@"year"]){
+                                if([[startDateDict objectForKey:@"year"] intValue]==currentYear){
+                                    if([startDateDict objectForKey:@"month"]){
+                                        if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-12){
+                                            //NSLog(@"linkedIn Event received..%@",results);
+                                            //send it to events to celebrate group
+                                            [lnkInGiftGivDelegate receivedLinkedInNewEvent:(NSMutableDictionary*)results];
+                                        }
+                                    }
+                                    else{
+                                        //NSLog(@"linkedIn Event received..%@",results);
+                                        [lnkInGiftGivDelegate receivedLinkedInNewEvent:(NSMutableDictionary*)results];
+                                    }
+                                        
                                     
-                                    //send it to events to celebrate group
-                                    [lnkInGiftGivDelegate receivedLinkedInNewEvent:(NSMutableDictionary*)results];
                                 }
-                                
                             }
+                                
                         }
                     }
                 }

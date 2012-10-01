@@ -277,7 +277,7 @@
 						<reference key="IBUITintColor" ref="97917032"/>
 					</object>
 				</array>
-				<string key="NSFrameSize">{320, 416}</string>
+				<string key="NSFrameSize">{320, 44}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="559536608"/>
@@ -629,7 +629,6 @@
 						<string key="searchCancelAction:">id</string>
 						<string key="settingsAction:">id</string>
 						<string key="showListOfOrders:">id</string>
-						<string key="showOtherAccountToLogin:">id</string>
 						<string key="showSearchView:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -647,10 +646,6 @@
 						</object>
 						<object class="IBActionInfo" key="showListOfOrders:">
 							<string key="name">showListOfOrders:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showOtherAccountToLogin:">
-							<string key="name">showOtherAccountToLogin:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="showSearchView:">

@@ -14,6 +14,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;
 @property (retain, nonatomic) IBOutlet UILabel *eventNameLbl;
 @property (retain, nonatomic) IBOutlet UILabel *dateLbl;
+@property (retain,nonatomic) NSString *profileId;
 @property (retain, nonatomic) IBOutlet UIButton *bubbleIconForCommentsBtn;
 
 @end

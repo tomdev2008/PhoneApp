@@ -105,6 +105,10 @@ static NSDateFormatter *customDateFormat=nil;
 -(void)viewWillAppear:(BOOL)animated{
     
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
+        for(FBRequest *request in fb_giftgiv_home.fbRequestsArray){
+            [request  cancelConnection];
+        }
+        [fb_giftgiv_home.fbRequestsArray removeAllObjects];
         [picturesOperationQueue cancelAllOperations];
         [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
         if([searchBgView superview]){
@@ -483,8 +487,18 @@ static NSDateFormatter *customDateFormat=nil;
 
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
                 
+                NSArray *tableCells=[eventsTable visibleCells];
+                for(int i=0; i<[tableCells count];i++ ){
+                    if([[(EventCustomCell*)[tableCells objectAtIndex:i] profileId] isEqualToString:[NSString stringWithFormat:@"%@",[picDetails objectForKey:@"profile_id"]]]){
+                        NSIndexPath *indexPath=[eventsTable indexPathForCell:(EventCustomCell*)[tableCells objectAtIndex:i]];
+                        [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                    }
+                }
+//                [[eventsTable visibleCells] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//                    
+//                }];
                 
-                [eventsTable reloadData];
+                //[eventsTable reloadData];
             });
         }
         
@@ -891,6 +905,20 @@ static NSDateFormatter *customDateFormat=nil;
     }
     cell.eventNameLbl.text=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_type"];
     
+    if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+        cell.profileId=[NSString stringWithFormat:@"%@",[[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"]];
+                
+    }
+    else{
+        if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+            cell.profileId=[NSString stringWithFormat:@"%@",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"uid"]];
+            
+        else if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+            cell.profileId=[NSString stringWithFormat:@"%@",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]];
+    }
+    
+    
+    
     //if(![[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"] isEqualToString:@""]){
         NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
         if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
@@ -1010,24 +1038,48 @@ static NSDateFormatter *customDateFormat=nil;
         
         if([eventTitleLbl.text isEqualToString:events_category_1]){
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-            if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            
+            if(isSearchEnabled){
+                if([[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
+                
+                
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                if([[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+                    [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+                if([[searchUpcomingEventsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             }
             else{
-                if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"])
-                    [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                else if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-                    [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
-                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
+                
+                
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+                    [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+                if([[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             }
             
-            
-            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-            if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
-                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
-            if([[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
-                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
             [tempInfoDict release];
@@ -1036,26 +1088,52 @@ static NSDateFormatter *customDateFormat=nil;
         
         else if([eventTitleLbl.text isEqualToString:events_category_2]){
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-            if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            
+            if(isSearchEnabled){
+                if([[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    
+                    [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
+                
+                
+                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                if([[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+                    [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+                
+                if([[searchBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             }
             else{
-                if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"uid"])
-                    [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                else if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-                    [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    
+                    [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
                 
-                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+                    [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+                
+                if([[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             }
             
-            
-            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-            if([[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
-                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
-           
-            if([[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
-                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
@@ -1063,49 +1141,98 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else if([eventTitleLbl.text isEqualToString:events_category_3]){
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-            if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            
+            if(isSearchEnabled){
+                if([[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    
+                    [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
+                
+                
+                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                
+                if([[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+                    [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+                if([[searchEventsToCelebrateArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             }
             else{
-                if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
-                    [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                else if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-                    [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    
+                    [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
                 
-                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                
+                if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
+                    [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+                if([[eventsToCelebrateArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             }
             
-            
-            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-            
-            if([[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
-                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
-            if([[eventsToCelebrateArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
-                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
             [tempInfoDict release];
         }
         else if([eventTitleLbl.text isEqualToString:events_category_4]){
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-            if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                [tempInfoDict setObject:[[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                [tempInfoDict setObject:[[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-            }
-            else{
-                if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
-                    [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                else if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-                    [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+            
+            if(isSearchEnabled){
+                if([[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    
+                    [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
                 
-                [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                
+                [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                if([[searchFBContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             }
             
-            
-            [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-            if([[facebookContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
-                [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
+            else{
+                if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    
+                    [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
+                
+                
+                [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                if([[facebookContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
+            }
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
@@ -1113,24 +1240,48 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else if([eventTitleLbl.text isEqualToString:events_category_5]){
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-            if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                [tempInfoDict setObject:[[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                [tempInfoDict setObject:[[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-            }
-            else{
-                if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
-                    [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                else if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-                    [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+            
+            if(isSearchEnabled){
+                if([[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    
+                    [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
                 
-                [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                
+                [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                
+                if([[searchLkdContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             }
             
-            
-            [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-            
-            if([[linkedInContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
-                [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
+            else{
+                if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                }
+                else{
+                    if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    
+                    [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                }
+                
+                
+                [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                
+                if([[linkedInContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
+            }
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
@@ -1147,7 +1298,7 @@ static NSDateFormatter *customDateFormat=nil;
 
 #pragma mark -
 - (IBAction)showSearchView:(id)sender {
-    searchBgView.frame=CGRectMake(0, 0, 320, 416);
+    searchBgView.frame=CGRectMake(0, 0, 320, 44);
     if(![searchBgView superview]){
         
         [self.view addSubview:searchBgView];
@@ -1175,7 +1326,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar_1{
         
-    searchBgView.frame=CGRectMake(0, 0, 320, 416);
+    searchBgView.frame=CGRectMake(0, 0, 320, 44);
     [searchBar becomeFirstResponder];
 }
 - (void)searchBar:(UISearchBar *)searchBar_1 textDidChange:(NSString *)searchText{
@@ -1323,7 +1474,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
           
         if([linkedInContactsArray count]){
-            [searchFBContactsArray removeAllObjects];
+            [searchLkdContactsArray removeAllObjects];
             
             for (NSMutableDictionary *event in linkedInContactsArray)
             {
@@ -1365,7 +1516,7 @@ static NSDateFormatter *customDateFormat=nil;
        
     }
          
-    
+    [self performSelector:@selector(checkTotalNumberOfGroups)];
     [eventsTable reloadData];
 }
 
@@ -1378,30 +1529,62 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     if([eventTitleLbl.text isEqualToString:events_category_1]){
-        if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
-            details.isPhotoTagged=YES;
-        }
-        else
-            details.isPhotoTagged=NO;
-        
         NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
         
-        if([[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
-            [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"])
-             [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
-        if([[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
-            [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
-            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+        if(isSearchEnabled){
+            if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+                details.isPhotoTagged=YES;
+            }
+            else
+                details.isPhotoTagged=NO;
+            
+            
+            
+            if([[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+                [tempInfoDict setObject:[[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            else if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"uid"])
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
+            if([[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+                [tempInfoDict setObject:[[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            else if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"name"])
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+            
+            [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+            [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+            
+            [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+            //NSLog(@" temp dict..%@",tempInfoDict);
+            if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+        }
         
-        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
-        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+        else{
+            if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+                details.isPhotoTagged=YES;
+            }
+            else
+                details.isPhotoTagged=NO;
+            
+            
+            
+            if([[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+                [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"])
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
+            if([[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+                [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+            
+            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+            
+            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+            //NSLog(@" temp dict..%@",tempInfoDict);
+            if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+        }
         
-        [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-        //NSLog(@" temp dict..%@",tempInfoDict);
-        if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
-            [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
         
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
@@ -1412,30 +1595,61 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     else if([eventTitleLbl.text isEqualToString:events_category_2]){
-        if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
-            details.isPhotoTagged=YES;
-        }
-        else
-            details.isPhotoTagged=NO;
         
         NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
-        
-        if([[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
-             [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
-            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+        if(isSearchEnabled){
+            if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+                details.isPhotoTagged=YES;
+            }
+            else
+                details.isPhotoTagged=NO;
+            
+            
+            
+            if([[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+                [tempInfoDict setObject:[[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            else if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
+                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+            }
+            
+            if([[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+                [tempInfoDict setObject:[[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            else if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
+                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+            
+            [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+            [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+            [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];   
+            if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
+                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
         }
         
-        if([[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
-            [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
-            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
-        
-        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
-        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
-        [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];   
-        if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
-            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+        else{
+            if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+                details.isPhotoTagged=YES;
+            }
+            else
+                details.isPhotoTagged=NO;
+            
+            
+            
+            if([[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+                [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+            }
+            
+            if([[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+                [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+            
+            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+            [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];   
+            if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
+        }
         
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
@@ -1444,30 +1658,60 @@ static NSDateFormatter *customDateFormat=nil;
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_3]){
-        if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"picture"]){
-            details.isPhotoTagged=YES;
+         NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
+        if(isSearchEnabled){
+            if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+                details.isPhotoTagged=YES;
+            }
+            else
+                details.isPhotoTagged=NO;
+            
+            
+            if([[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+                [tempInfoDict setObject:[[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            else if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"]){
+                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+            }
+            
+            if([[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+                [tempInfoDict setObject:[[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            else if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"])
+                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+            
+            [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+            [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+            [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+            
+            if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
+                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
         }
-        else
-            details.isPhotoTagged=NO;
-        
-        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
-        if([[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
-            [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"]){
-            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+        else{
+            if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+                details.isPhotoTagged=YES;
+            }
+            else
+                details.isPhotoTagged=NO;
+            
+            
+            if([[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
+                [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+            else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"]){
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+            }
+            
+            if([[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
+                [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+            else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"])
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
+            
+            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
+            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
+            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+            
+            if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
         }
         
-        if([[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
-            [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"])
-            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
-        
-        [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
-        [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
-        [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-        
-        if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
-            [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
         
         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
         
@@ -1475,58 +1719,11 @@ static NSDateFormatter *customDateFormat=nil;
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_4]){
-        /*if([[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
-            details.isPhotoTagged=YES;
-        }
-        else
-            details.isPhotoTagged=NO;
         
-        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
-        if([[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
-            [tempInfoDict setObject:[[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        else if([[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
-            [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
-        }
-        
-        if([[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
-            [tempInfoDict setObject:[[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        else if([[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
-            [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
-        
-        [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
-        [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
-        [tempInfoDict setObject:[[newJobEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-        
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
-        
-        [tempInfoDict release];*/
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_5]){
-        /*if([[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
-            details.isPhotoTagged=YES;
-        }
-        else
-            details.isPhotoTagged=NO;
         
-        NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:4];
-        if([[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
-            [tempInfoDict setObject:[[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-        else if([[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]){
-            [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
-        }
-        
-        if([[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
-            [tempInfoDict setObject:[[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-        else if([[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
-            [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
-        
-        [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
-        [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
-        [tempInfoDict setObject:[[congratsEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-        [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
-        
-        [tempInfoDict release];*/
         
     }
     
@@ -1650,7 +1847,7 @@ static NSDateFormatter *customDateFormat=nil;
         if(urlStr_id){
             
             NSFileManager *fm = [NSFileManager defaultManager];
-            NSLog(@"%@",[NSString stringWithFormat:@"%@.png",urlStr_id]);
+            //NSLog(@"%@",[NSString stringWithFormat:@"%@.png",urlStr_id]);
             if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
                 
                 NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
@@ -2015,7 +2212,12 @@ static NSDateFormatter *customDateFormat=nil;
     [linkedInEvent setObject:[NSString stringWithFormat:@"%@ %@",[result objectForKey:@"first-name"],[result objectForKey:@"last-name"]] forKey:@"name"];
     [linkedInEvent setObject:@"new job" forKey:@"event_type"];
     NSMutableDictionary *startDateDict=[[[result objectForKey:@"positions"]objectForKey:@"position"] objectForKey:@"start-date"];
-    [linkedInEvent setObject:[NSString stringWithFormat:@"%@-%@-01",[startDateDict objectForKey:@"year"],[startDateDict objectForKey:@"month"]] forKey:@"event_date"];
+    NSString *convertedDateString=[startDateDict objectForKey:@"year"];
+    if([startDateDict objectForKey:@"month"])
+        convertedDateString=[convertedDateString stringByAppendingFormat:[NSString stringWithFormat:@"-%@-01",[startDateDict objectForKey:@"month"]]];
+    else
+        convertedDateString=[convertedDateString stringByAppendingFormat:[NSString stringWithFormat:@"-01-01",[startDateDict objectForKey:@"month"]]];
+    [linkedInEvent setObject:convertedDateString forKey:@"event_date"];
     if([result objectForKey:@"picture-url"])
         [linkedInEvent setObject:[result objectForKey:@"picture-url"] forKey:@"pic_url"];
     else

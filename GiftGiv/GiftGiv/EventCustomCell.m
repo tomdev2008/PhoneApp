@@ -12,7 +12,7 @@
 @synthesize profileImg;
 @synthesize profileNameLbl;
 @synthesize eventNameLbl;
-@synthesize dateLbl;
+@synthesize dateLbl,profileId;
 @synthesize bubbleIconForCommentsBtn;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -32,6 +32,7 @@
 }
 
 - (void)dealloc {
+    [profileId release];
     [profileImg release];
     [profileNameLbl release];
     [eventNameLbl release];

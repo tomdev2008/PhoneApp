@@ -171,6 +171,10 @@
 		7EEE489315E3D92C00E8DB29 /* CustomDateDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EEE489215E3D92C00E8DB29 /* CustomDateDisplay.m */; };
 		7EF056BE16083D530055BC52 /* searchicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EF056BD16083D530055BC52 /* searchicon.png */; };
 		7EF056C116083D760055BC52 /* searchicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EF056C016083D760055BC52 /* searchicon@2x.png */; };
+		7EF27C7F1619590F0095136E /* largegraybutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EF27C7D1619590F0095136E /* largegraybutton@2x.png */; };
+		7EF27C801619590F0095136E /* largetealbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EF27C7E1619590F0095136E /* largetealbutton@2x.png */; };
+		7EF27C841619592A0095136E /* largegraybutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EF27C821619592A0095136E /* largegraybutton.png */; };
+		7EF27C851619592A0095136E /* largetealbutton in Resources */ = {isa = PBXBuildFile; fileRef = 7EF27C831619592A0095136E /* largetealbutton */; };
 		7EFBF54F15EFB6FE000D3279 /* GetEventsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFBF54C15EFB6FE000D3279 /* GetEventsRequest.m */; };
 		7EFBF55015EFB6FE000D3279 /* EventObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFBF54E15EFB6FE000D3279 /* EventObject.m */; };
 /* End PBXBuildFile section */
@@ -459,6 +463,10 @@
 		7EEE489215E3D92C00E8DB29 /* CustomDateDisplay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomDateDisplay.m; sourceTree = "<group>"; };
 		7EF056BD16083D530055BC52 /* searchicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchicon.png; sourceTree = "<group>"; };
 		7EF056C016083D760055BC52 /* searchicon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "searchicon@2x.png"; sourceTree = "<group>"; };
+		7EF27C7D1619590F0095136E /* largegraybutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "largegraybutton@2x.png"; sourceTree = "<group>"; };
+		7EF27C7E1619590F0095136E /* largetealbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "largetealbutton@2x.png"; sourceTree = "<group>"; };
+		7EF27C821619592A0095136E /* largegraybutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = largegraybutton.png; sourceTree = "<group>"; };
+		7EF27C831619592A0095136E /* largetealbutton */ = {isa = PBXFileReference; lastKnownFileType = file; path = largetealbutton; sourceTree = "<group>"; };
 		7EFBF54B15EFB6FE000D3279 /* GetEventsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetEventsRequest.h; sourceTree = "<group>"; };
 		7EFBF54C15EFB6FE000D3279 /* GetEventsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetEventsRequest.m; sourceTree = "<group>"; };
 		7EFBF54D15EFB6FE000D3279 /* EventObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventObject.h; sourceTree = "<group>"; };
@@ -826,6 +834,8 @@
 		7E5EF71815B929BB00C1D252 /* Retina */ = {
 			isa = PBXGroup;
 			children = (
+				7EF27C7D1619590F0095136E /* largegraybutton@2x.png */,
+				7EF27C7E1619590F0095136E /* largetealbutton@2x.png */,
 				7EF056C016083D760055BC52 /* searchicon@2x.png */,
 				7E0AB54A160B3D91003DD08A /* orderhistoryicon@2x.png */,
 				7ECFE0C715BE6E9A002E95E3 /* appicon@2x.png */,
@@ -846,6 +856,8 @@
 		7E5EF71A15B929C300C1D252 /* Normal */ = {
 			isa = PBXGroup;
 			children = (
+				7EF27C821619592A0095136E /* largegraybutton.png */,
+				7EF27C831619592A0095136E /* largetealbutton */,
 				7EF056BD16083D530055BC52 /* searchicon.png */,
 				7E46474315DE47BD00BAFFD4 /* profilepic_dummy.png */,
 				7E0AB548160B3D78003DD08A /* orderhistoryicon.png */,
@@ -1320,6 +1332,10 @@
 				7EF056C116083D760055BC52 /* searchicon@2x.png in Resources */,
 				7E0AB549160B3D78003DD08A /* orderhistoryicon.png in Resources */,
 				7E0AB54B160B3D91003DD08A /* orderhistoryicon@2x.png in Resources */,
+				7EF27C7F1619590F0095136E /* largegraybutton@2x.png in Resources */,
+				7EF27C801619590F0095136E /* largetealbutton@2x.png in Resources */,
+				7EF27C841619592A0095136E /* largegraybutton.png in Resources */,
+				7EF27C851619592A0095136E /* largetealbutton in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
