@@ -337,7 +337,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   
   [rdOAuthAccessToken release];
   rdOAuthAccessToken = [[OAToken alloc] initWithHTTPResponseBody:dataString];
-  RDLOG(@"  access token set %@", rdOAuthAccessToken.key);
+  RDLOG(@"LinkedIn access token Key:%@\n Secret:%@", rdOAuthAccessToken.key,rdOAuthAccessToken.secret);
     [[NSUserDefaults standardUserDefaults]setObject:rdOAuthRequestToken.key forKey:@"LinkedInAccessToken"];
     
     
