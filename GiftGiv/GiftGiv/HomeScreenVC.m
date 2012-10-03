@@ -553,7 +553,8 @@ static NSDateFormatter *customDateFormat=nil;
     
     [eventsBgView.layer addAnimation:tranAnimationForEventGroups forKey:@"groupAnimation"];
     
-    eventTitleLbl.text=[categoryTitles objectAtIndex:eventGroupNum-1];
+    if([categoryTitles count]>=eventGroupNum)
+        eventTitleLbl.text=[categoryTitles objectAtIndex:eventGroupNum-1];
     
     //[self performSelector:@selector(updateNextColumnTitle)];
     
@@ -619,6 +620,16 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     pageControlForEventGroups.numberOfPages=totalGroups;
+    if(totalGroups==1)
+        eventGroupNum=1;
+    for(int i=0;i<totalGroups;i++){
+        if([[categoryTitles objectAtIndex:i] isEqualToString:eventTitleLbl.text]){
+            eventGroupNum=i+1;
+            break;
+        }
+    }
+    
+       
     pageControlForEventGroups.currentPage=eventGroupNum-1;
     
 }
@@ -1320,8 +1331,8 @@ static NSDateFormatter *customDateFormat=nil;
    
     [searchBar resignFirstResponder];
     searchBgView.frame=CGRectMake(0, 0, 320, 44);
-    [self performSelector:@selector(checkTotalNumberOfGroups)];
-    [eventsTable reloadData];
+    //[self performSelector:@selector(checkTotalNumberOfGroups)];
+    //[eventsTable reloadData];
     
 }
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar_1{

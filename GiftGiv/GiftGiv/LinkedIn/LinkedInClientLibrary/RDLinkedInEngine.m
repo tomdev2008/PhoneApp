@@ -170,7 +170,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 - (RDLinkedInConnectionID *)networkUpdatesWithType:(NSString*)typeName{
 //    http://api.linkedin.com/v1/people/~/network/updates:(update-content:(person:(id,headline)))?type=PRFU
-     NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/~/network/updates:(updated-fields,update-content:(person:(id,positions)))?type=%@",typeName]];
+     NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/~/network/updates:(updated-fields,update-content:(person:(id,positions)))?type=%@&count=100",typeName]];
     return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID {

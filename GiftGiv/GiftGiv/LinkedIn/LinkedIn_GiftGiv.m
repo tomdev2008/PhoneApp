@@ -130,7 +130,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
         networkUpdates=[[NSMutableArray alloc]init];
         
         NSMutableArray *tempUpdates=[[NSMutableArray alloc]initWithArray:[results objectForKey:@"update"]];
-        //NSLog(@"Updates..%@",tempUpdates);
+        //NSLog(@"PRFU Updates..%@",tempUpdates);
         //NSLog(@"%d",[tempUpdates count]);
         for (NSMutableDictionary *updateDict in tempUpdates) {
             
@@ -187,7 +187,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                                     
                                     if([[startDateDict objectForKey:@"year"] intValue]==currentYear){
                                         
-                                        if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-12){
+                                        if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-1){
                                         //    NSMutableDictionary *tempResults=[[NSMutableDictionary alloc] initWithDictionary:results];
                                           //  [tempResults 
                                             
@@ -220,7 +220,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                             if([startDateDict objectForKey:@"year"]){
                                 if([[startDateDict objectForKey:@"year"] intValue]==currentYear){
                                     if([startDateDict objectForKey:@"month"]){
-                                        if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-12){
+                                        if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-1){
                                             //NSLog(@"linkedIn Event received..%@",results);
                                             //send it to events to celebrate group
                                             [lnkInGiftGivDelegate receivedLinkedInNewEvent:(NSMutableDictionary*)results];

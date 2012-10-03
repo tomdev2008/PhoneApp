@@ -17,7 +17,7 @@
 #import "GiftItemsRequest.h"
 #import "MBProgressHUD.h"
 
-@interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate>{
+@interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate,UISearchBarDelegate>{
     
     int giftCatNum;
     int totalCats;
@@ -30,6 +30,9 @@
     NSMutableArray *currentGiftItems;
         
 }
+- (IBAction)searchCancelAction:(id)sender;
+@property (retain, nonatomic) IBOutlet UISearchBar *searchFld;
+@property (retain, nonatomic) IBOutlet UIView *searchBgView;
 @property (retain, nonatomic) IBOutlet UILabel *categoryTitleLbl;
 @property (retain, nonatomic) IBOutlet UIView *giftItemsBgView;
 
@@ -55,5 +58,5 @@
 #pragma mark -
 
 -(void)loadCurrentGiftItemsForCategory :(NSString*)categoryId;
-
+-(BOOL)checkWhetherGiftItemsAvailableInACategory:(NSString*)categoryId;
 @end

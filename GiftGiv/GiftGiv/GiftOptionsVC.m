@@ -17,6 +17,8 @@
 @synthesize profileNameLbl;
 @synthesize eventNameLbl;
 
+@synthesize searchFld;
+@synthesize searchBgView;
 @synthesize categoryTitleLbl;
 
 
@@ -244,11 +246,22 @@
     }
     [listOfAllGiftItems addObjectsFromArray:listOfGifts];
     
+    NSMutableIndexSet *indexSet=[[NSMutableIndexSet alloc] init];
+
+    for(int i=0;i<[giftCategoriesList count];i++){
+        if(![self checkWhetherGiftItemsAvailableInACategory:[[giftCategoriesList objectAtIndex:i]catId]]){
+            [indexSet addIndex:i];     
+        }
+    }
+       
+    [giftCategoriesList removeObjectsAtIndexes:indexSet];
+    [indexSet release];
+    
+        
     totalCats=[giftCategoriesList count];
     giftCategoryPageControl.numberOfPages=totalCats;    
     giftCatNum=1;
     giftCategoryPageControl.currentPage=giftCatNum-1;
-    
     
     
     [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
@@ -284,6 +297,21 @@
     
     categoryTitleLbl.text=[[giftCategoriesList objectAtIndex:giftCatNum-1] catName];
     [giftsTable reloadData];
+}
+#pragma mark -
+-(BOOL)checkWhetherGiftItemsAvailableInACategory:(NSString*)categoryId{
+    
+    if([listOfAllGiftItems count]){
+        
+        for(NSMutableDictionary *giftItemDict in listOfAllGiftItems){
+            
+            if([categoryId isEqualToString:[[giftItemDict objectForKey:@"GiftDetails"]giftCategoryId]]){
+                return YES;
+            }
+            
+        }
+    }
+    return NO;
 }
 #pragma mark -
 
@@ -516,7 +544,23 @@
     }
     
 }
+#pragma mark -
+/*- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar_1{
+    
+    [searchFld resignFirstResponder];
+    searchBgView.frame=CGRectMake(0, 0, 320, 44);
+        
+}
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar_1{
+    
+    searchBgView.frame=CGRectMake(0, 0, 320, 44);
+    [searchFld becomeFirstResponder];
+}
+- (void)searchBar:(UISearchBar *)searchBar_1 textDidChange:(NSString *)searchText{
+    
+}*/
 
+#pragma mark -
 #pragma mark - ProgressHUD methods
 
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr  
@@ -555,6 +599,8 @@
     [self setGiftsTable:nil];
     [self setCategoryTitleLbl:nil];
     [self setGiftItemsBgView:nil];
+    [self setSearchBgView:nil];
+    [self setSearchFld:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -601,7 +647,11 @@
     
     [categoryTitleLbl release];
     [giftItemsBgView release];
+    [searchBgView release];
+    [searchFld release];
     [super dealloc];
 }
 
+- (IBAction)searchCancelAction:(id)sender {
+}
 @end
