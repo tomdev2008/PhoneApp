@@ -2209,7 +2209,15 @@ static NSDateFormatter *customDateFormat=nil;
     }
     return NO;
 }
-
+-(BOOL)checkWhetherLinkedInEventExist:(NSMutableDictionary*)linkedInDict{
+    for (NSDictionary *existEvents in eventsToCelebrateArray){
+        NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"linkedIn_id"]];
+        NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[linkedInDict objectForKey:@"id"]];
+        if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
+            return YES;
+    }
+    return NO;
+}
 #pragma mark - LinkedIn delegate
 - (void)linkedInDidLoggedOut{
     //if(![[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
@@ -2218,38 +2226,41 @@ static NSDateFormatter *customDateFormat=nil;
 }
 - (void)receivedLinkedInNewEvent:(NSMutableDictionary*)result{
     
-    NSMutableDictionary *linkedInEvent=[[NSMutableDictionary alloc]init];
-    [linkedInEvent setObject:[result objectForKey:@"id"] forKey:@"linkedIn_id"];
-    [linkedInEvent setObject:[NSString stringWithFormat:@"%@ %@",[result objectForKey:@"first-name"],[result objectForKey:@"last-name"]] forKey:@"name"];
-    [linkedInEvent setObject:@"new job" forKey:@"event_type"];
-    NSMutableDictionary *startDateDict=[[[result objectForKey:@"positions"]objectForKey:@"position"] objectForKey:@"start-date"];
-    NSString *convertedDateString=[startDateDict objectForKey:@"year"];
-    if([startDateDict objectForKey:@"month"])
-        convertedDateString=[convertedDateString stringByAppendingFormat:[NSString stringWithFormat:@"-%@-01",[startDateDict objectForKey:@"month"]]];
-    else
-        convertedDateString=[convertedDateString stringByAppendingFormat:[NSString stringWithFormat:@"-01-01",[startDateDict objectForKey:@"month"]]];
-    [linkedInEvent setObject:convertedDateString forKey:@"event_date"];
-    if([result objectForKey:@"picture-url"])
-        [linkedInEvent setObject:[result objectForKey:@"picture-url"] forKey:@"pic_url"];
-    else
-        [linkedInEvent setObject:@"" forKey:@"pic_url"];
-    [linkedInEvent setObject:@"" forKey:@"ProfilePicture"];
+    if(![self checkWhetherLinkedInEventExist:result]){
+        NSMutableDictionary *linkedInEvent=[[NSMutableDictionary alloc]init];
+        [linkedInEvent setObject:[result objectForKey:@"id"] forKey:@"linkedIn_id"];
+        [linkedInEvent setObject:[NSString stringWithFormat:@"%@ %@",[result objectForKey:@"first-name"],[result objectForKey:@"last-name"]] forKey:@"name"];
+        [linkedInEvent setObject:@"new job" forKey:@"event_type"];
+        NSMutableDictionary *startDateDict=[[[result objectForKey:@"positions"]objectForKey:@"position"] objectForKey:@"start-date"];
+        NSString *convertedDateString=[startDateDict objectForKey:@"year"];
+        if([startDateDict objectForKey:@"month"])
+            convertedDateString=[convertedDateString stringByAppendingFormat:[NSString stringWithFormat:@"-%@-01",[startDateDict objectForKey:@"month"]]];
+        else
+            convertedDateString=[convertedDateString stringByAppendingFormat:[NSString stringWithFormat:@"-01-01",[startDateDict objectForKey:@"month"]]];
+        [linkedInEvent setObject:convertedDateString forKey:@"event_date"];
+        if([result objectForKey:@"picture-url"])
+            [linkedInEvent setObject:[result objectForKey:@"picture-url"] forKey:@"pic_url"];
+        else
+            [linkedInEvent setObject:@"" forKey:@"pic_url"];
+        [linkedInEvent setObject:@"" forKey:@"ProfilePicture"];
+        
+        
+        [eventsToCelebrateArray addObject:linkedInEvent];
+        [allupcomingEvents addObject:linkedInEvent];
+        [linkedInEvent release];
+        [self performSelector:@selector(checkTotalNumberOfGroups)];
+        
+        [self storeAllupcomingsForSuccessScreen];
+        
+        if([allupcomingEvents count]>1)
+            [self sortEvents:allupcomingEvents eventCategory:1];
+        if([eventsToCelebrateArray count]>1)
+            [self sortEvents:eventsToCelebrateArray eventCategory:3];
+        
+        [self makeRequestToLoadImagesUsingOperations];
+        [eventsTable reloadData];
+    }
     
-    
-    [eventsToCelebrateArray addObject:linkedInEvent];
-    [allupcomingEvents addObject:linkedInEvent];
-    [linkedInEvent release];
-    [self performSelector:@selector(checkTotalNumberOfGroups)];
-    
-    [self storeAllupcomingsForSuccessScreen];
-    
-    if([allupcomingEvents count]>1)
-        [self sortEvents:allupcomingEvents eventCategory:1];
-    if([eventsToCelebrateArray count]>1)
-        [self sortEvents:eventsToCelebrateArray eventCategory:3];
-    
-    [self makeRequestToLoadImagesUsingOperations];
-    [eventsTable reloadData];
     
     
 }

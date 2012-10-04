@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ApplicationHelpers.h"
 #import "GiftSummaryVC.h"
+#import <AddressBook/AddressBook.h>
 
 @interface SendOptionsVC : UIViewController{
     CGPoint svos;
@@ -66,5 +67,5 @@
 
 -(void)refreshTheFormForOption:(int)optionIndex;
 -(BOOL)validateMail:(NSString *)email;
-
+-(NSString*)getEmailAddressOfRecipient:(NSString*)contactName;
 @end

@@ -93,6 +93,7 @@
 		7E5EF73C15B9457200C1D252 /* ImageAllocationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5EF73B15B9457200C1D252 /* ImageAllocationObject.m */; };
 		7E5EF74D15B95D5100C1D252 /* EventCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5EF74C15B95D5100C1D252 /* EventCustomCell.m */; };
 		7E5EF74F15B95D6B00C1D252 /* EventCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E5EF74E15B95D6B00C1D252 /* EventCustomCell.xib */; };
+		7EAC795D161DBEE8009BD3A0 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAC795C161DBEE8009BD3A0 /* AddressBook.framework */; };
 		7EAE79E015C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE79DE15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m */; };
 		7EAE79E115C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EAE79DF15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib */; };
 		7EAE79E615C6C16F00D67C27 /* SendOptionsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE79E415C6C16F00D67C27 /* SendOptionsVC.m */; };
@@ -336,6 +337,7 @@
 		7E5EF74B15B95D5100C1D252 /* EventCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCustomCell.h; sourceTree = "<group>"; };
 		7E5EF74C15B95D5100C1D252 /* EventCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCustomCell.m; sourceTree = "<group>"; };
 		7E5EF74E15B95D6B00C1D252 /* EventCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventCustomCell.xib; sourceTree = "<group>"; };
+		7EAC795C161DBEE8009BD3A0 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		7EAE79DD15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gift_GreetingCardDetailsVC.h; sourceTree = "<group>"; };
 		7EAE79DE15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Gift_GreetingCardDetailsVC.m; sourceTree = "<group>"; };
 		7EAE79DF15C6BFE800D67C27 /* Gift_GreetingCardDetailsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Gift_GreetingCardDetailsVC.xib; sourceTree = "<group>"; };
@@ -478,6 +480,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EAC795D161DBEE8009BD3A0 /* AddressBook.framework in Frameworks */,
 				7E0AB544160B02D4003DD08A /* Security.framework in Frameworks */,
 				7E0AB543160AEB93003DD08A /* libxml2.2.dylib in Frameworks */,
 				7ED088E315F5E52F0056160C /* ImageIO.framework in Frameworks */,
@@ -1057,6 +1060,7 @@
 		7ED7EA0D15B6F1EE008DFDE3 = {
 			isa = PBXGroup;
 			children = (
+				7EAC795C161DBEE8009BD3A0 /* AddressBook.framework */,
 				7ED7EA2215B6F1EE008DFDE3 /* GiftGiv */,
 				7ED7EA1B15B6F1EE008DFDE3 /* Frameworks */,
 				7ED7EA1915B6F1EE008DFDE3 /* Products */,

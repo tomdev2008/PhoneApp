@@ -94,4 +94,5 @@
 - (IBAction)searchCancelAction:(id)sender;
 
 -(void) makeRequestToLoadImagesUsingOperations;
+-(BOOL)checkWhetherLinkedInEventExist:(NSMutableDictionary*)linkedInDict;
 @end

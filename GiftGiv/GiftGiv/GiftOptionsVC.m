@@ -468,6 +468,8 @@
         else if(tempImg_one.size.width==110 && tempImg_one.size.height==150){
             cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+28,cell.giftImg_one.frame.origin.y+15 , 69, 94);
         }
+        else
+            cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+10,cell.giftImg_one.frame.origin.y+10 , cell.giftImg_one.frame.size.width-20, cell.giftImg_one.frame.size.width-20);
         
         [cell.giftImg_one setImage:tempImg_one];
     }
@@ -501,7 +503,8 @@
             else if(tempImg_two.size.width==110 && tempImg_two.size.height==150){
                 cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+28,cell.giftImg_two.frame.origin.y+15 , 69, 94);
             }
-            
+            else
+               cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+10,cell.giftImg_two.frame.origin.y+10 , cell.giftImg_two.frame.size.width-20, cell.giftImg_two.frame.size.width-20); 
             
             [cell.giftImg_two setImage:tempImg_two];
         }
