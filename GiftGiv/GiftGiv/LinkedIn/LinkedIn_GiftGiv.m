@@ -93,6 +93,8 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 
 - (void)getMyNetworkUpdatesWithType:(NSString*)type{
     self.fetchNetworkUpdates = [self.engine networkUpdatesWithType:type];
+    //http://api.linkedin.com/v1/people/~/network/updates/key={NETWORK UPDATE KEY}/update-comments
+    //http://api.linkedin.com/v1/people/~/network/updates/key={NETWORK UPDATE KEY}/likes
 }
 #pragma mark - RDLinkedInEngineDelegate
 
@@ -131,7 +133,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
         
         NSMutableArray *tempUpdates=[[NSMutableArray alloc]initWithArray:[results objectForKey:@"update"]];
         //NSLog(@"PRFU Updates..%@",tempUpdates);
-        NSLog(@"%d",[tempUpdates count]);
+        //NSLog(@"%d",[tempUpdates count]);
         for (NSMutableDictionary *updateDict in tempUpdates) {
             
             if([updateDict objectForKey:@"updated-fields"]){
@@ -142,7 +144,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                         for(int i=0;i<update_field_count;i++){
                            
                             if([[[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]objectAtIndex:i] objectForKey:@"name"] isEqualToString:@"person/positions"]){
-                                NSLog(@"update-field found,i=%d",i);
+                                //NSLog(@"update-field found,i=%d",i);
                                 [networkUpdates addObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"]];
                                 break;
                             }
@@ -170,6 +172,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
     else if (identifier == self.fetchMemberProfile){
         
         if([results isKindOfClass:[NSDictionary class]]){
+            //NSLog(@"Profile..%@",results);
             if([[results objectForKey:@"positions"] objectForKey:@"position"]){
                 //NSLog(@"position..%@",[[results objectForKey:@"positions"] objectForKey:@"position"]);
                 if([[[results objectForKey:@"positions"] objectForKey:@"position"]isKindOfClass:[NSArray class]]){

@@ -31,7 +31,7 @@ static NSString *const kOAuthConsumerSecret  = @"g38qT44k7qKU6qW6";
 #define events_category_1 @"all upcoming"
 #define events_category_2 @"birthdays"
 #define events_category_3 @"events to celebrate"//@"relationships"
-#define events_category_4 @"facebook contacts"//@"new job"
+#define events_category_4 @"celebrate them"//@"new job"
 #define events_category_5 @"linkedIn contacts"//@"congratulations"
 
 // Paypal API

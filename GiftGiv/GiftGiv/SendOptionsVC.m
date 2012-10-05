@@ -70,7 +70,7 @@
     eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
     profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
-    [self getEmailAddressOfRecipient:profileNameLbl.text];
+    emailTxtFld.text=[self getEmailAddressOfRecipient:profileNameLbl.text];
     
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
@@ -183,23 +183,23 @@
     CFArrayRef allContacts = ABAddressBookCopyArrayOfAllPeople(allPeople);
     CFIndex numberOfContacts  = ABAddressBookGetPersonCount(allPeople);
     
-    NSLog(@"numberOfContacts------------------------------------%ld",numberOfContacts);
+    NSLog(@"numberOfContacts--%ld",numberOfContacts);
     
     
     for(int i = 0; i < numberOfContacts; i++){
         NSString* name = @"";
-        NSString* phone = @"";
+       // NSString* phone = @"";
         NSString* email = @"";
         
         ABRecordRef aPerson = CFArrayGetValueAtIndex(allContacts, i);
         ABMultiValueRef fnameProperty = ABRecordCopyValue(aPerson, kABPersonFirstNameProperty);
         ABMultiValueRef lnameProperty = ABRecordCopyValue(aPerson, kABPersonLastNameProperty);
         
-        ABMultiValueRef phoneProperty = ABRecordCopyValue(aPerson, kABPersonPhoneProperty);\
+        //ABMultiValueRef phoneProperty = ABRecordCopyValue(aPerson, kABPersonPhoneProperty);
         ABMultiValueRef emailProperty = ABRecordCopyValue(aPerson, kABPersonEmailProperty);
         
         NSArray *emailArray = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(emailProperty);
-        NSArray *phoneArray = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phoneProperty);
+        //NSArray *phoneArray = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phoneProperty);
         
         
         if (fnameProperty != nil) {
@@ -208,8 +208,25 @@
         if (lnameProperty != nil) {
             name = [name stringByAppendingString:[NSString stringWithFormat:@" %@", lnameProperty]];
         }
+       
         
-        if ([phoneArray count] > 0) {
+        if([name caseInsensitiveCompare:contactName]==NSOrderedSame){
+            
+        
+            if ([emailArray count] > 0) {
+                if ([emailArray count] > 1) {
+                    email = [email stringByAppendingString:[NSString stringWithFormat:@"%@", [emailArray objectAtIndex:0]]];
+                    /*for (int i = 0; i < [emailArray count]; i++) {
+                     email = [email stringByAppendingString:[NSString stringWithFormat:@"%@\n", [emailArray objectAtIndex:i]]];
+                     }*/
+                }else {
+                    email = [NSString stringWithFormat:@"%@", [emailArray objectAtIndex:0]];
+                }
+            }
+
+            return email;
+        }
+        /*if ([phoneArray count] > 0) {
             if ([phoneArray count] > 1) {
                 for (int i = 0; i < [phoneArray count]; i++) {
                     phone = [phone stringByAppendingString:[NSString stringWithFormat:@"%@\n", [phoneArray objectAtIndex:i]]];
@@ -217,22 +234,9 @@
             }else {
                 phone = [NSString stringWithFormat:@"%@", [phoneArray objectAtIndex:0]];
             }
-        }
+        }*/
         
-        if ([emailArray count] > 0) {
-            if ([emailArray count] > 1) {
-                for (int i = 0; i < [emailArray count]; i++) {
-                    email = [email stringByAppendingString:[NSString stringWithFormat:@"%@\n", [emailArray objectAtIndex:i]]];
-                }
-            }else {
-                email = [NSString stringWithFormat:@"%@", [emailArray objectAtIndex:0]];
-            }
-        }
         
-        NSLog(@"NAME : %@",name);
-        NSLog(@"PHONE: %@",phone);
-        NSLog(@"EMAIL: %@",email);
-        NSLog(@"\n");
     }
     return @"";
 }

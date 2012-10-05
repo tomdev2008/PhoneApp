@@ -131,7 +131,10 @@
         fbContact.profilepicUrl=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
     else if([argElementName isEqualToString:@"dob"]){
-        fbContact.dob=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        //0001-01-01T00:00:00
+        NSString *dateOfBirth=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSLog(@"%@",dateOfBirth);
+        fbContact.dob=[[dateOfBirth componentsSeparatedByString:@"T"] objectAtIndex:0];
     }
     else if([argElementName isEqualToString:@"FacebookUser"]){
         [receivedResponse addObject:fbContact];

@@ -58,6 +58,8 @@
     NSOperationQueue *picturesOperationQueue;
     
 }
+@property (retain, nonatomic) IBOutlet UISearchBar *contactsSearchBar;
+@property (retain, nonatomic) IBOutlet UIView *contactsSearchView;
 
 @property (retain, nonatomic) IBOutlet UIView *eventsBgView;
 @property (retain, nonatomic) IBOutlet CustomPageControl *pageControlForEventGroups;

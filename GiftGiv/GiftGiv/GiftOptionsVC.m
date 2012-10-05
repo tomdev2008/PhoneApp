@@ -459,19 +459,32 @@
     if([[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftThumbnail"])
         tempImg_one=[[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftThumbnail"];
     if(tempImg_one!=nil){
-        if(tempImg_one.size.width==160 && tempImg_one.size.height==120){
-            cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+12,cell.giftImg_one.frame.origin.y+25 , 100, 75);
-        }
-        else if(tempImg_one.size.width==160 && tempImg_one.size.height==172){
-            cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+12,cell.giftImg_one.frame.origin.y+8 , 100, 108);
-        }
-        else if(tempImg_one.size.width==110 && tempImg_one.size.height==150){
-            cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+28,cell.giftImg_one.frame.origin.y+15 , 69, 94);
-        }
-        else
-            cell.giftImg_one.frame=CGRectMake(cell.giftImg_one.frame.origin.x+10,cell.giftImg_one.frame.origin.y+10 , cell.giftImg_one.frame.size.width-20, cell.giftImg_one.frame.size.width-20);
+                       
+        int GCDValue=[self getTheGCDFirstNum:tempImg_one.size.width secondNum:tempImg_one.size.height];
+        int aspectRatioX=tempImg_one.size.width/GCDValue;
+        int aspectRatioY=tempImg_one.size.height/GCDValue;
         
-        [cell.giftImg_one setImage:tempImg_one];
+        float newWidth;
+        float newHeight;
+        if(tempImg_one.size.width>tempImg_one.size.height){
+            newWidth=cell.giftImg_one.frame.size.width-10;
+            newHeight=((cell.giftImg_one.frame.size.height-10)*aspectRatioY)/aspectRatioX;
+            
+        }
+        else if(tempImg_one.size.width<tempImg_one.size.height){
+            newWidth=((cell.giftImg_one.frame.size.width-10)*aspectRatioX)/aspectRatioY;
+            newHeight=cell.giftImg_one.frame.size.height-10;
+            
+        }
+        else{
+            newWidth=cell.giftImg_one.frame.size.width-10;
+            newHeight=cell.giftImg_one.frame.size.height-10;
+            
+        }
+        UIImage *targetImg=[tempImg_one imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];
+        
+        [cell.giftImg_one setImage:targetImg];
+       
     }
     
     
@@ -494,19 +507,35 @@
             tempImg_two=[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftThumbnail"];
         }
         if(tempImg_two!=nil){
-            if(tempImg_two.size.width==160 && tempImg_two.size.height==120){
-                cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+12,cell.giftImg_two.frame.origin.y+25 , 100, 75);
-            }
-            else if(tempImg_two.size.width==160 && tempImg_two.size.height==172){
-                cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+12,cell.giftImg_two.frame.origin.y+8 , 100, 108);
-            }
-            else if(tempImg_two.size.width==110 && tempImg_two.size.height==150){
-                cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+28,cell.giftImg_two.frame.origin.y+15 , 69, 94);
-            }
-            else
-               cell.giftImg_two.frame=CGRectMake(cell.giftImg_two.frame.origin.x+10,cell.giftImg_two.frame.origin.y+10 , cell.giftImg_two.frame.size.width-20, cell.giftImg_two.frame.size.width-20); 
+                      
             
-            [cell.giftImg_two setImage:tempImg_two];
+            int GCDValue=[self getTheGCDFirstNum:tempImg_two.size.width secondNum:tempImg_two.size.height];
+            int aspectRatioX=tempImg_two.size.width/GCDValue;
+            int aspectRatioY=tempImg_two.size.height/GCDValue;
+            
+            float newWidth;
+            float newHeight;
+            if(tempImg_two.size.width>tempImg_two.size.height){
+                            
+                newWidth=cell.giftImg_two.frame.size.width-10;
+                newHeight=((cell.giftImg_two.frame.size.height-10)*aspectRatioY)/aspectRatioX;
+               
+            }
+            else if(tempImg_two.size.width<tempImg_two.size.height){
+                newWidth=((cell.giftImg_two.frame.size.width-10)*aspectRatioX)/aspectRatioY;
+                newHeight=cell.giftImg_two.frame.size.height-10;
+              
+            }
+            else{
+                newWidth=cell.giftImg_two.frame.size.width-10;
+                newHeight=cell.giftImg_two.frame.size.height-10;
+               
+            }
+            
+            UIImage *targetImg=[tempImg_two imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];
+            
+            [cell.giftImg_two setImage:targetImg];
+            
         }
                 
     }
@@ -547,6 +576,26 @@
     }
     
 }
+#pragma mark - GCD
+-(int)getTheGCDFirstNum:(int)width secondNum:(int)height{
+   
+    //Once we get the greatest value, we should divide the numerator and denominator with greatest value to get aspect ratio
+    
+    int greatest = 1;
+        
+    // determine if width or height is larger
+    int smaller = ( width < height ) ? width : height;
+        
+    // test all numbers up to smaller to see if
+    // they are divisors of both width and height
+    for ( int z = 2; z <= smaller; z++ )
+        if ( ( width % z == 0 ) && ( height % z == 0 ) )
+            greatest = z;
+        
+    return greatest;
+    
+    
+}
 #pragma mark -
 /*- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar_1{
     
@@ -563,7 +612,7 @@
     
 }*/
 
-#pragma mark -
+
 #pragma mark - ProgressHUD methods
 
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr  

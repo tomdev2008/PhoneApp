@@ -16,6 +16,7 @@
 #import "GiftCategoriesRequest.h"
 #import "GiftItemsRequest.h"
 #import "MBProgressHUD.h"
+#import "UIImage+scaling.h"
 
 @interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate,UISearchBarDelegate>{
     
@@ -59,4 +60,5 @@
 
 -(void)loadCurrentGiftItemsForCategory :(NSString*)categoryId;
 -(BOOL)checkWhetherGiftItemsAvailableInACategory:(NSString*)categoryId;
+-(int)getTheGCDFirstNum:(int)width secondNum:(int)height;
 @end
