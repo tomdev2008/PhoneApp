@@ -21,6 +21,8 @@
 @synthesize giftImg;
 @synthesize giftNameLbl;
 @synthesize priceRangePickerBgView;
+@synthesize giftOptionsListBgView;
+@synthesize giftDetails;
 @synthesize electronicPhysicSelNavigator;
 @synthesize electronicPhysPicker;
 @synthesize electrnicalPhysicalBgView;
@@ -68,44 +70,29 @@
     
     profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
     
+    NSString *profilePicId;
     
-    dispatch_queue_t ImageLoader_Q;
-    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
-    dispatch_async(ImageLoader_Q, ^{
-        
-        NSString *urlStr;
-        if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"]){
-            urlStr=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"];
-        }
-        else
-            urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
-        
-        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
-        UIImage *thumbnail = [UIImage imageWithData:data];
-        
-        if(thumbnail==nil){
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
-                
-            });
-            
-        }
-        else {
-            
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                profilePic.image=thumbnail;                   
-                
-            });
-        }
-        
-    });
-    dispatch_release(ImageLoader_Q);
+    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+    }
+    else{
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
+    }
+    
+    NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+    NSFileManager *fm=[NSFileManager defaultManager];
+    if([fm fileExistsAtPath:filePath]){
+        profilePic.image=[UIImage imageWithContentsOfFile:filePath];
+    }
+    else{
+        profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+    }
     [self performSelector:@selector(loadGiftImage)];
     
     giftDetailsScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsScroll];
     
-    [giftDetailsScroll setContentSize:CGSizeMake(320, 618)];
+    
     personalMsgTxtView.inputAccessoryView=messageInputAccessoryView;
     
     //Dynamic[fit] label width respected to the size of the text
@@ -137,6 +124,23 @@
     
     
     giftNameLbl.text=[giftItemInfo giftTitle];
+    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:11.0];
+    CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
+
+    CGSize labelSize = [[giftItemInfo giftDetails] sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
+    CGRect targetFrame=CGRectMake(20, giftPriceLbl.frame.origin.y+giftPriceLbl.frame.size.height, labelSize.width, labelSize.height);
+    
+    if([[giftItemInfo giftDetails] length]){
+        targetFrame.origin.y+=10;
+        targetFrame.size.height+=10;
+    }
+    giftDetails.frame=targetFrame;
+    giftDetails.text=[giftItemInfo giftDetails];
+        
+    giftOptionsListBgView.frame=CGRectMake(0, giftDetails.frame.origin.y+giftDetails.frame.size.height, 320, 373);
+    
+    [giftDetailsScroll setContentSize:CGSizeMake(320, giftOptionsListBgView.frame.origin.y+giftOptionsListBgView.frame.size.height)];
+    
     NSArray *priceArray=[[giftItemInfo giftPrice] componentsSeparatedByString:@";"];
     
     if([priceArray count]>1){
@@ -729,6 +733,8 @@
     [self setElectrnicalPhysicalBgView:nil];
     [self setElectronicPhysPicker:nil];
     [self setElectronicPhysicSelNavigator:nil];
+    [self setGiftDetails:nil];
+    [self setGiftOptionsListBgView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -767,6 +773,8 @@
     [electrnicalPhysicalBgView release];
     [electronicPhysPicker release];
     [electronicPhysicSelNavigator release];
+    [giftDetails release];
+    [giftOptionsListBgView release];
     [super dealloc];
 }
 

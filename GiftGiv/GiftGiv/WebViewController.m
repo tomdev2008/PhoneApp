@@ -175,7 +175,7 @@
             NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:SendEmail>\n<tem:orderId>%@</tem:orderId>\n<tem:toEmail>%@</tem:toEmail>\n<tem:subject>%@</tem:subject>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n<tem:optionalMessage>Hi %@ -\n\nCongratulations!!! I wish I could be with you to take part in this celebration. However, I have selected a small gift at giftgiv to celebrate this joyous occasion. Can you please send your address so that giftgiv can deliver it to you?</tem:optionalMessage>\n</tem:SendEmail>",orderCode,[selectedGift objectForKey:@"RecipientMailID"],[selectedGift objectForKey:@"EventName"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientName"]];
             
             NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-            //NSLog(@"%@",soapRequestString);
+           // NSLog(@"%@",soapRequestString);
             NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"SendEmail"];
             
             SendEmailRequest *mailReq=[[SendEmailRequest alloc]init];

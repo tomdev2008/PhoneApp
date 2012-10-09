@@ -62,8 +62,24 @@
     giftNameLbl.text=[giftSummaryDict objectForKey:@"GiftName"];
     giftPriceLbl.text=[giftSummaryDict objectForKey:@"GiftPrice"];
     
-    [self loadImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
+    //[self loadImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
+    NSString *profilePicId;
     
+    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+    }
+    else{
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
+    }
+    
+    NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+    NSFileManager *fm=[NSFileManager defaultManager];
+    if([fm fileExistsAtPath:filePath]){
+        profilePic.image=[UIImage imageWithContentsOfFile:filePath];
+    }
+    else{
+        profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+    }
     [self loadImage:[giftSummaryDict objectForKey:@"GiftImgUrl"] forAnObject:giftImg];
     
     

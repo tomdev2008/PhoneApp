@@ -72,39 +72,23 @@
     profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
     emailTxtFld.text=[self getEmailAddressOfRecipient:profileNameLbl.text];
     
-    dispatch_queue_t ImageLoader_Q;
-    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
-    dispatch_async(ImageLoader_Q, ^{
-        
-        NSString *urlStr;
-        if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"]){
-            urlStr=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"];
-        }
-        else
-            urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
-        
-        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
-        UIImage *thumbnail = [UIImage imageWithData:data];
-        
-        if(thumbnail==nil){
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
-                
-            });
-            
-        }
-        else {
-            
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                profilePic.image=thumbnail;                   
-                
-            });
-        }
-        
-    });
-    dispatch_release(ImageLoader_Q);
+    NSString *profilePicId;
     
+    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+    }
+    else{
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
+    }
     
+    NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+    NSFileManager *fm=[NSFileManager defaultManager];
+    if([fm fileExistsAtPath:filePath]){
+        profilePic.image=[UIImage imageWithContentsOfFile:filePath];
+    }
+    else{
+        profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+    }
     sendOptionsContentScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:sendOptionsContentScroll];
     

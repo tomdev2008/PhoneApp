@@ -388,6 +388,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                 if(![result isKindOfClass:[NSArray class]])
                     return;
                 for (NSDictionary *friendDict in (NSMutableArray*)result){
+                    NSLog(@"%@",friendDict);
                     if(![friendDict isKindOfClass:[NSDictionary class]])
                         return;
                     
@@ -426,10 +427,10 @@ static NSDateFormatter *standardDateFormatter = nil;
                             //Picture(photos)
                             //NSLog(@"%@",result);
                             if([[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"picture"]){
-                                
+                                NSLog(@"name..%@",[[[[result objectForKey:@"data"] objectAtIndex:i]objectForKey:@"from"] objectForKey:@"name"]);
                                 NSString *photoFromUser=[NSString stringWithFormat:@"%@",[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"from"] objectForKey:@"id"]];
                                 NSString *userIDOfPhotos=[NSString stringWithFormat:@"%@",[friendUserIds objectForKey:request.url]];
-                                
+                                NSLog(@"photo..from..%@,requested updates for user ID..%@",photoFromUser,userIDOfPhotos);
                                 if([photoFromUser isEqualToString:userIDOfPhotos]){
                                     
                                     int commentsCount=[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
@@ -438,7 +439,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                     if(commentsCount>=15 || likesCount>=15){
                                         
                                         BOOL isEventFound=NO;
-                                        
+                                        NSLog(@"comments likes");
                                         for(int j=0;j<commentsCount;j++){
                                             NSString *commentsStr=[[[[[[result objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
                                             
@@ -447,6 +448,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                             for (NSString *searchedString in birthdaySearchStrings){
                                                 if(!isEventFound && [commentsStr rangeOfString :searchedString options:NSLiteralSearch].location != NSNotFound){
                                                     isEventFound=YES;
+                                                    NSLog(@"found birthday..");
                                                     [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                     break;
                                                 }
@@ -455,6 +457,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                                 for (NSString *searchedString in newJobSearchStrings){
                                                     if(!isEventFound && [searchedString rangeOfString :commentsStr options:NSLiteralSearch].location != NSNotFound){
                                                         isEventFound=YES;
+                                                         NSLog(@"found newjob..");
                                                         [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                         break;
                                                     }
@@ -464,6 +467,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                                 for (NSString *searchedString in anniversarySearchStrings){
                                                     if(!isEventFound &&[searchedString rangeOfString :commentsStr options:NSLiteralSearch].location != NSNotFound){
                                                         isEventFound=YES;
+                                                        NSLog(@"anniversary..");
                                                         [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                         break;
                                                     }
@@ -475,6 +479,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                                     
                                                     if(!isEventFound && [searchedString rangeOfString :commentsStr options:NSLiteralSearch].location != NSNotFound){
                                                         //isEventFound=YES;
+                                                        NSLog(@"congrats events");
                                                         [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                         break;
                                                     }

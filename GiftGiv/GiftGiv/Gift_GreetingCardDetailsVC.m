@@ -13,6 +13,8 @@
 @synthesize giftDetailsContentScroll;
 @synthesize profilePic;
 @synthesize profileNameLbl;
+@synthesize innerViewForGreetDetails;
+@synthesize giftDetailsLbl;
 @synthesize backGreetingImg;
 @synthesize dodBgView;
 @synthesize dodPicker;
@@ -59,9 +61,24 @@
     
     profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
     
-    [self loadGiftImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
+    //[self loadGiftImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
+    NSString *profilePicId;
     
+    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+    }
+    else{
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
+    }
     
+    NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+    NSFileManager *fm=[NSFileManager defaultManager];
+    if([fm fileExistsAtPath:filePath]){
+        profilePic.image=[UIImage imageWithContentsOfFile:filePath];
+    }
+    else{
+        profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+    }
     if(isGreetingCard){
         flowerImgView.hidden=YES;
         frontLbl.hidden=NO;
@@ -92,10 +109,33 @@
     greetingPrice.text=[NSString stringWithFormat:@"$%@",[giftItemInfo giftPrice]];
     giftDetailsContentScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsContentScroll];
-    if(isGreetingCard)
+    
+    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:11.0];
+    CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
+        
+    CGSize labelSize = [[giftItemInfo giftDetails] sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
+    
+    CGRect targetFrame=CGRectMake(20, greetingPrice.frame.origin.y+greetingPrice.frame.size.height, labelSize.width, labelSize.height);
+    
+    if([[giftItemInfo giftDetails] length]){
+        targetFrame.origin.y+=10;
+        targetFrame.size.height+=10;
+    }
+    giftDetailsLbl.frame=targetFrame;
+        
+   
+    giftDetailsLbl.text=[giftItemInfo giftDetails];
+        
+    innerViewForGreetDetails.frame=CGRectMake(0, giftDetailsLbl.frame.origin.y+giftDetailsLbl.frame.size.height, 320, 234);
+    CGRect detailsBgFrame=detailsBgView.frame;
+    detailsBgFrame.size.height=innerViewForGreetDetails.frame.origin.y+innerViewForGreetDetails.frame.size.height;
+    detailsBgView.frame=detailsBgFrame;
+    [giftDetailsContentScroll setContentSize:CGSizeMake(320, detailsBgView.frame.origin.y+detailsBgView.frame.size.height)];
+        
+    /*if(isGreetingCard)
         [giftDetailsContentScroll setContentSize:CGSizeMake(320, 889)];
     else
-        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 655)];
+        [giftDetailsContentScroll setContentSize:CGSizeMake(320, 655)];*/
     personalMsgTxt.inputAccessoryView=msgInputAccessoryView;
     
     //Dynamic[fit] label width respected to the size of the text
@@ -379,6 +419,8 @@
     [self setDetailsBgView:nil];
     [self setDodBgView:nil];
     [self setDodPicker:nil];
+    [self setGiftDetailsLbl:nil];
+    [self setInnerViewForGreetDetails:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -412,6 +454,8 @@
     [detailsBgView release];
     [dodBgView release];
     [dodPicker release];
+    [giftDetailsLbl release];
+    [innerViewForGreetDetails release];
     [super dealloc];
 }
 

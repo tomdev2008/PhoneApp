@@ -133,7 +133,7 @@
     else if([argElementName isEqualToString:@"dob"]){
         //0001-01-01T00:00:00
         NSString *dateOfBirth=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSLog(@"%@",dateOfBirth);
+        //NSLog(@"%@",dateOfBirth);
         fbContact.dob=[[dateOfBirth componentsSeparatedByString:@"T"] objectAtIndex:0];
     }
     else if([argElementName isEqualToString:@"FacebookUser"]){

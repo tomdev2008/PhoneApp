@@ -21,6 +21,8 @@
 }
 - (IBAction)electronicPhysicNavigatorAction:(id)sender;
 - (IBAction)electronicPhysicSelDone:(id)sender;
+@property (retain, nonatomic) IBOutlet UIView *giftOptionsListBgView;
+@property (retain, nonatomic) IBOutlet OHAttributedLabel *giftDetails;
 @property (retain, nonatomic) IBOutlet UISegmentedControl *electronicPhysicSelNavigator;
 @property (retain, nonatomic) IBOutlet UIView *dodBgView;
 @property (retain, nonatomic) IBOutlet UIPickerView *dodPicker;

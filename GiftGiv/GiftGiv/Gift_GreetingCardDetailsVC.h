@@ -20,6 +20,8 @@
 @property (retain, nonatomic) IBOutlet UIScrollView *giftDetailsContentScroll;
 @property (retain, nonatomic) IBOutlet UIImageView *profilePic;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;
+@property (retain, nonatomic) IBOutlet UIView *innerViewForGreetDetails;
+@property (retain, nonatomic) IBOutlet OHAttributedLabel *giftDetailsLbl;
 @property (retain, nonatomic) IBOutlet UIImageView *backGreetingImg;
 @property (retain, nonatomic) IBOutlet UILabel *eventNameLbl;
 @property (retain, nonatomic) IBOutlet UIView *dodBgView;

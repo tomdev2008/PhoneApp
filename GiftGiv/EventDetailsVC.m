@@ -52,39 +52,23 @@
     eventDateLbl.text=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"eventDate"]];
     nameLbl.text=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     
-    
-    dispatch_queue_t ImageLoader_Q;
-    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
-    dispatch_async(ImageLoader_Q, ^{
+    NSString *profilePicId;
+   
+    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+    }
+    else {
+        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
+    }
         
-        NSString *urlStr;
-        if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"]){
-            urlStr=[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"];
-        }
-        else
-            urlStr=FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]);
-        
-        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
-        UIImage *thumbnail = [UIImage imageWithData:data];
-        
-        if(thumbnail==nil){
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                profileImgView.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
-                
-            });
-            
-        }
-        else {
-            
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                profileImgView.image=thumbnail;                   
-                
-            });
-        }
-        
-    });
-    dispatch_release(ImageLoader_Q);
-    
+    NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+    NSFileManager *fm=[NSFileManager defaultManager];
+    if([fm fileExistsAtPath:filePath]){
+        profileImgView.image=[UIImage imageWithContentsOfFile:filePath];
+    }
+    else{
+        profileImgView.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+    }
     if([CheckNetwork connectedToNetwork]){
         [self showProgressHUD:self.view withMsg:nil];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
