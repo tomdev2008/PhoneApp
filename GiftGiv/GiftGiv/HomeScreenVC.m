@@ -2284,8 +2284,23 @@ static NSDateFormatter *customDateFormat=nil;
             return YES;
     }*/
     for (NSDictionary *existEvents in eventsToCelebrateArray){
-        NSString *existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
+        NSString *existEventUserIDStr;
+        if([existEvents objectForKey:@"from"]){
+            existEventUserIDStr=[NSString stringWithFormat:@"%@",[[existEvents objectForKey:@"from"]objectForKey:@"id"]];
+            
+        }
+        else{
+            if([existEvents objectForKey:@"uid"])
+                existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
+                
+            else if([existEvents objectForKey:@"linkedIn_id"])
+                existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"linkedIn_id"]];
+               
+            
+        }
+        
         NSString *eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventsData objectForKey:@"from"]objectForKey:@"id"]];
+       
         if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
             return YES;
     }
