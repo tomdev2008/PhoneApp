@@ -143,6 +143,11 @@
             cell.profileNameLbl.text=[[[upcomingEvents objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
             
         }
+        else if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"FBID"]){
+            cell.bubbleIconForCommentsBtn.hidden=NO;
+            cell.profileNameLbl.text=[[upcomingEvents objectAtIndex:indexPath.row]objectForKey:@"FBName"] ;
+            
+        }
         else{
             cell.profileNameLbl.text=[[upcomingEvents objectAtIndex:indexPath.row]objectForKey:@"name"];
             if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
@@ -179,6 +184,16 @@
         if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
             
             NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"]]];
+            NSFileManager *fm=[NSFileManager defaultManager];
+            if([fm fileExistsAtPath:filePath]){
+                cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
+            }
+            
+            
+        }
+        else if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"FBID"]){
+            
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"FBID"]]];
             NSFileManager *fm=[NSFileManager defaultManager];
             if([fm fileExistsAtPath:filePath]){
                 cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
@@ -232,6 +247,10 @@
         [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
         [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
     }
+    else if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"FBID"]){
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"FBID"] forKey:@"userID"];
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"FBName"] forKey:@"userName"];
+    }
     else{
         if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"])
             [tempInfoDict setObject:[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
@@ -265,7 +284,7 @@
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     }
     
-    if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"picture"]){
+    if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"]){
         details.isPhotoTagged=YES;
     }
     else
@@ -275,17 +294,24 @@
     
     if([[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"])
         [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+    else if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"])
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"]forKey:@"userID"];
     else if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"])
         [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
     if([[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
         [tempInfoDict setObject:[[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+    else if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"FBName"])
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"FBName"] forKey:@"userName"];
     else if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
         [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"name"] forKey:@"userName"];
     
     [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_type"] forKey:@"eventName"];
     [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
     
-    [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
+    if([[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"])
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"EventID"] forKey:@"msgID"];
+    else    
+        [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
     //NSLog(@" temp dict..%@",tempInfoDict);
     
     [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];

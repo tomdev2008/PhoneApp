@@ -107,7 +107,8 @@
         NSXMLParser *tempParaser=[[NSXMLParser alloc]initWithData:[currentElementValue dataUsingEncoding:NSUTF8StringEncoding]];
         tempParaser.delegate=self;
         if([tempParaser parse]){
-            [fbContactsDelegate receivedFBContacts:receivedResponse];
+            //if([fbContactsDelegate respondsToSelector(receivedFBContacts:) withObject:receivedResponse])
+                [fbContactsDelegate receivedFBContacts:receivedResponse];
         }
         [receivedResponse  release];
         [tempParaser release];

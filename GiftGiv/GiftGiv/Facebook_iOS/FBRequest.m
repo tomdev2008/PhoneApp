@@ -53,7 +53,6 @@ error = _error;
                          httpMethod:(NSString *) httpMethod
                            delegate:(id<FBRequestDelegate>) delegate
                          requestURL:(NSString *) url {
-    
     FBRequest* request = [[[FBRequest alloc] init] autorelease];
     request.delegate = delegate;
     request.url = url;
