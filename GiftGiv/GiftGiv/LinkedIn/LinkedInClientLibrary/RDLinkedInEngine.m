@@ -175,13 +175,23 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 
 
 //    http://api.linkedin.com/v1/people/~/network/updates:(update-content:(person:(id,headline)))?type=PRFU
-    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/~/network/updates:(updated-fields,update-content:(person:(id,positions)))?type=%@&after=%@&before=%@&count=250",typeName,[NSString stringWithFormat:@"%.0f",(currentTimeInterval-(3*24*60*60))*1000],[NSString stringWithFormat:@"%.0f",currentTimeInterval*1000]]];
+    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/~/network/updates:(update-key,updated-fields,update-content:(person:(id,positions)))?type=%@&after=%@&before=%@&count=250",typeName,[NSString stringWithFormat:@"%.0f",(currentTimeInterval-(3*24*60*60))*1000],[NSString stringWithFormat:@"%.0f",currentTimeInterval*1000]]];
     return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID {
     NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@:(id,first-name,last-name,headline,picture-url,positions)",memberID]];
   //NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@", [memberID stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
+}
+- (RDLinkedInConnectionID *)commentsForUpdate:(NSString*)updateKey{
+    
+    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/~/network/updates/key=%@/update-comments",updateKey]];
+    return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
+}
+- (RDLinkedInConnectionID *)likesForUpdate:(NSString*)updateKey{
+    
+    NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/~/network/updates/key=%@/likes",updateKey]];
+    return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 
 /*- (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus {

@@ -246,7 +246,7 @@ static NSDateFormatter *standardDateFormatter = nil;
 - (void)listOfBirthdayEvents{
     
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
-        currentAPICall=kAPIGetBirthdayEvents;
+        //currentAPICall=kAPIGetBirthdayEvents;
         
         //Date should be in MM/dd/yyyy formate only for facebook queries
         NSString *startDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:-4]; //previous 3 days as it like windows phone logic
@@ -259,11 +259,11 @@ static NSDateFormatter *standardDateFormatter = nil;
                                        getBirthdaysQuery, @"query",
                                        nil];
         
-        FBRequest *birthdaysReq=[[self facebook] requestWithMethodName:@"fql.query"
+        getFBBirthdaysReq=[[self facebook] requestWithMethodName:@"fql.query"
                                                       andParams:params
                                                   andHttpMethod:@"POST"
                                                     andDelegate:self];
-        [fbRequestsArray addObject:birthdaysReq];
+        [fbRequestsArray addObject:getFBBirthdaysReq];
     }
     
 }
@@ -290,10 +290,23 @@ static NSDateFormatter *standardDateFormatter = nil;
 
 - (void)getAllFriendsWithTheirDetails{
     
+    
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        currentAPICall=kAPIGetAllFriends;
         
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        //currentAPICall=kAPIGetAllFriends;
+        [fbRequestsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            FBRequest*reqObj= (FBRequest*)obj ;
+            [reqObj.connection cancel];
+        }];
+        //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        if(friendUserIds!=nil && [friendUserIds count]){
+            responseCount=0;
+            [friendUserIds removeAllObjects];
+            [friendUserIds release];
+            friendUserIds=nil;
+        }
+        friendUserIds=[[NSMutableDictionary alloc]init];
         
         NSString *getFriendsQuery=@"SELECT uid, name, first_name, last_name, birthday_date, pic_square from user where uid in (SELECT uid2 FROM friend WHERE uid1=me())";
         //NSLog(@"%@",getFriendsQuery);
@@ -301,11 +314,12 @@ static NSDateFormatter *standardDateFormatter = nil;
                                        getFriendsQuery, @"query",
                                        nil];
         
-        FBRequest *friendsReq=[[self facebook] requestWithMethodName:@"fql.query"
+        getFriendsListReq=[[self facebook] requestWithMethodName:@"fql.query"
                                                     andParams:params
                                                 andHttpMethod:@"POST"
                                                   andDelegate:self];
-        [fbRequestsArray addObject:friendsReq];
+       
+        [fbRequestsArray addObject:getFriendsListReq];
         
         
     }
@@ -337,22 +351,81 @@ static NSDateFormatter *standardDateFormatter = nil;
                 [fbGiftGivDelegate receivedDetailedEventInfo:(NSMutableDictionary*)result];
             }
         }
-        
+        if([request isEqual:getFriendsListReq]){
+                 
+            
+            if(newJobSearchStrings==nil){
+                newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job" ,nil];/*@"congrats",@"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job",nil];*/
+            }
+            if(anniversarySearchStrings==nil){
+                anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary" ,nil];/*@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary",nil]*/;
+            }
+            if(congratsSearchStrings==nil){
+                congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations",nil];/*@"congrats", @"all the best", @"good luck", @"congratulations",nil];*/
+            }
+            if(birthdaySearchStrings==nil){
+                birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"wish you", @"belated", @"birthday wishes", @"have a lovely birthday", @"happy birthday", @"many happy returns of the day",nil];/*@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];*/
+            }
+            
+            if(![result isKindOfClass:[NSArray class]])
+                return;
+            NSTimeInterval currentTimeInterval=[[NSDate date] timeIntervalSince1970];
+            //NSLog(@"photos..reque %@",fbReqPhotos.url);
+            for (NSDictionary *friendDict in (NSMutableArray*)result){
+                
+                if(![friendDict isKindOfClass:[NSDictionary class]])
+                    return;
+                
+                if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
+                    return;
+                //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                currentAPICall=kAPIGetJSONForStatuses;
+                
+                NSString *getPhotosQuery=[NSString stringWithFormat:@"SELECT object_id, created,owner, like_info, comment_info FROM photo WHERE modified>=%.0f AND aid IN (SELECT aid FROM album WHERE owner = %@ AND modified_major>=%.0f)",(currentTimeInterval-(3*24*60*60)),[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60))];
+                //NSLog(@"phoptos..%@",getPhotosQuery);
+                NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                               getPhotosQuery, @"query",
+                                               nil];
+                
+                FBRequest *fbReqPhotos=[[self facebook] requestWithMethodName:@"fql.query"
+                                                                    andParams:params
+                                                                andHttpMethod:@"POST"
+                                                                  andDelegate:self];
+                [fbRequestsArray addObject:fbReqPhotos];
+                
+                [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqPhotos.params objectForKey:@"query"]];
+                
+                
+                //last 2 days
+                FBRequest *fbReqStatuses=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
+                [fbRequestsArray addObject:fbReqStatuses];
+                [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqStatuses url]];
+                
+                
+                
+                //NSLog(@"photos..reque %@",fbReqPhotos.url);
+                
+                
+            }
+        }
+        if([request isEqual:getFBBirthdaysReq]){
+            if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
+                return;
+            
+            if([result isKindOfClass:[NSArray class]])
+                [fbGiftGivDelegate receivedBirthDayEvents:(NSMutableArray *)result];
+        }
         switch (currentAPICall) {
                 
             case kAPIGetUserDetails:
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO]; 
+                //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO]; 
                 if ([result isKindOfClass:[NSArray class]] && ([result count] > 0)) {
                     result = [result objectAtIndex:0];
                 }
                 [fbGiftGivDelegate facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)result];
                 break;
             case kAPIGetBirthdayEvents:
-                if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
-                    return;
                 
-                if([result isKindOfClass:[NSArray class]])
-                [fbGiftGivDelegate receivedBirthDayEvents:(NSMutableArray *)result];
                 
                 break;
                 //Received all friends details
@@ -363,75 +436,10 @@ static NSDateFormatter *standardDateFormatter = nil;
                 else
                     fbOperationQueue=[[NSOperationQueue alloc]init];*/
                 
-                [fbRequestsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    FBRequest*reqObj= (FBRequest*)obj ;
-                    [reqObj.connection cancel];
-                }];
-                
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                if(friendUserIds!=nil && [friendUserIds count]){
-                    [friendUserIds removeAllObjects];
-                    [friendUserIds release];
-                    friendUserIds=nil;
-                }
-                friendUserIds=[[NSMutableDictionary alloc]init];
-                
-                if(newJobSearchStrings==nil){
-                    newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job" ,nil];/*@"congrats",@"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job",nil];*/
-                }
-                if(anniversarySearchStrings==nil){
-                    anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary" ,nil];/*@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary",nil]*/;
-                }
-                if(congratsSearchStrings==nil){
-                    congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations",nil];/*@"congrats", @"all the best", @"good luck", @"congratulations",nil];*/
-                }
-                if(birthdaySearchStrings==nil){
-                    birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"wish you", @"belated", @"birthday wishes", @"have a lovely birthday", @"happy birthday", @"many happy returns of the day",nil];/*@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];*/
-                }
-                
-                if(![result isKindOfClass:[NSArray class]])
-                    return;
-                NSTimeInterval currentTimeInterval=[[NSDate date] timeIntervalSince1970];
-                //NSLog(@"photos..reque %@",fbReqPhotos.url);
-                for (NSDictionary *friendDict in (NSMutableArray*)result){
-                    
-                    if(![friendDict isKindOfClass:[NSDictionary class]])
-                        return;
-                    
-                    if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
-                        return;
-                    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                    currentAPICall=kAPIGetJSONForStatuses;
-                    //last 2 days
-                    FBRequest *fbReqStatuses=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
-                    [fbRequestsArray addObject:fbReqStatuses];
-                    [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqStatuses url]];
-                    /*FBRequest *fbReqPhotos=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@/photos?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
-                    [fbRequestsArray addObject:fbReqPhotos];
-                    [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqPhotos url]]; */ 
-                    
-                    
-                    NSString *getPhotosQuery=[NSString stringWithFormat:@"SELECT object_id, created,owner, like_info, comment_info FROM photo WHERE modified>=%.0f AND aid IN (SELECT aid FROM album WHERE owner = %@ AND modified_major>=%.0f)",(currentTimeInterval-(3*24*60*60)),[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60))];
-                    //NSLog(@"phoptos..%@",getPhotosQuery);
-                    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                                   getPhotosQuery, @"query",
-                                                   nil];
-                    
-                    FBRequest *fbReqPhotos=[[self facebook] requestWithMethodName:@"fql.query"
-                                                                       andParams:params
-                                                                   andHttpMethod:@"POST"
-                                                                     andDelegate:self];
-                    [fbRequestsArray addObject:fbReqPhotos];
-                    
-                    [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqPhotos.params objectForKey:@"query"]];
-                    //NSLog(@"photos..reque %@",fbReqPhotos.url);
-                    
-                    
-                }
                  
                 break;
             case kAPIGetJSONForStatuses:
-               
+                responseCount++;
                 if([result isKindOfClass:[NSArray class]]){
                     int photosCount=[result count];
                     for (int i=0;i<photosCount;i++){
@@ -723,6 +731,8 @@ static NSDateFormatter *standardDateFormatter = nil;
                     }
                     //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];     
                 }
+                if(responseCount==[friendUserIds count])
+                    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
                 break;
                 
         }

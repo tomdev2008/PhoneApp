@@ -159,6 +159,8 @@ static NSDateFormatter *customDateFormat=nil;
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
                     [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"IsLoadingFromFacebook"];
+                    
+                    [fb_giftgiv_home getAllFriendsWithTheirDetails];
                     [fb_giftgiv_home listOfBirthdayEvents];
                     [self performSelector:@selector(makeRequestToGetFacebookContacts) withObject:nil afterDelay:3.0];
                     
@@ -204,7 +206,7 @@ static NSDateFormatter *customDateFormat=nil;
    
        
     if(friendsCount){
-        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+        //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         
        
         if([facebookContactsArray count])
@@ -459,6 +461,7 @@ static NSDateFormatter *customDateFormat=nil;
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"IsLoadingFromFacebook"];
             //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
+            [fb_giftgiv_home getAllFriendsWithTheirDetails];
             [fb_giftgiv_home listOfBirthdayEvents];
             
         }
@@ -1953,10 +1956,10 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma mark - Facebook Events delegate
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays{
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     if(!isEventsLoadingFromFB)
         return;
-    [fb_giftgiv_home getAllFriendsWithTheirDetails];
+    
     
     if([listOfBirthdays count]){
         
@@ -2120,7 +2123,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else
             eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventDetails objectForKey:@"from"]objectForKey:@"id"]];
-        if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
+        if([[NSString stringWithFormat:@"%@",existEventUserIDStr] isEqualToString:[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]])
             return ;
     }
     
@@ -2414,7 +2417,7 @@ static NSDateFormatter *customDateFormat=nil;
         else
             eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventsData objectForKey:@"from"]objectForKey:@"id"]];
        
-        if([existEventUserIDStr isEqualToString:eventDetailsUserIDStr])
+        if([[NSString stringWithFormat:@"%@",existEventUserIDStr] isEqualToString:[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]])
             return YES;
     }
     return NO;
@@ -2435,7 +2438,7 @@ static NSDateFormatter *customDateFormat=nil;
     //}
 }
 - (void)receivedLinkedInNewEvent:(NSMutableDictionary*)result{
-    
+    NSLog(@"linkedIn dict..%@",result);
     if(![self checkWhetherLinkedInEventExist:result]){
         NSMutableDictionary *linkedInEvent=[[NSMutableDictionary alloc]init];
         [linkedInEvent setObject:[result objectForKey:@"id"] forKey:@"linkedIn_id"];

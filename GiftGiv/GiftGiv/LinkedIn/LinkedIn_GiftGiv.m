@@ -20,8 +20,9 @@
 @property (nonatomic, retain) RDLinkedInEngine* engine;
 @property (nonatomic, retain) RDLinkedInConnectionID* fetchCurrentUserProfile;
 @property (nonatomic, retain) RDLinkedInConnectionID* fetchMemberProfile;
-//@property (nonatomic, retain) RDLinkedInConnectionID* shareConnection;
 @property (nonatomic, retain) RDLinkedInConnectionID* fetchNetworkUpdates;
+@property (nonatomic, retain) RDLinkedInConnectionID* fetchCommentsForUpdate;
+@property (nonatomic, retain) RDLinkedInConnectionID* fetchLikesForUpdate;
 
 - (void)fetchProfile;
 
@@ -33,7 +34,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 
 
 @synthesize engine;
-@synthesize fetchCurrentUserProfile,fetchMemberProfile,fetchNetworkUpdates;
+@synthesize fetchCurrentUserProfile,fetchMemberProfile,fetchNetworkUpdates,fetchCommentsForUpdate,fetchLikesForUpdate;
 //@synthesize shareConnection;
 @synthesize lnkInGiftGivDelegate;
 
@@ -96,6 +97,12 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
     //http://api.linkedin.com/v1/people/~/network/updates/key={NETWORK UPDATE KEY}/update-comments
     //http://api.linkedin.com/v1/people/~/network/updates/key={NETWORK UPDATE KEY}/likes
 }
+-(void)getListOfCommentsForTheUpdate:(NSString *)updateKey{
+    self.fetchCommentsForUpdate = [self.engine commentsForUpdate:updateKey];
+}
+-(void)getLikesForAnUpdat:(NSString*)updateKey{
+    self.fetchLikesForUpdate = [self.engine likesForUpdate:updateKey];
+}
 #pragma mark - RDLinkedInEngineDelegate
 
 - (void)linkedInEngineAccessToken:(RDLinkedInEngine *)engine setAccessToken:(OAToken *)token {
@@ -144,7 +151,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                         for(int i=0;i<update_field_count;i++){
                            
                             if([[[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]objectAtIndex:i] objectForKey:@"name"] isEqualToString:@"person/positions"]){
-                                //NSLog(@"update-field found,i=%d",i);
+                                NSLog(@"update-field found,%@",updateDict);
                                 [networkUpdates addObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"]];
                                 break;
                             }
@@ -153,7 +160,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                     else if([[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]isKindOfClass:[NSDictionary class]]){
                         
                         if([[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] objectForKey:@"name"] isEqualToString:@"person/positions"]){
-                            NSLog(@"update-field found");
+                            NSLog(@"update-field found,%@",updateDict);
                             [networkUpdates addObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"]];
                             //break;
                         }
@@ -162,7 +169,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
             }
         }
         [tempUpdates release];
-        
+        NSLog(@"network updates..%@",networkUpdates);
         currentConnectionNum=0;
         totalConnectionsCount=[networkUpdates count];
         if(totalConnectionsCount)
@@ -259,6 +266,12 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
         }
         
        // NSLog(@"updates..%@",results);
+    }
+    else if (identifier == self.fetchLikesForUpdate){
+        NSLog(@"likes..%@,%@",results,[results class]);
+    }
+    else if (identifier ==  self.fetchCommentsForUpdate){
+        NSLog(@"comments..%@,%@",results, [results class]);
     }
 }
 
