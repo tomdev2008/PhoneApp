@@ -89,13 +89,13 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 }
 
 - (void)getMemberProfile:(NSString*)memberId{
+  
     self.fetchMemberProfile = [self.engine profileForPersonWithID:memberId];
 }
 
 - (void)getMyNetworkUpdatesWithType:(NSString*)type{
     self.fetchNetworkUpdates = [self.engine networkUpdatesWithType:type];
-    //http://api.linkedin.com/v1/people/~/network/updates/key={NETWORK UPDATE KEY}/update-comments
-    //http://api.linkedin.com/v1/people/~/network/updates/key={NETWORK UPDATE KEY}/likes
+   
 }
 -(void)getListOfCommentsForTheUpdate:(NSString *)updateKey{
     self.fetchCommentsForUpdate = [self.engine commentsForUpdate:updateKey];
@@ -152,7 +152,13 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                            
                             if([[[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]objectAtIndex:i] objectForKey:@"name"] isEqualToString:@"person/positions"]){
                                 NSLog(@"update-field found,%@",updateDict);
-                                [networkUpdates addObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"]];
+                                
+                                NSMutableDictionary *tempDict=[[NSMutableDictionary alloc] initWithCapacity:2];
+                                [tempDict setObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"] forKey:@"id"];
+                                [tempDict setObject:[updateDict objectForKey:@"update-key"] forKey:@"update_key"];
+                                
+                                [networkUpdates addObject:tempDict];
+                                [tempDict release];
                                 break;
                             }
                         }
@@ -161,7 +167,11 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                         
                         if([[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] objectForKey:@"name"] isEqualToString:@"person/positions"]){
                             NSLog(@"update-field found,%@",updateDict);
-                            [networkUpdates addObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"]];
+                            NSMutableDictionary *tempDict=[[NSMutableDictionary alloc] initWithCapacity:2];
+                            [tempDict setObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"] forKey:@"id"];
+                            [tempDict setObject:[updateDict objectForKey:@"update-key"] forKey:@"update_key"];
+                            [networkUpdates addObject:tempDict];
+                            [tempDict release];
                             //break;
                         }
                     }
@@ -173,7 +183,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
         currentConnectionNum=0;
         totalConnectionsCount=[networkUpdates count];
         if(totalConnectionsCount)
-            [self getMemberProfile:[networkUpdates objectAtIndex:currentConnectionNum]];
+            [self getMemberProfile:[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
                
     }
     else if (identifier == self.fetchMemberProfile){
@@ -203,7 +213,14 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                                         //    NSMutableDictionary *tempResults=[[NSMutableDictionary alloc] initWithDictionary:results];
                                           //  [tempResults 
                                             
+                                                                                        
                                             [[results objectForKey:@"positions"] setObject:tempDict forKey:@"position"];
+                                            for (int j=0;j<totalConnectionsCount;j++){
+                                                
+                                                if([[results objectForKey:@"id"] isEqualToString:[[networkUpdates objectAtIndex:j]objectForKey:@"id"]])
+                                                    [results setObject:[[networkUpdates objectAtIndex:j]objectForKey:@"update_key"] forKey:@"update_key"];
+                                            }
+                                           
                                             //NSLog(@"%@",tempDict);
                                             
                                             //send it to events to celebrate group
@@ -240,11 +257,25 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                                         if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-1){
                                             //NSLog(@"linkedIn Event received..%@",results);
                                             //send it to events to celebrate group
+                                            
+                                            for (int j=0;j<totalConnectionsCount;j++){
+                                                
+                                                if([[results objectForKey:@"id"] isEqualToString:[[networkUpdates objectAtIndex:j]objectForKey:@"id"]])
+                                                    [results setObject:[[networkUpdates objectAtIndex:j]objectForKey:@"update_key"] forKey:@"update_key"];
+                                            }
+                                            
+                                            
                                             [lnkInGiftGivDelegate receivedLinkedInNewEvent:(NSMutableDictionary*)results];
                                         }
                                     }
                                     else{
                                         //NSLog(@"linkedIn Event received..%@",results);
+                                        
+                                        for (int j=0;j<totalConnectionsCount;j++){
+                                            
+                                            if([[results objectForKey:@"id"] isEqualToString:[[networkUpdates objectAtIndex:j]objectForKey:@"id"]])
+                                                [results setObject:[[networkUpdates objectAtIndex:j]objectForKey:@"update_key"] forKey:@"update_key"];
+                                        }
                                         [lnkInGiftGivDelegate receivedLinkedInNewEvent:(NSMutableDictionary*)results];
                                     }
                                         
@@ -262,15 +293,22 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
         
         if(currentConnectionNum<totalConnectionsCount-1){
             currentConnectionNum++;
-            [self getMemberProfile:[networkUpdates objectAtIndex:currentConnectionNum]];
+            [self getMemberProfile:[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
         }
         
        // NSLog(@"updates..%@",results);
     }
     else if (identifier == self.fetchLikesForUpdate){
+        int likesCount=0;
+        if([results objectForKey:@"like"]){
+            likesCount=[[results objectForKey:@"like"] count];
+        }
+            
+        [lnkInGiftGivDelegate receivedLikesForAnUpdate:likesCount];
         NSLog(@"likes..%@,%@",results,[results class]);
     }
     else if (identifier ==  self.fetchCommentsForUpdate){
+        [lnkInGiftGivDelegate receivedCommentsForAnUpdate:results];
         NSLog(@"comments..%@,%@",results, [results class]);
     }
 }

@@ -21,7 +21,8 @@
 - (void)linkedInDidRequestFailed;
 - (void)linkedInDidCancelledLogin;
 - (void)receivedLinkedInNewEvent:(NSMutableDictionary*)result;
-//- (void)receivedNetworkConnections:(NSMutableDictionary*)connections;
+- (void)receivedCommentsForAnUpdate:(id)comments;
+- (void)receivedLikesForAnUpdate:(int)likesCount;
 @end
 
 
@@ -37,4 +38,6 @@
 - (void)getMyNetworkUpdatesWithType:(NSString*)type;
 - (void)logOut;
 - (void)getMemberProfile:(NSString*)memberId;
+- (void)getListOfCommentsForTheUpdate:(NSString *)updateKey;
+- (void)getLikesForAnUpdat:(NSString*)updateKey;
 @end

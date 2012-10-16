@@ -355,16 +355,16 @@ static NSDateFormatter *standardDateFormatter = nil;
                  
             
             if(newJobSearchStrings==nil){
-                newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job" ,nil];/*@"congrats",@"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job",nil];*/
+                newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"got job", @"got new job", @"new job" ,nil];/*@"congrats",@"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job",nil];*/
             }
             if(anniversarySearchStrings==nil){
                 anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary" ,nil];/*@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary",nil]*/;
             }
             if(congratsSearchStrings==nil){
-                congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"all the best", @"good luck", @"congratulations",nil];/*@"congrats", @"all the best", @"good luck", @"congratulations",nil];*/
+                congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"congratulations" ,nil];/*@"congrats", @"all the best", @"good luck", @"congratulations",nil];*/
             }
             if(birthdaySearchStrings==nil){
-                birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"wish you", @"belated", @"birthday wishes", @"have a lovely birthday", @"happy birthday", @"many happy returns of the day",nil];/*@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];*/
+                birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"belated", @"birthday wishes", @"have a lovely birthday", @"happy birthday", @"many happy returns of the day",nil];/*@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];*/
             }
             
             if(![result isKindOfClass:[NSArray class]])

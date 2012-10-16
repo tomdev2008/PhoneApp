@@ -943,6 +943,9 @@ static NSDateFormatter *customDateFormat=nil;
             cell.bubbleIconForCommentsBtn.hidden=YES;
         }
     }
+    if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]){
+        cell.bubbleIconForCommentsBtn.hidden=NO;
+    }
     cell.eventNameLbl.text=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_type"];
     
     if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
@@ -1683,6 +1686,14 @@ static NSDateFormatter *customDateFormat=nil;
                 [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"FBID"] forKey:@"userID"];
             else if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"uid"])
                 [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
+            else if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
+            }
+            
             if([[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
                 [tempInfoDict setObject:[[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
             else if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"FBName"])
@@ -1694,7 +1705,7 @@ static NSDateFormatter *customDateFormat=nil;
             [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
             if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"EventID"])
                 [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"EventID"] forKey:@"msgID"];
-            else
+            else if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"id"])
                 [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
             //NSLog(@" temp dict..%@",tempInfoDict);
             if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
@@ -1716,7 +1727,12 @@ static NSDateFormatter *customDateFormat=nil;
                 [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"]forKey:@"userID"];
             else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"])
                 [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
-            
+            else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
+                
+            }
             if([[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
                 [tempInfoDict setObject:[[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
             else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"FBName"])
@@ -1728,6 +1744,9 @@ static NSDateFormatter *customDateFormat=nil;
             [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
             if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"EventID"])
                 [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"EventID"] forKey:@"msgID"];
+            else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"update_key"]){
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
+            }
             else
                 [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
             //NSLog(@" temp dict..%@",tempInfoDict);
@@ -1765,6 +1784,13 @@ static NSDateFormatter *customDateFormat=nil;
                 [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
             }
             
+            else if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
+                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
+                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
+                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
+            }
+            
             if([[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
                 [tempInfoDict setObject:[[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
             else if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"FBName"])
@@ -1777,7 +1803,7 @@ static NSDateFormatter *customDateFormat=nil;
             
             if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"])
                 [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"EventID"] forKey:@"msgID"]; 
-            else
+            else if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"])
                 [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];   
             if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
                 [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
@@ -1800,7 +1826,12 @@ static NSDateFormatter *customDateFormat=nil;
             else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"]){
                 [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"] forKey:@"userID"];
             }
-            
+            else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
+            }
             if([[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
                 [tempInfoDict setObject:[[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
             else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"name"])
@@ -1813,7 +1844,7 @@ static NSDateFormatter *customDateFormat=nil;
             
             if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"])
                 [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"EventID"] forKey:@"msgID"];  
-            else 
+            else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"])
                 [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];   
             if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
                 [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
@@ -1843,7 +1874,12 @@ static NSDateFormatter *customDateFormat=nil;
             else if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"FBID"]){
                 [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"FBID"] forKey:@"userID"];
             }
-            
+            else if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
+                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
+                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
+                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
+            }
             if([[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
                 [tempInfoDict setObject:[[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
             else if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"])
@@ -1856,7 +1892,7 @@ static NSDateFormatter *customDateFormat=nil;
             
             if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"FBID"])
                 [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"EventID"] forKey:@"msgID"];
-            else
+            else if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"id"])
                 [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
             
             if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
@@ -1878,7 +1914,12 @@ static NSDateFormatter *customDateFormat=nil;
             else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"FBID"]){
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
             }
-            
+            else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
+            }
             if([[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"])
                 [tempInfoDict setObject:[[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
             else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"name"])
@@ -1890,7 +1931,7 @@ static NSDateFormatter *customDateFormat=nil;
             [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"event_date"] forKey:@"eventDate"];
             if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"FBID"])
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"EventID"] forKey:@"msgID"];
-            else
+            else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"id"])
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
             
             if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"pic_square"])
@@ -2333,7 +2374,12 @@ static NSDateFormatter *customDateFormat=nil;
 	for (int i=0; i<eventsCount;i++) {
         
         if([[[listOfEvents objectAtIndex:i] objectForKey:@"event_date"] isKindOfClass:[NSString class]]&& ![[[listOfEvents objectAtIndex:i] objectForKey:@"event_date"] isEqualToString:@""]){
+            
+            if([[[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"] componentsSeparatedByString:@"T"] count]>1 || [[[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"] componentsSeparatedByString:@" "] count]>1){
+                [[listOfEvents objectAtIndex:i]setObject:[[[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"] componentsSeparatedByString:@"T"]objectAtIndex:0] forKey:@"event_date"];
+            }
             [customDateFormat setDateFormat:@"yyyy-MM-dd"];
+            
             NSDate *date1 =[customDateFormat dateFromString:[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"]];
             [customDateFormat setDateFormat:@"MMM dd"];
             
@@ -2438,11 +2484,14 @@ static NSDateFormatter *customDateFormat=nil;
     //}
 }
 - (void)receivedLinkedInNewEvent:(NSMutableDictionary*)result{
-    NSLog(@"linkedIn dict..%@",result);
+    
     if(![self checkWhetherLinkedInEventExist:result]){
         NSMutableDictionary *linkedInEvent=[[NSMutableDictionary alloc]init];
         [linkedInEvent setObject:[result objectForKey:@"id"] forKey:@"linkedIn_id"];
         [linkedInEvent setObject:[NSString stringWithFormat:@"%@ %@",[result objectForKey:@"first-name"],[result objectForKey:@"last-name"]] forKey:@"name"];
+        [linkedInEvent setObject:[[[result objectForKey:@"positions"]objectForKey:@"position"]objectForKey:@"title"] forKey:@"positionTitle"];
+        [linkedInEvent setObject:[[[[result objectForKey:@"positions"]objectForKey:@"position"]objectForKey:@"company"]objectForKey:@"name"] forKey:@"companyName"];
+        [linkedInEvent setObject:[result objectForKey:@"update_key"] forKey:@"update_key"];
         [linkedInEvent setObject:@"new job" forKey:@"event_type"];
         NSMutableDictionary *startDateDict=[[[result objectForKey:@"positions"]objectForKey:@"position"] objectForKey:@"start-date"];
         NSString *convertedDateString=[startDateDict objectForKey:@"year"];

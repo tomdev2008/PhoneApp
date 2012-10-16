@@ -13,14 +13,15 @@
 #import "Facebook_GiftGiv.h"
 #import "MBProgressHUD.h"
 #import "CustomDateDisplay.h"
+#import "LinkedIn_GiftGiv.h"
 
-@interface EventDetailsVC : UIViewController <UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,MBProgressHUDDelegate>
+@interface EventDetailsVC : UIViewController <UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,MBProgressHUDDelegate,LinkedIn_GiftGivDelegate>
 {
     MBProgressHUD *HUD;
     NSMutableArray *listOfComments;
     BOOL shouldLoadingPicsStop;
     Facebook_GiftGiv *fb_giftgiv_eventDetails;
-    
+    int linkedInLikes;
 }
 @property (retain, nonatomic) IBOutlet UIImageView *profileImgView;
 @property (retain, nonatomic) IBOutlet UILabel *nameLbl;
