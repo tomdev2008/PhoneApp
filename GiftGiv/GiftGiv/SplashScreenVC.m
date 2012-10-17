@@ -46,7 +46,7 @@
     
     
     
-    if([[fb_giftgiv facebook] isSessionValid] || [[LinkedIn_GiftGiv sharedSingleton]isLinkedInAuthorized]){
+    if([[fb_giftgiv facebook] isSessionValid]){
         [self performSelector:@selector(loadHomeScreen) withObject:nil afterDelay:2.0];
     }
     else

@@ -127,16 +127,21 @@
     UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:11.0];
     CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
     NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:[giftItemInfo giftDetails]];
+    [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:kCTLineBreakByWordWrapping];
     CGSize labelSize = [[giftDescription string]sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
     CGRect targetFrame=CGRectMake(20, giftPriceLbl.frame.origin.y+giftPriceLbl.frame.size.height, labelSize.width, labelSize.height);
     
     if([[giftDescription string] length]){
         targetFrame.origin.y+=10;
-        targetFrame.size.height+=10;
+        targetFrame.size.height+=20;
     }
     giftDetails.frame=targetFrame;
-    giftDetails.textAlignment=UITextAlignmentJustify;
-    giftDetails.text=[giftDescription string];
+    //if(currentiOSVersion<6.0)
+        
+    //else
+      //  [giftDetails setTextAlignment:NSTextAlignmentJustified];
+    //[giftDetails setTextAlignment:(NSTextAlignment)]
+    giftDetails.attributedText=giftDescription;//[giftDescription string];
         
     giftOptionsListBgView.frame=CGRectMake(0, giftDetails.frame.origin.y+giftDetails.frame.size.height, 320, 373);
     

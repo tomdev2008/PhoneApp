@@ -112,19 +112,20 @@
     
     UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:11.0];
     CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
-    NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:[giftItemInfo giftDetails]];   
+    NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:[giftItemInfo giftDetails]];
+    [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:kCTLineBreakByWordWrapping];
     CGSize labelSize = [[giftDescription string] sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
     
     CGRect targetFrame=CGRectMake(20, greetingPrice.frame.origin.y+greetingPrice.frame.size.height, labelSize.width, labelSize.height);
     
     if([[giftDescription string] length]){
         targetFrame.origin.y+=10;
-        targetFrame.size.height+=10;
+        targetFrame.size.height+=20;
     }
     giftDetailsLbl.frame=targetFrame;
-        
-    giftDetailsLbl.textAlignment=UITextAlignmentJustify;
-    giftDetailsLbl.text=[giftDescription string];
+      
+    //giftDetailsLbl.textAlignment=UITextAlignmentJustify;
+    giftDetailsLbl.attributedText=giftDescription;//[giftDescription string];
         
     innerViewForGreetDetails.frame=CGRectMake(0, giftDetailsLbl.frame.origin.y+giftDetailsLbl.frame.size.height, 320, 234);
     CGRect detailsBgFrame=detailsBgView.frame;

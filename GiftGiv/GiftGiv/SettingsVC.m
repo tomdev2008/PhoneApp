@@ -37,12 +37,15 @@
     
     fb_giftgiv_settings=[[Facebook_GiftGiv alloc]init];
     fb_giftgiv_settings.fbGiftGivDelegate=self;
+    lnkd_giftgiv_settings=[[LinkedIn_GiftGiv alloc]init];
+    lnkd_giftgiv_settings.lnkInGiftGivDelegate=self;
+    
     settinsScroll.contentSize=CGSizeMake(320, 468);
     
     [(UIButton*)[settinsScroll viewWithTag:11] setUserInteractionEnabled:NO];
     [(UIButton*)[settinsScroll viewWithTag:11] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [(UIButton*)[settinsScroll viewWithTag:11] setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    if([[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
+    if([lnkd_giftgiv_settings isLinkedInAuthorized]){
         [(UIButton*)[settinsScroll viewWithTag:12]setBackgroundImage:[UIImage imageNamed:@"largegraybutton.png"] forState:UIControlStateNormal];
         [(UIButton*)[settinsScroll viewWithTag:12] setUserInteractionEnabled:NO];
         [(UIButton*)[settinsScroll viewWithTag:12] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
@@ -69,7 +72,7 @@
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     }
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"MyGiftGivUserId"];
-    if(![[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
+    if(![lnkd_giftgiv_settings isLinkedInAuthorized]){
          [self stopHUD];
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
@@ -109,8 +112,8 @@
             //linkedin
         case 12:
         {
-            [[LinkedIn_GiftGiv sharedSingleton] logInFromView:self];
-            [[LinkedIn_GiftGiv sharedSingleton] setLnkInGiftGivDelegate:self];
+            [lnkd_giftgiv_settings logInFromView:self];
+            [lnkd_giftgiv_settings setLnkInGiftGivDelegate:self];
         }
             break;
             //logout all accounts
@@ -131,10 +134,10 @@
              AlertWithMessageAndDelegate(@"GiftGiv", @"You are already logged out from facebook", nil); 
              }*/
             
-            if([[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
+            if([lnkd_giftgiv_settings isLinkedInAuthorized]){
                 
-                [[LinkedIn_GiftGiv sharedSingleton] logOut];
-                [[LinkedIn_GiftGiv sharedSingleton] setLnkInGiftGivDelegate:self];
+                [lnkd_giftgiv_settings logOut];
+                [lnkd_giftgiv_settings setLnkInGiftGivDelegate:self];
                 [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
                 
                 [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInAccessToken"];
@@ -239,6 +242,9 @@
     
     fb_giftgiv_settings.fbGiftGivDelegate=nil;
     [fb_giftgiv_settings release];
+    
+    lnkd_giftgiv_settings.lnkInGiftGivDelegate=nil;
+    [lnkd_giftgiv_settings release];
     
     [settinsScroll release];
     [super dealloc];

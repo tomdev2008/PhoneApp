@@ -48,6 +48,8 @@
     
     if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
         linkedInLikes=0;
+        lnk_giftgiv_eventDetails=[[LinkedIn_GiftGiv alloc]init];
+        lnk_giftgiv_eventDetails.lnkInGiftGivDelegate=self;
         profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
     }
     else {
@@ -103,21 +105,15 @@
             [fb_giftgiv_eventDetails getEventDetails:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"msgID"]];
         else if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"position_update_key"]){
             //call to linkedIn detailed events.
-            if([[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
-                [[LinkedIn_GiftGiv sharedSingleton] getLikesForAnUpdat:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"position_update_key"]];
-                [[LinkedIn_GiftGiv sharedSingleton] getListOfCommentsForTheUpdate:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"position_update_key"]];
-                [[LinkedIn_GiftGiv sharedSingleton] setLnkInGiftGivDelegate:self];
+            if([lnk_giftgiv_eventDetails isLinkedInAuthorized]){
+                [lnk_giftgiv_eventDetails getLikesForAnUpdat:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"position_update_key"]];
+                [lnk_giftgiv_eventDetails getListOfCommentsForTheUpdate:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"position_update_key"]];
+                [lnk_giftgiv_eventDetails setLnkInGiftGivDelegate:self];
             }
         }
         
     }
-    
-    
-    
-    
-    
-    
-    
+        
 }
 #pragma mark -Facebook delegates
 - (void)facebookDidRequestFailed{
@@ -424,12 +420,7 @@
     linkedInLikes=likesCount;
     likesCommentsLbl.text=[NSString stringWithFormat:@"%d likes %d comments",likesCount,[listOfComments count]];
 }
-#pragma mark -
-- (void)linkedInDidLoggedOut{
-    //if(![[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
-    [self.navigationController popToRootViewControllerAnimated:YES];
-    //}
-}
+
 #pragma mark - ProgressHUD methods
 
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr  
@@ -489,7 +480,10 @@
         [fb_giftgiv_eventDetails setFbGiftGivDelegate:nil];
         [fb_giftgiv_eventDetails release];
     }
-    
+    if(lnk_giftgiv_eventDetails){
+        [lnk_giftgiv_eventDetails setLnkInGiftGivDelegate:nil];
+        [lnk_giftgiv_eventDetails release];
+    }
     [listOfComments release];
     
     [profileImgView release];

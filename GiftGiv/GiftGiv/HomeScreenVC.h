@@ -53,6 +53,7 @@
     
     NSMutableArray *categoryTitles;
     Facebook_GiftGiv *fb_giftgiv_home;
+    LinkedIn_GiftGiv *lnkd_giftgiv_home;
     BOOL isEventsLoadingFromFB;
     BOOL isSearchEnabled;
     NSOperationQueue *picturesOperationQueue;

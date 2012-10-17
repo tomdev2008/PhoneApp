@@ -32,7 +32,7 @@
 }
 @property (nonatomic, assign) id <LinkedIn_GiftGivDelegate>lnkInGiftGivDelegate;
 
-+ (LinkedIn_GiftGiv *)sharedSingleton;
+//+ (LinkedIn_GiftGiv *)sharedSingleton;
 - (BOOL) isLinkedInAuthorized;
 - (void)logInFromView:(id)viwController;
 - (void)getMyNetworkUpdatesWithType:(NSString*)type;

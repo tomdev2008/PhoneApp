@@ -33,6 +33,8 @@ static NSDateFormatter *customDateFormat=nil;
 
 - (void)didReceiveMemoryWarning
 {
+
+    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
@@ -45,6 +47,9 @@ static NSDateFormatter *customDateFormat=nil;
 {
     fb_giftgiv_home=[[Facebook_GiftGiv alloc]init];
     fb_giftgiv_home.fbGiftGivDelegate=self;
+    
+    lnkd_giftgiv_home=[[LinkedIn_GiftGiv alloc]init];
+    lnkd_giftgiv_home.lnkInGiftGivDelegate=self;
     
     categoryTitles=[[NSMutableArray alloc]init];
     listOfBirthdayEvents=[[NSMutableArray alloc]init];
@@ -74,8 +79,8 @@ static NSDateFormatter *customDateFormat=nil;
     if(currentiOSVersion>=6.0){
         
         //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
-        /*[pageControlForEventGroups setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0]];
-         [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
+        [pageControlForEventGroups setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.83529 alpha:1.0]];
+        [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.8353 alpha:0.5]];
     }
     [[NSNotificationCenter defaultCenter] addObserver:picturesOperationQueue selector:@selector(cancelAllOperations) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:picturesOperationQueue selector:@selector(cancelAllOperations) name:UIApplicationWillTerminateNotification object:nil];
@@ -167,9 +172,9 @@ static NSDateFormatter *customDateFormat=nil;
                 }
             }
         }
-        if([[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
-            [[LinkedIn_GiftGiv sharedSingleton] getMyNetworkUpdatesWithType:@"PRFU"];
-            [[LinkedIn_GiftGiv sharedSingleton] setLnkInGiftGivDelegate:self];
+        if([lnkd_giftgiv_home isLinkedInAuthorized]){
+            [lnkd_giftgiv_home getMyNetworkUpdatesWithType:@"PRFU"];
+            [lnkd_giftgiv_home setLnkInGiftGivDelegate:self];
         }
                 
         
@@ -1912,7 +1917,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
             }
             else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"FBID"]){
-                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"uid"] forKey:@"userID"];
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"FBID"] forKey:@"userID"];
             }
             else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
@@ -2374,9 +2379,14 @@ static NSDateFormatter *customDateFormat=nil;
 	for (int i=0; i<eventsCount;i++) {
         
         if([[[listOfEvents objectAtIndex:i] objectForKey:@"event_date"] isKindOfClass:[NSString class]]&& ![[[listOfEvents objectAtIndex:i] objectForKey:@"event_date"] isEqualToString:@""]){
-            
-            if([[[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"] componentsSeparatedByString:@"T"] count]>1 || [[[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"] componentsSeparatedByString:@" "] count]>1){
+           
+           
+            if([[[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"] componentsSeparatedByString:@"T"] count]>1){
                 [[listOfEvents objectAtIndex:i]setObject:[[[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"] componentsSeparatedByString:@"T"]objectAtIndex:0] forKey:@"event_date"];
+            }
+            if([[[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"] componentsSeparatedByString:@" "] count]>1){
+                [[listOfEvents objectAtIndex:i]setObject:[[[[listOfEvents objectAtIndex:i]objectForKey:@"event_date"] componentsSeparatedByString:@" "]objectAtIndex:0] forKey:@"event_date"];
+                
             }
             [customDateFormat setDateFormat:@"yyyy-MM-dd"];
             
@@ -2608,6 +2618,7 @@ static NSDateFormatter *customDateFormat=nil;
     [picturesOperationQueue release];
     [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
     [fb_giftgiv_home setFbGiftGivDelegate:nil];
+    [lnkd_giftgiv_home setLnkInGiftGivDelegate:nil];
     [searchBirthdayEvents release];
     [searchUpcomingEventsArray release];
     [searchLkdContactsArray release];

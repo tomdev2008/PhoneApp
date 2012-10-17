@@ -38,7 +38,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 //@synthesize shareConnection;
 @synthesize lnkInGiftGivDelegate;
 
-#pragma mark LinkedInShareHelper class methods
+/*#pragma mark LinkedInShareHelper class methods
 + (LinkedIn_GiftGiv *)sharedSingleton
 {
 #ifdef DEBUGX
@@ -52,7 +52,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
         }
         return sharedInstance;// LinkedInShareHelper singleton
     } 
-}
+}*/
 -(id)init {
     self = [super init];
     if(self) {
@@ -94,6 +94,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
 }
 
 - (void)getMyNetworkUpdatesWithType:(NSString*)type{
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
     self.fetchNetworkUpdates = [self.engine networkUpdatesWithType:type];
    
 }
@@ -137,8 +138,12 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
             networkUpdates=nil;
         }
         networkUpdates=[[NSMutableArray alloc]init];
-        
-        NSMutableArray *tempUpdates=[[NSMutableArray alloc]initWithArray:[results objectForKey:@"update"]];
+       
+        NSMutableArray *tempUpdates;
+        if([[results objectForKey:@"update"]isKindOfClass:[NSDictionary class]])
+            tempUpdates=[[NSMutableArray alloc]initWithObjects:[results objectForKey:@"update"], nil];
+        else
+            tempUpdates=[[NSMutableArray alloc]initWithArray:[results objectForKey:@"update"]];
         //NSLog(@"PRFU Updates..%@",tempUpdates);
         //NSLog(@"%d",[tempUpdates count]);
         for (NSMutableDictionary *updateDict in tempUpdates) {
@@ -295,7 +300,9 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
             currentConnectionNum++;
             [self getMemberProfile:[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
         }
-        
+        else if(currentConnectionNum==totalConnectionsCount-1){
+            [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+        }
        // NSLog(@"updates..%@",results);
     }
     else if (identifier == self.fetchLikesForUpdate){

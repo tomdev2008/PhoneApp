@@ -11,7 +11,6 @@
 #import "HomeScreenVC.h"
 #import "SignInVC.h"
 #import "Facebook_GiftGiv.h"
-#import "LinkedIn_GiftGiv.h"
 
 @interface SplashScreenVC : UIViewController
 

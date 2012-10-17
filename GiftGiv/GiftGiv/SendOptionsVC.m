@@ -936,7 +936,8 @@
     animation.subtype=kCATransitionFromBottom;
     [addressEmailSMSSelPickerBgView.layer addAnimation:animation forKey:@"animation"];
     addressEmailSMSSelPickerBgView.hidden=YES;
-    [sendOptionsContentScroll setContentOffset:svos animated:YES];
+    
+    //[sendOptionsContentScroll setContentOffset:svos animated:YES];
     sendOptionsContentScroll.userInteractionEnabled=YES;
     
     for(UIView *subview in [sendOptionsContentScroll subviews]){
@@ -951,7 +952,8 @@
     
     recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[listOfSendOptions objectAtIndex:selectedSendOptionRow]];
     
-    [sendOptionsContentScroll setContentOffset:svos animated:YES];
+    
+    
     switch (selectedSendOptionRow) {
             
         case 0:
@@ -988,7 +990,7 @@
             break;
     }
     
-    
+    [sendOptionsContentScroll setContentOffset:CGPointMake(0, 0) animated:YES];
     
     
     

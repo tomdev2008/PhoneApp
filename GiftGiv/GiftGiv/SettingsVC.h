@@ -16,7 +16,8 @@
 @interface SettingsVC : UIViewController<Facebook_GiftGivDelegate,LinkedIn_GiftGivDelegate,MBProgressHUDDelegate>
 {
     Facebook_GiftGiv *fb_giftgiv_settings;
-     MBProgressHUD *HUD;
+    LinkedIn_GiftGiv *lnkd_giftgiv_settings;
+    MBProgressHUD *HUD;
 }
 @property (retain, nonatomic) IBOutlet UIScrollView *settinsScroll;
 - (IBAction)backToHomeScreen:(id)sender;

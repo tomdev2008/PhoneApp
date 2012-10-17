@@ -76,8 +76,9 @@
     else if(currentiOSVersion>=6.0){
         
         //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
-        /*[giftCategoryPageControl setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0]];
-         [giftCategoryPageControl setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
+        [giftCategoryPageControl setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.83529 alpha:1.0]];
+        [giftCategoryPageControl setPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.8353 alpha:0.5]];
+        
     }
     
     //Dynamic[fit] label width respected to the size of the text

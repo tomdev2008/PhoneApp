@@ -21,6 +21,7 @@
     NSMutableArray *listOfComments;
     BOOL shouldLoadingPicsStop;
     Facebook_GiftGiv *fb_giftgiv_eventDetails;
+    LinkedIn_GiftGiv *lnk_giftgiv_eventDetails;
     int linkedInLikes;
 }
 @property (retain, nonatomic) IBOutlet UIImageView *profileImgView;
