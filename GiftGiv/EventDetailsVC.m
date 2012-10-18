@@ -108,7 +108,7 @@
             if([lnk_giftgiv_eventDetails isLinkedInAuthorized]){
                 [lnk_giftgiv_eventDetails getLikesForAnUpdat:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"position_update_key"]];
                 [lnk_giftgiv_eventDetails getListOfCommentsForTheUpdate:[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"position_update_key"]];
-                [lnk_giftgiv_eventDetails setLnkInGiftGivDelegate:self];
+                
             }
         }
         
@@ -120,7 +120,7 @@
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
-    AlertWithMessageAndDelegate(@"Oops!",@"Something went wrong, please try agin later", nil);
+    //AlertWithMessageAndDelegate(@"Oops!",@"Something went wrong. please try again later.", nil);
 }
 - (void)receivedDetailedEventInfo:(NSMutableDictionary*)eventDetails{
     
@@ -224,7 +224,7 @@
     
 	static NSString *cellIdentifier;
 	cellIdentifier=[NSString stringWithFormat:@"Cell%d",indexPath.row];
-	tableView.backgroundColor=[UIColor clearColor];
+	
 	CommentsCustomCell *cell = (CommentsCustomCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
 	if (cell == nil) {
@@ -346,7 +346,11 @@
     [self.navigationController pushViewController:giftOptions animated:YES];
     [giftOptions release];
 }
-#pragma mark -
+#pragma mark -LinkedIn Delegates
+- (void)linkedInDidRequestFailed{
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+    [self stopHUD];
+}
 - (void)receivedCommentsForAnUpdate:(id)comments{
     if([listOfComments count])
         [listOfComments removeAllObjects];

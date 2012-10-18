@@ -62,7 +62,7 @@ static NSDateFormatter *customDateFormat=nil;
         [ordersReq release];
     }
     else{
-        AlertWithMessageAndDelegate(@"GiftGiv", @"Check your network settings", nil);
+        AlertWithMessageAndDelegate(@"GiftGiv", @"Please check your network connection", nil);
     }
 }
 #pragma mark - TableView Data source
@@ -241,7 +241,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 -(void) requestFailed{
     [self stopHUD];
-    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed. Please try again later", nil);
+    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
 }
 #pragma mark - ProgressHUD methods
 

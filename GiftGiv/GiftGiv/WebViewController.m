@@ -229,14 +229,14 @@
 -(void)paymentCanceled {
 	[self.navigationController popViewControllerAnimated:TRUE];
     
-    AlertWithMessageAndDelegate(@"Order cancelled", @"You canceled your order. Touch \"Payment\" to try again.", nil);
+    AlertWithMessageAndDelegate(@"Order cancelled", @"You cancelled your order. Touch \"Payment\" to try again.", nil);
 	
 }
 
 -(void)paymentFailed {
 	[self.navigationController popViewControllerAnimated:TRUE];
     
-    AlertWithMessageAndDelegate(@"Order failed", @"Your order failed. Touch \"Payment\" to try again.", nil);
+    AlertWithMessageAndDelegate(@"Order failed", @"Your order has failed. Touch \"Payment\" to try again.", nil);
 	
 }
 

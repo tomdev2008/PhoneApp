@@ -137,6 +137,10 @@
         //NSLog(@"%@",dateOfBirth);
         fbContact.dob=[[dateOfBirth componentsSeparatedByString:@"T"] objectAtIndex:0];
     }
+    else if([argElementName isEqualToString:@"location"]){
+        
+        fbContact.location=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }
     else if([argElementName isEqualToString:@"FacebookUser"]){
         [receivedResponse addObject:fbContact];
         [fbContact release];

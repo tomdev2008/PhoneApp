@@ -47,7 +47,11 @@
         
     [self showProgressHUD:self.view withMsg:nil];
     
-    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
+    /*if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"]){
+        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"];
+    }
+    else*/
+        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
     profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
     NSString *profilePicId;
@@ -166,7 +170,7 @@
     else{
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         [self stopHUD];
-        AlertWithMessageAndDelegate(@"GiftGiv", @"Check your network settings", nil);
+        AlertWithMessageAndDelegate(@"GiftGiv", @"Please check your network connection", nil);
     }
     
 }
@@ -192,7 +196,7 @@
         else{
             [self stopHUD];
             [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-            AlertWithMessageAndDelegate(@"GiftGiv", @"Check your network settings", nil);
+            AlertWithMessageAndDelegate(@"GiftGiv", @"Please check your network connection", nil);
         }
         
         
@@ -209,7 +213,7 @@
 -(void) requestFailed{
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
-    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed", nil);
+    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
 }
 #pragma mark - Gift Items
 -(void) responseForGiftItems:(NSMutableArray*)listOfGifts{

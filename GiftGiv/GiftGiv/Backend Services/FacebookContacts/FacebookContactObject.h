@@ -15,6 +15,7 @@
 @property (retain,nonatomic)NSString *lastname;
 @property (retain,nonatomic)NSString *profilepicUrl;
 @property (retain,nonatomic)NSString *dob;
+@property (retain,nonatomic)NSString *location;
 
 
 @end

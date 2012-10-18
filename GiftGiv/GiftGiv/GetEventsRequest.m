@@ -43,7 +43,7 @@
     [theXML release];
   	NSString *convertedStr=[updated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
     //NSLog(@"converte.. %@",convertedStr);
-    webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
+    webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSUTF8StringEncoding];
     
     
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];

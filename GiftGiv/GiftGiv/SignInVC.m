@@ -54,7 +54,7 @@
     
     else{
         
-        AlertWithMessageAndDelegate(@"Network Connectivity", @"Please check your network settings", nil);
+        AlertWithMessageAndDelegate(@"Network Connectivity", @"Please check your network connection", nil);
         
     }
     
@@ -113,8 +113,11 @@
 -(void) responseForAddUser:(NSMutableDictionary*)response{
     NSLog(@"add user..%@,%@",response,[[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]);
     
-    if([response objectForKey:@"GiftGivUser"])
+    if([response objectForKey:@"GiftGivUser"]){
+        
         [[NSUserDefaults standardUserDefaults]setObject:[response objectForKey:@"GiftGivUser"] forKey:@"MyGiftGivUserId"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"GiftGivUserIDReceived" object:nil];
+    }
     //NSLog(@"gift giv..%@",[[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]);
     [self stopHUD];
     
@@ -126,7 +129,7 @@
     
 }
 -(void) requestFailed{
-    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed", nil);
+    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
     [self stopHUD];
 }
 #pragma mark - ProgressHUD methods

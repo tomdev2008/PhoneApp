@@ -9,7 +9,7 @@
 #import "FacebookContactObject.h"
 
 @implementation FacebookContactObject
-@synthesize userId,firstname,lastname,profilepicUrl,dob;
+@synthesize userId,firstname,lastname,profilepicUrl,dob,location;
 
 -(void)dealloc{
     [userId release];
@@ -17,6 +17,7 @@
     [lastname release];
     [profilepicUrl release];
     [dob release];
+    [location release];
     [super dealloc];
 }
 

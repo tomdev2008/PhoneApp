@@ -56,7 +56,12 @@
     giftSummaryScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:giftSummaryScroll];
     
-    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
+    /*if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"]){
+        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"];
+    }
+    else*/
+        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
+     
     
     profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     giftNameLbl.text=[giftSummaryDict objectForKey:@"GiftName"];
@@ -86,7 +91,7 @@
    
     
     profileNameLbl.text=[[giftSummaryDict objectForKey:@"RecipientName"] uppercaseString];
-    eventNameLbl.text=[giftSummaryDict objectForKey:@"EventName"];
+    //eventNameLbl.text=[giftSummaryDict objectForKey:@"EventName"];
     
     personalMsgLbl.text=[giftSummaryDict objectForKey:@"PersonalMessage"];
     if([giftSummaryDict objectForKey:@"RecipientAddress"]){

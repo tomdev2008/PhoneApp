@@ -56,6 +56,8 @@
     LinkedIn_GiftGiv *lnkd_giftgiv_home;
     BOOL isEventsLoadingFromFB;
     BOOL isSearchEnabled;
+    BOOL isFBContactsLoading;
+    
     NSOperationQueue *picturesOperationQueue;
     
 }

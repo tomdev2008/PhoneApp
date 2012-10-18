@@ -73,7 +73,8 @@
     }
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"MyGiftGivUserId"];
     if(![lnkd_giftgiv_settings isLinkedInAuthorized]){
-         [self stopHUD];
+        [self stopHUD];
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
@@ -113,7 +114,7 @@
         case 12:
         {
             [lnkd_giftgiv_settings logInFromView:self];
-            [lnkd_giftgiv_settings setLnkInGiftGivDelegate:self];
+            
         }
             break;
             //logout all accounts
@@ -137,7 +138,7 @@
             if([lnkd_giftgiv_settings isLinkedInAuthorized]){
                 
                 [lnkd_giftgiv_settings logOut];
-                [lnkd_giftgiv_settings setLnkInGiftGivDelegate:self];
+                
                 [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
                 
                 [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInAccessToken"];
@@ -180,11 +181,12 @@
     if(![[fb_giftgiv_settings facebook] isSessionValid]){
         NSLog(@"linkedin logout");
         [self stopHUD];
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
 - (void)linkedInDidRequestFailed{
-    
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
 }
 - (void)linkedInDidCancelledLogin{
     

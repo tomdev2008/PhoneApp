@@ -12,7 +12,7 @@
 
 //LinkedIn
 static NSString *const kOAuthConsumerKey     = @"ss74vefvnvjr";
-static NSString *const kOAuthConsumerSecret  = @"EP1SkFM3aLchEM2O";
+static NSString *const kOAuthConsumerSecret  =  @"hSdUKztIhsGqoi7b";
 
 //Device currect OS version, which we used for page control color dots
 #define currentiOSVersion [[[UIDevice currentDevice] systemVersion] doubleValue]

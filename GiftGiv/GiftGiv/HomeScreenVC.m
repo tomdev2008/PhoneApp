@@ -25,7 +25,7 @@ static NSDateFormatter *customDateFormat=nil;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedGiftGivUserId) name:@"GiftGivUserIDReceived" object:nil];
         // Custom initialization
     }
     return self;
@@ -167,7 +167,10 @@ static NSDateFormatter *customDateFormat=nil;
                     
                     [fb_giftgiv_home getAllFriendsWithTheirDetails];
                     [fb_giftgiv_home listOfBirthdayEvents];
-                    [self performSelector:@selector(makeRequestToGetFacebookContacts) withObject:nil afterDelay:3.0];
+                    if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
+                        isFBContactsLoading=YES;
+                        [self performSelector:@selector(makeRequestToGetFacebookContacts) ];
+                    }
                     
                 }
             }
@@ -183,7 +186,12 @@ static NSDateFormatter *customDateFormat=nil;
     [eventsTable reloadData];
     [super viewWillAppear:YES];
 }
-
+-(void)receivedGiftGivUserId{
+    if(!isFBContactsLoading){
+        [self performSelector:@selector(makeRequestToGetFacebookContacts) ];
+        isFBContactsLoading=YES;
+    }
+}
 #pragma mark -
 -(void)makeRequestToGetFacebookContacts{
     if([CheckNetwork connectedToNetwork]){
@@ -225,8 +233,11 @@ static NSDateFormatter *customDateFormat=nil;
             [contactDict setObject:[NSString stringWithFormat:@"%@ %@",[[response objectAtIndex:i]firstname],[[response objectAtIndex:i]lastname]] forKey:@"name"];
             
             [contactDict setObject:@"" forKey:@"event_type"];
-            [contactDict setObject:[[response objectAtIndex:i]dob] forKey:@"event_date"];
-            
+            //[contactDict setObject:[[response objectAtIndex:i]dob] forKey:@"event_date"];
+            if([[response objectAtIndex:i]location]==nil)
+                [contactDict setObject:@"" forKey:@"FBUserLocation"];
+            else
+                [contactDict setObject:[[response objectAtIndex:i]location] forKey:@"FBUserLocation"];
             [contactDict setObject:@"" forKey:@"ProfilePicture"];
             [contactDict setObject:[[response objectAtIndex:i]profilepicUrl] forKey:@"ProfilePicURLToTake"];
             
@@ -310,7 +321,7 @@ static NSDateFormatter *customDateFormat=nil;
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetEvents>\n<tem:userId>%@</tem:userId>\n<tem:typeEventList>Display</tem:typeEventList>\n</tem:GetEvents>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"]];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        //NSLog(@"%@",soapRequestString);
+        NSLog(@"events request..%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetEvents"];
         
         GetEventsRequest *getEvents=[[GetEventsRequest alloc]init];
@@ -325,7 +336,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma -EventsRequest delegate
 -(void) receivedAllEvents:(NSMutableArray*)allEvents{
-   
+    
     int eventsCount=[allEvents count];
     /*if([allupcomingEvents count])
         [allupcomingEvents removeAllObjects];
@@ -834,95 +845,25 @@ static NSDateFormatter *customDateFormat=nil;
             
         }
         
+        if([cell.dateLbl.text isEqualToString:@""]){
+            cell.eventNameLbl.frame=CGRectMake(cell.eventNameLbl.frame.origin.x,cell.eventNameLbl.frame.origin.y,196,cell.eventNameLbl.frame.size.height);
+        }
+        else{
+            //Dynamic[fit] label width respected to the size of the text
+            CGSize eventName_maxSize = CGSizeMake(113, 21);
+            CGSize eventName_new_size=[cell.eventNameLbl.text sizeWithFont:cell.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+            cell.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
+            
+            CGSize eventDate_maxSize = CGSizeMake(90, 21);
+            CGSize eventDate_newSize = [cell.dateLbl.text sizeWithFont:cell.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
+            
+            cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 30, eventDate_newSize.width, 21);
+        }
         
-        //Dynamic[fit] label width respected to the size of the text
-        CGSize eventName_maxSize = CGSizeMake(113, 21);
-        CGSize eventName_new_size=[cell.eventNameLbl.text sizeWithFont:cell.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-        cell.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
-        
-        CGSize eventDate_maxSize = CGSizeMake(90, 21);
-        CGSize eventDate_newSize = [cell.dateLbl.text sizeWithFont:cell.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-        
-        cell.dateLbl.frame= CGRectMake(cell.eventNameLbl.frame.origin.x+3+cell.eventNameLbl.frame.size.width, 30, eventDate_newSize.width, 21); 
         
         return cell;
     }
-    /*else if([tableView isEqual:events_2_Table]){
-        
-        static NSString *cellIdentifier_2;
-        cellIdentifier_2=[NSString stringWithFormat:@"Cell_2_%d",indexPath.row];
-        tableView.backgroundColor=[UIColor clearColor];
-        EventCustomCell *cell_two = (EventCustomCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier_2];
-        
-        if (cell_two == nil) {
-            
-            cell_two=[[[NSBundle mainBundle]loadNibNamed:@"EventCustomCell" owner:self options:nil] lastObject];
-            
-            cell_two.selectionStyle=UITableViewCellSelectionStyleNone;
-            cell_two.bubbleIconForCommentsBtn.tag=indexPath.row;
-            [cell_two.bubbleIconForCommentsBtn addTarget:self action:@selector(eventDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
-            
-            
-        }
-        if([eventTitle_2_Lbl.text isEqualToString:events_category_1]){
-            if([allupcomingEvents count]){
-               // NSLog(@"upcoming...2..%@",allupcomingEvents);
-                [self loadEventsData:allupcomingEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
-                
-            }
-        }
-        else if([eventTitle_2_Lbl.text isEqualToString:events_category_2]){
-            
-            if([listOfBirthdayEvents count]){
-                //NSLog(@"birthday.....2..%@",listOfBirthdayEvents);
-                [self loadEventsData:listOfBirthdayEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
-                
-                
-            }
-            
-        }
-        else if([eventTitle_2_Lbl.text isEqualToString:events_category_3]){
-            
-            if([anniversaryEvents count]){
-                 //NSLog(@"anniversaries.....2..%@",anniversaryEvents);
-                [self loadEventsData:anniversaryEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
-                
-                
-            }
-            
-        }
-        else if([eventTitle_2_Lbl.text isEqualToString:events_category_4]){
-            
-            if([newJobEvents count]){
-                //NSLog(@"newjob.......2..%@",newJobEvents);
-                [self loadEventsData:newJobEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];   
-            }
-            
-        }
-        else if([eventTitle_2_Lbl.text isEqualToString:events_category_5]){
-            
-            if([congratsEvents count]){
-                
-                //NSLog(@"congratsEvents.......2..%@",congratsEvents);
-                [self loadEventsData:congratsEvents withCell:cell_two inTable:events_2_Table forIndexPath:indexPath];
-                
-            }
-            
-        }
-        
-        
-        //Dynamic[fit] label width respected to the size of the text
-        CGSize eventName_maxSize = CGSizeMake(113, 21);
-        CGSize eventName_new_size=[cell_two.eventNameLbl.text sizeWithFont:cell_two.eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-        cell_two.eventNameLbl.frame=CGRectMake(63, 29, eventName_new_size.width, 21);
-        
-        CGSize eventDate_maxSize = CGSizeMake(90, 21);
-        CGSize eventDate_newSize = [cell_two.dateLbl.text sizeWithFont:cell_two.dateLbl.font constrainedToSize:eventDate_maxSize lineBreakMode:UILineBreakModeTailTruncation];
-        
-        cell_two.dateLbl.frame= CGRectMake(cell_two.eventNameLbl.frame.origin.x+3+cell_two.eventNameLbl.frame.size.width, 30, eventDate_newSize.width, 21); 
-        
-        return cell_two;
-    }*/
+   
 	return nil;
 }
 -(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath{
@@ -951,7 +892,10 @@ static NSDateFormatter *customDateFormat=nil;
     if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]){
         cell.bubbleIconForCommentsBtn.hidden=NO;
     }
-    cell.eventNameLbl.text=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_type"];
+    if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"])
+        cell.eventNameLbl.text=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"];
+    else
+        cell.eventNameLbl.text=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_type"];
     
     if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
         cell.profileId=[NSString stringWithFormat:@"%@",[[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"]];
@@ -970,7 +914,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     
-    //if(![[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"] isEqualToString:@""]){
+    if(![[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"]){
         NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
         if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
             cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
@@ -981,7 +925,7 @@ static NSDateFormatter *customDateFormat=nil;
             cell.dateLbl.textColor=[UIColor blackColor];
         }
         cell.dateLbl.text=dateDisplay;
-    //}
+    }
     
     if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
         
@@ -1119,6 +1063,7 @@ static NSDateFormatter *customDateFormat=nil;
                 
                 
                 [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                               
                 if([[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"])
                     [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:indexPath.row] objectForKey:@"pic_square"] forKey:@"FBProfilePic"];
                 if([[searchUpcomingEventsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
@@ -1293,7 +1238,8 @@ static NSDateFormatter *customDateFormat=nil;
                     [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
                 }
                 
-                
+                if([[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"])
+                    [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"] forKey:@"FBUserLocation"];
                 [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
                 if([[searchFBContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
                     [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
@@ -1692,7 +1638,7 @@ static NSDateFormatter *customDateFormat=nil;
             else if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"uid"])
                 [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
             else if([[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
-                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
                 [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
                 [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
                 [tempInfoDict setObject:[[searchUpcomingEventsArray objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
@@ -1733,7 +1679,7 @@ static NSDateFormatter *customDateFormat=nil;
             else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"])
                 [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"uid"]forKey:@"userID"];
             else if([[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
-                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
                 [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
                 [tempInfoDict setObject:[[allupcomingEvents objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
                 
@@ -1790,7 +1736,7 @@ static NSDateFormatter *customDateFormat=nil;
             }
             
             else if([[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
-                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
                 [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
                 [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
                 [tempInfoDict setObject:[[searchBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
@@ -1832,7 +1778,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"FBID"] forKey:@"userID"];
             }
             else if([[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
-                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
                 [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
                 [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
                 [tempInfoDict setObject:[[listOfBirthdayEvents objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
@@ -1880,7 +1826,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"FBID"] forKey:@"userID"];
             }
             else if([[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
-                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
                 [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
                 [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
                 [tempInfoDict setObject:[[searchEventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
@@ -1920,7 +1866,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"FBID"] forKey:@"userID"];
             }
             else if([[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]){
-                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"userID"];
+                [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"update_key"]forKey:@"position_update_key"];
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"positionTitle"]forKey:@"PositionTitle"];
                 [tempInfoDict setObject:[[eventsToCelebrateArray objectAtIndex:[sender tag]] objectForKey:@"companyName"]forKey:@"CompanyName"];
@@ -2142,7 +2088,7 @@ static NSDateFormatter *customDateFormat=nil;
         [addUser release];
     }
     else{
-        AlertWithMessageAndDelegate(@"GiftGiv", @"Check your network settings", nil);
+        AlertWithMessageAndDelegate(@"GiftGiv", @"Please check your network connection", nil);
     }
     
 }
@@ -2488,10 +2434,14 @@ static NSDateFormatter *customDateFormat=nil;
     return NO;
 }
 #pragma mark - LinkedIn delegate
-- (void)linkedInDidLoggedOut{
+/*- (void)linkedInDidLoggedOut{
     //if(![[LinkedIn_GiftGiv sharedSingleton] isLinkedInAuthorized]){
         [self.navigationController popToRootViewControllerAnimated:YES];
     //}
+}*/
+- (void)linkedInDidRequestFailed{
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+    [self stopHUD];
 }
 - (void)receivedLinkedInNewEvent:(NSMutableDictionary*)result{
     
@@ -2553,7 +2503,7 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 -(void) requestFailed{
-    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed", nil);
+    //AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
 }
@@ -2651,6 +2601,7 @@ static NSDateFormatter *customDateFormat=nil;
     [searchBar release];
     [contactsSearchView release];
     [contactsSearchBar release];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"GiftGivUserIDReceived" object:nil];
     [super dealloc];
 }
 

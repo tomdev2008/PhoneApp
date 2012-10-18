@@ -209,7 +209,7 @@ static NSDateFormatter *customDateFormat=nil;
     [self loadGiftImage:giftDetails.giftImageUrl forAnObject:giftImg];
 }
 -(void) requestFailed{
-    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has been failed. Please try again later", nil);
+    AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
 }
 #pragma mark -
 -(void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{

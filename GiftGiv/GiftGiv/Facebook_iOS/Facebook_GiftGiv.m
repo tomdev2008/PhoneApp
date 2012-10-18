@@ -103,7 +103,7 @@ static NSDateFormatter *standardDateFormatter = nil;
     }
     
     if (![facebook isSessionValid]) {
-        [self.facebook authorize:[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",nil]]; //email to get user's mail address
+        [self.facebook authorize:[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",nil]]; //email to get user's mail address
         
         
     }
