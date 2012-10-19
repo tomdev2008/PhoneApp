@@ -28,7 +28,7 @@
 
 @end
 
-static LinkedIn_GiftGiv *sharedInstance = nil;
+//static LinkedIn_GiftGiv *sharedInstance = nil;
 
 @implementation LinkedIn_GiftGiv
 
@@ -156,7 +156,6 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                         for(int i=0;i<update_field_count;i++){
                            
                             if([[[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]objectAtIndex:i] objectForKey:@"name"] isEqualToString:@"person/positions"]){
-                                NSLog(@"update-field found,%@",updateDict);
                                 
                                 NSMutableDictionary *tempDict=[[NSMutableDictionary alloc] initWithCapacity:2];
                                 [tempDict setObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"] forKey:@"id"];
@@ -171,7 +170,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
                     else if([[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]isKindOfClass:[NSDictionary class]]){
                         
                         if([[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] objectForKey:@"name"] isEqualToString:@"person/positions"]){
-                            NSLog(@"update-field found,%@",updateDict);
+                            
                             NSMutableDictionary *tempDict=[[NSMutableDictionary alloc] initWithCapacity:2];
                             [tempDict setObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"] forKey:@"id"];
                             [tempDict setObject:[updateDict objectForKey:@"update-key"] forKey:@"update_key"];
@@ -184,7 +183,7 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
             }
         }
         [tempUpdates release];
-        NSLog(@"network updates..%@",networkUpdates);
+        
         currentConnectionNum=0;
         totalConnectionsCount=[networkUpdates count];
         if(totalConnectionsCount){
@@ -335,25 +334,25 @@ static LinkedIn_GiftGiv *sharedInstance = nil;
         }
             
         [lnkInGiftGivDelegate receivedLikesForAnUpdate:likesCount];
-        NSLog(@"likes..%@,%@",results,[results class]);
+        
     }
     else if (identifier ==  self.fetchCommentsForUpdate){
         [lnkInGiftGivDelegate receivedCommentsForAnUpdate:results];
-        NSLog(@"comments..%@,%@",results, [results class]);
+        
     }
 }
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestFailed:(RDLinkedInConnectionID *)identifier withError:(NSError *)error {
     NSLog(@"++ LinkedIn engine reports failure for connection %@\n%@", identifier, [error localizedDescription]);
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-   
+   [lnkInGiftGivDelegate linkedInDidRequestFailed];
 }
 
 
 #pragma mark - RDLinkedInAuthorizationControllerDelegate
 
 - (void)linkedInAuthorizationControllerSucceeded:(RDLinkedInAuthorizationController *)controller {
-    NSLog(@"success...");
+    
     [lnkInGiftGivDelegate linkedInLoggedIn];
     //[self fetchProfile];
 }

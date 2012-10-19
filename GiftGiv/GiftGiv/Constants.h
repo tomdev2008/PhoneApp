@@ -11,8 +11,8 @@
 #define KFacebookAppId /*@"410784185600350"*/@"363735827035251"
 
 //LinkedIn
-static NSString *const kOAuthConsumerKey     = @"ss74vefvnvjr";
-static NSString *const kOAuthConsumerSecret  =  @"hSdUKztIhsGqoi7b";
+static NSString *const kOAuthConsumerKey     = @"ss74vefvnvjr";///@"m4towaw6vrhn";
+static NSString *const kOAuthConsumerSecret  =  @"EP1SkFM3aLchEM2O";// @"hSdUKztIhsGqoi7b";
 
 //Device currect OS version, which we used for page control color dots
 #define currentiOSVersion [[[UIDevice currentDevice] systemVersion] doubleValue]

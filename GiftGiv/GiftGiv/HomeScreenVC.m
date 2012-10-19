@@ -45,6 +45,7 @@ static NSDateFormatter *customDateFormat=nil;
 
 - (void)viewDidLoad
 {
+    fm=[NSFileManager defaultManager];
     fb_giftgiv_home=[[Facebook_GiftGiv alloc]init];
     fb_giftgiv_home.fbGiftGivDelegate=self;
     
@@ -117,7 +118,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         [fb_giftgiv_home.fbRequestsArray removeAllObjects];
         [picturesOperationQueue cancelAllOperations];
-        [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+        [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
         if([searchBgView superview]){
             [searchBgView removeFromSuperview];
             isSearchEnabled=NO;
@@ -177,7 +178,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         if([lnkd_giftgiv_home isLinkedInAuthorized]){
             [lnkd_giftgiv_home getMyNetworkUpdatesWithType:@"PRFU"];
-            [lnkd_giftgiv_home setLnkInGiftGivDelegate:self];
+            //[lnkd_giftgiv_home setLnkInGiftGivDelegate:self];
         }
                 
         
@@ -271,20 +272,21 @@ static NSDateFormatter *customDateFormat=nil;
         }
         globalFacebookContacts=[[NSMutableArray alloc] initWithArray:facebookContactsArray];
                        
+        int facebookContactsCount=[globalFacebookContacts count];
         
-        for(int i=0;i<[globalFacebookContacts count];i++){
+        for(int i=0;i<facebookContactsCount;i++){
             
             NSString *urlStr_id=@"";
             if([[globalFacebookContacts objectAtIndex:i]objectForKey:@"uid"])
                 urlStr_id=[[globalFacebookContacts objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL            if(urlStr_id){
                 
-                NSFileManager *fm = [[NSFileManager alloc] init];
+                
                 
                 if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
                     
-                    NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
+                    /*NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
                     [UIImagePNGRepresentation([ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"]) writeToFile:filePath atomically:YES]; //Write the file
-                    
+                    */
                     NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
                     [tempDict setObject:urlStr_id forKey:@"profile_id"];
                     
@@ -304,7 +306,6 @@ static NSDateFormatter *customDateFormat=nil;
                     
                 }
                 
-                [fm release];
             }
                
            
@@ -411,7 +412,7 @@ static NSDateFormatter *customDateFormat=nil;
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
         
         [[NSUserDefaults standardUserDefaults]setObject:allupcomingEvents forKey:@"AllUpcomingEvents"];
-                      
+        
         for(int i=0;i<[allupcomingEvents count];i++){
            
             NSString *urlStr_id=nil;
@@ -424,12 +425,12 @@ static NSDateFormatter *customDateFormat=nil;
             
             if(urlStr_id){
                 
-                NSFileManager *fm = [[NSFileManager alloc] init];
+                
                                 
                 if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
                                         
-                    NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
-                    [UIImagePNGRepresentation([ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"]) writeToFile:filePath atomically:YES]; //Write the file
+                    /*NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
+                    [UIImagePNGRepresentation([ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"]) writeToFile:filePath atomically:YES]; //Write the file*/
                     
                     NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
                     [tempDict setObject:urlStr_id forKey:@"profile_id"];
@@ -460,8 +461,7 @@ static NSDateFormatter *customDateFormat=nil;
                     
                      
                 }
-                    
-                [fm release];
+                
             }
         }
         
@@ -496,10 +496,7 @@ static NSDateFormatter *customDateFormat=nil;
         UIImage *thumbnail = [UIImage imageWithData:data];
         
         if(thumbnail==nil){
-//            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-//                               
-//                
-//            });
+
             
         }
         else {
@@ -515,11 +512,7 @@ static NSDateFormatter *customDateFormat=nil;
                         [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
                     }
                 }
-//                [[eventsTable visibleCells] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-//                    
-//                }];
-                
-                //[eventsTable reloadData];
+               
             });
         }
         
@@ -930,7 +923,7 @@ static NSDateFormatter *customDateFormat=nil;
     if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
         
         NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"]]];
-        NSFileManager *fm=[NSFileManager defaultManager];
+        
         if([fm fileExistsAtPath:filePath]){
             cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
         }
@@ -940,7 +933,7 @@ static NSDateFormatter *customDateFormat=nil;
     else if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBID"]){
         
         NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBID"]]];
-        NSFileManager *fm=[NSFileManager defaultManager];
+        
         if([fm fileExistsAtPath:filePath]){
             cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
         }
@@ -951,7 +944,7 @@ static NSDateFormatter *customDateFormat=nil;
         if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"uid"]){
             
             NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"uid"]]];
-            NSFileManager *fm=[NSFileManager defaultManager];
+            
             if([fm fileExistsAtPath:filePath]){
                 cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
             }
@@ -960,7 +953,7 @@ static NSDateFormatter *customDateFormat=nil;
             
         else if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]){
             NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]]];
-             NSFileManager *fm=[NSFileManager defaultManager];
+            
             if([fm fileExistsAtPath:filePath]){
                 cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
             }
@@ -2011,6 +2004,7 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 -(void) makeRequestToLoadImagesUsingOperations{
+    
     for(int i=0;i<[allupcomingEvents count];i++){
         
         NSString *urlStr_id=nil;
@@ -2025,13 +2019,13 @@ static NSDateFormatter *customDateFormat=nil;
         
         if(urlStr_id){
             
-            NSFileManager *fm = [NSFileManager defaultManager];
+            
             //NSLog(@"%@",[NSString stringWithFormat:@"%@.png",urlStr_id]);
             if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
                 
-                NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
+                /*NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
                 [UIImagePNGRepresentation([ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"]) writeToFile:filePath atomically:YES]; //Write the file
-                
+                */
                 NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
                 [tempDict setObject:urlStr_id forKey:@"profile_id"];
                 
@@ -2178,6 +2172,7 @@ static NSDateFormatter *customDateFormat=nil;
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:[allupcomingEvents count]];
 }
 - (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
+    
     if(!isEventsLoadingFromFB)
         return;
     if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
@@ -2566,7 +2561,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     [picturesOperationQueue cancelAllOperations];
     [picturesOperationQueue release];
-    [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+    [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
     [fb_giftgiv_home setFbGiftGivDelegate:nil];
     [lnkd_giftgiv_home setLnkInGiftGivDelegate:nil];
     [searchBirthdayEvents release];

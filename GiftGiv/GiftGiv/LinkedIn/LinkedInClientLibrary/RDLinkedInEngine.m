@@ -251,8 +251,8 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 
 - (void)oauthTicketFailed:(OAServiceTicket *)ticket data:(NSData *)data {
-  //RDLOG(@"oauthTicketFailed! %@", ticket);
-  
+  RDLOG(@"oauthTicketFailed! %@", ticket);
+    //[self requestRequestToken];
   // notification of authentication failure
   [[NSNotificationCenter defaultCenter]
    postNotificationName:RDLinkedInEngineAuthFailureNotification object:self];

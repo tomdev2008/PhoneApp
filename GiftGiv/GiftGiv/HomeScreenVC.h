@@ -57,7 +57,7 @@
     BOOL isEventsLoadingFromFB;
     BOOL isSearchEnabled;
     BOOL isFBContactsLoading;
-    
+    NSFileManager *fm;
     NSOperationQueue *picturesOperationQueue;
     
 }
