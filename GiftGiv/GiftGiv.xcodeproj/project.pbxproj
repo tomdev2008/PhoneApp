@@ -1525,6 +1525,7 @@
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "GiftGiv/GiftGiv-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/GiftGiv\"",
@@ -1592,8 +1593,8 @@
 		7ED7EA3715B6F1EE008DFDE3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Pavan  Kumar (MAVWRGZ8P7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Pavan  Kumar (MAVWRGZ8P7)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kushal Shah (943J346PMJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kushal Shah (943J346PMJ)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1605,14 +1606,15 @@
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "GiftGiv/GiftGiv-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/GiftGiv\"",
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "49B82676-EDFF-4C33-A2A7-C27F0FC75E0F";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "49B82676-EDFF-4C33-A2A7-C27F0FC75E0F";
+				PROVISIONING_PROFILE = "EE7DC755-1FA8-4250-BD57-18626357DC0E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "EE7DC755-1FA8-4250-BD57-18626357DC0E";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../LinkedInClientLibrary";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1621,8 +1623,8 @@
 		7ED7EA3815B6F1EE008DFDE3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Teleparadigm Networks Limited";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Teleparadigm Networks Limited";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kushal Shah (943J346PMJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kushal Shah (943J346PMJ)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1634,14 +1636,15 @@
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "GiftGiv/GiftGiv-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/GiftGiv\"",
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "97023388-5FF4-4687-AE6B-90711B551C20";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "97023388-5FF4-4687-AE6B-90711B551C20";
+				PROVISIONING_PROFILE = "EE7DC755-1FA8-4250-BD57-18626357DC0E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "EE7DC755-1FA8-4250-BD57-18626357DC0E";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../LinkedInClientLibrary";
 				WRAPPER_EXTENSION = app;
 			};
