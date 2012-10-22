@@ -171,7 +171,7 @@
     CFArrayRef allContacts = ABAddressBookCopyArrayOfAllPeople(allPeople);
     CFIndex numberOfContacts  = ABAddressBookGetPersonCount(allPeople);
     
-    NSLog(@"numberOfContacts--%ld",numberOfContacts);
+    
     
     
     for(int i = 0; i < numberOfContacts; i++){
@@ -186,16 +186,19 @@
         //ABMultiValueRef phoneProperty = ABRecordCopyValue(aPerson, kABPersonPhoneProperty);
         ABMultiValueRef emailProperty = ABRecordCopyValue(aPerson, kABPersonEmailProperty);
         
-        NSArray *emailArray = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(emailProperty);
+        NSArray *emailArray = (NSArray *)ABMultiValueCopyArrayOfAllValues(emailProperty);
         //NSArray *phoneArray = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phoneProperty);
-        
+        CFRelease(emailProperty);
         
         if (fnameProperty != nil) {
             name = [NSString stringWithFormat:@"%@", fnameProperty];
+             CFRelease(fnameProperty);
         }
         if (lnameProperty != nil) {
             name = [name stringByAppendingString:[NSString stringWithFormat:@" %@", lnameProperty]];
+            CFRelease(lnameProperty);
         }
+       
        
         
         if([name caseInsensitiveCompare:contactName]==NSOrderedSame){
@@ -211,9 +214,12 @@
                     email = [NSString stringWithFormat:@"%@", [emailArray objectAtIndex:0]];
                 }
             }
-
+            [emailArray release];
+            CFRelease(allContacts);
+            CFRelease(allPeople);
             return email;
         }
+        [emailArray release];
         /*if ([phoneArray count] > 0) {
             if ([phoneArray count] > 1) {
                 for (int i = 0; i < [phoneArray count]; i++) {
@@ -226,6 +232,9 @@
         
         
     }
+    
+    CFRelease(allContacts);
+    CFRelease(allPeople);
     return @"";
 }
 -(void)refreshTheFormForOption:(int)optionIndex{

@@ -12,8 +12,8 @@
 
 
 @interface OtherPaymentMethodDetails : NSObject {
-	@private
-	NSMutableDictionary *dataDict;
+	//@private
+	//NSMutableDictionary *dataDict;
 }
 
 @end

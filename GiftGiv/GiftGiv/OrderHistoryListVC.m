@@ -167,7 +167,7 @@ static NSDateFormatter *customDateFormat=nil;
             UIImage *thumbnail = [UIImage imageWithData:data];
             
             if(thumbnail==nil){
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     
                     NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[ordersList objectAtIndex:i]];
                     [tempDict setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
@@ -180,7 +180,7 @@ static NSDateFormatter *customDateFormat=nil;
             }
             else {
                 
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[ordersList objectAtIndex:i]];
                     [tempDict setObject:thumbnail forKey:@"ProfilePicture"];
                     [ordersList replaceObjectAtIndex:i withObject:tempDict];

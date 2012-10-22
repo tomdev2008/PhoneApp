@@ -91,7 +91,7 @@
     else{
         profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
     }
-    [self performSelector:@selector(loadGiftImage)];
+    [self performSelector:@selector(loadGiftImage) withObject:nil afterDelay:0.001];
     
     giftDetailsScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsScroll];
@@ -235,7 +235,7 @@
 }
 -(void)loadGiftImage{
     dispatch_queue_t ImageLoader_Q;
-    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+    ImageLoader_Q=dispatch_queue_create("Gift card picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
         
         NSString *urlStr=[giftItemInfo giftImageUrl];
@@ -249,7 +249,7 @@
         }
         else {
             
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
                 giftImg.image=thumbnail;                   
                 
             });

@@ -167,7 +167,7 @@ static NSDateFormatter *customDateFormat=nil;
         UIImage *thumbnail = [UIImage imageWithData:data];
         
         if(thumbnail==nil){
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
                 
                 profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
                 
@@ -176,7 +176,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else {
             
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
                 
                 profilePic.image=thumbnail;
                 
@@ -221,17 +221,10 @@ static NSDateFormatter *customDateFormat=nil;
         NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imgURL]];
         UIImage *giftImage = [UIImage imageWithData:data];
         
-        if(giftImage==nil){
+        
+        if(giftImage!=nil) {
             
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                
-                
-            });
-            
-        }
-        else {
-            
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
                 
                 if(![targetImgView isEqual:profilePic])
                 {

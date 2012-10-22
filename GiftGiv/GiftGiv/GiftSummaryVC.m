@@ -167,7 +167,7 @@
         
         if(giftImage==nil){
             
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if([targetImgView isEqual:profilePic])
                     profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
                 
@@ -176,7 +176,7 @@
         }
         else {
             
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
                 
                 if(![targetImgView isEqual:profilePic])
                 {
@@ -275,7 +275,7 @@
 - (IBAction)paymentBtnAction:(id)sender {
     
     [self showProgressHUD:self.view withMsg:nil];
-    [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_SANDBOX withDelegate:self];
+    [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_LIVE withDelegate:self];
     
     
 }

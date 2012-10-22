@@ -47,20 +47,21 @@
         
     [self showProgressHUD:self.view withMsg:nil];
     
+    NSMutableDictionary *selectedEventDetails=[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"];
     /*if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"]){
         eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"];
     }
     else*/
-        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
+        eventNameLbl.text=[selectedEventDetails objectForKey:@"eventName"];
     
-    profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
+    profileNameLbl.text=[[selectedEventDetails objectForKey:@"userName"] uppercaseString];
     NSString *profilePicId;
     
-    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
-        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+    if([selectedEventDetails objectForKey:@"linkedIn_userID"]){
+        profilePicId= [selectedEventDetails objectForKey:@"linkedIn_userID"];
     }
     else{
-        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
+        profilePicId= [selectedEventDetails objectForKey:@"userID"];
     }
     
     NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
@@ -117,7 +118,7 @@
    
     for(int i=0;i<giftItemsCount;i++){
         dispatch_queue_t ImageLoader_Q;
-        ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+        ImageLoader_Q=dispatch_queue_create("Gift thumbnail picture network connection queue", NULL);
         dispatch_async(ImageLoader_Q, ^{
             
             NSString *urlStr=[[[listOfAllGiftItems objectAtIndex:i]objectForKey:@"GiftDetails"] giftThumbnailUrl];
@@ -125,23 +126,15 @@
             NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
             UIImage *thumbnail = [UIImage imageWithData:data];
             
-            if(thumbnail==nil){
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                    
-                    
-                    
-                    //profilePicImg.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
-                    
-                });
+            
+            if(thumbnail!=nil) {
                 
-            }
-            else {
-                
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[listOfAllGiftItems objectAtIndex:i]];
                     [tempDict setObject:thumbnail forKey:@"GiftThumbnail"];
                     [listOfAllGiftItems replaceObjectAtIndex:i withObject:tempDict];
-                    [tempDict release];                   
+                    [tempDict release];
+                    
                     [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
                 });
             }
@@ -407,7 +400,7 @@
     
 	static NSString *cellIdentifier;
 	cellIdentifier=[NSString stringWithFormat:@"Cell%d",indexPath.row];
-	tableView.backgroundColor=[UIColor clearColor];
+	
 	GiftCustomCell *cell = (GiftCustomCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     

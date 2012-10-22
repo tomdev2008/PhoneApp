@@ -162,7 +162,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 
 - (void)_generateTimestamp 
 {
-    timestamp = [[NSString stringWithFormat:@"%d", time(NULL)] retain];
+    timestamp = [[NSString stringWithFormat:@"%ld", time(NULL)] retain];
 }
 
 - (void)_generateNonce 
@@ -229,8 +229,11 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
         encodedParameters = [[NSString alloc] initWithData:[self HTTPBody] encoding:NSASCIIStringEncoding];
     }
     
-    if ((encodedParameters == nil) || ([encodedParameters isEqualToString:@""]))
+    if ((encodedParameters == nil) || ([encodedParameters isEqualToString:@""])){
+        if(shouldfree)
+            [encodedParameters release];
         return nil;
+    }
     
     NSArray *encodedParameterPairs = [encodedParameters componentsSeparatedByString:@"&"];
     NSMutableArray *requestParameters = [[NSMutableArray alloc] initWithCapacity:16];

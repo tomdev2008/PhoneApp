@@ -284,9 +284,7 @@ static NSDateFormatter *customDateFormat=nil;
                 
                 if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
                     
-                    /*NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
-                    [UIImagePNGRepresentation([ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"]) writeToFile:filePath atomically:YES]; //Write the file
-                    */
+                   
                     NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
                     [tempDict setObject:urlStr_id forKey:@"profile_id"];
                     
@@ -299,7 +297,7 @@ static NSDateFormatter *customDateFormat=nil;
                     
                     NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadProfileImgWithOperation:) object:tempDict];
                     [tempDict release];
-                    /* Add the operation to the queue */
+                    
                     [picturesOperationQueue addOperation:operation];
                     [operation release];
                     
@@ -503,7 +501,7 @@ static NSDateFormatter *customDateFormat=nil;
             NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
             [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
 
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
                 
                 NSArray *tableCells=[eventsTable visibleCells];
                 for(int i=0; i<[tableCells count];i++ ){
@@ -731,7 +729,7 @@ static NSDateFormatter *customDateFormat=nil;
     if([tableView isEqual:eventsTable]){
         static NSString *cellIdentifier;
         cellIdentifier=[NSString stringWithFormat:@"Cell%d%d",eventGroupNum,indexPath.row];
-        tableView.backgroundColor=[UIColor clearColor];
+        
         EventCustomCell *cell = (EventCustomCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         
         if (cell == nil) {
@@ -861,19 +859,21 @@ static NSDateFormatter *customDateFormat=nil;
 }
 -(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath{
     
-    if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+    NSMutableDictionary *sourceEventsDict=[sourceArray objectAtIndex:indexPath.row];
+    
+    if([sourceEventsDict objectForKey:@"from"]){
         cell.bubbleIconForCommentsBtn.hidden=NO;
-        cell.profileNameLbl.text=[[[sourceArray objectAtIndex:indexPath.row]objectForKey:@"from"] objectForKey:@"name"];
+        cell.profileNameLbl.text=[[sourceEventsDict objectForKey:@"from"] objectForKey:@"name"];
         
     }
-    else if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBID"]){
+    else if([sourceEventsDict  objectForKey:@"FBID"]){
         cell.bubbleIconForCommentsBtn.hidden=NO;
-        cell.profileNameLbl.text=[[sourceArray objectAtIndex:indexPath.row]objectForKey:@"FBName"];
+        cell.profileNameLbl.text=[sourceEventsDict objectForKey:@"FBName"];
     }
     else{
-        cell.profileNameLbl.text=[[sourceArray objectAtIndex:indexPath.row]objectForKey:@"name"];
-        if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]){
-            if([[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
+        cell.profileNameLbl.text=[sourceEventsDict objectForKey:@"name"];
+        if([sourceEventsDict  objectForKey:@"isEventFromQuery"]){
+            if([[sourceEventsDict  objectForKey:@"isEventFromQuery"]isEqualToString:@"true"])
                 cell.bubbleIconForCommentsBtn.hidden=NO;
             else
                 cell.bubbleIconForCommentsBtn.hidden=YES;
@@ -882,33 +882,33 @@ static NSDateFormatter *customDateFormat=nil;
             cell.bubbleIconForCommentsBtn.hidden=YES;
         }
     }
-    if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]){
+    if([sourceEventsDict  objectForKey:@"linkedIn_id"]){
         cell.bubbleIconForCommentsBtn.hidden=NO;
     }
-    if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"])
-        cell.eventNameLbl.text=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"];
+    if([sourceEventsDict  objectForKey:@"FBUserLocation"])
+        cell.eventNameLbl.text=[sourceEventsDict  objectForKey:@"FBUserLocation"];
     else
-        cell.eventNameLbl.text=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_type"];
+        cell.eventNameLbl.text=[sourceEventsDict  objectForKey:@"event_type"];
     
-    if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
-        cell.profileId=[NSString stringWithFormat:@"%@",[[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"]];
+    if([sourceEventsDict  objectForKey:@"from"]){
+        cell.profileId=[NSString stringWithFormat:@"%@",[[sourceEventsDict  objectForKey:@"from"]objectForKey:@"id"]];
                 
     }
-    else if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBID"]){
-        cell.profileId=[NSString stringWithFormat:@"%@",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBID"]];
+    else if([sourceEventsDict  objectForKey:@"FBID"]){
+        cell.profileId=[NSString stringWithFormat:@"%@",[sourceEventsDict  objectForKey:@"FBID"]];
     }
     else{
-        if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
-            cell.profileId=[NSString stringWithFormat:@"%@",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"uid"]];
+        if([sourceEventsDict  objectForKey:@"uid"])
+            cell.profileId=[NSString stringWithFormat:@"%@",[sourceEventsDict  objectForKey:@"uid"]];
             
-        else if([[allupcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-            cell.profileId=[NSString stringWithFormat:@"%@",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]];
+        else if([sourceEventsDict  objectForKey:@"linkedIn_id"])
+            cell.profileId=[NSString stringWithFormat:@"%@",[sourceEventsDict  objectForKey:@"linkedIn_id"]];
     }
     
     
     
-    if(![[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"]){
-        NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
+    if(![sourceEventsDict  objectForKey:@"FBUserLocation"]){
+        NSString *dateDisplay=[CustomDateDisplay updatedDateToBeDisplayedForTheEvent:[sourceEventsDict  objectForKey:@"event_date"]];//[self updatedDateToBeDisplayedForTheEvent:[[congratsEvents objectAtIndex:indexPath.row] objectForKey:@"event_date"]];
         if([dateDisplay isEqualToString:@"Today"]||[dateDisplay isEqualToString:@"Yesterday"]||[dateDisplay isEqualToString:@"Tomorrow"]||[dateDisplay isEqualToString:@"Recent"]){
             cell.dateLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.68 alpha:1.0];
             //cell.dateLbl.font=[UIFont fontWithName:@"Helvetica-Bold" size:7.0];
@@ -920,9 +920,9 @@ static NSDateFormatter *customDateFormat=nil;
         cell.dateLbl.text=dateDisplay;
     }
     
-    if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+    if([sourceEventsDict  objectForKey:@"from"]){
         
-        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"]]];
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[sourceEventsDict  objectForKey:@"from"]objectForKey:@"id"]]];
         
         if([fm fileExistsAtPath:filePath]){
             cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
@@ -930,9 +930,9 @@ static NSDateFormatter *customDateFormat=nil;
         
                 
     }
-    else if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBID"]){
+    else if([sourceEventsDict  objectForKey:@"FBID"]){
         
-        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"FBID"]]];
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[sourceEventsDict  objectForKey:@"FBID"]]];
         
         if([fm fileExistsAtPath:filePath]){
             cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
@@ -941,35 +941,28 @@ static NSDateFormatter *customDateFormat=nil;
         
     }
     else{
-        if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"uid"]){
+        if([sourceEventsDict  objectForKey:@"uid"]){
             
-            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"uid"]]];
-            
-            if([fm fileExistsAtPath:filePath]){
-                cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
-            }
-            
-        }
-            
-        else if([[sourceArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]){
-            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]]];
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[sourceEventsDict  objectForKey:@"uid"]]];
             
             if([fm fileExistsAtPath:filePath]){
                 cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
             }
             
         }
+            
+        else if([sourceEventsDict  objectForKey:@"linkedIn_id"]){
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[sourceEventsDict  objectForKey:@"linkedIn_id"]]];
+            
+            if([fm fileExistsAtPath:filePath]){
+                cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
+            }
+            
+        }
     
     }
     
-    /*if([[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]]){
-        cell.profileImg.image=[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"];
-    }
-    else if([[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
-        cell.profileImg.image=[UIImage imageWithData:[[sourceArray objectAtIndex:indexPath.row] objectForKey:@"ProfilePicture"]];
-    }
     
-    */
     
 }
 
@@ -1994,8 +1987,7 @@ static NSDateFormatter *customDateFormat=nil;
        
         
         [self storeAllupcomingsForSuccessScreen];
-        [self makeRequestToLoadImagesUsingOperations];
-                   
+        
         
         
         [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];
@@ -2095,7 +2087,7 @@ static NSDateFormatter *customDateFormat=nil;
     if(!isEventsLoadingFromFB)
         return;
     for (NSDictionary *existEvents in listOfBirthdayEvents){
-        NSString *existEventUserIDStr;
+        NSString *existEventUserIDStr=@"";
         if([existEvents objectForKey:@"uid"])
             existEventUserIDStr=[NSString stringWithFormat:@"%@",[existEvents objectForKey:@"uid"]];
         else if([existEvents objectForKey:@"FBID"])
@@ -2146,13 +2138,12 @@ static NSDateFormatter *customDateFormat=nil;
         [self sortEvents:allupcomingEvents eventCategory:1];
     if([listOfBirthdayEvents count]>1)
         [self sortEvents:listOfBirthdayEvents eventCategory:2];
-   
-    [self makeRequestToLoadImagesUsingOperations];
     [eventsTable reloadData];
-    
+    [self storeAllupcomingsForSuccessScreen];
     
 }
 -(void)storeAllupcomingsForSuccessScreen{
+    
     NSMutableArray *tempArray=[[NSMutableArray alloc]initWithArray:allupcomingEvents];
     
         
@@ -2170,6 +2161,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     [tempArray release];
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:[allupcomingEvents count]];
+    [self makeRequestToLoadImagesUsingOperations];
 }
 - (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
     
@@ -2209,11 +2201,11 @@ static NSDateFormatter *customDateFormat=nil;
             [self sortEvents:allupcomingEvents eventCategory:1];
         if([eventsToCelebrateArray count])
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
-                
+        
+        [eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
         
-        [self makeRequestToLoadImagesUsingOperations];
-        [eventsTable reloadData];
+        
         
     }
     
@@ -2256,13 +2248,10 @@ static NSDateFormatter *customDateFormat=nil;
             [self sortEvents:allupcomingEvents eventCategory:1];
         if([eventsToCelebrateArray count]>1)
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
-               
-        [self storeAllupcomingsForSuccessScreen];
-        
-        [self makeRequestToLoadImagesUsingOperations];
         
         [eventsTable reloadData];
-             
+        [self storeAllupcomingsForSuccessScreen];
+        
     }
 }
 - (void)congratsEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
@@ -2301,11 +2290,9 @@ static NSDateFormatter *customDateFormat=nil;
         if([eventsToCelebrateArray count]>1)
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
         
-             
+        [eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
         
-        [self makeRequestToLoadImagesUsingOperations];
-        [eventsTable reloadData];
         
     }
 }
@@ -2390,7 +2377,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     for (NSDictionary *existEvents in eventsToCelebrateArray){
-        NSString *existEventUserIDStr;
+        NSString *existEventUserIDStr=@"";
         if([existEvents objectForKey:@"from"]){
             existEventUserIDStr=[NSString stringWithFormat:@"%@",[[existEvents objectForKey:@"from"]objectForKey:@"id"]];
             
@@ -2451,9 +2438,9 @@ static NSDateFormatter *customDateFormat=nil;
         NSMutableDictionary *startDateDict=[[[result objectForKey:@"positions"]objectForKey:@"position"] objectForKey:@"start-date"];
         NSString *convertedDateString=[startDateDict objectForKey:@"year"];
         if([startDateDict objectForKey:@"month"])
-            convertedDateString=[convertedDateString stringByAppendingFormat:[NSString stringWithFormat:@"-%@-01",[startDateDict objectForKey:@"month"]]];
+            convertedDateString=[convertedDateString stringByAppendingFormat:@"-%@-01",[startDateDict objectForKey:@"month"]];
         else
-            convertedDateString=[convertedDateString stringByAppendingFormat:[NSString stringWithFormat:@"-01-01",[startDateDict objectForKey:@"month"]]];
+            convertedDateString=[convertedDateString stringByAppendingString:@"-01-01"];
         [linkedInEvent setObject:convertedDateString forKey:@"event_date"];
         if([result objectForKey:@"picture-url"])
             [linkedInEvent setObject:[result objectForKey:@"picture-url"] forKey:@"pic_url"];
@@ -2467,15 +2454,16 @@ static NSDateFormatter *customDateFormat=nil;
         [linkedInEvent release];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
-        [self storeAllupcomingsForSuccessScreen];
+        
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
         if([eventsToCelebrateArray count]>1)
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
-        
-        [self makeRequestToLoadImagesUsingOperations];
         [eventsTable reloadData];
+        [self storeAllupcomingsForSuccessScreen];
+        
+
     }
     
     

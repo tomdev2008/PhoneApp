@@ -73,7 +73,7 @@
   rdNavBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, rdNavBar.frame.size.height);
   rdNavBar.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
   [self.view addSubview:rdNavBar];*/
-     UIImage* closeImage = [UIImage imageNamed:@"FBDialog.bundle/images/close.png"];
+    /* UIImage* closeImage = [UIImage imageNamed:@"FBDialog.bundle/images/close.png"];
     UIButton *_closeButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
     [_closeButton setImage:closeImage forState:UIControlStateNormal];
     //[_closeButton setTitleColor:color forState:UIControlStateNormal];
@@ -83,7 +83,7 @@
     _closeButton.showsTouchWhenHighlighted = YES;
     _closeButton.frame=CGRectMake(2, 2, 30, 30);
     _closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin
-    | UIViewAutoresizingFlexibleBottomMargin;
+    | UIViewAutoresizingFlexibleBottomMargin;*/
     
   
   rdWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, /*rdNavBar.frame.size.height*/0, 320,460/*rdNavBar.frame.size.height*/)];

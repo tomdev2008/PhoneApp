@@ -158,7 +158,7 @@
             UIImage *eventPic = [UIImage imageWithData:data];
             
             if(eventPic!=nil){
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     eventImg.image=eventPic;                   
                     
                 });
@@ -311,7 +311,7 @@
                     
                     if(thumbnail!=nil){
                         
-                        dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                        dispatch_async(dispatch_get_main_queue(), ^(void) {
                             
                             [[listOfComments objectAtIndex:i] setObject:thumbnail forKey:@"commentProPic"];
                             

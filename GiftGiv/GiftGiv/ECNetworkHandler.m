@@ -36,7 +36,7 @@ static ECNetworkHandler *instance = nil;
 +(ECNetworkHandler *)sharedInstance {
 	@synchronized(self) {
 		if (instance == nil) {
-			[[self alloc] init]; //assignment not done here
+			instance=[[ECNetworkHandler alloc] init]; //assignment not done here
 		}
 	}
 	return instance;

@@ -248,7 +248,7 @@
         
         if(giftImg==nil){
             if([targetImgView isEqual:profilePic]){
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];                
                     
                 });
@@ -258,7 +258,7 @@
         }
         else {
             
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
                 targetImgView.image=giftImg;                   
                 
             });

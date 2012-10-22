@@ -80,7 +80,7 @@
                     
                     if(thumbnail!=nil){
                         
-                        dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                        dispatch_async(dispatch_get_main_queue(), ^(void) {
                             NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[upcomingEvents objectAtIndex:i]];
                             
                             [tempDict setObject:thumbnail forKey:@"ProfilePicture"];

@@ -39,8 +39,8 @@
     navController.navigationBarHidden=YES;
     navController.navigationBar.tintColor=[UIColor colorWithRed:0 green:0.67 blue:0.66 alpha:1.0];
     [splash release];
-    [self.window addSubview:navController.view];
-    
+    //[self.window addSubview:navController.view];
+    self.window.rootViewController=navController;
     [self.window makeKeyAndVisible];
     return YES;
 }
