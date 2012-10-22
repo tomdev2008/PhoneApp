@@ -75,5 +75,5 @@ typedef enum apiCall {
 - (void)getEventDetails:(NSString*)statusID;
 - (NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd;
 - (void) releaseFacebook;
-
+-(BOOL)checkWhetherText:(NSString*)sourceText contains:(NSString*)searchedKeyword;
 @end

@@ -160,7 +160,7 @@
 #pragma mark -
 #pragma mark -LinkedIn
 - (void)linkedInLoggedIn{
-    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"LinkedInLoggedIn" object:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)linkedInLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{

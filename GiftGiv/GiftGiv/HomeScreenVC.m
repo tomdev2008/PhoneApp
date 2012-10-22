@@ -26,6 +26,7 @@ static NSDateFormatter *customDateFormat=nil;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedGiftGivUserId) name:@"GiftGivUserIDReceived" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getEventsFromLinkedIn) name:@"LinkedInLoggedIn" object:nil];
         // Custom initialization
     }
     return self;
@@ -109,6 +110,12 @@ static NSDateFormatter *customDateFormat=nil;
     swipeRightRecognizer.direction=UISwipeGestureRecognizerDirectionRight;
     [eventsBgView addGestureRecognizer:swipeRightRecognizer];
     [swipeRightRecognizer release];
+}
+-(void)getEventsFromLinkedIn{
+    if([lnkd_giftgiv_home isLinkedInAuthorized]){
+        [lnkd_giftgiv_home getMyNetworkUpdatesWithType:@"PRFU"];
+        //[lnkd_giftgiv_home setLnkInGiftGivDelegate:self];
+    }
 }
 -(void)viewWillAppear:(BOOL)animated{
     
@@ -2585,6 +2592,7 @@ static NSDateFormatter *customDateFormat=nil;
     [contactsSearchView release];
     [contactsSearchBar release];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"GiftGivUserIDReceived" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"LinkedInLoggedIn" object:nil];
     [super dealloc];
 }
 

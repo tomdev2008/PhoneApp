@@ -361,7 +361,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                 anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary" ,nil];/*@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary",nil]*/;
             }
             if(congratsSearchStrings==nil){
-                congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"congratulations" ,nil];/*@"congrats", @"all the best", @"good luck", @"congratulations",nil];*/
+                congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"Congratulations" ,nil];/*@"congrats", @"all the best", @"good luck", @"congratulations",nil];*/
             }
             if(birthdaySearchStrings==nil){
                 birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"belated", @"birthday wishes", @"have a lovely birthday", @"happy birthday", @"many happy returns of the day",nil];/*@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];*/
@@ -472,7 +472,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                         else if([[result objectAtIndex:i] objectForKey:@"like_info"]){
                             
                             if([[[[result objectAtIndex:i] objectForKey:@"like_info"] objectForKey:@"like_count"] intValue]>=15 || [[[[result objectAtIndex:i] objectForKey:@"comment_info"] objectForKey:@"comment_count"] intValue]>=15){
-                                
+                                //NSLog(@"result..%@",result);
                                 NSString *getCommentsForPhoto=[NSString stringWithFormat:@"SELECT object_id,text from comment where object_id=%@",[[result objectAtIndex:i]objectForKey:@"object_id"]];
                                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                                getCommentsForPhoto, @"query",
@@ -499,10 +499,10 @@ static NSDateFormatter *standardDateFormatter = nil;
                             //for(int j=0;j<commentsCount;j++){
                             NSString *commentsStr=[[result objectAtIndex:i] objectForKey:@"text"];
                             
-                            //commentsStr=[commentsStr lowercaseString];
+                            //commentsStr=[commentsS;tr lowercaseString];
                             
                             for (NSString *searchedString in birthdaySearchStrings){
-                                if(!isEventFound && [commentsStr rangeOfString :searchedString options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
                                     isEventFound=YES;
                                     
                                     NSMutableDictionary *baseDetailsDict=[[NSMutableDictionary alloc]initWithDictionary:[friendUserIds objectForKey:[request.params objectForKey:@"query"]]];
@@ -529,7 +529,8 @@ static NSDateFormatter *standardDateFormatter = nil;
                             }                                    
                             if(!isEventFound){
                                 for (NSString *searchedString in newJobSearchStrings){
-                                    if(!isEventFound && [searchedString rangeOfString :commentsStr options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                    
+                                    if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
                                         isEventFound=YES;
                                         NSMutableDictionary *baseDetailsDict=[[NSMutableDictionary alloc]initWithDictionary:[friendUserIds objectForKey:[request.params objectForKey:@"query"]]];
                                         [baseDetailsDict setObject:[NSString stringWithFormat:@"%@",[[result objectAtIndex:i]objectForKey:@"object_id"]] forKey:@"EventID"];
@@ -556,7 +557,8 @@ static NSDateFormatter *standardDateFormatter = nil;
                             }
                             if(!isEventFound){
                                 for (NSString *searchedString in anniversarySearchStrings){
-                                    if(!isEventFound &&[searchedString rangeOfString :commentsStr options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                   
+                                    if(!isEventFound &&[self checkWhetherText:commentsStr contains:searchedString]){
                                         isEventFound=YES;
                                         NSMutableDictionary *baseDetailsDict=[[NSMutableDictionary alloc]initWithDictionary:[friendUserIds objectForKey:[request.params objectForKey:@"query"]]];
                                         [baseDetailsDict setObject:[NSString stringWithFormat:@"%@",[[result objectAtIndex:i]objectForKey:@"object_id"]] forKey:@"EventID"];
@@ -585,12 +587,15 @@ static NSDateFormatter *standardDateFormatter = nil;
                             if(!isEventFound){
                                 for (NSString *searchedString in congratsSearchStrings){
                                     
-                                    if(!isEventFound && [searchedString rangeOfString :commentsStr options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                    if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
                                         //isEventFound=YES;
+                                        
                                         NSMutableDictionary *baseDetailsDict=[[NSMutableDictionary alloc]initWithDictionary:[friendUserIds objectForKey:[request.params objectForKey:@"query"]]];
                                         [baseDetailsDict setObject:[NSString stringWithFormat:@"%@",[[result objectAtIndex:i]objectForKey:@"object_id"]] forKey:@"EventID"];
                                         [baseDetailsDict setObject:@"congratulations" forKey:@"EventName"];
+                                        
                                         NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[[friendUserIds objectForKey:[request.params objectForKey:@"query"]]objectForKey:@"FBID"]];
+                                        
                                         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                                        getProfile, @"query",
                                                                        nil];
@@ -640,7 +645,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                         
                                         for (NSString *searchedString in birthdaySearchStrings){
                                             
-                                            if(!isEventStatusFound && [messageStr rangeOfString :searchedString options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                            if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
                                                 // NSLog(@"checking..%@",messageStr);
                                                 isEventStatusFound=YES;
                                                 [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
@@ -650,7 +655,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                     }
                                     if(!isEventStatusFound){
                                         for (NSString *searchedString in anniversarySearchStrings){
-                                            if(!isEventStatusFound && [messageStr rangeOfString :searchedString options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                            if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
                                                 isEventStatusFound=YES;
                                                 [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                 break;
@@ -659,7 +664,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                     }
                                     if(!isEventStatusFound){
                                         for (NSString *searchedString in newJobSearchStrings){
-                                            if(!isEventStatusFound && [messageStr rangeOfString :searchedString options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                            if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
                                                 isEventStatusFound=YES;
                                                 [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                 break;
@@ -668,7 +673,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                     }                                
                                     if(!isEventStatusFound){
                                         for (NSString *searchedString in congratsSearchStrings){
-                                            if(!isEventStatusFound && [messageStr rangeOfString :searchedString options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                            if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
                                                 isEventStatusFound=YES;
                                                 [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                 break;
@@ -685,7 +690,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                             
                                             if(!isEventsFromCommentsFound){
                                                 for (NSString *searchedString in birthdaySearchStrings){
-                                                    if(!isEventsFromCommentsFound && [commentsStr rangeOfString :searchedString options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                                    if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
                                                         isEventsFromCommentsFound=YES;
                                                         [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                         break;
@@ -695,7 +700,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                             
                                             if(!isEventsFromCommentsFound){
                                                 for (NSString *searchedString in anniversarySearchStrings){
-                                                    if(!isEventsFromCommentsFound && [commentsStr rangeOfString :searchedString options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                                    if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
                                                         isEventsFromCommentsFound=YES;
                                                         [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                         break;
@@ -704,7 +709,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                             }
                                             if(!isEventsFromCommentsFound){
                                                 for (NSString *searchedString in newJobSearchStrings){
-                                                    if(!isEventsFromCommentsFound && [commentsStr rangeOfString :searchedString options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                                    if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
                                                         isEventsFromCommentsFound=YES;
                                                         [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                         break;
@@ -713,7 +718,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                                             }
                                             if(!isEventsFromCommentsFound){
                                                 for (NSString *searchedString in congratsSearchStrings){
-                                                    if(!isEventsFromCommentsFound && [commentsStr rangeOfString :searchedString options:NSCaseInsensitiveSearch].location != NSNotFound){
+                                                    if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
                                                         //isEventsFromCommentsFound=YES;
                                                         [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
                                                         break;
@@ -740,6 +745,12 @@ static NSDateFormatter *standardDateFormatter = nil;
     
 	
     
+}
+-(BOOL)checkWhetherText:(NSString*)sourceText contains:(NSString*)searchedKeyword{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF contains[cd] %@)", searchedKeyword];
+    
+    [sourceText compare:searchedKeyword options:NSCaseInsensitiveSearch];
+    return [predicate evaluateWithObject:sourceText];
 }
 -(void)dealloc{
     //[fbOperationQueue cancelAllOperations];
