@@ -235,7 +235,8 @@
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
-
+-(void) requestFailed{
+}
 
 - (void)dealloc {
     

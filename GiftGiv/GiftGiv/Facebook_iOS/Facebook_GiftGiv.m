@@ -326,7 +326,7 @@ static NSDateFormatter *standardDateFormatter = nil;
     
 }
 - (void)getEventDetails:(NSString*)statusID{
-    
+    NSLog(@"Event ID=%@",statusID);
     getDetailedEventReq=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@",statusID] andDelegate:self];
 }
 #pragma mark - FBRequestDelegate methods
@@ -381,7 +381,8 @@ static NSDateFormatter *standardDateFormatter = nil;
                 //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 currentAPICall=kAPIGetJSONForStatuses;
                 
-                NSString *getPhotosQuery=[NSString stringWithFormat:@"SELECT object_id, created,owner, like_info, comment_info FROM photo WHERE modified>=%.0f AND aid IN (SELECT aid FROM album WHERE owner = %@ AND modified_major>=%.0f)",(currentTimeInterval-(3*24*60*60)),[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60))];
+                NSString *getPhotosQuery=[NSString stringWithFormat:@"SELECT object_id, created,owner, like_info, comment_info FROM photo WHERE modified>=%.0f AND aid IN (SELECT aid FROM album WHERE owner = %@ AND modified_major>=%.0f)",(currentTimeInterval-(3*24*60*60)),[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60))]; //actually it should be for the last 3 days, but changed it to 4 days to get the same as from service.
+                
                 //NSLog(@"phoptos..%@",getPhotosQuery);
                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                getPhotosQuery, @"query",
@@ -398,6 +399,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                 
                 //last 2 days
                 FBRequest *fbReqStatuses=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
+               
                 [fbRequestsArray addObject:fbReqStatuses];
                 [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqStatuses url]];
                 

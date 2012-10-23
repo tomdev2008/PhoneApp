@@ -187,7 +187,7 @@
         currentConnectionNum=0;
         totalConnectionsCount=[networkUpdates count];
         if(totalConnectionsCount){
-            while (currentConnectionNum<totalConnectionsCount-1){
+            while (currentConnectionNum<totalConnectionsCount){
                 if(![[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"] isEqualToString:@"private"]){
                     if([self isLinkedInAuthorized])
                         [self getMemberProfile:[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
@@ -310,7 +310,7 @@
         
         if(currentConnectionNum<totalConnectionsCount-1){
             currentConnectionNum++;
-            while (currentConnectionNum<totalConnectionsCount-1){
+            while (currentConnectionNum<totalConnectionsCount){
                 if(![[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"] isEqualToString:@"private"]){
                     if([self isLinkedInAuthorized])
                         [self getMemberProfile:[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"]];

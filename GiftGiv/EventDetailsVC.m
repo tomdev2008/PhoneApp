@@ -115,6 +115,8 @@
     }
         
 }
+-(void) requestFailed{
+}
 #pragma mark -Facebook delegates
 - (void)facebookDidRequestFailed{
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];

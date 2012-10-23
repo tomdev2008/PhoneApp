@@ -134,13 +134,14 @@
                     [tempDict setObject:thumbnail forKey:@"GiftThumbnail"];
                     [listOfAllGiftItems replaceObjectAtIndex:i withObject:tempDict];
                     [tempDict release];
-                    
+                                        
                     [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
                 });
             }
             
         });
         dispatch_release(ImageLoader_Q);
+                
     }
      [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     
@@ -240,7 +241,7 @@
     
     [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
     
-    [self performSelector:@selector(retrieveGiftThumbnails)];    
+    [self retrieveGiftThumbnails];
       
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
@@ -268,9 +269,21 @@
                      
         }
     }
-    
+    categoryTitleLbl.text=nil;
     categoryTitleLbl.text=[[giftCategoriesList objectAtIndex:giftCatNum-1] catName];
-    [giftsTable reloadData];
+    /*NSArray *tableCells=[giftsTable visibleCells];
+    if([tableCells count]){
+        NSMutableArray *indexPathsList=[[NSMutableArray alloc]init];
+        for(int i=0; i<[tableCells count];i++ ){
+            NSIndexPath *indexPath=[giftsTable indexPathForCell:(GiftCustomCell*)[tableCells objectAtIndex:i]];
+            
+            [indexPathsList addObject:indexPath];
+        }
+        [giftsTable reloadRowsAtIndexPaths:indexPathsList withRowAnimation:UITableViewRowAnimationNone];
+        [indexPathsList release];
+    }
+    else*/
+        [giftsTable reloadData];
 }
 #pragma mark -
 -(BOOL)checkWhetherGiftItemsAvailableInACategory:(NSString*)categoryId{
@@ -433,7 +446,7 @@
     if([[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftThumbnail"])
         tempImg_one=[[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftThumbnail"];
     if(tempImg_one!=nil){
-                       
+        
         int GCDValue=[self getTheGCDFirstNum:tempImg_one.size.width secondNum:tempImg_one.size.height];
         int aspectRatioX=tempImg_one.size.width/GCDValue;
         int aspectRatioY=tempImg_one.size.height/GCDValue;
@@ -460,8 +473,7 @@
         [cell.giftImg_one setImage:targetImg];
        
     }
-    
-    
+        
     if([currentGiftItems count]>(indexPath.row*2)+1){
         cell.giftIcon_two.hidden=NO;
         cell.giftPrice_two.hidden=NO;
