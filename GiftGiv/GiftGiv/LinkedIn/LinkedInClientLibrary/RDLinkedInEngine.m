@@ -240,7 +240,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 	if( rdOAuthVerifier.length ) token.pin = rdOAuthVerifier;
 	
     if(!token){
-        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_basicprofile rw_nus"] autorelease]]]; 
+        [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"scope" value:@"r_basicprofile rw_nus r_network"] autorelease]]]; 
         /* r_network ==> Connections
          r_nus ==> updates
          */
