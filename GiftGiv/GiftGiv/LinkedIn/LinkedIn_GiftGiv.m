@@ -24,8 +24,6 @@
 @property (nonatomic, retain) RDLinkedInConnectionID* fetchCommentsForUpdate;
 @property (nonatomic, retain) RDLinkedInConnectionID* fetchLikesForUpdate;
 
-- (void)fetchProfile;
-
 @end
 
 //static LinkedIn_GiftGiv *sharedInstance = nil;

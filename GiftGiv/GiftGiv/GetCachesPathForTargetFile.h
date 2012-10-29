@@ -11,4 +11,5 @@
 @interface GetCachesPathForTargetFile : NSObject
 
 + (NSString *)cachePathForFileName:(NSString *)name;
++ (NSString *)cachePathForGiftItemFileName:(NSString *)name;
 @end

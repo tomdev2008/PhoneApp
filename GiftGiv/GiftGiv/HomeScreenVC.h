@@ -59,7 +59,7 @@
     BOOL isFBContactsLoading;
     NSFileManager *fm;
     NSOperationQueue *picturesOperationQueue;
-    
+    dispatch_queue_t ImageLoader_Q;
 }
 @property (retain, nonatomic) IBOutlet UISearchBar *contactsSearchBar;
 @property (retain, nonatomic) IBOutlet UIView *contactsSearchView;

@@ -30,5 +30,23 @@
     
     return [privateDocs stringByAppendingPathComponent:name];
 }
-
++ (NSString *)cachePathForGiftItemFileName:(NSString *)name{
+    NSArray *cachesDirList = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    
+    NSString *cachesPath=[cachesDirList objectAtIndex:0];
+    
+    NSString *privateDocs = [cachesPath stringByAppendingPathComponent:@"GiftItemPictures"];
+    NSFileManager *fileMgr = [NSFileManager defaultManager];
+    if (![fileMgr fileExistsAtPath:privateDocs]) {
+        //NSLog(@"Does not exist");
+        NSError *error;
+        [fileMgr createDirectoryAtPath:privateDocs withIntermediateDirectories:YES attributes:nil error:&error];
+        
+    }
+    
+    
+    if([name isEqualToString:@""])
+        return privateDocs;
+    return [privateDocs stringByAppendingPathComponent:name];
+}
 @end

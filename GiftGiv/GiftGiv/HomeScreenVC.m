@@ -49,7 +49,7 @@ static NSDateFormatter *customDateFormat=nil;
     fm=[NSFileManager defaultManager];
     fb_giftgiv_home=[[Facebook_GiftGiv alloc]init];
     fb_giftgiv_home.fbGiftGivDelegate=self;
-    
+    ImageLoader_Q=dispatch_queue_create("profile picture network connection queue", NULL);
     lnkd_giftgiv_home=[[LinkedIn_GiftGiv alloc]init];
     lnkd_giftgiv_home.lnkInGiftGivDelegate=self;
     
@@ -113,6 +113,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 -(void)getEventsFromLinkedIn{
     if([lnkd_giftgiv_home isLinkedInAuthorized]){
+        [lnkd_giftgiv_home fetchProfile];
         [lnkd_giftgiv_home getMyNetworkUpdatesWithType:@"PRFU"];
         //[lnkd_giftgiv_home setLnkInGiftGivDelegate:self];
     }
@@ -491,8 +492,7 @@ static NSDateFormatter *customDateFormat=nil;
 
 - (void) loadProfileImgWithOperation:(NSMutableDictionary*)picDetails {
     
-    dispatch_queue_t ImageLoader_Q;
-    ImageLoader_Q=dispatch_queue_create("profile picture network connection queue", NULL);
+       
     dispatch_async(ImageLoader_Q, ^{
         
         NSString *urlStr=[picDetails objectForKey:@"profile_url"];
@@ -522,7 +522,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         
     });
-    dispatch_release(ImageLoader_Q);
+    
 }
 #pragma mark -
 -(void)swipingForEventGroups:(UISwipeGestureRecognizer*)swipeRecognizer{
@@ -2428,6 +2428,10 @@ static NSDateFormatter *customDateFormat=nil;
         [self.navigationController popToRootViewControllerAnimated:YES];
     //}
 }*/
+- (void)linkedInLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{
+    NSLog(@"profile received.....%@",userDetails);
+        
+}
 - (void)linkedInDidRequestFailed{
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
@@ -2551,6 +2555,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 - (void)dealloc {
+    dispatch_release(ImageLoader_Q);
     [[NSNotificationCenter defaultCenter] removeObserver:picturesOperationQueue name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:picturesOperationQueue name:UIApplicationDidEnterBackgroundNotification object:nil];
     

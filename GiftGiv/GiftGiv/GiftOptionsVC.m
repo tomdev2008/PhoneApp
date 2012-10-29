@@ -44,7 +44,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-        
+    fm=[NSFileManager defaultManager];
+    
     [self showProgressHUD:self.view withMsg:nil];
     
     NSMutableDictionary *selectedEventDetails=[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"];
@@ -65,7 +66,7 @@
     }
     
     NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
-    NSFileManager *fm=[NSFileManager defaultManager];
+    
     if([fm fileExistsAtPath:filePath]){
         profilePicImg.image=[UIImage imageWithContentsOfFile:filePath];
     }
@@ -115,35 +116,64 @@
 -(void)retrieveGiftThumbnails{
     
     int giftItemsCount=[listOfAllGiftItems count];
-   
+    dispatch_queue_t ImageLoader_Q;
+    
+    ImageLoader_Q=dispatch_queue_create("Gift thumbnail", NULL);
     for(int i=0;i<giftItemsCount;i++){
-        dispatch_queue_t ImageLoader_Q;
-        ImageLoader_Q=dispatch_queue_create("Gift thumbnail picture network connection queue", NULL);
-        dispatch_async(ImageLoader_Q, ^{
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForGiftItemFileName:[NSString stringWithFormat:@"%@.png",[[[listOfAllGiftItems objectAtIndex:i]objectForKey:@"GiftDetails"] giftId]]];
+        if(![fm fileExistsAtPath:filePath]){
             
-            NSString *urlStr=[[[listOfAllGiftItems objectAtIndex:i]objectForKey:@"GiftDetails"] giftThumbnailUrl];
-            
-            NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
-            UIImage *thumbnail = [UIImage imageWithData:data];
-            
-            
-            if(thumbnail!=nil) {
+            dispatch_async(ImageLoader_Q, ^{
                 
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[listOfAllGiftItems objectAtIndex:i]];
-                    [tempDict setObject:thumbnail forKey:@"GiftThumbnail"];
-                    [listOfAllGiftItems replaceObjectAtIndex:i withObject:tempDict];
-                    [tempDict release];
-                                        
-                    [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
-                });
-            }
+                NSString *urlStr=[[[listOfAllGiftItems objectAtIndex:i]objectForKey:@"GiftDetails"] giftThumbnailUrl];
+                
+                NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+                UIImage *thumbnail = [UIImage imageWithData:data];
+                
+                
+                int GCDValue=[self getTheGCDFirstNum:thumbnail.size.width secondNum:thumbnail.size.height];
+                int aspectRatioX=thumbnail.size.width/GCDValue;
+                int aspectRatioY=thumbnail.size.height/GCDValue;
+                
+                float newWidth;
+                float newHeight;
+                if(thumbnail.size.width>thumbnail.size.height){
+                    newWidth=125-10;
+                    newHeight=((125-10)*aspectRatioY)/aspectRatioX;
+                    
+                }
+                else if(thumbnail.size.width<thumbnail.size.height){
+                    newWidth=((125-10)*aspectRatioX)/aspectRatioY;
+                    newHeight=125-10;
+                    
+                }
+                else{
+                    newWidth=125-10;
+                    newHeight=125-10;
+                    
+                }
+                UIImage *targetImg=[thumbnail imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];
+                
+                
+                if(targetImg!=nil) {
+                    NSString *filePath = [GetCachesPathForTargetFile cachePathForGiftItemFileName:[NSString stringWithFormat:@"%@.png",[[[listOfAllGiftItems objectAtIndex:i]objectForKey:@"GiftDetails"] giftId]]]; //Add the file name
+                    [UIImagePNGRepresentation(targetImg) writeToFile:filePath atomically:YES]; //Write the file
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        
+                        
+                        [giftsTable reloadData];
+                    });
+                }
+                
+            });
             
-        });
-        dispatch_release(ImageLoader_Q);
+        }
+        
                 
     }
-     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+    dispatch_release(ImageLoader_Q);
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     
 }
 -(void)makeRequestToGetCategories{
@@ -442,35 +472,21 @@
     }
     else
         cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",[[[currentGiftItems objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftPrice]];
-    UIImage *tempImg_one=nil;;
-    if([[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftThumbnail"])
-        tempImg_one=[[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftThumbnail"];
+    UIImage *tempImg_one=[[[currentGiftItems objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftThumbnail];
+            
+    if(tempImg_one==nil){
+        NSString *giftItem_OnePath = [GetCachesPathForTargetFile cachePathForGiftItemFileName:[NSString stringWithFormat:@"%@.png",[[[currentGiftItems objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftDetails"] giftId]]];
+        
+        if([fm fileExistsAtPath:giftItem_OnePath]){
+            tempImg_one=[UIImage imageWithContentsOfFile:giftItem_OnePath];
+            [[[currentGiftItems objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] setGiftThumbnail:tempImg_one];
+        }
+    }
+    
+    
     if(tempImg_one!=nil){
         
-        int GCDValue=[self getTheGCDFirstNum:tempImg_one.size.width secondNum:tempImg_one.size.height];
-        int aspectRatioX=tempImg_one.size.width/GCDValue;
-        int aspectRatioY=tempImg_one.size.height/GCDValue;
-        
-        float newWidth;
-        float newHeight;
-        if(tempImg_one.size.width>tempImg_one.size.height){
-            newWidth=cell.giftImg_one.frame.size.width-10;
-            newHeight=((cell.giftImg_one.frame.size.height-10)*aspectRatioY)/aspectRatioX;
-            
-        }
-        else if(tempImg_one.size.width<tempImg_one.size.height){
-            newWidth=((cell.giftImg_one.frame.size.width-10)*aspectRatioX)/aspectRatioY;
-            newHeight=cell.giftImg_one.frame.size.height-10;
-            
-        }
-        else{
-            newWidth=cell.giftImg_one.frame.size.width-10;
-            newHeight=cell.giftImg_one.frame.size.height-10;
-            
-        }
-        UIImage *targetImg=[tempImg_one imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];
-        
-        [cell.giftImg_one setImage:targetImg];
+        [cell.giftImg_one setImage:tempImg_one];
        
     }
         
@@ -488,39 +504,20 @@
         }
         else
             cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",[[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftPrice]];
-        UIImage *tempImg_two=nil;
-        if([[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftThumbnail"]){
-            tempImg_two=[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftThumbnail"];
+        UIImage *tempImg_two=[[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftThumbnail];
+        
+        if(tempImg_two==nil){
+            NSString *giftIconFilePath = [GetCachesPathForTargetFile cachePathForGiftItemFileName:[NSString stringWithFormat:@"%@.png",[[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftId]]];
+            
+            if([fm fileExistsAtPath:giftIconFilePath]){
+                tempImg_two=[UIImage imageWithContentsOfFile:giftIconFilePath];
+                [[[currentGiftItems objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] setGiftThumbnail:tempImg_two];
+            }
         }
+        
         if(tempImg_two!=nil){
-                      
             
-            int GCDValue=[self getTheGCDFirstNum:tempImg_two.size.width secondNum:tempImg_two.size.height];
-            int aspectRatioX=tempImg_two.size.width/GCDValue;
-            int aspectRatioY=tempImg_two.size.height/GCDValue;
-            
-            float newWidth;
-            float newHeight;
-            if(tempImg_two.size.width>tempImg_two.size.height){
-                            
-                newWidth=cell.giftImg_two.frame.size.width-10;
-                newHeight=((cell.giftImg_two.frame.size.height-10)*aspectRatioY)/aspectRatioX;
-               
-            }
-            else if(tempImg_two.size.width<tempImg_two.size.height){
-                newWidth=((cell.giftImg_two.frame.size.width-10)*aspectRatioX)/aspectRatioY;
-                newHeight=cell.giftImg_two.frame.size.height-10;
-              
-            }
-            else{
-                newWidth=cell.giftImg_two.frame.size.width-10;
-                newHeight=cell.giftImg_two.frame.size.height-10;
-               
-            }
-            
-            UIImage *targetImg=[tempImg_two imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];
-            
-            [cell.giftImg_two setImage:targetImg];
+            [cell.giftImg_two setImage:tempImg_two];
             
         }
                 

@@ -17,6 +17,7 @@
 #import "GiftItemsRequest.h"
 #import "MBProgressHUD.h"
 #import "UIImage+scaling.h"
+#import "GetCachesPathForTargetFile.h"
 
 @interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate,UISearchBarDelegate>{
     
@@ -29,7 +30,7 @@
     NSMutableArray *giftCategoriesList;
     NSMutableArray *listOfAllGiftItems;
     NSMutableArray *currentGiftItems;
-        
+    NSFileManager *fm;    
 }
 - (IBAction)searchCancelAction:(id)sender;
 @property (retain, nonatomic) IBOutlet UISearchBar *searchFld;

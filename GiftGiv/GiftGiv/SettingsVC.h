@@ -12,6 +12,7 @@
 #import "ApplicationHelpers.h"
 #import "LinkedIn_GiftGiv.h"
 #import "MBProgressHUD.h"
+#import "GetCachesPathForTargetFile.h"
 
 @interface SettingsVC : UIViewController<Facebook_GiftGivDelegate,LinkedIn_GiftGivDelegate,MBProgressHUDDelegate>
 {

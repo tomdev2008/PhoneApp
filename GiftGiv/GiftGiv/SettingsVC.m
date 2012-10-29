@@ -63,7 +63,7 @@
     NSLog(@"seetings facebook log out..");
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     //[[NSUserDefaults standardUserDefaults]removeObjectForKey:@"FBAccessTokenKey"];
-    
+    [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForGiftItemFileName:@""] error:nil];
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
     
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
@@ -142,7 +142,8 @@
                 [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
                 
                 [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInAccessToken"];
-                
+                [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInSecretKey"];
+                [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInOauthVerifier"];
                 if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
                     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
                 if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
@@ -162,19 +163,6 @@
 - (void)linkedInLoggedIn{
     [[NSNotificationCenter defaultCenter] postNotificationName:@"LinkedInLoggedIn" object:nil];
     [self.navigationController popViewControllerAnimated:YES];
-}
-- (void)linkedInLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{
-    NSLog(@"profile received.....%@",userDetails);
-      
-    
-    [[NSUserDefaults standardUserDefaults]setObject:userDetails forKey:@"MyLinkedInDetails"];
-    
-    
-    if([CheckNetwork connectedToNetwork]){
-        //[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInAccessToken"];
-        
-    }
-    
 }
 
 - (void)linkedInDidLoggedOut{

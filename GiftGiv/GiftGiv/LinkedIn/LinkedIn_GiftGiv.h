@@ -40,4 +40,5 @@
 - (void)getMemberProfile:(NSString*)memberId;
 - (void)getListOfCommentsForTheUpdate:(NSString *)updateKey;
 - (void)getLikesForAnUpdat:(NSString*)updateKey;
+- (void)fetchProfile;
 @end
