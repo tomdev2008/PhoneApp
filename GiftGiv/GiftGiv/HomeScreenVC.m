@@ -2086,6 +2086,7 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 - (void)facebookDidRequestFailed{
+    NSLog(@"facebook did request failed..");
     //AlertWithMessageAndDelegate(@"Oops", @"facebook request failed", nil);
 }
 #pragma mark - Events from statuses
@@ -2429,8 +2430,26 @@ static NSDateFormatter *customDateFormat=nil;
     //}
 }*/
 - (void)linkedInLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{
-    NSLog(@"profile received.....%@",userDetails);
+            
+    [[NSUserDefaults standardUserDefaults]setObject:userDetails forKey:@"MyLinkedInDetails"];
+    
+    
+    if([CheckNetwork connectedToNetwork]){
         
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddUser>\n<tem:fbId>%@</tem:fbId>\n<tem:lid>%@</tem:lid>\n<tem:lnAccessToken>%@</tem:lnAccessToken>\n<tem:lnSecretKey>%@</tem:lnSecretKey>\n<tem:lnTokenVerifier>%@</tem:lnTokenVerifier>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>%@/picture</tem:profilePictureUrl>\n</tem:AddUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"uid"],[userDetails objectForKey:@"id"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInAccessToken"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInSecretKey"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInOauthVerifier"],[userDetails objectForKey:@"first-name"],[userDetails objectForKey:@"last-name"],[userDetails objectForKey:@"picture-url"]];
+        [self performSelector:@selector(makeRequestToAddUserForLinkedIn:)withObject:soapmsgFormat];
+        
+    }
+}
+-(void)makeRequestToAddUserForLinkedIn:(NSString*)requestString{
+    NSString *soapRequestString=SOAPRequestMsg(requestString);
+    //NSLog(@"%@",soapRequestString);
+    NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddUser"];
+    
+    AddUser_LinkedInRequest *addUser=[[AddUser_LinkedInRequest alloc]init];
+    [addUser setAddLnUserDelegate:self];
+    [addUser addLnUserServiceRequest:theRequest];
+    [addUser release];
 }
 - (void)linkedInDidRequestFailed{
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
@@ -2466,7 +2485,6 @@ static NSDateFormatter *customDateFormat=nil;
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
         
-        
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
         if([eventsToCelebrateArray count]>1)
@@ -2474,6 +2492,13 @@ static NSDateFormatter *customDateFormat=nil;
         [eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
         
+        
+        if([CheckNetwork connectedToNetwork]){
+            
+            NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddUser>\n<tem:fbId>null</tem:fbId>\n<tem:lid>%@</tem:lid>\n<tem:lnAccessToken>null</tem:lnAccessToken>\n<tem:lnSecretKey>null</tem:lnSecretKey>\n<tem:lnTokenVerifier>null</tem:lnTokenVerifier>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>%@/picture</tem:profilePictureUrl>\n</tem:AddUser>",[result objectForKey:@"id"],[result objectForKey:@"first-name"],[result objectForKey:@"last-name"],[result objectForKey:@"picture-url"]];
+            [self performSelector:@selector(makeRequestToAddUserForLinkedIn:)withObject:soapmsgFormat];
+            
+        }
 
     }
     
@@ -2482,6 +2507,9 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 #pragma mark - Add User Request delegate
+-(void) responseForLnAddUser:(NSMutableDictionary*)response{
+    NSLog(@"AddUser response..%@",response);
+}
 -(void) responseForAddUser:(NSMutableDictionary*)response{
     if([response objectForKey:@"NormalUser"]){
         

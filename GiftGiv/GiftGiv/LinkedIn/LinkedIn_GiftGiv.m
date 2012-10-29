@@ -352,7 +352,6 @@
 - (void)linkedInAuthorizationControllerSucceeded:(RDLinkedInAuthorizationController *)controller {
     
     [lnkInGiftGivDelegate linkedInLoggedIn];
-    //[self fetchProfile];
 }
 
 - (void)linkedInAuthorizationControllerFailed:(RDLinkedInAuthorizationController *)controller {

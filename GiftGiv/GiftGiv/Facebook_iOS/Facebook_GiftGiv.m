@@ -336,6 +336,7 @@ static NSDateFormatter *standardDateFormatter = nil;
  */
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error{
     NSLog(@"request failed with error=%@",error);
+    responseCount++;
     [fbGiftGivDelegate facebookDidRequestFailed];
 }
 

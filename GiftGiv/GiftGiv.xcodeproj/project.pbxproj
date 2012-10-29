@@ -180,6 +180,7 @@
 		BDAE91E4162EB11F004089DC /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E0162EAE1B004089DC /* NSAttributedString+Attributes.m */; };
 		BDAE91E5162EB11F004089DC /* NSTextCheckingResult+ExtendedURL.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E2162EB0FE004089DC /* NSTextCheckingResult+ExtendedURL.m */; };
 		BDAE91F8162ED486004089DC /* CoreTextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91F7162ED45B004089DC /* CoreTextUtils.m */; };
+		BDC2B029163EBDA000D4D9DA /* AddUser_LinkedInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = BDC2B028163EBDA000D4D9DA /* AddUser_LinkedInRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -479,6 +480,8 @@
 		BDAE91E2162EB0FE004089DC /* NSTextCheckingResult+ExtendedURL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTextCheckingResult+ExtendedURL.m"; sourceTree = "<group>"; };
 		BDAE91F6162ED45B004089DC /* CoreTextUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreTextUtils.h; sourceTree = "<group>"; };
 		BDAE91F7162ED45B004089DC /* CoreTextUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreTextUtils.m; sourceTree = "<group>"; };
+		BDC2B027163EBDA000D4D9DA /* AddUser_LinkedInRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddUser_LinkedInRequest.h; path = "Backend Services/AddUser_LinkedIn/AddUser_LinkedInRequest.h"; sourceTree = "<group>"; };
+		BDC2B028163EBDA000D4D9DA /* AddUser_LinkedInRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddUser_LinkedInRequest.m; path = "Backend Services/AddUser_LinkedIn/AddUser_LinkedInRequest.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -773,6 +776,7 @@
 			children = (
 				7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */,
 				7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */,
+				BDC2B025163EBD3800D4D9DA /* AddUser_LinkedIn */,
 				7EDD48801600617A00F72BEB /* Facebook Contacts */,
 				7ECD8F8D15E7C8D800E9B0C7 /* Paypal */,
 				7E2D17AA15D1296F00E78FF0 /* Add User */,
@@ -1246,6 +1250,15 @@
 			name = GetEvents;
 			sourceTree = "<group>";
 		};
+		BDC2B025163EBD3800D4D9DA /* AddUser_LinkedIn */ = {
+			isa = PBXGroup;
+			children = (
+				BDC2B027163EBDA000D4D9DA /* AddUser_LinkedInRequest.h */,
+				BDC2B028163EBDA000D4D9DA /* AddUser_LinkedInRequest.m */,
+			);
+			name = AddUser_LinkedIn;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1469,6 +1482,7 @@
 				7E0AB53C160AE8F3003DD08A /* RDLinkedInResponseParser.m in Sources */,
 				7E0AB53F160AE90B003DD08A /* LinkedIn_GiftGiv.m in Sources */,
 				7EE51BED1614695100EF3E9F /* GetCachesPathForTargetFile.m in Sources */,
+				BDC2B029163EBDA000D4D9DA /* AddUser_LinkedInRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

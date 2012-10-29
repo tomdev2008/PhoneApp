@@ -183,7 +183,7 @@
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetCategories/>"];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        //NSLog(@"%@",soapRequestString);
+        NSLog(@"GetCategories..%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetCategories"];
         
         GiftCategoriesRequest *giftCats=[[GiftCategoriesRequest alloc]init];
@@ -209,7 +209,7 @@
             NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetGiftItemforPhone/>"];
             
             NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-            //NSLog(@"%@",soapRequestString);
+            NSLog(@"GiftItems..%@",soapRequestString);
             NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetGiftItemforPhone"];
             
             GiftItemsRequest *giftItems=[[GiftItemsRequest alloc]init];
@@ -235,12 +235,14 @@
     
 }
 -(void) requestFailed{
+    NSLog(@"gift options request failed..");
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
     AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
 }
 #pragma mark - Gift Items
 -(void) responseForGiftItems:(NSMutableArray*)listOfGifts{
+    NSLog(@"Received gift items..");
     if([listOfAllGiftItems count]){
         [listOfAllGiftItems removeAllObjects];
         [listOfAllGiftItems release];
