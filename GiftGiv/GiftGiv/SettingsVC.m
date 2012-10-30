@@ -40,7 +40,7 @@
     lnkd_giftgiv_settings=[[LinkedIn_GiftGiv alloc]init];
     lnkd_giftgiv_settings.lnkInGiftGivDelegate=self;
     
-    settinsScroll.contentSize=CGSizeMake(320, 468);
+    settinsScroll.contentSize=CGSizeMake(320, 416);
     
     [(UIButton*)[settinsScroll viewWithTag:11] setUserInteractionEnabled:NO];
     [(UIButton*)[settinsScroll viewWithTag:11] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
@@ -80,28 +80,7 @@
 }
 
 #pragma mark -
-- (IBAction)internalLinkActions:(id)sender {
-    switch ([sender tag]) {
-            //mail
-        case 1:
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"mailto://contactemail@giftgiv.com"]];
-            break;
-            //phone
-        case 2:
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"tel://(888)123-4567"]];
-            break;
-            //terms
-        case 3:
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://thegiftgiv.com/terms.html"]];
-            break;
-            //policy
-        case 4:
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://thegiftgiv.com/"]];
-            break;
-            
-            
-    }
-}
+
 
 - (IBAction)syncActions:(id)sender {
     

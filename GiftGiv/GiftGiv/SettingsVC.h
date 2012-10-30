@@ -22,7 +22,6 @@
 }
 @property (retain, nonatomic) IBOutlet UIScrollView *settinsScroll;
 - (IBAction)backToHomeScreen:(id)sender;
-- (IBAction)internalLinkActions:(id)sender;
 - (IBAction)syncActions:(id)sender;
 #pragma mark - progress hud
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;

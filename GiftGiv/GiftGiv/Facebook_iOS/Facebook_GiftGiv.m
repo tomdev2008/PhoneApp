@@ -341,7 +341,7 @@ static NSDateFormatter *standardDateFormatter = nil;
 }
 
 - (void)request:(FBRequest *)request didLoad:(id)result{
-   
+    NSLog(@"Received response...");
    // NSLog(@"%@,%@,%@",result,[result class],request.url);
     
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
@@ -372,6 +372,8 @@ static NSDateFormatter *standardDateFormatter = nil;
                 return;
             NSTimeInterval currentTimeInterval=[[NSDate date] timeIntervalSince1970];
             //NSLog(@"photos..reque %@",fbReqPhotos.url);
+            
+            
             for (NSDictionary *friendDict in (NSMutableArray*)result){
                 
                 if(![friendDict isKindOfClass:[NSDictionary class]])
@@ -400,7 +402,7 @@ static NSDateFormatter *standardDateFormatter = nil;
                 
                 //last 2 days
                 FBRequest *fbReqStatuses=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@/statuses?since=%@", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]] andDelegate:self]; //last 2 days as it like windows phone logic
-               
+                
                 [fbRequestsArray addObject:fbReqStatuses];
                 [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqStatuses url]];
                 
@@ -410,6 +412,8 @@ static NSDateFormatter *standardDateFormatter = nil;
                 
                 
             }
+            
+            
         }
         if([request isEqual:getFBBirthdaysReq]){
             if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])

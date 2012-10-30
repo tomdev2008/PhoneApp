@@ -66,26 +66,7 @@
     }
         
 }
-/*- (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock{
-    NSLog(@"found cdata");
-    
-    NSString *cDataStr=[[NSString alloc]initWithData:CDATABlock encoding:NSUTF8StringEncoding];
-    //NSLog(@"initial..%@",cDataStr);
-    NSString *converted=[cDataStr stringByReplacingOccurrencesOfString:@"<?xml version=\"1.0\" encoding=\"utf-16\"?>\n" withString:@""];
-    
-    //NSLog(@"cDataStr..%@",[converted stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]);
-    NSXMLParser *xmlParser_2=[[NSXMLParser alloc]initWithData:[[converted stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]dataUsingEncoding:NSUTF8StringEncoding]];
-    [cDataStr release];
-    xmlParser_2.delegate=self;
-    if([xmlParser_2 parse]){
-         NSLog(@"parsed successfully");
-        [fbContactsDelegate receivedFBContacts:receivedResponse];
-    }
 
-    [xmlParser_2 release];
-    
-    
-}*/
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string { 
 	
 	if(!currentElementValue) 

@@ -57,8 +57,8 @@ static NSDateFormatter *customDateFormat=nil;
     listOfBirthdayEvents=[[NSMutableArray alloc]init];
    
     eventsToCelebrateArray=[[NSMutableArray alloc]init];
-    facebookContactsArray=[[NSMutableArray alloc]init];
-    linkedInContactsArray=[[NSMutableArray alloc]init];
+    listOfContactsArray=[[NSMutableArray alloc]init];
+    //linkedInContactsArray=[[NSMutableArray alloc]init];
     
     allupcomingEvents=[[NSMutableArray alloc]init];
     
@@ -68,8 +68,8 @@ static NSDateFormatter *customDateFormat=nil;
     searchUpcomingEventsArray=[[NSMutableArray alloc]init];
     searchBirthdayEvents=[[NSMutableArray alloc]init];
     searchEventsToCelebrateArray=[[NSMutableArray alloc]init];
-    searchFBContactsArray=[[NSMutableArray alloc]init];
-    searchLkdContactsArray=[[NSMutableArray alloc]init];
+    searchContactsArray=[[NSMutableArray alloc]init];
+    //searchLkdContactsArray=[[NSMutableArray alloc]init];
     
     
     
@@ -137,10 +137,10 @@ static NSDateFormatter *customDateFormat=nil;
             [searchUpcomingEventsArray removeAllObjects];
         if([searchEventsToCelebrateArray count])
             [searchEventsToCelebrateArray removeAllObjects];
-        if([searchFBContactsArray count])
-            [searchFBContactsArray removeAllObjects];
-        if([searchLkdContactsArray count])
-            [searchLkdContactsArray removeAllObjects];
+        if([searchContactsArray count])
+            [searchContactsArray removeAllObjects];
+        //if([searchLkdContactsArray count])
+          //  [searchLkdContactsArray removeAllObjects];
         
         
         if([allupcomingEvents count])
@@ -149,10 +149,10 @@ static NSDateFormatter *customDateFormat=nil;
             [listOfBirthdayEvents removeAllObjects];
         if([eventsToCelebrateArray count])
             [eventsToCelebrateArray removeAllObjects];
-        if([facebookContactsArray count])
-            [facebookContactsArray removeAllObjects];
-        if([linkedInContactsArray count])
-            [linkedInContactsArray removeAllObjects];
+        if([listOfContactsArray count])
+            [listOfContactsArray removeAllObjects];
+        //if([linkedInContactsArray count])
+          //  [linkedInContactsArray removeAllObjects];
         
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
@@ -231,8 +231,8 @@ static NSDateFormatter *customDateFormat=nil;
         //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         
        
-        if([facebookContactsArray count])
-            [facebookContactsArray removeAllObjects];
+        if([listOfContactsArray count])
+            [listOfContactsArray removeAllObjects];
         
         
         for (int i=0;i<friendsCount;i++){
@@ -250,7 +250,7 @@ static NSDateFormatter *customDateFormat=nil;
             [contactDict setObject:@"" forKey:@"ProfilePicture"];
             [contactDict setObject:[[response objectAtIndex:i]profilepicUrl] forKey:@"ProfilePicURLToTake"];
             
-            [facebookContactsArray addObject:contactDict];
+            [listOfContactsArray addObject:contactDict];
             [contactDict release];
             
         }
@@ -259,8 +259,8 @@ static NSDateFormatter *customDateFormat=nil;
        
         
         //should sort respected to the friend name
-        if([facebookContactsArray count]>1)
-            [self sortEvents:facebookContactsArray eventCategory:4];
+        if([listOfContactsArray count]>1)
+            [self sortEvents:listOfContactsArray eventCategory:4];
         
         /*if([searchBgView superview]){
             
@@ -270,23 +270,23 @@ static NSDateFormatter *customDateFormat=nil;
                     [tempSearchArray release];
                     tempSearchArray=nil;
                 }
-                tempSearchArray=[[NSMutableArray alloc]initWithArray:facebookContactsArray];
+                tempSearchArray=[[NSMutableArray alloc]initWithArray:listOfContactsArray];
             }
         }*/
-        if([globalFacebookContacts count]){
-            [globalFacebookContacts removeAllObjects];
-            [globalFacebookContacts release];
-            globalFacebookContacts=nil;
+        if([globalContactsList count]){
+            [globalContactsList removeAllObjects];
+            [globalContactsList release];
+            globalContactsList=nil;
         }
-        globalFacebookContacts=[[NSMutableArray alloc] initWithArray:facebookContactsArray];
+        globalContactsList=[[NSMutableArray alloc] initWithArray:listOfContactsArray];
                        
-        int facebookContactsCount=[globalFacebookContacts count];
+        int facebookContactsCount=[globalContactsList count];
         
         for(int i=0;i<facebookContactsCount;i++){
             
             NSString *urlStr_id=@"";
-            if([[globalFacebookContacts objectAtIndex:i]objectForKey:@"uid"])
-                urlStr_id=[[globalFacebookContacts objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL            if(urlStr_id){
+            if([[globalContactsList objectAtIndex:i]objectForKey:@"uid"])
+                urlStr_id=[[globalContactsList objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL            if(urlStr_id){
                 
                 
                 
@@ -296,9 +296,10 @@ static NSDateFormatter *customDateFormat=nil;
                     NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
                     [tempDict setObject:urlStr_id forKey:@"profile_id"];
                     
-                    if([[globalFacebookContacts objectAtIndex:i]objectForKey:@"uid"])
+                    if([[globalContactsList objectAtIndex:i]objectForKey:@"uid"])
                     {
-                        [tempDict setObject:FacebookPicURL([[globalFacebookContacts objectAtIndex:i]objectForKey:@"uid"]) forKey:@"profile_url"];
+                        //[tempDict setObject:FacebookPicURL([[globalContactsList objectAtIndex:i]objectForKey:@"uid"]) forKey:@"profile_url"];
+                        [tempDict setObject:[[globalContactsList objectAtIndex:i]objectForKey:@"ProfilePicURLToTake"] forKey:@"profile_url"];
                         
                     }
                     
@@ -319,6 +320,10 @@ static NSDateFormatter *customDateFormat=nil;
         //[eventsTable reloadData];
         
     }
+}
+#pragma mark - LinkedIn Contacts
+-(void) receivedLnContacts:(NSMutableArray*)response{
+    
 }
 #pragma mark - Get Events
 -(void)makeRequestToGetEvents{
@@ -591,9 +596,9 @@ static NSDateFormatter *customDateFormat=nil;
             [contactsSearchBar resignFirstResponder];
             [contactsSearchView removeFromSuperview];
         }
-        if([searchFBContactsArray count]){
+        if([searchContactsArray count]){
             
-            [searchFBContactsArray removeAllObjects];
+            [searchContactsArray removeAllObjects];
         }
         if([categoryTitles count]>=eventGroupNum)
             eventTitleLbl.text=[categoryTitles objectAtIndex:eventGroupNum-1];
@@ -622,14 +627,14 @@ static NSDateFormatter *customDateFormat=nil;
             [categoryTitles addObject:events_category_3];
             totalGroups++;
         }
-        if([searchFBContactsArray count]){
+        if([searchContactsArray count]){
             [categoryTitles addObject:events_category_4];
             totalGroups++;
         }
-        if([searchLkdContactsArray count]){
+        /*if([searchLkdContactsArray count]){
             [categoryTitles addObject:events_category_5];
             totalGroups++;
-        }
+        }*/
     }
     else{
         if([allupcomingEvents count]){
@@ -647,14 +652,14 @@ static NSDateFormatter *customDateFormat=nil;
             [categoryTitles addObject:events_category_3];
             totalGroups++;
         }
-        if([facebookContactsArray count]){
+        if([listOfContactsArray count]){
             [categoryTitles addObject:events_category_4];
             totalGroups++;
         }
-        if([linkedInContactsArray count]){
+        /*if([linkedInContactsArray count]){
             [categoryTitles addObject:events_category_5];
             totalGroups++;
-        }
+        }*/
     }
     
     
@@ -714,16 +719,16 @@ static NSDateFormatter *customDateFormat=nil;
         }
         if([eventTitleLbl.text isEqualToString:events_category_4] ||[eventTitleLbl.text isEqualToString:@""]){
             //if(isSearchEnabled)
-                return [searchFBContactsArray count];
-            //return [facebookContactsArray count];
+                return [searchContactsArray count];
+            //return [listOfContactsArray count];
             
         }
-        if([eventTitleLbl.text isEqualToString:events_category_5]){
+        /*if([eventTitleLbl.text isEqualToString:events_category_5]){
             if(isSearchEnabled)
                 return [searchLkdContactsArray count];
             return [linkedInContactsArray count];
             
-        }
+        }*/
     }
   
     return 0;
@@ -808,22 +813,22 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else if([eventTitleLbl.text isEqualToString:events_category_4] || [eventTitleLbl.text isEqualToString:@""]){
             //if(isSearchEnabled){
-                if([searchFBContactsArray count]){
+                if([searchContactsArray count]){
                     //NSLog(@"upcoming..%@",allupcomingEvents);
-                    [self loadEventsData:searchFBContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
+                    [self loadEventsData:searchContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
                     
                 }
             //}
             else{
-                if([facebookContactsArray count]){
+                if([listOfContactsArray count]){
                     //NSLog(@"list of newJobEvents..%@",newJobEvents);
-                    [self loadEventsData:facebookContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];   
+                    [self loadEventsData:listOfContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];   
                 }
             }
             
             
         }
-        else if([eventTitleLbl.text isEqualToString:events_category_5]){
+        /*else if([eventTitleLbl.text isEqualToString:events_category_5]){
             if(isSearchEnabled){
                 if([searchLkdContactsArray count]){
                     //NSLog(@"upcoming..%@",allupcomingEvents);
@@ -841,7 +846,7 @@ static NSDateFormatter *customDateFormat=nil;
             }
             
             
-        }
+        }*/
         
         if([cell.dateLbl.text isEqualToString:@""]){
             cell.eventNameLbl.frame=CGRectMake(cell.eventNameLbl.frame.origin.x,cell.eventNameLbl.frame.origin.y,196,cell.eventNameLbl.frame.size.height);
@@ -1218,51 +1223,51 @@ static NSDateFormatter *customDateFormat=nil;
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
             
             //if(isSearchEnabled){
-                if([[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                    [tempInfoDict setObject:[[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                    [tempInfoDict setObject:[[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                if([[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
                 }
                 else{
-                    if([[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
-                        [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                    else if([[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-                        [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    if([[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
                     
-                    [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                    [tempInfoDict setObject:[[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
                 }
                 
-                if([[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"])
-                    [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"] forKey:@"FBUserLocation"];
-                [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-                if([[searchFBContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
-                    [tempInfoDict setObject:[[searchFBContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
+                if([[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"])
+                    [tempInfoDict setObject:[[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"FBUserLocation"] forKey:@"FBUserLocation"];
+                [tempInfoDict setObject:[[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                if([[searchContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[searchContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             //}
             
             /*else{
-                if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                    [tempInfoDict setObject:[[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                    [tempInfoDict setObject:[[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
+                if([[listOfContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
+                    [tempInfoDict setObject:[[[listOfContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
+                    [tempInfoDict setObject:[[[listOfContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
                 }
                 else{
-                    if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
-                        [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                    else if([[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-                        [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
+                    if([[listOfContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
+                        [tempInfoDict setObject:[[listOfContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
+                    else if([[listOfContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
+                        [tempInfoDict setObject:[[listOfContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
                     
-                    [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
+                    [tempInfoDict setObject:[[listOfContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
                 }
                 
                 
-                [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-                if([[facebookContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
-                    [tempInfoDict setObject:[[facebookContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
+                [tempInfoDict setObject:[[listOfContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
+                if([[listOfContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
+                    [tempInfoDict setObject:[[listOfContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
             }*/
             
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
             [tempInfoDict release];
         }
-        else if([eventTitleLbl.text isEqualToString:events_category_5]){
+        /*else if([eventTitleLbl.text isEqualToString:events_category_5]){
             NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
             
             if(isSearchEnabled){
@@ -1310,7 +1315,7 @@ static NSDateFormatter *customDateFormat=nil;
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
             [tempInfoDict release];
-        }
+        }*/
         
         [self.navigationController pushViewController:giftOptions animated:YES];
         [giftOptions release];
@@ -1322,12 +1327,21 @@ static NSDateFormatter *customDateFormat=nil;
 
 #pragma mark -
 - (IBAction)showSearchView:(id)sender {
-    searchBgView.frame=CGRectMake(0, 0, 320, 44);
+    /*searchBgView.frame=CGRectMake(0, 0, 320, 44);
     if(![searchBgView superview]){
         
         [self.view addSubview:searchBgView];
     }
-    [searchBar becomeFirstResponder];
+    [searchBar becomeFirstResponder];*/
+    if([listOfContactsArray count]&& eventGroupNum!=totalGroups){
+        
+        eventGroupNum=totalGroups;
+        pageControlForEventGroups.currentPage=eventGroupNum-1;
+        [self swiping:1];
+    }
+    
+    
+    
 }
 
 
@@ -1350,7 +1364,7 @@ static NSDateFormatter *customDateFormat=nil;
     }
     else{
         [contactsSearchBar resignFirstResponder];
-        if(![searchFBContactsArray count]){
+        if(![searchContactsArray count]){
             eventTitleLbl.text=@"No results found";
         }
     }
@@ -1478,9 +1492,9 @@ static NSDateFormatter *customDateFormat=nil;
                 }
             }
             
-            if([facebookContactsArray count]){
-                [searchFBContactsArray removeAllObjects];
-                for (NSMutableDictionary *event in facebookContactsArray)
+            if([listOfContactsArray count]){
+                [searchContactsArray removeAllObjects];
+                for (NSMutableDictionary *event in listOfContactsArray)
                 {
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:
                                               @"(SELF contains[cd] %@)", searchBar.text];
@@ -1492,7 +1506,7 @@ static NSDateFormatter *customDateFormat=nil;
                         
                         if(resultName)
                         {
-                            [searchFBContactsArray addObject:event];
+                            [searchContactsArray addObject:event];
                             
                         }
                     }
@@ -1503,7 +1517,7 @@ static NSDateFormatter *customDateFormat=nil;
                         if(resultName)
                             
                         {
-                            [searchFBContactsArray addObject:event];
+                            [searchContactsArray addObject:event];
                             
                             
                         }
@@ -1512,7 +1526,7 @@ static NSDateFormatter *customDateFormat=nil;
                 }
             }
             
-            if([linkedInContactsArray count]){
+            /*if([linkedInContactsArray count]){
                 [searchLkdContactsArray removeAllObjects];
                 
                 for (NSMutableDictionary *event in linkedInContactsArray)
@@ -1547,7 +1561,7 @@ static NSDateFormatter *customDateFormat=nil;
                 }
                 
                 
-            }
+            }*/
             
             
             
@@ -1559,12 +1573,12 @@ static NSDateFormatter *customDateFormat=nil;
     }
     else{
         if([contactsSearchBar.text isEqualToString:@""]){
-            if([searchFBContactsArray count])
-                [searchFBContactsArray removeAllObjects];
+            if([searchContactsArray count])
+                [searchContactsArray removeAllObjects];
         }
-        if([facebookContactsArray count]){
-            [searchFBContactsArray removeAllObjects];
-            for (NSMutableDictionary *event in facebookContactsArray)
+        if([listOfContactsArray count]){
+            [searchContactsArray removeAllObjects];
+            for (NSMutableDictionary *event in listOfContactsArray)
             {
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:
                                           @"(SELF contains[cd] %@)", contactsSearchBar.text];
@@ -1576,7 +1590,7 @@ static NSDateFormatter *customDateFormat=nil;
                     
                     if(resultName)
                     {
-                        [searchFBContactsArray addObject:event];
+                        [searchContactsArray addObject:event];
                         
                     }
                 }
@@ -1587,14 +1601,14 @@ static NSDateFormatter *customDateFormat=nil;
                     if(resultName)
                         
                     {
-                        [searchFBContactsArray addObject:event];
+                        [searchContactsArray addObject:event];
                         
                         
                     }
                 }  
                 
             }
-            if([searchFBContactsArray count]){
+            if([searchContactsArray count]){
                 eventTitleLbl.text=events_category_4;
             }
             else
@@ -1888,14 +1902,14 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict release];
         
     }
-    else if([eventTitleLbl.text isEqualToString:events_category_4]){
+    /*else if([eventTitleLbl.text isEqualToString:events_category_4]){
         
         
     }
     else if([eventTitleLbl.text isEqualToString:events_category_5]){
         
         
-    }
+    }*/
     
     [self.navigationController pushViewController:details animated:YES];
     [details release];
@@ -1908,7 +1922,11 @@ static NSDateFormatter *customDateFormat=nil;
     [settings release];
     
 }
-
+- (IBAction)showContactUsScreen:(id)sender{
+    ContactUsVC *cntUsScreen=[[ContactUsVC alloc]initWithNibName:@"ContactUsVC" bundle:nil];
+    [self.navigationController pushViewController:cntUsScreen animated:YES];
+    [cntUsScreen release];
+}
 - (IBAction)pageControlActionForEventGroups:(id)sender {
     
     if(currentiOSVersion<6.0){
@@ -2361,16 +2379,16 @@ static NSDateFormatter *customDateFormat=nil;
         case 4:
         {
             NSSortDescriptor *nameSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
-            [facebookContactsArray replaceObjectsInRange:NSMakeRange(0, [facebookContactsArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:nameSortDescriptor]]];
+            [listOfContactsArray replaceObjectsInRange:NSMakeRange(0, [listOfContactsArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:nameSortDescriptor]]];
             [nameSortDescriptor release];
         }
             
             break;
             //linkedIn contacts
-        case 5:
+        /*case 5:
             [linkedInContactsArray replaceObjectsInRange:NSMakeRange(0, [linkedInContactsArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
             break;
-            
+          */
     }
     
     
@@ -2443,7 +2461,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 -(void)makeRequestToAddUserForLinkedIn:(NSString*)requestString{
     NSString *soapRequestString=SOAPRequestMsg(requestString);
-    //NSLog(@"%@",soapRequestString);
+    NSLog(@"%@",soapRequestString);
     NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddUser"];
     
     AddUser_LinkedInRequest *addUser=[[AddUser_LinkedInRequest alloc]init];
@@ -2502,13 +2520,26 @@ static NSDateFormatter *customDateFormat=nil;
 
     }
     
-    
-    
 }
 
 #pragma mark - Add User Request delegate
 -(void) responseForLnAddUser:(NSMutableDictionary*)response{
     NSLog(@"AddUser response..%@",response);
+    if(!isLnContactsLoading){
+        if([CheckNetwork connectedToNetwork]){
+            isLnContactsLoading=YES;
+            NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetLinkedInList>\n<tem:userId>%@</tem:userId>\n<tem:linkedInAccessToken>%@</tem:linkedInAccessToken>\n<tem:linkedInSecretKey>%@</tem:linkedInSecretKey>\n<tem:tokenVerifier>%@</tem:tokenVerifier>\n</tem:GetLinkedInList>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInAccessToken"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInSecretKey"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInOauthVerifier"]];
+            NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+            NSLog(@"%@",soapRequestString);
+            NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddUser"];
+            
+            LinkedInContactsRequest *lnContacts=[[LinkedInContactsRequest alloc]init];
+            [lnContacts setLnContactsDelegate:self];
+            [lnContacts getLnContactsForRequest:theRequest];
+            [lnContacts release];
+            
+        }
+    }
 }
 -(void) responseForAddUser:(NSMutableDictionary*)response{
     if([response objectForKey:@"NormalUser"]){
@@ -2519,10 +2550,7 @@ static NSDateFormatter *customDateFormat=nil;
             [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];   
         }
     }
-    
-    
-    
-    
+   
 }
 -(void) requestFailed{
     //AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
@@ -2594,23 +2622,23 @@ static NSDateFormatter *customDateFormat=nil;
     [lnkd_giftgiv_home setLnkInGiftGivDelegate:nil];
     [searchBirthdayEvents release];
     [searchUpcomingEventsArray release];
-    [searchLkdContactsArray release];
-    [searchFBContactsArray release];
+    //[searchLkdContactsArray release];
+    [searchContactsArray release];
     [searchEventsToCelebrateArray release];
     //[fb_giftgiv_home release];
     if(currentiOSVersion<6.0){
         [pageActiveImage release];
         [pageInactiveImage release]; 
     }
-    if([globalFacebookContacts count]){
-        [globalFacebookContacts removeAllObjects];
-        [globalFacebookContacts release];
-        globalFacebookContacts=nil;
+    if([globalContactsList count]){
+        [globalContactsList removeAllObjects];
+        [globalContactsList release];
+        globalContactsList=nil;
     }
     [listOfBirthdayEvents release];
     [eventsToCelebrateArray release];
-    [facebookContactsArray release];
-    [linkedInContactsArray release];
+    [listOfContactsArray release];
+    //[linkedInContactsArray release];
     [allupcomingEvents release];
     
     [categoryTitles release];

@@ -27,8 +27,10 @@
 #import "LinkedIn_GiftGiv.h"
 #import "GetCachesPathForTargetFile.h"
 #import "AddUser_LinkedInRequest.h"
+#import "LinkedInContactsRequest.h"
+#import "ContactUsVC.h"
 
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate>
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate>
 
 {
     int eventGroupNum;
@@ -43,13 +45,13 @@
   
     NSMutableArray *allupcomingEvents;
     NSMutableArray *eventsToCelebrateArray;
-    NSMutableArray *facebookContactsArray; 
+    NSMutableArray *listOfContactsArray;
     NSMutableArray *linkedInContactsArray;
     
-    NSMutableArray *globalFacebookContacts;
+    NSMutableArray *globalContactsList;
    
            
-    NSMutableArray *searchUpcomingEventsArray,*searchBirthdayEvents,*searchEventsToCelebrateArray,*searchFBContactsArray,*searchLkdContactsArray;
+    NSMutableArray *searchUpcomingEventsArray,*searchBirthdayEvents,*searchEventsToCelebrateArray,*searchContactsArray;
     
     
     NSMutableArray *categoryTitles;
@@ -58,6 +60,7 @@
     BOOL isEventsLoadingFromFB;
     BOOL isSearchEnabled;
     BOOL isFBContactsLoading;
+    BOOL isLnContactsLoading;
     NSFileManager *fm;
     NSOperationQueue *picturesOperationQueue;
     dispatch_queue_t ImageLoader_Q;
@@ -75,6 +78,7 @@
 
 @property (retain, nonatomic) IBOutlet UIView *searchBgView;
 - (IBAction)settingsAction:(id)sender;
+- (IBAction)showContactUsScreen:(id)sender;
 - (IBAction)pageControlActionForEventGroups:(id)sender;
 - (IBAction)showListOfOrders:(id)sender;
 - (void)swiping:(int)swipeDirectionNum;
