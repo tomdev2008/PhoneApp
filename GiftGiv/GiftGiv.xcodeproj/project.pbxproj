@@ -152,6 +152,7 @@
 		7EF27C851619592A0095136E /* largetealbutton in Resources */ = {isa = PBXBuildFile; fileRef = 7EF27C831619592A0095136E /* largetealbutton */; };
 		7EFBF54F15EFB6FE000D3279 /* GetEventsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFBF54C15EFB6FE000D3279 /* GetEventsRequest.m */; };
 		7EFBF55015EFB6FE000D3279 /* EventObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFBF54E15EFB6FE000D3279 /* EventObject.m */; };
+		BD0A36DA163F952400988508 /* LinkedInContactsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = BD0A36D9163F952400988508 /* LinkedInContactsRequest.m */; };
 		BD31360B162EA41E00EB9D50 /* libPayPalEC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BD31360A162EA41E00EB9D50 /* libPayPalEC.a */; };
 		BD31360C162EA45F00EB9D50 /* ECNetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BD3135DC162EA34C00EB9D50 /* ECNetworkHandler.m */; };
 		BD31360D162EA45F00EB9D50 /* Address.m in Sources */ = {isa = PBXBuildFile; fileRef = BD3135DE162EA3F500EB9D50 /* Address.m */; };
@@ -423,6 +424,8 @@
 		7EFBF54C15EFB6FE000D3279 /* GetEventsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetEventsRequest.m; sourceTree = "<group>"; };
 		7EFBF54D15EFB6FE000D3279 /* EventObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventObject.h; sourceTree = "<group>"; };
 		7EFBF54E15EFB6FE000D3279 /* EventObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventObject.m; sourceTree = "<group>"; };
+		BD0A36D8163F952400988508 /* LinkedInContactsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinkedInContactsRequest.h; path = "Backend Services/LinkedIn contacts/LinkedInContactsRequest.h"; sourceTree = "<group>"; };
+		BD0A36D9163F952400988508 /* LinkedInContactsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedInContactsRequest.m; path = "Backend Services/LinkedIn contacts/LinkedInContactsRequest.m"; sourceTree = "<group>"; };
 		BD3135DA162EA32A00EB9D50 /* PayPal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PayPal.h; sourceTree = "<group>"; };
 		BD3135DB162EA34C00EB9D50 /* ECNetworkHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECNetworkHandler.h; sourceTree = "<group>"; };
 		BD3135DC162EA34C00EB9D50 /* ECNetworkHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECNetworkHandler.m; sourceTree = "<group>"; };
@@ -776,6 +779,7 @@
 			children = (
 				7E2D17AE15D12A0100E78FF0 /* CoomonRequestCreationObject.h */,
 				7E2D17AF15D12A0100E78FF0 /* CoomonRequestCreationObject.m */,
+				BD0A36D6163F94ED00988508 /* LinkedIn contacts */,
 				BDC2B025163EBD3800D4D9DA /* AddUser_LinkedIn */,
 				7EDD48801600617A00F72BEB /* Facebook Contacts */,
 				7ECD8F8D15E7C8D800E9B0C7 /* Paypal */,
@@ -1250,6 +1254,15 @@
 			name = GetEvents;
 			sourceTree = "<group>";
 		};
+		BD0A36D6163F94ED00988508 /* LinkedIn contacts */ = {
+			isa = PBXGroup;
+			children = (
+				BD0A36D8163F952400988508 /* LinkedInContactsRequest.h */,
+				BD0A36D9163F952400988508 /* LinkedInContactsRequest.m */,
+			);
+			name = "LinkedIn contacts";
+			sourceTree = "<group>";
+		};
 		BDC2B025163EBD3800D4D9DA /* AddUser_LinkedIn */ = {
 			isa = PBXGroup;
 			children = (
@@ -1483,6 +1496,7 @@
 				7E0AB53F160AE90B003DD08A /* LinkedIn_GiftGiv.m in Sources */,
 				7EE51BED1614695100EF3E9F /* GetCachesPathForTargetFile.m in Sources */,
 				BDC2B029163EBDA000D4D9DA /* AddUser_LinkedInRequest.m in Sources */,
+				BD0A36DA163F952400988508 /* LinkedInContactsRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
