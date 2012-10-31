@@ -7,18 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FacebookContactObject.h"
 
 @class LinkedInContactsRequest;
 
 @protocol LinkedInContactsReqDelegate
 
--(void) receivedLnContacts:(NSMutableArray*)response;
+-(void) receivedContacts:(NSMutableArray*)response;
 -(void) requestFailed;
 
 @end
 @interface LinkedInContactsRequest : NSObject<NSXMLParserDelegate>
 {
-  	//FacebookContactObject *lnContact;
+  	FacebookContactObject *lnContact;
     NSURLConnection *theConnection;
     
 	NSMutableArray *receivedResponse;

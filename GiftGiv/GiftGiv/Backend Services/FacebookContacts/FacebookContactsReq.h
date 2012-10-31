@@ -13,7 +13,7 @@
 
 @protocol FacebookContactsReqDelegate
 
--(void) receivedFBContacts:(NSMutableArray*)response;
+-(void) receivedContacts:(NSMutableArray*)response;
 -(void) requestFailed;
 
 @end

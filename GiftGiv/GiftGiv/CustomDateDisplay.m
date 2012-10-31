@@ -11,6 +11,7 @@
 @implementation CustomDateDisplay
 
 static NSDateFormatter *customDateFormat=nil;
+static NSCalendar *gregorianCalendar=nil;
 
 + (NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate{
     
@@ -34,12 +35,12 @@ static NSDateFormatter *customDateFormat=nil;
     }
     
     NSString *startDateString=[customDateFormat stringFromDate:[NSDate date]]; //current date
-    
-    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    if(gregorianCalendar==nil)
+        gregorianCalendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *components = [gregorianCalendar components:NSDayCalendarUnit fromDate:[customDateFormat dateFromString:startDateString] toDate:[customDateFormat dateFromString:endDateString] options:0];
     
     //NSLog(@"%d",[components day]);
-    [gregorianCalendar release];
+    //[gregorianCalendar release];
     
     switch ([components day]) {
         case -1:

@@ -36,6 +36,112 @@
     [super viewDidLoad];
     
 }
+-(void)viewWillAppear:(BOOL)animated{
+    [self performSelector:@selector(makeRequestToGetGiftItems)];
+    [super viewWillAppear:YES];
+}
+-(void)makeRequestToGetGiftItems{
+    
+    if([CheckNetwork connectedToNetwork]){
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetGiftItemforPhone/>"];
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+        NSLog(@"GiftItems..%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetGiftItemforPhone"];
+        
+        GiftItemsRequest *giftItems=[[GiftItemsRequest alloc]init];
+        [giftItems setGiftItemsDelegate:self];
+        [giftItems makeGiftItemsRequest:theRequest];
+        [giftItems release];
+    }
+    
+    
+}
+
+#pragma mark - Gift Items
+-(void) responseForGiftItems:(NSMutableArray*)listOfGifts{
+    int giftItemsCount=[listOfGifts count];
+    
+    NSFileManager *fm=[NSFileManager defaultManager];
+    dispatch_queue_t ImageLoader_Q;
+    
+    ImageLoader_Q=dispatch_queue_create("Gift thumbnail", NULL);
+    for(int i=0;i<giftItemsCount;i++){
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForGiftItemFileName:[NSString stringWithFormat:@"%@.png",[[[listOfGifts objectAtIndex:i]objectForKey:@"GiftDetails"] giftId]]];
+        if(![fm fileExistsAtPath:filePath]){
+            
+            dispatch_async(ImageLoader_Q, ^{
+                
+                NSString *urlStr=[[[listOfGifts objectAtIndex:i]objectForKey:@"GiftDetails"] giftThumbnailUrl];
+                
+                NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+                UIImage *thumbnail = [UIImage imageWithData:data];
+                
+                
+                int GCDValue=[self getTheGCDFirstNum:thumbnail.size.width secondNum:thumbnail.size.height];
+                int aspectRatioX=thumbnail.size.width/GCDValue;
+                int aspectRatioY=thumbnail.size.height/GCDValue;
+                
+                float newWidth;
+                float newHeight;
+                //125-40==> such that it will give 20px white space around the thumbnail in the teal colored box
+                if(thumbnail.size.width>thumbnail.size.height){
+                    newWidth=125-40;
+                    newHeight=((125-40)*aspectRatioY)/aspectRatioX;
+                    
+                }
+                else if(thumbnail.size.width<thumbnail.size.height){
+                    newWidth=((125-40)*aspectRatioX)/aspectRatioY;
+                    newHeight=125-40;
+                    
+                }
+                else{
+                    newWidth=125-40;
+                    newHeight=125-40;
+                    
+                }
+                UIImage *targetImg=[thumbnail imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];
+                
+                
+                if(targetImg!=nil) {
+                    NSString *filePath = [GetCachesPathForTargetFile cachePathForGiftItemFileName:[NSString stringWithFormat:@"%@.png",[[[listOfGifts objectAtIndex:i]objectForKey:@"GiftDetails"] giftId]]]; //Add the file name
+                    [UIImagePNGRepresentation(targetImg) writeToFile:filePath atomically:YES]; //Write the file
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        
+                    });
+                }
+                
+            });
+            
+        }
+        
+        
+    }
+    dispatch_release(ImageLoader_Q);
+    
+}
+#pragma mark - GCD
+-(int)getTheGCDFirstNum:(int)width secondNum:(int)height{
+    
+    //Once we get the greatest value, we should divide the numerator and denominator with greatest value to get aspect ratio
+    
+    int greatest = 1;
+    
+    // determine if width or height is larger
+    int smaller = ( width < height ) ? width : height;
+    
+    // test all numbers up to smaller to see if
+    // they are divisors of both width and height
+    for ( int z = 2; z <= smaller; z++ )
+        if ( ( width % z == 0 ) && ( height % z == 0 ) )
+            greatest = z;
+    
+    return greatest;
+    
+    
+}
+#pragma mark -
 - (IBAction)logInAction:(id)sender {
     
     //Check whether network connection is available to login facebook account

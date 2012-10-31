@@ -55,8 +55,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
-    
+        
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
     
@@ -111,8 +110,11 @@
      Save data if appropriate.
      See also applicationDidEnterBackground:.
      */
+    NSFileManager *fm=[NSFileManager defaultManager];
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
+    [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+    [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForGiftItemFileName:@""] error:nil];
     
 }
 

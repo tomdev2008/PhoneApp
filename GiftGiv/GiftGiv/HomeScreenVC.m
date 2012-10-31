@@ -27,6 +27,7 @@ static NSDateFormatter *customDateFormat=nil;
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedGiftGivUserId) name:@"GiftGivUserIDReceived" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getEventsFromLinkedIn) name:@"LinkedInLoggedIn" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logoutFromAllAccounts) name:@"UserLoggedOut" object:nil];
         // Custom initialization
     }
     return self;
@@ -84,7 +85,7 @@ static NSDateFormatter *customDateFormat=nil;
         [pageControlForEventGroups setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.83529 alpha:1.0]];
         [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.8353 alpha:0.5]];
     }
-    [[NSNotificationCenter defaultCenter] addObserver:picturesOperationQueue selector:@selector(cancelAllOperations) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:picturesOperationQueue selector:@selector(cancelAllOperations) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:picturesOperationQueue selector:@selector(cancelAllOperations) name:UIApplicationWillTerminateNotification object:nil];
     
     [self performSelector:@selector(loadGestures)withObject:nil afterDelay:0.1];
@@ -95,8 +96,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     picturesOperationQueue=[[NSOperationQueue alloc]init];
-    
-       
+           
     [super viewDidLoad];
     
 }
@@ -125,8 +125,8 @@ static NSDateFormatter *customDateFormat=nil;
             [request  cancelConnection];
         }
         [fb_giftgiv_home.fbRequestsArray removeAllObjects];
-        [picturesOperationQueue cancelAllOperations];
-        [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+        //[picturesOperationQueue cancelAllOperations];
+        //[fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
         if([searchBgView superview]){
             [searchBgView removeFromSuperview];
             isSearchEnabled=NO;
@@ -164,7 +164,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"IsLoadingFromFacebook"];
                 [self performSelector:@selector(makeRequestToGetEvents)];
                 [self performSelector:@selector(makeRequestToGetFacebookContacts)];
-                
+                [self performSelector:@selector(makeRequestToGetContactsForLinkedIn)];
             }
             
             else{
@@ -179,6 +179,7 @@ static NSDateFormatter *customDateFormat=nil;
                     if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
                         isFBContactsLoading=YES;
                         [self performSelector:@selector(makeRequestToGetFacebookContacts) ];
+                        [self performSelector:@selector(makeRequestToGetContactsForLinkedIn)];
                     }
                     
                 }
@@ -199,6 +200,9 @@ static NSDateFormatter *customDateFormat=nil;
     if(!isFBContactsLoading){
         [self performSelector:@selector(makeRequestToGetFacebookContacts) ];
         isFBContactsLoading=YES;
+    }
+    if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
+        [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
     }
 }
 #pragma mark -
@@ -223,16 +227,15 @@ static NSDateFormatter *customDateFormat=nil;
     }
 }
 #pragma mark FB Contacts Delegate
--(void) receivedFBContacts:(NSMutableArray*)response{
+-(void) receivedContacts:(NSMutableArray*)response{
     int friendsCount=[response count];
-   
-       
+           
     if(friendsCount){
         //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         
        
-        if([listOfContactsArray count])
-            [listOfContactsArray removeAllObjects];
+        /*if([listOfContactsArray count])
+            [listOfContactsArray removeAllObjects];*/
         
         
         for (int i=0;i<friendsCount;i++){
@@ -248,8 +251,10 @@ static NSDateFormatter *customDateFormat=nil;
             else
                 [contactDict setObject:[[response objectAtIndex:i]location] forKey:@"FBUserLocation"];
             [contactDict setObject:@"" forKey:@"ProfilePicture"];
-            [contactDict setObject:[[response objectAtIndex:i]profilepicUrl] forKey:@"ProfilePicURLToTake"];
-            
+            if([[response objectAtIndex:i]profilepicUrl]!=nil)
+                [contactDict setObject:[[response objectAtIndex:i]profilepicUrl] forKey:@"ProfilePicURLToTake"];
+            else
+                [contactDict setObject:@"" forKey:@"ProfilePicURLToTake"];
             [listOfContactsArray addObject:contactDict];
             [contactDict release];
             
@@ -302,9 +307,9 @@ static NSDateFormatter *customDateFormat=nil;
                         [tempDict setObject:[[globalContactsList objectAtIndex:i]objectForKey:@"ProfilePicURLToTake"] forKey:@"profile_url"];
                         
                     }
-                    
-                    
+                   
                     NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadProfileImgWithOperation:) object:tempDict];
+                                       
                     [tempDict release];
                     
                     [picturesOperationQueue addOperation:operation];
@@ -312,7 +317,7 @@ static NSDateFormatter *customDateFormat=nil;
                     
                     
                 }
-                
+            
             }
                
            
@@ -510,9 +515,11 @@ static NSDateFormatter *customDateFormat=nil;
             
         }
         else {
+                          
+            
             NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
             [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
-
+            
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 
                 NSArray *tableCells=[eventsTable visibleCells];
@@ -1918,14 +1925,16 @@ static NSDateFormatter *customDateFormat=nil;
 //Setting screen
 - (IBAction)settingsAction:(id)sender {
     SettingsVC *settings=[[SettingsVC alloc]initWithNibName:@"SettingsVC" bundle:nil];
+    settings.showAboutUs=NO;
     [self.navigationController pushViewController:settings animated:YES];
     [settings release];
     
 }
 - (IBAction)showContactUsScreen:(id)sender{
-    ContactUsVC *cntUsScreen=[[ContactUsVC alloc]initWithNibName:@"ContactUsVC" bundle:nil];
-    [self.navigationController pushViewController:cntUsScreen animated:YES];
-    [cntUsScreen release];
+    SettingsVC *settings=[[SettingsVC alloc]initWithNibName:@"SettingsVC" bundle:nil];
+    settings.showAboutUs=YES;
+    [self.navigationController pushViewController:settings animated:YES];
+    [settings release];
 }
 - (IBAction)pageControlActionForEventGroups:(id)sender {
     
@@ -2072,6 +2081,7 @@ static NSDateFormatter *customDateFormat=nil;
                 }
                 
                 NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadProfileImgWithOperation:) object:tempDict];
+               
                 [tempDict release];
                 /* Add the operation to the queue */
                 [picturesOperationQueue addOperation:operation];
@@ -2525,13 +2535,16 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark - Add User Request delegate
 -(void) responseForLnAddUser:(NSMutableDictionary*)response{
     NSLog(@"AddUser response..%@",response);
+    [self performSelector:@selector(makeRequestToGetContactsForLinkedIn)];
+}
+-(void)makeRequestToGetContactsForLinkedIn{
     if(!isLnContactsLoading){
         if([CheckNetwork connectedToNetwork]){
             isLnContactsLoading=YES;
             NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetLinkedInList>\n<tem:userId>%@</tem:userId>\n<tem:linkedInAccessToken>%@</tem:linkedInAccessToken>\n<tem:linkedInSecretKey>%@</tem:linkedInSecretKey>\n<tem:tokenVerifier>%@</tem:tokenVerifier>\n</tem:GetLinkedInList>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInAccessToken"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInSecretKey"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInOauthVerifier"]];
             NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
             NSLog(@"%@",soapRequestString);
-            NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddUser"];
+            NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetLinkedInList"];
             
             LinkedInContactsRequest *lnContacts=[[LinkedInContactsRequest alloc]init];
             [lnContacts setLnContactsDelegate:self];
@@ -2557,7 +2570,15 @@ static NSDateFormatter *customDateFormat=nil;
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
 }
-
+-(void)logoutFromAllAccounts{
+    
+    [fb_giftgiv_home setFbGiftGivDelegate:nil];
+    [lnkd_giftgiv_home setLnkInGiftGivDelegate:nil];
+    dispatch_release(ImageLoader_Q);
+    
+    [picturesOperationQueue cancelAllOperations];
+    
+}
 #pragma mark - ProgressHUD methods
 
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr  
@@ -2611,13 +2632,15 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 - (void)dealloc {
-    dispatch_release(ImageLoader_Q);
+    
     [[NSNotificationCenter defaultCenter] removeObserver:picturesOperationQueue name:UIApplicationWillTerminateNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:picturesOperationQueue name:UIApplicationDidEnterBackgroundNotification object:nil];
+    //[[NSNotificationCenter defaultCenter] removeObserver:picturesOperationQueue name:UIApplicationDidEnterBackgroundNotification object:nil];
     
     [picturesOperationQueue cancelAllOperations];
     [picturesOperationQueue release];
     [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+    
+
     [fb_giftgiv_home setFbGiftGivDelegate:nil];
     [lnkd_giftgiv_home setLnkInGiftGivDelegate:nil];
     [searchBirthdayEvents release];
@@ -2653,6 +2676,7 @@ static NSDateFormatter *customDateFormat=nil;
     [contactsSearchView release];
     [contactsSearchBar release];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"GiftGivUserIDReceived" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UserLoggedOut" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"LinkedInLoggedIn" object:nil];
     [super dealloc];
 }

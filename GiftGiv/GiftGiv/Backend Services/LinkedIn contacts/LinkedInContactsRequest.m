@@ -61,7 +61,9 @@
 -(void) parser:(NSXMLParser*) parser didStartElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName attributes:(NSDictionary*) attributeDict
 {
     
-    
+    if([argElementName isEqualToString:@"FacebookUser"]){
+        lnContact=[[FacebookContactObject alloc]init];
+    }
     
 }
 
@@ -76,7 +78,8 @@
 
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
-    /*if([argElementName isEqualToString:@"GetFacebookListResult"]){
+    //NSLog(@"%@,%@",argElementName,currentElementValue);
+    if([argElementName isEqualToString:@"GetLinkedInListResult"]){
         
         currentElementValue=(NSMutableString*)[currentElementValue stringByReplacingOccurrencesOfString:@"<?xml version=\"1.0\" encoding=\"utf-16\"?>" withString:@""];
         
@@ -86,9 +89,12 @@
         NSXMLParser *tempParaser=[[NSXMLParser alloc]initWithData:[currentElementValue dataUsingEncoding:NSUTF8StringEncoding]];
         tempParaser.delegate=self;
         if([tempParaser parse]){
+            NSLog(@"parsed successfully");
             //if([fbContactsDelegate respondsToSelector(receivedFBContacts:) withObject:receivedResponse])
-            [lnContactsDelegate receivedFBContacts:receivedResponse];
+            [lnContactsDelegate receivedContacts:receivedResponse];
         }
+        else
+            NSLog(@"parsing failed..");
         [receivedResponse  release];
         [tempParaser release];
         
@@ -114,16 +120,16 @@
         //0001-01-01T00:00:00
         NSString *dateOfBirth=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         //NSLog(@"%@",dateOfBirth);
-        fbContact.dob=[[dateOfBirth componentsSeparatedByString:@"T"] objectAtIndex:0];
+        lnContact.dob=[[dateOfBirth componentsSeparatedByString:@"T"] objectAtIndex:0];
     }
     else if([argElementName isEqualToString:@"location"]){
         
-        fbContact.location=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        lnContact.location=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
     else if([argElementName isEqualToString:@"FacebookUser"]){
-        [receivedResponse addObject:fbContact];
-        [fbContact release];
-    }*/
+        [receivedResponse addObject:lnContact];
+        [lnContact release];
+    }
 	currentElementValue=nil;
 	[currentElementValue release];
 }

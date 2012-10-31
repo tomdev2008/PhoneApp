@@ -14,9 +14,10 @@
 #import "MBProgressHUD.h"
 #import "AddUserRequest.h"
 #import "CoomonRequestCreationObject.h"
+#import "GetCachesPathForTargetFile.h"
+#import "GiftItemsRequest.h"
 
-
-@interface SignInVC : UIViewController<Facebook_GiftGivDelegate,MBProgressHUDDelegate,AddUserRequestDelegate>
+@interface SignInVC : UIViewController<Facebook_GiftGivDelegate,MBProgressHUDDelegate,AddUserRequestDelegate,GiftItemsRequestDelegate>
 {
     MBProgressHUD *HUD;
     Facebook_GiftGiv *fb_giftgiv;

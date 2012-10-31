@@ -23,6 +23,8 @@
 
 //static Facebook_GiftGiv *sharedInstance = nil;
 static NSDateFormatter *standardDateFormatter = nil;
+static NSDateComponents *components=nil;
+static NSCalendar *gregorian=nil;
 
 #pragma mark Facebook_GiftGiv class methods
 /*+ (Facebook_GiftGiv *)sharedSingleton
@@ -270,11 +272,13 @@ static NSDateFormatter *standardDateFormatter = nil;
 -(NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd{
     NSDate *now=[NSDate date];    
     // set up date components
-    NSDateComponents *components = [[[NSDateComponents alloc] init] autorelease];
+    if(components==nil)
+       components = [[NSDateComponents alloc] init];
     [components setDay:daysToAdd];
     
     // create a calendar
-    NSCalendar *gregorian = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+    if(gregorian==nil)
+        gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     
     NSDate *updatedDate = [gregorian dateByAddingComponents:components toDate:now options:0];
     //NSLog(@"%@",updatedDate);

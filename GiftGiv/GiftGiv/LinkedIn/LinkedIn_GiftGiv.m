@@ -28,6 +28,8 @@
 
 //static LinkedIn_GiftGiv *sharedInstance = nil;
 
+
+
 @implementation LinkedIn_GiftGiv
 
 
@@ -35,6 +37,8 @@
 @synthesize fetchCurrentUserProfile,fetchMemberProfile,fetchNetworkUpdates,fetchCommentsForUpdate,fetchLikesForUpdate;
 //@synthesize shareConnection;
 @synthesize lnkInGiftGivDelegate;
+
+static NSCalendar *gregorianCalendar=nil;
 
 /*#pragma mark LinkedInShareHelper class methods
 + (LinkedIn_GiftGiv *)sharedSingleton
@@ -213,12 +217,12 @@
                                     //NSLog(@"found..%@",[results objectForKey:@"first-name"]);
                                     if([tempDict objectForKey:@"start-date"]){
                                         NSDictionary *startDateDict=[tempDict objectForKey:@"start-date"];
-                                        
-                                        NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+                                        if(gregorianCalendar==nil)
+                                            gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
                                         NSDateComponents *components = [gregorianCalendar components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
                                         int currentMonth=[components month];
                                         int currentYear=[components year];
-                                        [gregorianCalendar release];
+                                        //[gregorianCalendar release];
                                         
                                         if([[startDateDict objectForKey:@"year"] intValue]==currentYear){
                                             
@@ -257,12 +261,12 @@
                             //NSLog(@"found..%@",[results objectForKey:@"first-name"]);
                             if([[[results objectForKey:@"positions"] objectForKey:@"position"] objectForKey:@"start-date"]){
                                 NSDictionary *startDateDict=[[[results objectForKey:@"positions"] objectForKey:@"position"] objectForKey:@"start-date"];
-                                
-                                NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+                                if(gregorianCalendar==nil)
+                                    gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
                                 NSDateComponents *components = [gregorianCalendar components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
                                 int currentMonth=[components month];
                                 int currentYear=[components year];
-                                [gregorianCalendar release];
+                                //[gregorianCalendar release];
                                 
                                 if([startDateDict objectForKey:@"year"]){
                                     if([[startDateDict objectForKey:@"year"] intValue]==currentYear){

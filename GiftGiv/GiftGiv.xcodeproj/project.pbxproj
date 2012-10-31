@@ -161,8 +161,6 @@
 		BD0A36EA163FE3A800988508 /* searchicon.png in Resources */ = {isa = PBXBuildFile; fileRef = BD0A36E6163FE3A800988508 /* searchicon.png */; };
 		BD0A36EC163FE58900988508 /* graybar2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD0A36EB163FE58900988508 /* graybar2@2x.png */; };
 		BD0A36EE163FE5A500988508 /* graybar2.png in Resources */ = {isa = PBXBuildFile; fileRef = BD0A36ED163FE5A500988508 /* graybar2.png */; };
-		BD0A36F3163FE9BB00988508 /* ContactUsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = BD0A36F1163FE9BB00988508 /* ContactUsVC.m */; };
-		BD0A36F4163FE9BB00988508 /* ContactUsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = BD0A36F2163FE9BB00988508 /* ContactUsVC.xib */; };
 		BD31360B162EA41E00EB9D50 /* libPayPalEC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BD31360A162EA41E00EB9D50 /* libPayPalEC.a */; };
 		BD31360C162EA45F00EB9D50 /* ECNetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BD3135DC162EA34C00EB9D50 /* ECNetworkHandler.m */; };
 		BD31360D162EA45F00EB9D50 /* Address.m in Sources */ = {isa = PBXBuildFile; fileRef = BD3135DE162EA3F500EB9D50 /* Address.m */; };
@@ -444,9 +442,6 @@
 		BD0A36E6163FE3A800988508 /* searchicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchicon.png; sourceTree = "<group>"; };
 		BD0A36EB163FE58900988508 /* graybar2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "graybar2@2x.png"; sourceTree = "<group>"; };
 		BD0A36ED163FE5A500988508 /* graybar2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graybar2.png; sourceTree = "<group>"; };
-		BD0A36F0163FE9BB00988508 /* ContactUsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactUsVC.h; sourceTree = "<group>"; };
-		BD0A36F1163FE9BB00988508 /* ContactUsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactUsVC.m; sourceTree = "<group>"; };
-		BD0A36F2163FE9BB00988508 /* ContactUsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ContactUsVC.xib; sourceTree = "<group>"; };
 		BD3135DA162EA32A00EB9D50 /* PayPal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PayPal.h; sourceTree = "<group>"; };
 		BD3135DB162EA34C00EB9D50 /* ECNetworkHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECNetworkHandler.h; sourceTree = "<group>"; };
 		BD3135DC162EA34C00EB9D50 /* ECNetworkHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECNetworkHandler.m; sourceTree = "<group>"; };
@@ -1151,7 +1146,6 @@
 				7E1D724515B7E9D00008D19C /* Home Screen */,
 				7ECC603315BD1A27008E855F /* EventDetails */,
 				7EE0260615BD8FD9003B9C74 /* Gifts */,
-				BD0A36EF163FE97600988508 /* Contact Us */,
 				7E58441115CBDD56005E35D4 /* Settings */,
 				7ED149EB15CFF384007CBDBF /* Order History */,
 				7E2D17A615D1290F00E78FF0 /* Backend Services */,
@@ -1293,16 +1287,6 @@
 			name = "LinkedIn contacts";
 			sourceTree = "<group>";
 		};
-		BD0A36EF163FE97600988508 /* Contact Us */ = {
-			isa = PBXGroup;
-			children = (
-				BD0A36F0163FE9BB00988508 /* ContactUsVC.h */,
-				BD0A36F1163FE9BB00988508 /* ContactUsVC.m */,
-				BD0A36F2163FE9BB00988508 /* ContactUsVC.xib */,
-			);
-			name = "Contact Us";
-			sourceTree = "<group>";
-		};
 		BDC2B025163EBD3800D4D9DA /* AddUser_LinkedIn */ = {
 			isa = PBXGroup;
 			children = (
@@ -1424,7 +1408,6 @@
 				BD0A36EA163FE3A800988508 /* searchicon.png in Resources */,
 				BD0A36EC163FE58900988508 /* graybar2@2x.png in Resources */,
 				BD0A36EE163FE5A500988508 /* graybar2.png in Resources */,
-				BD0A36F4163FE9BB00988508 /* ContactUsVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1546,7 +1529,6 @@
 				7EE51BED1614695100EF3E9F /* GetCachesPathForTargetFile.m in Sources */,
 				BDC2B029163EBDA000D4D9DA /* AddUser_LinkedInRequest.m in Sources */,
 				BD0A36DA163F952400988508 /* LinkedInContactsRequest.m in Sources */,
-				BD0A36F3163FE9BB00988508 /* ContactUsVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

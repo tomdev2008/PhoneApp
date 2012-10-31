@@ -28,7 +28,6 @@
 #import "GetCachesPathForTargetFile.h"
 #import "AddUser_LinkedInRequest.h"
 #import "LinkedInContactsRequest.h"
-#import "ContactUsVC.h"
 
 @interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate>
 

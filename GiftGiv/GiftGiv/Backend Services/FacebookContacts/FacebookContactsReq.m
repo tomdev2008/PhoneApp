@@ -89,7 +89,7 @@
         tempParaser.delegate=self;
         if([tempParaser parse]){
             //if([fbContactsDelegate respondsToSelector(receivedFBContacts:) withObject:receivedResponse])
-                [fbContactsDelegate receivedFBContacts:receivedResponse];
+                [fbContactsDelegate receivedContacts:receivedResponse];
         }
         [receivedResponse  release];
         [tempParaser release];

@@ -10,7 +10,7 @@
 
 @implementation SettingsVC
 @synthesize settinsScroll;
-
+@synthesize showAboutUs;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -40,7 +40,10 @@
     lnkd_giftgiv_settings=[[LinkedIn_GiftGiv alloc]init];
     lnkd_giftgiv_settings.lnkInGiftGivDelegate=self;
     
-    settinsScroll.contentSize=CGSizeMake(320, 416);
+    settinsScroll.contentSize=CGSizeMake(320, 480);
+    
+    if(showAboutUs)
+        [settinsScroll setContentOffset:CGPointMake(0, 230)];
     
     [(UIButton*)[settinsScroll viewWithTag:11] setUserInteractionEnabled:NO];
     [(UIButton*)[settinsScroll viewWithTag:11] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
@@ -59,11 +62,13 @@
 
 #pragma mark - Facebook Logout delegate
 - (void)facebookDidLoggedOut{
-   
+   [[NSNotificationCenter defaultCenter] postNotificationName:@"UserLoggedOut" object:nil];
     NSLog(@"seetings facebook log out..");
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     //[[NSUserDefaults standardUserDefaults]removeObjectForKey:@"FBAccessTokenKey"];
     [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForGiftItemFileName:@""] error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+    
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
     
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
@@ -135,6 +140,28 @@
         }
             break;
 
+    }
+}
+- (IBAction)internalLinkActions:(id)sender {
+    switch ([sender tag]) {
+            //mail
+        case 1:
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"mailto://info@giftgiv.com"]];
+            break;
+            //phone
+        case 2:
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"tel://425-985-3735"]];
+            break;
+            //terms
+        case 3:
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://thegiftgiv.com/terms.html"]];
+            break;
+            //policy
+        case 4:
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://thegiftgiv.com/"]];
+            break;
+            
+            
     }
 }
 #pragma mark -

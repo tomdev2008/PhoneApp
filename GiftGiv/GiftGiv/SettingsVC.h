@@ -20,9 +20,11 @@
     LinkedIn_GiftGiv *lnkd_giftgiv_settings;
     MBProgressHUD *HUD;
 }
+@property BOOL showAboutUs;
 @property (retain, nonatomic) IBOutlet UIScrollView *settinsScroll;
 - (IBAction)backToHomeScreen:(id)sender;
 - (IBAction)syncActions:(id)sender;
+- (IBAction)internalLinkActions:(id)sender;
 #pragma mark - progress hud
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
 - (void)stopHUD;
