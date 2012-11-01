@@ -42,7 +42,7 @@ static NSDateFormatter *customDateFormat=nil;
     noHistoryLbl.hidden=YES;
     
     ordersList=[[NSMutableArray alloc]init];
-    
+    fm=[NSFileManager defaultManager];
     // Do any additional setup after loading the view from its nib.
     [self performSelector:@selector(makeRequestToGetOrders) withObject:nil afterDelay:0.1];
 }
@@ -96,9 +96,16 @@ static NSDateFormatter *customDateFormat=nil;
     NSString *dateString=[[[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] dateofCreation] componentsSeparatedByString:@"T"] objectAtIndex:0];
     cell.orderDateLbl.text=[self updateDate:dateString];
     
-    if([[ordersList objectAtIndex:indexPath.row]objectForKey:@"ProfilePicture"])
-        cell.profilePic.image=[[ordersList objectAtIndex:indexPath.row]objectForKey:@"ProfilePicture"];
-    
+    /*if([[ordersList objectAtIndex:indexPath.row]objectForKey:@"ProfilePicture"])
+        cell.profilePic.image=[[ordersList objectAtIndex:indexPath.row]objectForKey:@"ProfilePicture"];*/
+    if([[[ordersList objectAtIndex:indexPath.row] objectForKey:@"OrderDetails"] recipientId]){
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] recipientId]]];
+        
+        if([fm fileExistsAtPath:filePath]){
+            cell.profilePic.image=[UIImage imageWithContentsOfFile:filePath];
+        }
+        
+    }
     if([[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] status] isEqualToString:@"-1"]){
         cell.profileNameLbl.textColor=[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0];
         cell.orderStatusLbl.text=@"waiting for recipient reply";
@@ -153,12 +160,58 @@ static NSDateFormatter *customDateFormat=nil;
     }
     return endDateString;
 }
--(void)retrieveProfilePictures{
-    int ordersListCount=[ordersList count];
+
+-(void) retrieveProfilePictures{
+    int ordersCount=[ordersList count];
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Order profile pictures queue", NULL);
     
+    for(int i=0;i<ordersCount;i++){
+        
+        
+            if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[ordersList objectAtIndex:i]objectForKey:@"OrderDetails"] recipientId]]]]){
+               
+                                               
+                dispatch_async(ImageLoader_Q, ^{
+                    
+                    NSString *urlStr=[[[ordersList objectAtIndex:i]objectForKey:@"OrderDetails"] profilePictureUrl];
+                    
+                    NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+                    UIImage *thumbnail = [UIImage imageWithData:data];
+                    
+                    if(thumbnail==nil){
+                        
+                        
+                    }
+                    else {
+                        
+                        
+                        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[ordersList objectAtIndex:i]objectForKey:@"OrderDetails"] recipientId]]]; //Add the file name
+                        [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^(void) {
+                            
+                            [orderHistoryTable reloadData];
+                            
+                        });
+                    }
+                    
+                });
+                
+                
+            }
+            
+        
+    }
+    dispatch_release(ImageLoader_Q);
+}
+
+/*-(void)retrieveProfilePictures{
+    int ordersListCount=[ordersList count];
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Order profile picture", NULL);
     for(int i=0;i<ordersListCount;i++){
-        dispatch_queue_t ImageLoader_Q;
-        ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+                
         dispatch_async(ImageLoader_Q, ^{
             
             NSString *urlStr=[[[ordersList objectAtIndex:i]objectForKey:@"OrderDetails"] profilePictureUrl];
@@ -191,9 +244,10 @@ static NSDateFormatter *customDateFormat=nil;
             }
             
         });
-        dispatch_release(ImageLoader_Q);
+        
     }
-}
+    dispatch_release(ImageLoader_Q);
+}*/
 #pragma mark - TableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     //detailed order history

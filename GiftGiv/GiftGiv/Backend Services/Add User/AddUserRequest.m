@@ -49,6 +49,7 @@
 	
 	//delegate method to send the response after parsing finished successfully
 	if([xmlParser parse]){
+        
 		[addUserDelegate responseForAddUser:receivedResponse];
 	}
 	[receivedResponse  release];

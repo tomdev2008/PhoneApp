@@ -60,6 +60,7 @@
     BOOL isSearchEnabled;
     BOOL isFBContactsLoading;
     BOOL isLnContactsLoading;
+    BOOL isCancelledImgOperations;
     NSFileManager *fm;
     NSOperationQueue *picturesOperationQueue;
     dispatch_queue_t ImageLoader_Q;

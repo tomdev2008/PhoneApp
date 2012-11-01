@@ -17,6 +17,7 @@
 @interface SuccessVC : UIViewController<UITableViewDelegate,UITableViewDataSource>
 {
     NSMutableArray *upcomingEvents;
+    NSFileManager *fm;
 }
 @property (retain, nonatomic) IBOutlet UITableView *upcomingEventsTable;
 @property (retain, nonatomic) IBOutlet UIScrollView *contentScroll;

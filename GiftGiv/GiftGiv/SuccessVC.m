@@ -40,7 +40,7 @@
     // Do any additional setup after loading the view from its nib.
     
     upcomingEvents=[[NSMutableArray alloc]initWithArray:[[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"]];
-    
+    fm=[NSFileManager defaultManager];
     float tableHeight=[upcomingEvents count]*60;
     
     upcomingEventsTable.frame=CGRectMake(upcomingEventsTable.frame.origin.x, upcomingEventsTable.frame.origin.y, upcomingEventsTable.frame.size.width, tableHeight);
@@ -52,59 +52,105 @@
     
     [self loadProfilePictures];
 }
-
--(void)loadProfilePictures{
-    int upcomingEventsCount=[upcomingEvents count];
-    for(int i=0;i<upcomingEventsCount;i++){
+-(void) loadProfilePictures{
+   
+    int upcomingsCount=[upcomingEvents count];
+    dispatch_queue_t ImageLoader_Q;
+    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+    
+    for(int i=0;i<upcomingsCount;i++){
         
-        if(![[[upcomingEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]] || ![[[upcomingEvents objectAtIndex:i] objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]]){
-            dispatch_queue_t ImageLoader_Q;
-            ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
-            dispatch_async(ImageLoader_Q, ^{
-                NSString *urlStr;
+        NSString *urlStr_id=nil;
+        if([[upcomingEvents objectAtIndex:i]objectForKey:@"uid"])
+            urlStr_id=[[upcomingEvents objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]);
+        else if([[upcomingEvents objectAtIndex:i]objectForKey:@"from"])
+            urlStr_id=[[[upcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"];//FacebookPicURL([[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
+        else if([[upcomingEvents objectAtIndex:i]objectForKey:@"linkedIn_id"])
+            urlStr_id=[[upcomingEvents objectAtIndex:i]objectForKey:@"linkedIn_id"];
+        else if([[upcomingEvents objectAtIndex:i]objectForKey:@"FBID"])
+            urlStr_id=[[upcomingEvents objectAtIndex:i]objectForKey:@"FBID"];
+        
+        if(urlStr_id){
+            
+            
+            //NSLog(@"%@",[NSString stringWithFormat:@"%@.png",urlStr_id]);
+            if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
+                                
+                NSString *picture_url=nil;
                 if([[upcomingEvents objectAtIndex:i]objectForKey:@"uid"])
-                    urlStr=FacebookPicURL([[upcomingEvents objectAtIndex:i]objectForKey:@"uid"]);
-                else
-                    urlStr=FacebookPicURL([[[upcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
-                NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
-                if(data==nil){
-                    NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[upcomingEvents objectAtIndex:i]];
-                    
-                    [tempDict setObject:[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"] forKey:@"ProfilePicture"];
-                    [upcomingEvents replaceObjectAtIndex:i withObject:tempDict];
-                    [tempDict release];
+                {
+                    if([[upcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
+                        picture_url=[[upcomingEvents objectAtIndex:i]objectForKey:@"pic_square"];
+                    else
+                        picture_url=FacebookPicURL([[upcomingEvents objectAtIndex:i]objectForKey:@"uid"]);
+                        
                     
                 }
-                else {
+                else if([[upcomingEvents objectAtIndex:i]objectForKey:@"from"])
+                {
+                    if([[upcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
+                        picture_url=[[upcomingEvents objectAtIndex:i]objectForKey:@"pic_square"];
+                        
+                    else
+                        picture_url=FacebookPicURL([[[upcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
+                                            
+                    
+                }
+                else if([[upcomingEvents objectAtIndex:i]objectForKey:@"FBID"])
+                {
+                    if([[upcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
+                        picture_url=[[upcomingEvents objectAtIndex:i]objectForKey:@"pic_square"];
+                    
+                    else
+                        picture_url=FacebookPicURL([[upcomingEvents objectAtIndex:i]objectForKey:@"FBID"]);
+                                          
+                    
+                }
+                else if([[upcomingEvents objectAtIndex:i]objectForKey:@"linkedIn_id"])
+                {
+                    picture_url=[[upcomingEvents objectAtIndex:i]objectForKey:@"pic_url"];
+                   
+                    
+                }
+                
+                dispatch_async(ImageLoader_Q, ^{
+                    
+                    //NSString *urlStr=[tempDict objectForKey:@"profile_url"];
+                    
+                    NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:picture_url]];
                     UIImage *thumbnail = [UIImage imageWithData:data];
                     
-                    if(thumbnail!=nil){
+                    if(thumbnail==nil){
+                        
+                        
+                    }
+                    else {
+                        
+                        
+                        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
+                        [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
                         
                         dispatch_async(dispatch_get_main_queue(), ^(void) {
-                            NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[upcomingEvents objectAtIndex:i]];
                             
-                            [tempDict setObject:thumbnail forKey:@"ProfilePicture"];
-                            [upcomingEvents replaceObjectAtIndex:i withObject:tempDict];
-                            [tempDict release];
-                            
-                            
-                            [upcomingEventsTable beginUpdates];
-                            
-                            [upcomingEventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:i inSection:0], nil]
-                                                       withRowAnimation:UITableViewRowAnimationNone];
-                            [upcomingEventsTable endUpdates];
+                            NSArray *tableCells=[upcomingEventsTable visibleCells];
+                            for(int i=0; i<[tableCells count];i++ ){
+                                if([[(EventCustomCell*)[tableCells objectAtIndex:i] profileId] isEqualToString:[NSString stringWithFormat:@"%@",urlStr_id]]){
+                                    NSIndexPath *indexPath=[upcomingEventsTable indexPathForCell:(EventCustomCell*)[tableCells objectAtIndex:i]];
+                                    [upcomingEventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                                }
+                            }
                             
                         });
                     }
                     
-                }
+                });
                 
                 
-            });
-            dispatch_release(ImageLoader_Q);
+            }
             
         }
     }
+    dispatch_release(ImageLoader_Q);
 }
 
 #pragma mark - TableView Data source
@@ -184,7 +230,7 @@
         if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]){
             
             NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"]]];
-            NSFileManager *fm=[NSFileManager defaultManager];
+           
             if([fm fileExistsAtPath:filePath]){
                 cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
             }
@@ -194,7 +240,7 @@
         else if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"FBID"]){
             
             NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"FBID"]]];
-            NSFileManager *fm=[NSFileManager defaultManager];
+           
             if([fm fileExistsAtPath:filePath]){
                 cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
             }
@@ -205,7 +251,7 @@
             if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]){
                 
                 NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"uid"]]];
-                NSFileManager *fm=[NSFileManager defaultManager];
+                
                 if([fm fileExistsAtPath:filePath]){
                     cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
                 }
@@ -214,7 +260,7 @@
             
             else if([[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]){
                 NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[upcomingEvents objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]]];
-                NSFileManager *fm=[NSFileManager defaultManager];
+                
                 if([fm fileExistsAtPath:filePath]){
                     cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
                 }

@@ -35,6 +35,6 @@ static NSString *const kOAuthConsumerSecret  =  @"EP1SkFM3aLchEM2O";// @"hSdUKzt
 #define events_category_5 @"linkedIn contacts"//@"congratulations"
 
 // Paypal API
-#define MERCHANT_USERNAME /*@"gadda._1345733424_biz_api1.gmail.com"*/@"giftgivco_api1.gmail.com"
-#define MERCHANT_PASSWORD /*@"1345733447"*/@"JRRX8T275RR2CUJ6"
-#define MERCHANT_SIGNATURE /*@"AFcWxV21C7fd0v3bYYYRCpSSRl31A6Ag-LWYqcLdoPqXZc0llHvYYb8n"*/@"Arr0.D-RwOqYOFyV8ttxDMemqffWANgJJVGDAj8G8NGFu937Bfpf81Hm"
+#define MERCHANT_USERNAME @"gadda._1345733424_biz_api1.gmail.com"//@"giftgivco_api1.gmail.com"
+#define MERCHANT_PASSWORD @"1345733447"//@"JRRX8T275RR2CUJ6"
+#define MERCHANT_SIGNATURE @"AFcWxV21C7fd0v3bYYYRCpSSRl31A6Ag-LWYqcLdoPqXZc0llHvYYb8n"//@"Arr0.D-RwOqYOFyV8ttxDMemqffWANgJJVGDAj8G8NGFu937Bfpf81Hm"

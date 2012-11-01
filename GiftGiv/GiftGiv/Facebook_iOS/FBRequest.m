@@ -320,7 +320,7 @@ error = _error;
         
         [request setHTTPBody:[self generatePostBody]];
     }
-    NSLog(@"FB request get connected..");
+    //NSLog(@"FB request get connected..");
     _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     self.state = kFBRequestStateLoading;
     self.sessionDidExpire = NO;

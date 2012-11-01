@@ -96,7 +96,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     picturesOperationQueue=[[NSOperationQueue alloc]init];
-           
+        
     [super viewDidLoad];
     
 }
@@ -164,7 +164,10 @@ static NSDateFormatter *customDateFormat=nil;
                 [[NSUserDefaults standardUserDefaults]setBool:NO forKey:@"IsLoadingFromFacebook"];
                 [self performSelector:@selector(makeRequestToGetEvents)];
                 [self performSelector:@selector(makeRequestToGetFacebookContacts)];
-                [self performSelector:@selector(makeRequestToGetContactsForLinkedIn)];
+                if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
+                    [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
+                }
+            
             }
             
             else{
@@ -179,7 +182,10 @@ static NSDateFormatter *customDateFormat=nil;
                     if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
                         isFBContactsLoading=YES;
                         [self performSelector:@selector(makeRequestToGetFacebookContacts) ];
-                        [self performSelector:@selector(makeRequestToGetContactsForLinkedIn)];
+                        if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
+                            [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
+                        }
+                    
                     }
                     
                 }
@@ -313,6 +319,7 @@ static NSDateFormatter *customDateFormat=nil;
                     [tempDict release];
                     
                     [picturesOperationQueue addOperation:operation];
+                    [operation setThreadPriority:0.1];
                     [operation release];
                     
                     
@@ -326,10 +333,7 @@ static NSDateFormatter *customDateFormat=nil;
         
     }
 }
-#pragma mark - LinkedIn Contacts
--(void) receivedLnContacts:(NSMutableArray*)response{
-    
-}
+
 #pragma mark - Get Events
 -(void)makeRequestToGetEvents{
     if([CheckNetwork connectedToNetwork]){
@@ -380,6 +384,8 @@ static NSDateFormatter *customDateFormat=nil;
             [eventDict setObject:[[[[[allEvents objectAtIndex:i]eventdate]componentsSeparatedByString:@"T"]objectAtIndex:0]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"event_date"];
             [eventDict setObject:[[[allEvents objectAtIndex:i]isEventFromQuery]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"isEventFromQuery"];
             [eventDict setObject:@"" forKey:@"ProfilePicture"];
+            [eventDict setObject:[[[allEvents objectAtIndex:i]fb_Picture]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"pic_square"];
+            
             NSString *eventType=[[[allEvents objectAtIndex:i]eventType]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
            
             if([eventType isEqualToString:@"Birthday"]){
@@ -453,13 +459,19 @@ static NSDateFormatter *customDateFormat=nil;
 
                     if([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"])
                     {
-                        [tempDict setObject:FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]) forKey:@"profile_url"];
+                        if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
+                            [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
+                        else
+                            [tempDict setObject:FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]) forKey:@"profile_url"];
                                            
                     }
                     else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"from"])
                     {
+                        if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
+                            [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
+                        else
                         
-                        [tempDict setObject:FacebookPicURL([[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]) forKey:@"profile_url"];
+                            [tempDict setObject:FacebookPicURL([[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]) forKey:@"profile_url"];
                         
                        
                     }
@@ -473,6 +485,7 @@ static NSDateFormatter *customDateFormat=nil;
                     [tempDict release];
                     /* Add the operation to the queue */
                     [picturesOperationQueue addOperation:operation];
+                    [operation setThreadPriority:1.0];
                     [operation release];
                     
                      
@@ -502,7 +515,8 @@ static NSDateFormatter *customDateFormat=nil;
 
 - (void) loadProfileImgWithOperation:(NSMutableDictionary*)picDetails {
     
-       
+    if(isCancelledImgOperations)
+        return;
     dispatch_async(ImageLoader_Q, ^{
         
         NSString *urlStr=[picDetails objectForKey:@"profile_url"];
@@ -516,7 +530,8 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else {
                           
-            
+            if(isCancelledImgOperations)
+                return;
             NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
             [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
             
@@ -2030,8 +2045,8 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 -(void) makeRequestToLoadImagesUsingOperations{
-    
-    for(int i=0;i<[allupcomingEvents count];i++){
+    int upcomingsCount=[allupcomingEvents count];
+    for(int i=0;i<upcomingsCount;i++){
         
         NSString *urlStr_id=nil;
         if([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"])
@@ -2057,20 +2072,27 @@ static NSDateFormatter *customDateFormat=nil;
                 
                 if([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"])
                 {
-                    [tempDict setObject:FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]) forKey:@"profile_url"];
+                    if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
+                        [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
+                    else
+                        [tempDict setObject:FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]) forKey:@"profile_url"];
                     
                 }
                 else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"from"])
                 {
-                    
-                    [tempDict setObject:FacebookPicURL([[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]) forKey:@"profile_url"];
+                    if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
+                        [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
+                    else
+                       [tempDict setObject:FacebookPicURL([[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]) forKey:@"profile_url"];
                     
                     
                 }
                 else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"FBID"])
                 {
-                    
-                    [tempDict setObject:FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"FBID"]) forKey:@"profile_url"];
+                    if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
+                        [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
+                    else
+                        [tempDict setObject:FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"FBID"]) forKey:@"profile_url"];
                     
                     
                 }
@@ -2083,8 +2105,12 @@ static NSDateFormatter *customDateFormat=nil;
                 NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadProfileImgWithOperation:) object:tempDict];
                
                 [tempDict release];
+                //[operation setThreadPriority:1.0];
                 /* Add the operation to the queue */
+                
                 [picturesOperationQueue addOperation:operation];
+                [operation setThreadPriority:1.0];
+                //[operation setQueuePriority:NSOperationQueuePriorityVeryHigh];
                 [operation release];
                 
                 
@@ -2535,7 +2561,10 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark - Add User Request delegate
 -(void) responseForLnAddUser:(NSMutableDictionary*)response{
     NSLog(@"AddUser response..%@",response);
-    [self performSelector:@selector(makeRequestToGetContactsForLinkedIn)];
+    if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
+        [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
+    }
+   
 }
 -(void)makeRequestToGetContactsForLinkedIn{
     if(!isLnContactsLoading){
@@ -2574,10 +2603,11 @@ static NSDateFormatter *customDateFormat=nil;
     
     [fb_giftgiv_home setFbGiftGivDelegate:nil];
     [lnkd_giftgiv_home setLnkInGiftGivDelegate:nil];
-    dispatch_release(ImageLoader_Q);
+    
     
     [picturesOperationQueue cancelAllOperations];
     
+    isCancelledImgOperations=YES;
 }
 #pragma mark - ProgressHUD methods
 
@@ -2638,9 +2668,10 @@ static NSDateFormatter *customDateFormat=nil;
     
     [picturesOperationQueue cancelAllOperations];
     [picturesOperationQueue release];
-    [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
     
-
+    //[fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+    
+    dispatch_release(ImageLoader_Q);
     [fb_giftgiv_home setFbGiftGivDelegate:nil];
     [lnkd_giftgiv_home setLnkInGiftGivDelegate:nil];
     [searchBirthdayEvents release];

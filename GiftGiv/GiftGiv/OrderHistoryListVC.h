@@ -14,10 +14,12 @@
 #import "GetListOfOrdersRequest.h"
 #import "CustomDateDisplay.h"
 #import "MBProgressHUD.h"
+#import "GetCachesPathForTargetFile.h"
 
 @interface OrderHistoryListVC : UIViewController <UITableViewDataSource,UITableViewDelegate,GetListOfOrdersDelegate,MBProgressHUDDelegate>{
     NSMutableArray *ordersList;
     MBProgressHUD *HUD;
+    NSFileManager *fm;
 }
 
 @property (retain, nonatomic) IBOutlet UITableView *orderHistoryTable;

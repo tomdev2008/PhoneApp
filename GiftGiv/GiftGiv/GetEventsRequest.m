@@ -109,7 +109,7 @@
     else if([argElementName isEqualToString:@"FB_Name"]){
         event.fb_Name=currentElementValue;
     }
-    else if([argElementName isEqualToString:@"fb_Picture"]){
+    else if([argElementName isEqualToString:@"FB_Picture"]){
         event.fb_Picture=currentElementValue;
     }
     else if([argElementName isEqualToString:@"EventType"]){
