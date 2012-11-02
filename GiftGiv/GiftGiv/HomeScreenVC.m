@@ -50,7 +50,10 @@ static NSDateFormatter *customDateFormat=nil;
     fm=[NSFileManager defaultManager];
     fb_giftgiv_home=[[Facebook_GiftGiv alloc]init];
     fb_giftgiv_home.fbGiftGivDelegate=self;
+    
     ImageLoader_Q=dispatch_queue_create("profile picture network connection queue", NULL);
+    ImageLoader_Q_ForEvents=dispatch_queue_create("event profilePictures",NULL);
+    
     lnkd_giftgiv_home=[[LinkedIn_GiftGiv alloc]init];
     lnkd_giftgiv_home.lnkInGiftGivDelegate=self;
     
@@ -96,7 +99,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     picturesOperationQueue=[[NSOperationQueue alloc]init];
-        
+   
     [super viewDidLoad];
     
 }
@@ -232,10 +235,10 @@ static NSDateFormatter *customDateFormat=nil;
         AlertWithMessageAndDelegate(@"Network connectivity", @"Please check your network connection", nil);
     }
 }
-#pragma mark FB Contacts Delegate
+#pragma mark Contacts Delegate
 -(void) receivedContacts:(NSMutableArray*)response{
     int friendsCount=[response count];
-           
+    NSLog(@"Received contacts..%d",friendsCount);
     if(friendsCount){
         //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         
@@ -297,8 +300,7 @@ static NSDateFormatter *customDateFormat=nil;
             
             NSString *urlStr_id=@"";
             if([[globalContactsList objectAtIndex:i]objectForKey:@"uid"])
-                urlStr_id=[[globalContactsList objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL            if(urlStr_id){
-                
+                urlStr_id=[[globalContactsList objectAtIndex:i]objectForKey:@"uid"];              
                 
                 
                 if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
@@ -309,7 +311,7 @@ static NSDateFormatter *customDateFormat=nil;
                     
                     if([[globalContactsList objectAtIndex:i]objectForKey:@"uid"])
                     {
-                        //[tempDict setObject:FacebookPicURL([[globalContactsList objectAtIndex:i]objectForKey:@"uid"]) forKey:@"profile_url"];
+                        
                         [tempDict setObject:[[globalContactsList objectAtIndex:i]objectForKey:@"ProfilePicURLToTake"] forKey:@"profile_url"];
                         
                     }
@@ -319,18 +321,14 @@ static NSDateFormatter *customDateFormat=nil;
                     [tempDict release];
                     
                     [picturesOperationQueue addOperation:operation];
-                    [operation setThreadPriority:0.1];
+                    
                     [operation release];
                     
                     
                 }
             
             }
-               
-           
-        
-        //[eventsTable reloadData];
-        
+                 
     }
 }
 
@@ -417,88 +415,21 @@ static NSDateFormatter *customDateFormat=nil;
         
         //NSLog(@"%@",allupcomingEvents);
         [self performSelector:@selector(checkTotalNumberOfGroups)];
-        
-        //[self performSelector:@selector(updateNextColumnTitle)];
+       
         
         if([allupcomingEvents count]>1)
             [self sortEvents:allupcomingEvents eventCategory:1];
         if([listOfBirthdayEvents count]>1)
             [self sortEvents:listOfBirthdayEvents eventCategory:2];
-        /*if([newJobEvents count]>1)
-            [self sortEvents:newJobEvents eventCategory:4];
-        if([congratsEvents count]>1)
-            [self sortEvents:congratsEvents eventCategory:5];
-        if([anniversaryEvents count]>1)
-            [self sortEvents:anniversaryEvents eventCategory:3];*/
+        
         if([eventsToCelebrateArray count]>1)
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
         
         [[NSUserDefaults standardUserDefaults]setObject:allupcomingEvents forKey:@"AllUpcomingEvents"];
-        
-        for(int i=0;i<[allupcomingEvents count];i++){
-           
-            NSString *urlStr_id=nil;
-            if([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"])
-                urlStr_id=[[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]);
-            else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"from"])
-                urlStr_id=[[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"];//FacebookPicURL([[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
-            else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"linkedIn_id"])
-                urlStr_id=[[allupcomingEvents objectAtIndex:i]objectForKey:@"linkedIn_id"];
-            
-            if(urlStr_id){
-                
-                
-                                
-                if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
-                                        
-                    /*NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
-                    [UIImagePNGRepresentation([ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"]) writeToFile:filePath atomically:YES]; //Write the file*/
-                    
-                    NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
-                    [tempDict setObject:urlStr_id forKey:@"profile_id"];
-
-                    if([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"])
-                    {
-                        if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
-                            [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
-                        else
-                            [tempDict setObject:FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]) forKey:@"profile_url"];
-                                           
-                    }
-                    else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"from"])
-                    {
-                        if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
-                            [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
-                        else
-                        
-                            [tempDict setObject:FacebookPicURL([[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]) forKey:@"profile_url"];
-                        
-                       
-                    }
-                    else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"linkedIn_id"])
-                    {
-                        [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_url"] forKey:@"profile_url"];
-                        
-                    }
-                    
-                    NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadProfileImgWithOperation:) object:tempDict];
-                    [tempDict release];
-                    /* Add the operation to the queue */
-                    [picturesOperationQueue addOperation:operation];
-                    [operation setThreadPriority:1.0];
-                    [operation release];
-                    
-                     
-                }
-                
-            }
-        }
-        
-        
-        //[self stopHUD];
+        [self makeRequestToLoadImagesUsingOperations:allupcomingEvents];
         
         [eventsTable reloadData];
-        //////[events_2_Table reloadData];
+        
     }
     else{
         if([CheckNetwork connectedToNetwork]){
@@ -512,13 +443,54 @@ static NSDateFormatter *customDateFormat=nil;
         }
     }
 }
-
+- (void) loadProfileImgWithOperationForEvents:(NSMutableDictionary*)picDetails {
+    
+    if(isCancelledImgOperations)
+        return;
+    dispatch_async(ImageLoader_Q_ForEvents, ^{
+        
+        if(isCancelledImgOperations)
+            return;
+        NSString *urlStr=[picDetails objectForKey:@"profile_url"];
+        
+        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+        UIImage *thumbnail = [UIImage imageWithData:data];
+        
+        if(thumbnail==nil){
+            
+            
+        }
+        else {
+            
+            if(isCancelledImgOperations)
+                return;
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
+            [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
+            
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                
+                NSArray *tableCells=[eventsTable visibleCells];
+                for(int i=0; i<[tableCells count];i++ ){
+                    if([[(EventCustomCell*)[tableCells objectAtIndex:i] profileId] isEqualToString:[NSString stringWithFormat:@"%@",[picDetails objectForKey:@"profile_id"]]]){
+                        NSIndexPath *indexPath=[eventsTable indexPathForCell:(EventCustomCell*)[tableCells objectAtIndex:i]];
+                        [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                    }
+                }
+                
+            });
+        }
+        
+    });
+    
+}
 - (void) loadProfileImgWithOperation:(NSMutableDictionary*)picDetails {
     
     if(isCancelledImgOperations)
         return;
     dispatch_async(ImageLoader_Q, ^{
         
+        if(isCancelledImgOperations)
+            return;
         NSString *urlStr=[picDetails objectForKey:@"profile_url"];
         
         NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
@@ -2037,87 +2009,91 @@ static NSDateFormatter *customDateFormat=nil;
         
         [self storeAllupcomingsForSuccessScreen];
         
-        
+        [self makeRequestToLoadImagesUsingOperations:listOfBirthdayEvents];
         
         [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];
     }
     
     
 }
--(void) makeRequestToLoadImagesUsingOperations{
-    int upcomingsCount=[allupcomingEvents count];
-    for(int i=0;i<upcomingsCount;i++){
+-(void)checkAndStartOperationToDownloadPicForTheEvent:(NSDictionary*)eventData{
+    
+    NSString *urlStr_id=nil;
+    if([eventData objectForKey:@"uid"])
+        urlStr_id=[eventData objectForKey:@"uid"];
+    else if([eventData objectForKey:@"from"])
+        urlStr_id=[[eventData objectForKey:@"from"] objectForKey:@"id"];
+    else if([eventData objectForKey:@"linkedIn_id"])
+        urlStr_id=[eventData objectForKey:@"linkedIn_id"];
+    else if([eventData objectForKey:@"FBID"])
+        urlStr_id=[eventData objectForKey:@"FBID"];
+    
+    if(urlStr_id){
         
-        NSString *urlStr_id=nil;
-        if([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"])
-            urlStr_id=[[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"];//FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]);
-        else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"from"])
-            urlStr_id=[[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"];//FacebookPicURL([[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]);
-        else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"linkedIn_id"])
-            urlStr_id=[[allupcomingEvents objectAtIndex:i]objectForKey:@"linkedIn_id"];
-        else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"FBID"])
-            urlStr_id=[[allupcomingEvents objectAtIndex:i]objectForKey:@"FBID"];
-        
-        if(urlStr_id){
+        if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
             
+            NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
+            [tempDict setObject:urlStr_id forKey:@"profile_id"];
             
-            //NSLog(@"%@",[NSString stringWithFormat:@"%@.png",urlStr_id]);
-            if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
+            if([eventData objectForKey:@"uid"])
+            {
+                if([eventData objectForKey:@"pic_square"])
+                    [tempDict setObject:[eventData objectForKey:@"pic_square"] forKey:@"profile_url"];
+                else
+                    [tempDict setObject:FacebookPicURL([eventData objectForKey:@"uid"]) forKey:@"profile_url"];
                 
-                /*NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]; //Add the file name
-                [UIImagePNGRepresentation([ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"]) writeToFile:filePath atomically:YES]; //Write the file
-                */
-                NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
-                [tempDict setObject:urlStr_id forKey:@"profile_id"];
-                
-                if([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"])
-                {
-                    if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
-                        [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
-                    else
-                        [tempDict setObject:FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"uid"]) forKey:@"profile_url"];
-                    
-                }
-                else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"from"])
-                {
-                    if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
-                        [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
-                    else
-                       [tempDict setObject:FacebookPicURL([[[allupcomingEvents objectAtIndex:i]objectForKey:@"from"] objectForKey:@"id"]) forKey:@"profile_url"];
-                    
-                    
-                }
-                else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"FBID"])
-                {
-                    if([[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"])
-                        [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"profile_url"];
-                    else
-                        [tempDict setObject:FacebookPicURL([[allupcomingEvents objectAtIndex:i]objectForKey:@"FBID"]) forKey:@"profile_url"];
-                    
-                    
-                }
-                else if([[allupcomingEvents objectAtIndex:i]objectForKey:@"linkedIn_id"])
-                {
-                    [tempDict setObject:[[allupcomingEvents objectAtIndex:i]objectForKey:@"pic_url"] forKey:@"profile_url"];
-                    
-                }
-                
-                NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadProfileImgWithOperation:) object:tempDict];
-               
-                [tempDict release];
-                //[operation setThreadPriority:1.0];
-                /* Add the operation to the queue */
-                
-                [picturesOperationQueue addOperation:operation];
-                [operation setThreadPriority:1.0];
-                //[operation setQueuePriority:NSOperationQueuePriorityVeryHigh];
-                [operation release];
+            }
+            else if([eventData objectForKey:@"from"])
+            {
+                if([eventData objectForKey:@"pic_square"])
+                    [tempDict setObject:[eventData objectForKey:@"pic_square"] forKey:@"profile_url"];
+                else
+                    [tempDict setObject:FacebookPicURL([[eventData objectForKey:@"from"] objectForKey:@"id"]) forKey:@"profile_url"];
                 
                 
             }
-           
+            else if([eventData objectForKey:@"FBID"])
+            {
+                if([eventData objectForKey:@"pic_square"])
+                    [tempDict setObject:[eventData objectForKey:@"pic_square"] forKey:@"profile_url"];
+                else
+                    [tempDict setObject:FacebookPicURL([eventData objectForKey:@"FBID"]) forKey:@"profile_url"];
+                
+                
+            }
+            else if([eventData objectForKey:@"linkedIn_id"])
+            {
+                [tempDict setObject:[eventData objectForKey:@"pic_url"] forKey:@"profile_url"];
+                
+            }
+            
+            NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadProfileImgWithOperationForEvents:) object:tempDict];
+            
+            [tempDict release];
+            
+            [picturesOperationQueue addOperation:operation];
+                        
+            [operation release];
+            
+            
+        }
+        
+    }
+
+}
+-(void) makeRequestToLoadImagesUsingOperations:(id)source{
+    
+    if([source isKindOfClass:[NSMutableArray class]]){
+        int upcomingsCount=[allupcomingEvents count];
+        for(int i=0;i<upcomingsCount;i++){
+            [self checkAndStartOperationToDownloadPicForTheEvent:(NSDictionary*)[source objectAtIndex:i]];
         }
     }
+    else{
+        [self checkAndStartOperationToDownloadPicForTheEvent:(NSDictionary*)source];
+    }
+    
+       
 }
 
 -(void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails{
@@ -2202,7 +2178,7 @@ static NSDateFormatter *customDateFormat=nil;
         [self sortEvents:listOfBirthdayEvents eventCategory:2];
     [eventsTable reloadData];
     [self storeAllupcomingsForSuccessScreen];
-    
+    [self makeRequestToLoadImagesUsingOperations:eventDetails];
 }
 -(void)storeAllupcomingsForSuccessScreen{
     
@@ -2223,7 +2199,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     [tempArray release];
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:[allupcomingEvents count]];
-    [self makeRequestToLoadImagesUsingOperations];
+    //[self makeRequestToLoadImagesUsingOperations];
 }
 - (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
     
@@ -2266,7 +2242,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
-        
+        [self makeRequestToLoadImagesUsingOperations:eventDetails];
         
         
     }
@@ -2313,7 +2289,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
-        
+        [self makeRequestToLoadImagesUsingOperations:eventDetails];
     }
 }
 - (void)congratsEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
@@ -2354,7 +2330,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
-        
+        [self makeRequestToLoadImagesUsingOperations:eventDetails];
         
     }
 }
@@ -2545,7 +2521,7 @@ static NSDateFormatter *customDateFormat=nil;
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
         [eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
-        
+        [self makeRequestToLoadImagesUsingOperations:linkedInEvent];
         
         if([CheckNetwork connectedToNetwork]){
             
@@ -2606,7 +2582,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     [picturesOperationQueue cancelAllOperations];
-    
+    //[eventProfilePicOpQueue cancelAllOperations];
     isCancelledImgOperations=YES;
 }
 #pragma mark - ProgressHUD methods
@@ -2668,10 +2644,11 @@ static NSDateFormatter *customDateFormat=nil;
     
     [picturesOperationQueue cancelAllOperations];
     [picturesOperationQueue release];
-    
+   
     //[fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
     
     dispatch_release(ImageLoader_Q);
+    dispatch_release(ImageLoader_Q_ForEvents);
     [fb_giftgiv_home setFbGiftGivDelegate:nil];
     [lnkd_giftgiv_home setLnkInGiftGivDelegate:nil];
     [searchBirthdayEvents release];

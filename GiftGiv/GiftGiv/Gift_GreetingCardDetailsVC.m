@@ -31,7 +31,7 @@
 @synthesize isGreetingCard;
 @synthesize giftItemInfo;
 @synthesize dateLabel;
-
+@synthesize shippingCostLbl;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -121,7 +121,7 @@
     [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:kCTLineBreakByWordWrapping];
     CGSize labelSize = [[giftDescription string] sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
     
-    CGRect targetFrame=CGRectMake(20, greetingPrice.frame.origin.y+greetingPrice.frame.size.height, labelSize.width, labelSize.height);
+    CGRect targetFrame=CGRectMake(20, shippingCostLbl.frame.origin.y+shippingCostLbl.frame.size.height, labelSize.width, labelSize.height);
     
     if([[giftDescription string] length]){
         targetFrame.origin.y+=10;
@@ -132,7 +132,7 @@
     //giftDetailsLbl.textAlignment=UITextAlignmentJustify;
     giftDetailsLbl.attributedText=giftDescription;//[giftDescription string];
         
-    innerViewForGreetDetails.frame=CGRectMake(0, giftDetailsLbl.frame.origin.y+giftDetailsLbl.frame.size.height, 320, 234);
+    innerViewForGreetDetails.frame=CGRectMake(0, giftDetailsLbl.frame.origin.y+giftDetailsLbl.frame.size.height+5, 320, 234);
     CGRect detailsBgFrame=detailsBgView.frame;
     detailsBgFrame.size.height=innerViewForGreetDetails.frame.origin.y+innerViewForGreetDetails.frame.size.height;
     detailsBgView.frame=detailsBgFrame;
@@ -332,6 +332,7 @@
     [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
     [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
     [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
+    
     [giftAndSenderInfo setObject:greetingPrice.text forKey:@"GiftPrice"];
     [giftAndSenderInfo setObject:[personalMsgTxt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
     
@@ -427,6 +428,7 @@
     [self setDodPicker:nil];
     [self setGiftDetailsLbl:nil];
     [self setInnerViewForGreetDetails:nil];
+    [self setShippingCostLbl:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -462,6 +464,7 @@
     [dodPicker release];
     [giftDetailsLbl release];
     [innerViewForGreetDetails release];
+    [shippingCostLbl release];
     [super dealloc];
 }
 

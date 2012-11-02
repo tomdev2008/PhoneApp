@@ -33,7 +33,7 @@
 @synthesize dodBgView;
 @synthesize dodPicker;
 @synthesize dateLabel;
-
+@synthesize shippingCostLbl;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -133,7 +133,7 @@
     NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:[giftItemInfo giftDetails]];
     [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:kCTLineBreakByWordWrapping];
     CGSize labelSize = [[giftDescription string]sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
-    CGRect targetFrame=CGRectMake(20, giftPriceLbl.frame.origin.y+giftPriceLbl.frame.size.height, labelSize.width, labelSize.height);
+    CGRect targetFrame=CGRectMake(20, shippingCostLbl.frame.origin.y+shippingCostLbl.frame.size.height, labelSize.width, labelSize.height);
     
     if([[giftDescription string] length]){
         targetFrame.origin.y+=10;
@@ -147,7 +147,7 @@
     //[giftDetails setTextAlignment:(NSTextAlignment)]
     giftDetails.attributedText=giftDescription;//[giftDescription string];
         
-    giftOptionsListBgView.frame=CGRectMake(0, giftDetails.frame.origin.y+giftDetails.frame.size.height, 320, 373);
+    giftOptionsListBgView.frame=CGRectMake(0, giftDetails.frame.origin.y+giftDetails.frame.size.height+3, 320, 373);
     
     [giftDetailsScroll setContentSize:CGSizeMake(320, giftOptionsListBgView.frame.origin.y+giftOptionsListBgView.frame.size.height)];
     
@@ -745,6 +745,7 @@
     [self setElectronicPhysicSelNavigator:nil];
     [self setGiftDetails:nil];
     [self setGiftOptionsListBgView:nil];
+    [self setShippingCostLbl:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -785,6 +786,7 @@
     [electronicPhysicSelNavigator release];
     [giftDetails release];
     [giftOptionsListBgView release];
+    [shippingCostLbl release];
     [super dealloc];
 }
 

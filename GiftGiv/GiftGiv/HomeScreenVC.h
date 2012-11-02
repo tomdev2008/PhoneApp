@@ -63,7 +63,7 @@
     BOOL isCancelledImgOperations;
     NSFileManager *fm;
     NSOperationQueue *picturesOperationQueue;
-    dispatch_queue_t ImageLoader_Q;
+    dispatch_queue_t ImageLoader_Q, ImageLoader_Q_ForEvents;
 }
 @property (retain, nonatomic) IBOutlet UISearchBar *contactsSearchBar;
 @property (retain, nonatomic) IBOutlet UIView *contactsSearchView;
@@ -103,6 +103,7 @@
 - (IBAction)showSearchView:(id)sender;
 - (IBAction)searchCancelAction:(id)sender;
 
--(void) makeRequestToLoadImagesUsingOperations;
+-(void)makeRequestToLoadImagesUsingOperations:(id)source;
+-(void)checkAndStartOperationToDownloadPicForTheEvent:(NSDictionary*)eventData;
 -(BOOL)checkWhetherLinkedInEventExist:(NSMutableDictionary*)linkedInDict;
 @end

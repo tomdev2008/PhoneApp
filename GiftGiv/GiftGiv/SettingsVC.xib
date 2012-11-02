@@ -112,7 +112,6 @@
 						<string key="NSFrame">{{127, 4}, {68, 36}}</string>
 						<reference key="NSSuperview" ref="696986032"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<int key="IBUIContentMode">1</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -341,7 +340,7 @@
 							<object class="IBUIButton" id="1029726385">
 								<reference key="NSNextResponder" ref="961860681"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{62, 292}, {190, 21}}</string>
+								<string key="NSFrame">{{62, 293}, {190, 21}}</string>
 								<reference key="NSSuperview" ref="961860681"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="637182883"/>
@@ -350,7 +349,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentVerticalAlignment">0</int>
 								<string key="IBUIHighlightedTitle">info@thegiftgiv.com</string>
-								<string key="IBUINormalTitle"> info@thegiftgiv.com</string>
+								<string key="IBUINormalTitle">info@thegiftgiv.com</string>
 								<object class="NSColor" key="IBUIHighlightedTitleColor">
 									<int key="NSColorSpace">1</int>
 									<bytes key="NSRGB">MCAwLjY3MDU4ODIzNTMgMC42NjI3NDUwOTgAA</bytes>
@@ -538,7 +537,6 @@
 								<string key="NSFrame">{{73, 445}, {48, 21}}</string>
 								<reference key="NSSuperview" ref="961860681"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<int key="IBUITag">4</int>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -854,7 +852,7 @@
 				<string key="47.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="48.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="49.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<real value="1" key="49.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
+				<real value="0.0" key="49.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="50.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="51.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

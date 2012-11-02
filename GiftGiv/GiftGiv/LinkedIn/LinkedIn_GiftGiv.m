@@ -201,10 +201,13 @@ static NSCalendar *gregorianCalendar=nil;
             }
             
         }
+        else{
+            [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+        }
                
     }
     else if (identifier == self.fetchMemberProfile){
-        
+        NSLog(@"current connection..%d,%d",currentConnectionNum,totalConnectionsCount);
         if([results isKindOfClass:[NSDictionary class]]){
             if([[results objectForKey:@"positions"] isKindOfClass:[NSDictionary class]]){
                 if([[results objectForKey:@"positions"] objectForKey:@"position"]){
