@@ -163,6 +163,13 @@
         priceSelectedLbl.text=[NSString stringWithFormat:@"   $%@",[giftItemInfo giftPrice]];
     }
     
+    //Dynamic[fit] label width respected to the size of the text
+    CGSize giftPriceLbl_maxsize = CGSizeMake(giftPriceLbl.frame.size.width, giftPriceLbl.frame.size.height);
+    CGSize giftPriceLbl_new_size=[giftPriceLbl.text sizeWithFont:giftPriceLbl.font constrainedToSize:giftPriceLbl_maxsize lineBreakMode:UILineBreakModeTailTruncation];
+    giftPriceLbl.frame=CGRectMake(giftPriceLbl.frame.origin.x, giftPriceLbl.frame.origin.y, giftPriceLbl_new_size.width, giftPriceLbl.frame.size.height);
+    
+    
+    shippingCostLbl.frame= CGRectMake(giftPriceLbl.frame.origin.x+3+giftPriceLbl.frame.size.width, shippingCostLbl.frame.origin.y, shippingCostLbl.frame.size.width, shippingCostLbl.frame.size.height);
     
     [dateLabel.layer setCornerRadius:6.0];
     [dateLabel.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];

@@ -112,6 +112,17 @@
     
     greetingNameLbl.text=[giftItemInfo giftTitle];
     greetingPrice.text=[NSString stringWithFormat:@"$%@",[giftItemInfo giftPrice]];
+    
+    //Dynamic[fit] label width respected to the size of the text
+    CGSize giftPriceLbl_maxsize = CGSizeMake(greetingPrice.frame.size.width, greetingPrice.frame.size.height);
+    CGSize giftPriceLbl_new_size=[greetingPrice.text sizeWithFont:greetingPrice.font constrainedToSize:giftPriceLbl_maxsize lineBreakMode:UILineBreakModeTailTruncation];
+    greetingPrice.frame=CGRectMake(greetingPrice.frame.origin.x, greetingPrice.frame.origin.y, giftPriceLbl_new_size.width, greetingPrice.frame.size.height);
+    
+    
+    shippingCostLbl.frame= CGRectMake(greetingPrice.frame.origin.x+3+greetingPrice.frame.size.width, shippingCostLbl.frame.origin.y, shippingCostLbl.frame.size.width, shippingCostLbl.frame.size.height);
+    
+    
+    
     giftDetailsContentScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsContentScroll];
     
