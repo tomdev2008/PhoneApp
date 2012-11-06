@@ -345,7 +345,7 @@ static NSCalendar *gregorian=nil;
 }
 
 - (void)request:(FBRequest *)request didLoad:(id)result{
-    
+    //NSLog(@"received response...");
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
         
         if([request isEqual:getDetailedEventReq]){

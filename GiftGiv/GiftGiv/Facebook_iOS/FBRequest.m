@@ -299,7 +299,7 @@ error = _error;
  * make the Facebook request
  */
 - (void)connect {
-    
+    //NSLog(@"Request processing...");
     if ([_delegate respondsToSelector:@selector(requestLoading:)]) {
         [_delegate requestLoading:self];
     }
