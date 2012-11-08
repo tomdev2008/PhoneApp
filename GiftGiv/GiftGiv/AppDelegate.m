@@ -113,7 +113,7 @@
     NSFileManager *fm=[NSFileManager defaultManager];
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
-    [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+    [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForProfilePicFileName:@""] error:nil];
     [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForGiftItemFileName:@""] error:nil];
     
 }

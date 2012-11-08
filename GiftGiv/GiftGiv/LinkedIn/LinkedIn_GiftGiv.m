@@ -12,8 +12,6 @@
 #import "AppDelegate.h"
 #import "RDLinkedIn.h"
 
-//#define SHARE_COMPLETED_NOTIFICATION @"LinkedInShareSuccess"
-//#define SHARE_FAILED_NOTIFICATION @"LinkedInShareFailed"
 
 @interface LinkedIn_GiftGiv ()
 
@@ -26,35 +24,15 @@
 
 @end
 
-//static LinkedIn_GiftGiv *sharedInstance = nil;
-
-
-
 @implementation LinkedIn_GiftGiv
-
 
 @synthesize engine;
 @synthesize fetchCurrentUserProfile,fetchMemberProfile,fetchNetworkUpdates,fetchCommentsForUpdate,fetchLikesForUpdate;
-//@synthesize shareConnection;
+
 @synthesize lnkInGiftGivDelegate;
 
 static NSCalendar *gregorianCalendar=nil;
 
-/*#pragma mark LinkedInShareHelper class methods
-+ (LinkedIn_GiftGiv *)sharedSingleton
-{
-#ifdef DEBUGX
-	//NSLog(@"%s", __FUNCTION__);
-#endif
-    
-    @synchronized(self)
-    {
-        if (!sharedInstance){
-            sharedInstance = [[LinkedIn_GiftGiv alloc] init];
-        }
-        return sharedInstance;// LinkedInShareHelper singleton
-    } 
-}*/
 -(id)init {
     self = [super init];
     if(self) {
@@ -63,7 +41,7 @@ static NSCalendar *gregorianCalendar=nil;
     return self;
 }
 - (void)logInFromView:(id)viwController{
-    //NSLog(@"self.engine=%@ , self=%@",self.engine,self);
+
     RDLinkedInAuthorizationController* loginController = [RDLinkedInAuthorizationController authorizationControllerWithEngine:self.engine delegate:self];
     if( loginController ) {
         //[loginController setModalPresentationStyle:UIModalPresentationFormSheet];
@@ -85,25 +63,62 @@ static NSCalendar *gregorianCalendar=nil;
 
 
 - (void)fetchProfile {
-    
+    // make a request to linkedIn engine to get the user's profile
     self.fetchCurrentUserProfile = [self.engine profileForCurrentUser];
     
 }
 
 - (void)getMemberProfile:(NSString*)memberId{
   
+    // make a request to linkedIn engine to get a particular member's profile
     self.fetchMemberProfile = [self.engine profileForPersonWithID:memberId];
 }
 
+//Algorithm to get the events from linkedin
+
+/*
+ Get network updates with an update type of PRFU
+ 
+     For each update
+ 
+     {
+ 
+       For the updated-fields whether an update-field is having a name value as "person/positions"{
+ 
+            Take the id of a member and get the member profile with positions
+ 
+            If any position's  "is-current" value set to "true"{
+ 
+                If the start-date's month and year related to last month of the current date{
+ 
+                        Add the member to "Events to celebrate" with event-type "new position"
+ 
+                }
+ 
+            }
+ 
+        }
+ 
+    }
+ */
+
+
+//get a particular type of network updates for the loggedin user
 - (void)getMyNetworkUpdatesWithType:(NSString*)type{
+ 
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
     self.fetchNetworkUpdates = [self.engine networkUpdatesWithType:type];
    
 }
+
+//Collect the comments for a particular update
 -(void)getListOfCommentsForTheUpdate:(NSString *)updateKey{
+    
     self.fetchCommentsForUpdate = [self.engine commentsForUpdate:updateKey];
 }
+// Collect likes for a particular update
 -(void)getLikesForAnUpdat:(NSString*)updateKey{
+    
     self.fetchLikesForUpdate = [self.engine likesForUpdate:updateKey];
 }
 #pragma mark - RDLinkedInEngineDelegate
@@ -124,15 +139,15 @@ static NSCalendar *gregorianCalendar=nil;
     return [OAToken rd_tokenWithUserDefaultsUsingServiceProviderName:@"LinkedIn" prefix:@"Demo"];
 }
 
+//Delegate to receive the response from linkedIn
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestSucceeded:(RDLinkedInConnectionID *)identifier withResults:(id)results {
     
-   // NSLog(@"identifier..%@",identifier);
-    //NSLog(@"++ LinkedIn engine reports success for connection %@", identifier);
+    //Related to current user's profile
     if( identifier == self.fetchCurrentUserProfile ) {
         NSMutableDictionary* profile = results;
         [lnkInGiftGivDelegate linkedInLoggedInWithUserDetails:profile];
     }
-    
+    //network updates
     else if (identifier == self.fetchNetworkUpdates){
         if([networkUpdates count]){
             [networkUpdates removeAllObjects];
@@ -146,15 +161,15 @@ static NSCalendar *gregorianCalendar=nil;
             tempUpdates=[[NSMutableArray alloc]initWithObjects:[results objectForKey:@"update"], nil];
         else
             tempUpdates=[[NSMutableArray alloc]initWithArray:[results objectForKey:@"update"]];
-        //NSLog(@"PRFU Updates..%@",tempUpdates);
-        //NSLog(@"%d",[tempUpdates count]);
+       // for each update
         for (NSMutableDictionary *updateDict in tempUpdates) {
             
             if([updateDict objectForKey:@"updated-fields"]){
                 if([[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]){
                     int update_field_count=[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] count];
-                    //NSLog(@"feed..%@, \nClass:%@",[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"],[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] class]);
+                    
                     if([[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]isKindOfClass:[NSArray class]]){
+                        
                         for(int i=0;i<update_field_count;i++){
                            
                             if([[[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]objectAtIndex:i] objectForKey:@"name"] isEqualToString:@"person/positions"]){
@@ -171,6 +186,7 @@ static NSCalendar *gregorianCalendar=nil;
                     }
                     else if([[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]isKindOfClass:[NSDictionary class]]){
                         
+                        //take the update if it is related to position
                         if([[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] objectForKey:@"name"] isEqualToString:@"person/positions"]){
                             
                             NSMutableDictionary *tempDict=[[NSMutableDictionary alloc] initWithCapacity:2];
@@ -178,7 +194,7 @@ static NSCalendar *gregorianCalendar=nil;
                             [tempDict setObject:[updateDict objectForKey:@"update-key"] forKey:@"update_key"];
                             [networkUpdates addObject:tempDict];
                             [tempDict release];
-                            //break;
+                            
                         }
                     }
                 }
@@ -190,7 +206,11 @@ static NSCalendar *gregorianCalendar=nil;
         totalConnectionsCount=[networkUpdates count];
         if(totalConnectionsCount){
             while (currentConnectionNum<totalConnectionsCount){
+                
+                // check whether the ID is private or not, if it is private, we will not get profile for that user
                 if(![[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"] isEqualToString:@"private"]){
+                    
+                    //Get the member's profile
                     if([self isLinkedInAuthorized])
                         [self getMemberProfile:[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
                     break;
@@ -207,17 +227,17 @@ static NSCalendar *gregorianCalendar=nil;
                
     }
     else if (identifier == self.fetchMemberProfile){
-        NSLog(@"current connection..%d,%d",currentConnectionNum,totalConnectionsCount);
+        
         if([results isKindOfClass:[NSDictionary class]]){
             if([[results objectForKey:@"positions"] isKindOfClass:[NSDictionary class]]){
                 if([[results objectForKey:@"positions"] objectForKey:@"position"]){
-                    //NSLog(@"position..%@",[[results objectForKey:@"positions"] objectForKey:@"position"]);
+                    
                     if([[[results objectForKey:@"positions"] objectForKey:@"position"]isKindOfClass:[NSArray class]]){
                         for(NSDictionary *tempDict in [[results objectForKey:@"positions"] objectForKey:@"position"]){
-                            //NSLog(@"dict..%@",tempDict);
+                            
                             if([tempDict objectForKey:@"is-current"]){
                                 if([[tempDict objectForKey:@"is-current"] isEqualToString:@"true"]){
-                                    //NSLog(@"found..%@",[results objectForKey:@"first-name"]);
+                                   // To check if the start-date from past 1 month
                                     if([tempDict objectForKey:@"start-date"]){
                                         NSDictionary *startDateDict=[tempDict objectForKey:@"start-date"];
                                         if(gregorianCalendar==nil)
@@ -225,23 +245,18 @@ static NSCalendar *gregorianCalendar=nil;
                                         NSDateComponents *components = [gregorianCalendar components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
                                         int currentMonth=[components month];
                                         int currentYear=[components year];
-                                        //[gregorianCalendar release];
-                                        
+                                                                                
                                         if([[startDateDict objectForKey:@"year"] intValue]==currentYear){
                                             
                                             if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-1){
-                                                //    NSMutableDictionary *tempResults=[[NSMutableDictionary alloc] initWithDictionary:results];
-                                                //  [tempResults
-                                                
-                                                
+                                                                                                
                                                 [[results objectForKey:@"positions"] setObject:tempDict forKey:@"position"];
                                                 for (int j=0;j<totalConnectionsCount;j++){
                                                     
                                                     if([[results objectForKey:@"id"] isEqualToString:[[networkUpdates objectAtIndex:j]objectForKey:@"id"]])
                                                         [results setObject:[[networkUpdates objectAtIndex:j]objectForKey:@"update_key"] forKey:@"update_key"];
                                                 }
-                                                
-                                                //NSLog(@"%@",tempDict);
+                                               
                                                 
                                                 //send it to events to celebrate group
                                                 
@@ -252,16 +267,13 @@ static NSCalendar *gregorianCalendar=nil;
                                         }
                                     }
                                     
-                                    //[[results objectForKey:@"positions"] setObject:tempDict forKey:@"position"];
-                                    //[lnkInGiftGivDelegate receivedLinkedInNewEvent:(NSMutableDictionary*)results];
-                                    //break;
                                 }
                             }
                         }
                     }
                     else if([[[results objectForKey:@"positions"] objectForKey:@"position"] objectForKey:@"is-current"]){
                         if([[[[results objectForKey:@"positions"] objectForKey:@"position"] objectForKey:@"is-current"] isEqualToString:@"true"]){
-                            //NSLog(@"found..%@",[results objectForKey:@"first-name"]);
+                            
                             if([[[results objectForKey:@"positions"] objectForKey:@"position"] objectForKey:@"start-date"]){
                                 NSDictionary *startDateDict=[[[results objectForKey:@"positions"] objectForKey:@"position"] objectForKey:@"start-date"];
                                 if(gregorianCalendar==nil)
@@ -269,15 +281,13 @@ static NSCalendar *gregorianCalendar=nil;
                                 NSDateComponents *components = [gregorianCalendar components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
                                 int currentMonth=[components month];
                                 int currentYear=[components year];
-                                //[gregorianCalendar release];
-                                
+                                                                
                                 if([startDateDict objectForKey:@"year"]){
                                     if([[startDateDict objectForKey:@"year"] intValue]==currentYear){
                                         if([startDateDict objectForKey:@"month"]){
                                             if([[startDateDict objectForKey:@"month"] intValue]>=currentMonth-1){
-                                                //NSLog(@"linkedIn Event received..%@",results);
-                                                //send it to events to celebrate group
                                                 
+                                                //send it to events to celebrate group
                                                 for (int j=0;j<totalConnectionsCount;j++){
                                                     
                                                     if([[results objectForKey:@"id"] isEqualToString:[[networkUpdates objectAtIndex:j]objectForKey:@"id"]])
@@ -289,8 +299,6 @@ static NSCalendar *gregorianCalendar=nil;
                                             }
                                         }
                                         else{
-                                            //NSLog(@"linkedIn Event received..%@",results);
-                                            
                                             for (int j=0;j<totalConnectionsCount;j++){
                                                 
                                                 if([[results objectForKey:@"id"] isEqualToString:[[networkUpdates objectAtIndex:j]objectForKey:@"id"]])
@@ -304,7 +312,7 @@ static NSCalendar *gregorianCalendar=nil;
                                 }
                                 
                             }
-                            //[lnkInGiftGivDelegate receivedLinkedInNewEvent:(NSMutableDictionary*)results];
+                           
                         }
                     }
                 }
@@ -325,14 +333,16 @@ static NSCalendar *gregorianCalendar=nil;
                 else
                     currentConnectionNum++;
             }
-            //[self getMemberProfile:[[networkUpdates objectAtIndex:currentConnectionNum]objectForKey:@"id"]];
+            
         }
         else if(currentConnectionNum==totalConnectionsCount-1){
             [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         }
-       // NSLog(@"updates..%@",results);
+
     }
     else if (identifier == self.fetchLikesForUpdate){
+        
+        //Received likes for the events to show in the details screen.
         int likesCount=0;
         if([results objectForKey:@"like"]){
             likesCount=[[results objectForKey:@"like"] count];
@@ -342,6 +352,7 @@ static NSCalendar *gregorianCalendar=nil;
         
     }
     else if (identifier ==  self.fetchCommentsForUpdate){
+        
         [lnkInGiftGivDelegate receivedCommentsForAnUpdate:results];
         
     }

@@ -6,10 +6,16 @@
 //  Copyright (c) 2012 Teleparadigm Networks Limited. All rights reserved.
 //
 
+/* This class is useful to get/create a folder in the cache folder of the application */
+
 #import <Foundation/Foundation.h>
 
 @interface GetCachesPathForTargetFile : NSObject
 
-+ (NSString *)cachePathForFileName:(NSString *)name;
+//Cache path for user's profile picture
++ (NSString *)cachePathForProfilePicFileName:(NSString *)name;
+
+//Cache path for gift item's thumbnails
 + (NSString *)cachePathForGiftItemFileName:(NSString *)name;
+
 @end

@@ -20,19 +20,23 @@ typedef enum apiCall {
     
 } apiCall;
 
-
-
 @protocol Facebook_GiftGivDelegate <NSObject>
 
 @optional
+
+//facebook delegate methods
+
 - (void)facebookLoggedIn;
 - (void)facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)userDetails;
 - (void)receivedBirthDayEvents:(NSMutableArray*)listOfBirthdays;
 
+//Related to events
 - (void)birthdayEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
 - (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
 - (void)anniversaryEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
 - (void)congratsEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails;
+
+//Related to detailed event
 - (void)receivedDetailedEventInfo:(NSMutableDictionary*)eventDetails;
 
 - (void)facebookDidLoggedOut;
@@ -45,6 +49,8 @@ typedef enum apiCall {
     Facebook *facebook;
     
     int currentAPICall;
+    
+    //To have the requests
     NSMutableDictionary *friendUserIds;
     
     NSMutableArray *birthdaySearchStrings;
@@ -57,14 +63,12 @@ typedef enum apiCall {
     FBRequest *getFriendsListReq;
     FBRequest *getFBBirthdaysReq;
 
-    //NSOperationQueue *fbOperationQueue;
     int responseCount;
 }
 @property (nonatomic, retain) NSMutableArray *fbRequestsArray;
 @property (nonatomic, retain) Facebook *facebook;
 @property (nonatomic, assign) id <Facebook_GiftGivDelegate>fbGiftGivDelegate;
 
-//+ (Facebook_GiftGiv *)sharedSingleton;
 - (Facebook *)facebook;
 - (void)extendAccessTokenIfNeeded;
 - (void)authorizeOurAppWithFacebook;

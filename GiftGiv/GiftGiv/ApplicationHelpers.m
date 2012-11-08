@@ -21,8 +21,10 @@ void AlertWithMessageAndDelegateActionHandling(NSString *title, NSString *messag
     [alert setTitle:title];
     [alert setMessage:message];
     [alert setDelegate:theDelegate];
+    
     for(int i=0;i<[buttonTitles count];i++)
         [alert addButtonWithTitle:[buttonTitles objectAtIndex:i]];
 	[alert show];
-	[alert release];
+	
+    [alert release];
 }

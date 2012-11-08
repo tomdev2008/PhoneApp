@@ -21,32 +21,16 @@
 
 @synthesize facebook,fbGiftGivDelegate,fbRequestsArray;
 
-//static Facebook_GiftGiv *sharedInstance = nil;
 static NSDateFormatter *standardDateFormatter = nil;
 static NSDateComponents *components=nil;
 static NSCalendar *gregorian=nil;
 
 #pragma mark Facebook_GiftGiv class methods
-/*+ (Facebook_GiftGiv *)sharedSingleton
-{
-#ifdef DEBUGX
-	NSLog(@"%s", __FUNCTION__);
-#endif
-    
-    @synchronized(self)
-    {
-        if (!sharedInstance){
-            sharedInstance = [[Facebook_GiftGiv alloc] init];
-            
-        }
-        
-        return sharedInstance;// Facebook_GiftGiv singleton
-    } 
-}*/
-
 
 - (Facebook *)facebook{
+    
     if (facebook==nil) {
+    
         facebook = [[Facebook alloc] initWithAppId:KFacebookAppId andDelegate:self];
         // Check and retrieve authorization information
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -157,9 +141,7 @@ static NSCalendar *gregorian=nil;
 - (void)storeAuthData:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {
     [[NSUserDefaults standardUserDefaults]setObject:accessToken forKey:@"FBAccessTokenKey"];
     [[NSUserDefaults standardUserDefaults]setObject:expiresAt forKey:@"FBExpirationDateKey"];
-    
-    //NSLog(@"%@",[defaults objectForKey:@"FBAccessTokenKey"]);
-    //[defaults synchronize];
+   
 }
 /**
  * Called when the user logged out.
@@ -224,7 +206,7 @@ static NSCalendar *gregorian=nil;
  *  - the user changed his or her password
  */
 - (void)fbSessionInvalidated{
-    //[[[UIAlertView alloc]initWithTitle:NSLocalizedString(@"FacebookSessionExpired", @"") message:NSLocalizedString(@"YourSessionExpired", @"") delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    
     AlertWithMessageAndDelegate(NSLocalizedString(@"FacebookSessionExpired", @""), NSLocalizedString(@"YourSessionExpired", @""),nil);
     [self fbDidLogout];
 }
@@ -245,18 +227,17 @@ static NSCalendar *gregorian=nil;
                                               andDelegate:self];
     [fbRequestsArray addObject:aboutMeReq];
 }
+//Get my friend birthdays
 - (void)listOfBirthdayEvents{
     
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
-        //currentAPICall=kAPIGetBirthdayEvents;
-        
+                
         //Date should be in MM/dd/yyyy formate only for facebook queries
         NSString *startDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:-4]; //previous 3 days as it like windows phone logic
         NSString *endDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:14]; //next 15 days as it like windows phone logic
-        
-        
+                
         NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND birthday_date >= \"%@\" AND birthday_date <= \"%@\" ORDER BY birthday_date ASC",startDate,endDate];
-        //NSLog(@"%@",getBirthdaysQuery);
+        
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                        getBirthdaysQuery, @"query",
                                        nil];
@@ -269,41 +250,18 @@ static NSCalendar *gregorian=nil;
     }
     
 }
--(NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd{
-    NSDate *now=[NSDate date];    
-    // set up date components
-    if(components==nil)
-       components = [[NSDateComponents alloc] init];
-    [components setDay:daysToAdd];
-    
-    // create a calendar
-    if(gregorian==nil)
-        gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    
-    NSDate *updatedDate = [gregorian dateByAddingComponents:components toDate:now options:0];
-    //NSLog(@"%@",updatedDate);
-    if(standardDateFormatter==nil){
-        standardDateFormatter=[[NSDateFormatter alloc]init];  
-        [standardDateFormatter setDateFormat:@"MM/dd/yyyy"];
-    }
-    
-    NSString *convertedToString=[standardDateFormatter stringFromDate:updatedDate];
-    
-    return convertedToString;
-}
-
 - (void)getAllFriendsWithTheirDetails{
     
-    
+    //Check if the accesstoken is available
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
         
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        //currentAPICall=kAPIGetAllFriends;
+       
         [fbRequestsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             FBRequest*reqObj= (FBRequest*)obj ;
             [reqObj.connection cancel];
         }];
-        //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+       
         if(friendUserIds!=nil && [friendUserIds count]){
             responseCount=0;
             [friendUserIds removeAllObjects];
@@ -313,7 +271,7 @@ static NSCalendar *gregorian=nil;
         friendUserIds=[[NSMutableDictionary alloc]init];
         
         NSString *getFriendsQuery=@"SELECT uid, name, first_name, last_name, birthday_date, pic_square from user where uid in (SELECT uid2 FROM friend WHERE uid1=me())";
-        //NSLog(@"%@",getFriendsQuery);
+        
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                        getFriendsQuery, @"query",
                                        nil];
@@ -330,8 +288,31 @@ static NSCalendar *gregorian=nil;
     
 }
 - (void)getEventDetails:(NSString*)statusID{
-    NSLog(@"Event ID=%@",statusID);
+    
     getDetailedEventReq=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@",statusID] andDelegate:self];
+}
+#pragma mark -
+-(NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd{
+    NSDate *now=[NSDate date];
+    // set up date components
+    if(components==nil)
+        components = [[NSDateComponents alloc] init];
+    [components setDay:daysToAdd];
+    
+    // create a calendar
+    if(gregorian==nil)
+        gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    
+    NSDate *updatedDate = [gregorian dateByAddingComponents:components toDate:now options:0];
+    
+    if(standardDateFormatter==nil){
+        standardDateFormatter=[[NSDateFormatter alloc]init];
+        [standardDateFormatter setDateFormat:@"MM/dd/yyyy"];
+    }
+    
+    NSString *convertedToString=[standardDateFormatter stringFromDate:updatedDate];
+    
+    return convertedToString;
 }
 #pragma mark - FBRequestDelegate methods
 
@@ -345,9 +326,10 @@ static NSCalendar *gregorian=nil;
 }
 
 - (void)request:(FBRequest *)request didLoad:(id)result{
-    //NSLog(@"received response...");
+
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
         
+        //Received the response for the details of an event
         if([request isEqual:getDetailedEventReq]){
             
             if([result isKindOfClass:[NSDictionary class]]){
@@ -356,29 +338,31 @@ static NSCalendar *gregorian=nil;
         }
         if([request isEqual:getFriendsListReq]){
                  
-            
+            //Event search keywords
             if(newJobSearchStrings==nil){
-                newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"got job", @"got new job", @"new job" ,nil];/*@"congrats",@"all the best", @"good luck", @"congratulations", @"got job", @"got new job", @"new job",nil];*/
+                newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"got job", @"got new job", @"new job" ,nil];
             }
             if(anniversarySearchStrings==nil){
-                anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary" ,nil];/*@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary",nil]*/;
+                anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary" ,nil];
             }
             if(congratsSearchStrings==nil){
-                congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"Congratulations" ,nil];/*@"congrats", @"all the best", @"good luck", @"congratulations",nil];*/
+                congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"Congratulations" ,nil];
             }
             if(birthdaySearchStrings==nil){
-                birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"belated", @"birthday wishes", @"have a lovely birthday", @"happy birthday", @"many happy returns of the day",nil];/*@"happy",@"many more", @"wish you",@"belated",@"birthday wishes",@"have a lovely birthday",@"happy birthday",@"many happy returns of the day",nil];*/
+                birthdaySearchStrings=[[NSMutableArray alloc]initWithObjects:@"belated", @"birthday wishes", @"have a lovely birthday", @"happy birthday", @"many happy returns of the day",nil];
             }
             
             if(![result isKindOfClass:[NSArray class]])
                 return;
+            
+            //epoch time
             NSTimeInterval currentTimeInterval=[[NSDate date] timeIntervalSince1970];
-            //NSLog(@"photos..reque %@",fbReqPhotos.url);
+           
             NSMutableArray *requestJsonArray = [[[NSMutableArray alloc] init] autorelease];
             NSMutableArray *requestJsonArrayForPhotos = [[[NSMutableArray alloc] init] autorelease];
             
             int requestCountForBatch=0;
-            int countOfFriends=[result count];
+            
             for (NSDictionary *friendDict in (NSMutableArray*)result){
                 
                 if(![friendDict isKindOfClass:[NSDictionary class]])
@@ -386,14 +370,17 @@ static NSCalendar *gregorian=nil;
                 
                 if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
                     return;
-                //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                currentAPICall=kAPIGetJSONForStatuses;
                 
-                NSString *getPhotosQuery=[NSString stringWithFormat:@"'%@':'SELECT object_id, created,owner, like_info, comment_info FROM photo WHERE modified>=%.0f AND aid IN (SELECT aid FROM album WHERE owner = %@ AND modified_major>=%.0f)'",[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60)),[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60))]; //actually it should be for the last 3 days, but changed it to 4 days to get the same as from service.
+                currentAPICall=kAPIGetJSONForStatuses;
+
+                // Get the list of photos for each of my friend from past 3 days
+                NSString *getPhotosQuery=[NSString stringWithFormat:@"'%@':'SELECT object_id, created,owner, like_info, comment_info FROM photo WHERE modified>=%.0f AND aid IN (SELECT aid FROM album WHERE owner = %@ AND modified_major>=%.0f)'",[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60)),[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60))];
                 
                 requestCountForBatch++;
                 [requestJsonArrayForPhotos addObject:getPhotosQuery];
-                if(requestCountForBatch==countOfFriends){
+                
+                //For every 50 friends, will make multiquery
+                if(requestCountForBatch%50==0){
                     NSString *requestJson = [NSString stringWithFormat:@"{%@}", [requestJsonArrayForPhotos componentsJoinedByString:@","]];
                     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"queries"];
                     FBRequest *fbReqPhotos=[[self facebook] requestWithMethodName:@"fql.multiquery"
@@ -403,29 +390,16 @@ static NSCalendar *gregorian=nil;
                     [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqPhotos.params objectForKey:@"queries"]];
                     [fbRequestsArray addObject:fbReqPhotos];
                     [requestJsonArrayForPhotos removeAllObjects];
-                    //requestCountForBatch=0;
+                    
                 }
-                 
-                
-                
-                /*NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                               getPhotosQuery, @"query",
-                                               nil];
-                
-                FBRequest *fbReqPhotos=[[self facebook] requestWithMethodName:@"fql.query"
-                                                                    andParams:params
-                                                                andHttpMethod:@"POST"
-                                                                  andDelegate:self];
-                [fbRequestsArray addObject:fbReqPhotos];
-                
-                [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqPhotos.params objectForKey:@"query"]];*/
-                
-                
+                // statuses query for batch request
                 //last 2 days
                 NSString *fbReqStatuses=[NSString stringWithFormat:@"{ \"method\": \"GET\", \"relative_url\": \"%@/statuses?since=%@\" }", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]];
                 
                                
                 [requestJsonArray addObject:fbReqStatuses];
+                
+                // for every 50 friends, will prepare a batch request
                 if(requestCountForBatch%50==0){
                    
                     NSString *requestJson = [NSString stringWithFormat:@"[ %@ ]", [requestJsonArray componentsJoinedByString:@","]];
@@ -433,11 +407,12 @@ static NSCalendar *gregorian=nil;
                     FBRequest *fbReqSta=[[self facebook] requestWithGraphPath:@"" andParams:params andHttpMethod:@"POST" andDelegate:self];
                     [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqSta.params objectForKey:@"batch"]];
                     [requestJsonArray removeAllObjects];
-                    //requestCountForBatch=0;
+                   
                     [fbRequestsArray addObject:fbReqSta];
                 }
                
             }
+            //If there are any pending requests, will prepared them after finishes the 50 friends set
             if([requestJsonArrayForPhotos count]){
                 NSString *requestJson = [NSString stringWithFormat:@"{%@}", [requestJsonArrayForPhotos componentsJoinedByString:@","]];
                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"queries"];
@@ -448,7 +423,7 @@ static NSCalendar *gregorian=nil;
                 [friendUserIds setValue:@"" forKey:[fbReqPhotos.params objectForKey:@"queries"]];
                 [fbRequestsArray addObject:fbReqPhotos];
                 [requestJsonArrayForPhotos removeAllObjects];
-                //requestCountForBatch=0;
+                
             }
             if([requestJsonArray count]){
                 NSString *requestJson = [NSString stringWithFormat:@"[ %@ ]", [requestJsonArray componentsJoinedByString:@","]];
@@ -456,13 +431,11 @@ static NSCalendar *gregorian=nil;
                 FBRequest *fbReqStatuses=[[self facebook] requestWithGraphPath:@"" andParams:params andHttpMethod:@"POST" andDelegate:self];
                 [friendUserIds setValue:@"" forKey:[fbReqStatuses.params objectForKey:@"batch"]];
                 [requestJsonArray removeAllObjects];
-                requestCountForBatch=0;
                 [fbRequestsArray addObject:fbReqStatuses];
             }
-            
-                   
-            
+       
         }
+        //Birthdays
         if([request isEqual:getFBBirthdaysReq]){
             if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
                 return;
@@ -473,26 +446,13 @@ static NSCalendar *gregorian=nil;
         switch (currentAPICall) {
                 
             case kAPIGetUserDetails:
-                //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO]; 
+                 
                 if ([result isKindOfClass:[NSArray class]] && ([result count] > 0)) {
                     result = [result objectAtIndex:0];
                 }
                 [fbGiftGivDelegate facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)result];
                 break;
-            case kAPIGetBirthdayEvents:
-                
-                
-                break;
-                //Received all friends details
-            case kAPIGetAllFriends:
-                
-                /*if(fbOperationQueue)
-                    [fbOperationQueue cancelAllOperations];
-                else
-                    fbOperationQueue=[[NSOperationQueue alloc]init];*/
-                
-                 
-                break;
+                          
             case kAPIGetJSONForStatuses:
                 responseCount++;
                 if([result isKindOfClass:[NSArray class]]){
@@ -508,15 +468,13 @@ static NSCalendar *gregorian=nil;
                                 NSDictionary *resultantJson=(NSDictionary*)[json objectWithString:[response objectForKey:@"body"]];
                                 [json release];
                                 
-                                //NSString *jsonResponse = [response objectForKey:@"body"];
                                 if ( httpCode != 200 ) {
                                     NSLog( @"Facebook request error: code: %d  message: %@", httpCode, resultantJson );
                                 }
                                 else {
                                     int totalCountForMessages=[[resultantJson objectForKey:@"data"] count];
                                     if(totalCountForMessages){
-                                        //NSLog(@"data class..%@",[[resultantJson objectForKey:@"data"] class]);
-                                        
+                                                                                
                                         for(int i=0;i<totalCountForMessages;i++){
                                             
                                             //Statuses
@@ -532,7 +490,7 @@ static NSCalendar *gregorian=nil;
                                                         for (NSString *searchedString in birthdaySearchStrings){
                                                             
                                                             if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
-                                                                // NSLog(@"checking..%@",messageStr);
+                                                                
                                                                 isEventStatusFound=YES;
                                                                 [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
                                                                 break;
@@ -571,9 +529,7 @@ static NSCalendar *gregorian=nil;
                                                         BOOL isEventsFromCommentsFound=NO;
                                                         for(int j=0;j<commentsCount;j++){
                                                             NSString *commentsStr=[[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
-                                                            //NSLog(@"comments..%@",commentsStr);
-                                                            
-                                                            
+                                                                                                                        
                                                             if(!isEventsFromCommentsFound){
                                                                 for (NSString *searchedString in birthdaySearchStrings){
                                                                     if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
@@ -605,7 +561,7 @@ static NSCalendar *gregorian=nil;
                                                             if(!isEventsFromCommentsFound){
                                                                 for (NSString *searchedString in congratsSearchStrings){
                                                                     if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                        //isEventsFromCommentsFound=YES;
+                                                                        isEventsFromCommentsFound=YES;
                                                                         [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
                                                                         break;
                                                                     }
@@ -633,10 +589,12 @@ static NSCalendar *gregorian=nil;
                             
                             if([[result objectAtIndex:i] objectForKey:@"pic_square"]){
                                 
-                                NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[friendUserIds objectForKey:[request.params objectForKey:@"query"]]];
+                                NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:[friendUserIds valueForKey:[NSString stringWithFormat:@"%@",request]]];
+                                
                                 [tempDict setObject:[[result objectAtIndex:i]objectForKey:@"name"] forKey:@"FBName"];
                                 [tempDict setObject:[[result objectAtIndex:i]objectForKey:@"pic_square"] forKey:@"pic_square"];
                                 [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[tempDict objectForKey:@"PhotoCreatedDate"]floatValue]] forKey:@"PhotoCreatedDate"];
+                                
                                 if([[tempDict objectForKey:@"EventName"] isEqualToString:@"birthday"]){
                                     [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:tempDict];
                                 }
@@ -657,12 +615,13 @@ static NSCalendar *gregorian=nil;
                             }
                             //list of pictures received from multiquery
                             else if([request.params objectForKey:@"queries"]){
+                                
                                 if([[result objectAtIndex:i] objectForKey:@"fql_result_set"]){
                                     int listCountOfResultSetForEachQuery=[[[result objectAtIndex:i] objectForKey:@"fql_result_set"] count];
                                     for(int j=0;j<listCountOfResultSetForEachQuery;j++){
                                         NSMutableDictionary *overviewOfPhotoObject=(NSMutableDictionary*)[[[result objectAtIndex:i] objectForKey:@"fql_result_set"] objectAtIndex:j];
                                         if([[[overviewOfPhotoObject  objectForKey:@"like_info"] objectForKey:@"like_count"] intValue]>=15 || [[[overviewOfPhotoObject objectForKey:@"comment_info"] objectForKey:@"comment_count"] intValue]>=15){
-                                            //NSLog(@"result..%@",result);
+                                            
                                             NSString *getCommentsForPhoto=[NSString stringWithFormat:@"SELECT object_id,text from comment where object_id=%@",[overviewOfPhotoObject objectForKey:@"object_id"]];
                                             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                                            getCommentsForPhoto, @"query",
@@ -691,12 +650,9 @@ static NSCalendar *gregorian=nil;
                             
                             else if([[result objectAtIndex:i] objectForKey:@"text"]){
                                 BOOL isEventFound=NO;
-                                //int commentsCount=[[result objectForKey:@"data"] count];
-                                //for(int j=0;j<commentsCount;j++){
+                               
                                 NSString *commentsStr=[[result objectAtIndex:i] objectForKey:@"text"];
-                                
-                                //commentsStr=[commentsS;tr lowercaseString];
-                                
+                                                                
                                 for (NSString *searchedString in birthdaySearchStrings){
                                     if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
                                         isEventFound=YES;
@@ -705,6 +661,7 @@ static NSCalendar *gregorian=nil;
                                         [baseDetailsDict setObject:[NSString stringWithFormat:@"%@",[[result objectAtIndex:i]objectForKey:@"object_id"]] forKey:@"EventID"];
                                         [baseDetailsDict setObject:@"birthday" forKey:@"EventName"];
                                         NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[[friendUserIds objectForKey:[request.params objectForKey:@"query"]]objectForKey:@"FBID"]];
+                                        
                                         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                                        getProfile, @"query",
                                                                        nil];
@@ -715,11 +672,11 @@ static NSCalendar *gregorian=nil;
                                                                                            andDelegate:self];
                                         [fbRequestsArray addObject:fbReqProfile];
                                         
-                                        
-                                        [friendUserIds setValue:baseDetailsDict forKey:[fbReqProfile.params objectForKey:@"query"]];
+                                        [friendUserIds setValue:baseDetailsDict forKey:[NSString stringWithFormat:@"%@",fbReqProfile]];
+                                       
                                         
                                         [baseDetailsDict release];
-                                        //[fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                       
                                         break;
                                     }
                                 }
@@ -742,11 +699,10 @@ static NSCalendar *gregorian=nil;
                                                                                                andDelegate:self];
                                             [fbRequestsArray addObject:fbReqProfile];
                                             
-                                            
-                                            [friendUserIds setValue:baseDetailsDict forKey:[fbReqProfile.params objectForKey:@"query"]];
-                                            
+                                            [friendUserIds setValue:baseDetailsDict forKey:[NSString stringWithFormat:@"%@",fbReqProfile]];
+                                           
                                             [baseDetailsDict release];
-                                            // [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                           
                                             break;
                                         }
                                     }
@@ -760,6 +716,7 @@ static NSCalendar *gregorian=nil;
                                             [baseDetailsDict setObject:[NSString stringWithFormat:@"%@",[[result objectAtIndex:i]objectForKey:@"object_id"]] forKey:@"EventID"];
                                             [baseDetailsDict setObject:@"relationships" forKey:@"EventName"];
                                             NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[[friendUserIds objectForKey:[request.params objectForKey:@"query"]]objectForKey:@"FBID"]];
+                                           
                                             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                                            getProfile, @"query",
                                                                            nil];
@@ -771,10 +728,10 @@ static NSCalendar *gregorian=nil;
                                             [fbRequestsArray addObject:fbReqProfile];
                                             
                                             
-                                            [friendUserIds setValue:baseDetailsDict forKey:[fbReqProfile.params objectForKey:@"query"]];
+                                            [friendUserIds setValue:baseDetailsDict forKey:[NSString stringWithFormat:@"%@",fbReqProfile]];
                                             
                                             [baseDetailsDict release];
-                                            // [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                           
                                             break;
                                         }
                                     }
@@ -784,14 +741,14 @@ static NSCalendar *gregorian=nil;
                                     for (NSString *searchedString in congratsSearchStrings){
                                         
                                         if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                            //isEventFound=YES;
+                                            isEventFound=YES;
                                             
                                             NSMutableDictionary *baseDetailsDict=[[NSMutableDictionary alloc]initWithDictionary:[friendUserIds objectForKey:[request.params objectForKey:@"query"]]];
                                             [baseDetailsDict setObject:[NSString stringWithFormat:@"%@",[[result objectAtIndex:i]objectForKey:@"object_id"]] forKey:@"EventID"];
                                             [baseDetailsDict setObject:@"congratulations" forKey:@"EventName"];
                                             
                                             NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[[friendUserIds objectForKey:[request.params objectForKey:@"query"]]objectForKey:@"FBID"]];
-                                            
+                                           
                                             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                                            getProfile, @"query",
                                                                            nil];
@@ -802,17 +759,16 @@ static NSCalendar *gregorian=nil;
                                                                                                andDelegate:self];
                                             [fbRequestsArray addObject:fbReqProfile];
                                             
-                                            
-                                            [friendUserIds setValue:baseDetailsDict forKey:[fbReqProfile.params objectForKey:@"query"]];
+                                            [friendUserIds setValue:baseDetailsDict forKey:[NSString stringWithFormat:@"%@",fbReqProfile]];
+                                           
                                             
                                             [baseDetailsDict release];
-                                            //[fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[result objectForKey:@"data"]objectAtIndex:i]];
+                                           
                                             break;
                                         }
                                     }  
                                 }
                                 
-                                //}
                             }
                         }
                     }
@@ -838,8 +794,7 @@ static NSCalendar *gregorian=nil;
     return [predicate evaluateWithObject:sourceText];
 }
 -(void)dealloc{
-    //[fbOperationQueue cancelAllOperations];
-    //[fbOperationQueue release];
+   
     if(fbRequestsArray){
         [fbRequestsArray removeAllObjects];
 

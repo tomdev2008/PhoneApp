@@ -10,7 +10,8 @@
  */
 #import <Foundation/Foundation.h>
 
+//Show an alert with only 1 default action button
 void AlertWithMessageAndDelegate(NSString *title, NSString *message, id theDelegate);
 
-
+//Show an alert with any number of action buttons
 void AlertWithMessageAndDelegateActionHandling(NSString *title, NSString *message,NSArray *buttonTitles, id theDelegate);

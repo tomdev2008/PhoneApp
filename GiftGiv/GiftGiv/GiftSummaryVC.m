@@ -77,7 +77,7 @@
         profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
     }
     
-    NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+    NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
     NSFileManager *fm=[NSFileManager defaultManager];
     if([fm fileExistsAtPath:filePath]){
         profilePic.image=[UIImage imageWithContentsOfFile:filePath];

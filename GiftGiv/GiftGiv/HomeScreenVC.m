@@ -129,7 +129,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         [fb_giftgiv_home.fbRequestsArray removeAllObjects];
         //[picturesOperationQueue cancelAllOperations];
-        //[fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+        //[fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForProfilePicFileName:@""] error:nil];
         if([searchBgView superview]){
             [searchBgView removeFromSuperview];
             isSearchEnabled=NO;
@@ -259,7 +259,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [contactDict setObject:@"" forKey:@"FBUserLocation"];
             else
                 [contactDict setObject:[[response objectAtIndex:i]location] forKey:@"FBUserLocation"];
-            [contactDict setObject:@"" forKey:@"ProfilePicture"];
+            //[contactDict setObject:@"" forKey:@"ProfilePicture"];
             if([[response objectAtIndex:i]profilepicUrl]!=nil)
                 [contactDict setObject:[[response objectAtIndex:i]profilepicUrl] forKey:@"ProfilePicURLToTake"];
             else
@@ -303,7 +303,7 @@ static NSDateFormatter *customDateFormat=nil;
                 urlStr_id=[[globalContactsList objectAtIndex:i]objectForKey:@"uid"];              
                 
                 
-                if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
+                if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
                     
                    
                     NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
@@ -381,7 +381,7 @@ static NSDateFormatter *customDateFormat=nil;
             [eventDict setObject:[[[allEvents objectAtIndex:i]eventName]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"event_type"];
             [eventDict setObject:[[[[[allEvents objectAtIndex:i]eventdate]componentsSeparatedByString:@"T"]objectAtIndex:0]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"event_date"];
             [eventDict setObject:[[[allEvents objectAtIndex:i]isEventFromQuery]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"isEventFromQuery"];
-            [eventDict setObject:@"" forKey:@"ProfilePicture"];
+            //[eventDict setObject:@"" forKey:@"ProfilePicture"];
             [eventDict setObject:[[[allEvents objectAtIndex:i]fb_Picture]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"pic_square"];
             
             NSString *eventType=[[[allEvents objectAtIndex:i]eventType]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -464,7 +464,7 @@ static NSDateFormatter *customDateFormat=nil;
             
             if(isCancelledImgOperations)
                 return;
-            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
             [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
             
             dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -504,7 +504,7 @@ static NSDateFormatter *customDateFormat=nil;
                           
             if(isCancelledImgOperations)
                 return;
-            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[picDetails objectForKey:@"profile_id"]]]; //Add the file name
             [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
             
             dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -625,10 +625,7 @@ static NSDateFormatter *customDateFormat=nil;
             [categoryTitles addObject:events_category_4];
             totalGroups++;
         }
-        /*if([searchLkdContactsArray count]){
-            [categoryTitles addObject:events_category_5];
-            totalGroups++;
-        }*/
+    
     }
     else{
         if([allupcomingEvents count]){
@@ -650,10 +647,7 @@ static NSDateFormatter *customDateFormat=nil;
             [categoryTitles addObject:events_category_4];
             totalGroups++;
         }
-        /*if([linkedInContactsArray count]){
-            [categoryTitles addObject:events_category_5];
-            totalGroups++;
-        }*/
+
     }
     
     
@@ -717,12 +711,7 @@ static NSDateFormatter *customDateFormat=nil;
             //return [listOfContactsArray count];
             
         }
-        /*if([eventTitleLbl.text isEqualToString:events_category_5]){
-            if(isSearchEnabled)
-                return [searchLkdContactsArray count];
-            return [linkedInContactsArray count];
-            
-        }*/
+    
     }
   
     return 0;
@@ -822,25 +811,6 @@ static NSDateFormatter *customDateFormat=nil;
             
             
         }
-        /*else if([eventTitleLbl.text isEqualToString:events_category_5]){
-            if(isSearchEnabled){
-                if([searchLkdContactsArray count]){
-                    //NSLog(@"upcoming..%@",allupcomingEvents);
-                    [self loadEventsData:searchLkdContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
-                    
-                }
-            }
-            else{
-                if([linkedInContactsArray count]){
-                    // NSLog(@"list of congratsEvents..%@",congratsEvents);
-                    
-                    [self loadEventsData:linkedInContactsArray withCell:cell inTable:eventsTable forIndexPath:indexPath];
-                    
-                }
-            }
-            
-            
-        }*/
         
         if([cell.dateLbl.text isEqualToString:@""]){
             cell.eventNameLbl.frame=CGRectMake(cell.eventNameLbl.frame.origin.x,cell.eventNameLbl.frame.origin.y,196,cell.eventNameLbl.frame.size.height);
@@ -928,7 +898,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     if([sourceEventsDict  objectForKey:@"from"]){
         
-        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[sourceEventsDict  objectForKey:@"from"]objectForKey:@"id"]]];
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[[sourceEventsDict  objectForKey:@"from"]objectForKey:@"id"]]];
         
         if([fm fileExistsAtPath:filePath]){
             cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
@@ -938,7 +908,7 @@ static NSDateFormatter *customDateFormat=nil;
     }
     else if([sourceEventsDict  objectForKey:@"FBID"]){
         
-        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[sourceEventsDict  objectForKey:@"FBID"]]];
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[sourceEventsDict  objectForKey:@"FBID"]]];
         
         if([fm fileExistsAtPath:filePath]){
             cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
@@ -949,7 +919,7 @@ static NSDateFormatter *customDateFormat=nil;
     else{
         if([sourceEventsDict  objectForKey:@"uid"]){
             
-            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[sourceEventsDict  objectForKey:@"uid"]]];
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[sourceEventsDict  objectForKey:@"uid"]]];
             
             if([fm fileExistsAtPath:filePath]){
                 cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
@@ -958,7 +928,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
             
         else if([sourceEventsDict  objectForKey:@"linkedIn_id"]){
-            NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[sourceEventsDict  objectForKey:@"linkedIn_id"]]];
+            NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[sourceEventsDict  objectForKey:@"linkedIn_id"]]];
             
             if([fm fileExistsAtPath:filePath]){
                 cell.profileImg.image=[UIImage imageWithContentsOfFile:filePath];
@@ -1261,56 +1231,7 @@ static NSDateFormatter *customDateFormat=nil;
             
             [tempInfoDict release];
         }
-        /*else if([eventTitleLbl.text isEqualToString:events_category_5]){
-            NSMutableDictionary *tempInfoDict=[[NSMutableDictionary alloc]initWithCapacity:5];
-            
-            if(isSearchEnabled){
-                if([[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                    [tempInfoDict setObject:[[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                    [tempInfoDict setObject:[[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-                }
-                else{
-                    if([[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
-                        [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                    else if([[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-                        [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
-                    
-                    [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
-                }
                 
-                
-                [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-                
-                if([[searchLkdContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
-                    [tempInfoDict setObject:[[searchLkdContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
-            }
-            
-            else{
-                if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]){
-                    [tempInfoDict setObject:[[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
-                    [tempInfoDict setObject:[[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"from"]objectForKey:@"name"] forKey:@"userName"];
-                }
-                else{
-                    if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"])
-                        [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"uid"]forKey:@"userID"];
-                    else if([[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"])
-                        [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"linkedIn_id"]forKey:@"linkedIn_userID"];
-                    
-                    [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"name"] forKey:@"userName"];
-                }
-                
-                
-                [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
-                
-                if([[linkedInContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
-                    [tempInfoDict setObject:[[linkedInContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
-            }
-            
-            [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
-            
-            [tempInfoDict release];
-        }*/
-        
         [self.navigationController pushViewController:giftOptions animated:YES];
         [giftOptions release];
     }
@@ -1896,15 +1817,7 @@ static NSDateFormatter *customDateFormat=nil;
         [tempInfoDict release];
         
     }
-    /*else if([eventTitleLbl.text isEqualToString:events_category_4]){
         
-        
-    }
-    else if([eventTitleLbl.text isEqualToString:events_category_5]){
-        
-        
-    }*/
-    
     [self.navigationController pushViewController:details animated:YES];
     [details release];
     
@@ -1992,7 +1905,7 @@ static NSDateFormatter *customDateFormat=nil;
             [customDateFormat setDateFormat:@"yyyy-MM-dd"];
             [tempDict setObject:[customDateFormat stringFromDate:stringToDate] forKey:@"event_date"];
             [tempDict setObject:@"birthday" forKey:@"event_type"];
-            [tempDict setObject:@"" forKey:@"ProfilePicture"];
+            //[tempDict setObject:@"" forKey:@"ProfilePicture"];
             [listOfBirthdayEvents replaceObjectAtIndex:i withObject:tempDict];
         }
         [allupcomingEvents addObjectsFromArray:listOfBirthdayEvents];
@@ -2030,7 +1943,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     if(urlStr_id){
         
-        if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
+        if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
             
             NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:2];
             [tempDict setObject:urlStr_id forKey:@"profile_id"];
@@ -2121,7 +2034,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma mark - Events from statuses
 - (void)birthdayEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
-    
+    NSLog(@"event...%@",eventDetails);
     if(!isEventsLoadingFromFB)
         return;
     for (NSDictionary *existEvents in listOfBirthdayEvents){
@@ -2139,8 +2052,13 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else
             eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventDetails objectForKey:@"from"]objectForKey:@"id"]];
-        if([[NSString stringWithFormat:@"%@",existEventUserIDStr] isEqualToString:[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]])
+        if([[NSString stringWithFormat:@"%@",existEventUserIDStr] isEqualToString:[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]]){
+            NSLog(@"same..");
             return ;
+        }
+        else{
+            NSLog(@"%@,%@,not same..",[NSString stringWithFormat:@"%@",existEventUserIDStr],[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]);
+        }
     }
     
     
@@ -2165,7 +2083,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
     [eventDetails setObject:@"birthday" forKey:@"event_type"];
-    [eventDetails setObject:@"" forKey:@"ProfilePicture"];
+    //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
     [listOfBirthdayEvents addObject:eventDetails];
     [allupcomingEvents addObject:eventDetails];
     [self performSelector:@selector(checkTotalNumberOfGroups)];
@@ -2185,12 +2103,12 @@ static NSDateFormatter *customDateFormat=nil;
     NSMutableArray *tempArray=[[NSMutableArray alloc]initWithArray:allupcomingEvents];
     
         
-    for(NSMutableDictionary *eventDict in tempArray ){
+    /*for(NSMutableDictionary *eventDict in tempArray ){
         if([[eventDict objectForKey:@"ProfilePicture"] isKindOfClass:[UIImage class]])
             [eventDict setObject:UIImagePNGRepresentation([eventDict objectForKey:@"ProfilePicture"])  forKey:@"ProfilePicture"];
         else if(![[eventDict objectForKey:@"ProfilePicture"] isKindOfClass:[NSData class]])
             [eventDict setObject:@"" forKey:@"ProfilePicture"];
-    }
+    }*/
    
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"]){
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"AllUpcomingEvents"];
@@ -2205,6 +2123,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     if(!isEventsLoadingFromFB)
         return;
+    [eventDetails setObject:@"new job" forKey:@"event_type"];
     if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
         
         if(customDateFormat==nil){
@@ -2229,8 +2148,8 @@ static NSDateFormatter *customDateFormat=nil;
         [customDateFormat setDateFormat:@"yyyy-MM-dd"];
         
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
-        [eventDetails setObject:@"new job" forKey:@"event_type"];
-        [eventDetails setObject:@"" forKey:@"ProfilePicture"];
+        //[eventDetails setObject:@"new job" forKey:@"event_type"];
+        //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
         [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
@@ -2251,6 +2170,9 @@ static NSDateFormatter *customDateFormat=nil;
 - (void)anniversaryEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
     if(!isEventsLoadingFromFB)
         return;
+    
+    [eventDetails setObject:@"relationships" forKey:@"event_type"];
+    
     if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
         
         if(customDateFormat==nil){
@@ -2275,8 +2197,8 @@ static NSDateFormatter *customDateFormat=nil;
         [customDateFormat setDateFormat:@"yyyy-MM-dd"];
         
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
-        [eventDetails setObject:@"relationships" forKey:@"event_type"];
-        [eventDetails setObject:@"" forKey:@"ProfilePicture"];
+        
+        //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
         [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
@@ -2293,8 +2215,11 @@ static NSDateFormatter *customDateFormat=nil;
     }
 }
 - (void)congratsEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
+    
     if(!isEventsLoadingFromFB)
         return;
+    [eventDetails setObject:@"congratulations" forKey:@"event_type"];
+    
     if(![self checkWhetherEventExistInTheListOfEvents:eventDetails]){
         
         if(customDateFormat==nil){
@@ -2316,8 +2241,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
-        [eventDetails setObject:@"congratulations" forKey:@"event_type"];
-        [eventDetails setObject:@"" forKey:@"ProfilePicture"];
+        //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
         [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
@@ -2413,8 +2337,8 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark - Check Event existance
 -(BOOL)checkWhetherEventExistInTheListOfEvents:(NSMutableDictionary*)eventsData{
     
+     for (NSDictionary *existEvents in eventsToCelebrateArray){
     
-    for (NSDictionary *existEvents in eventsToCelebrateArray){
         NSString *existEventUserIDStr=@"";
         if([existEvents objectForKey:@"from"]){
             existEventUserIDStr=[NSString stringWithFormat:@"%@",[[existEvents objectForKey:@"from"]objectForKey:@"id"]];
@@ -2439,8 +2363,13 @@ static NSDateFormatter *customDateFormat=nil;
         else
             eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventsData objectForKey:@"from"]objectForKey:@"id"]];
        
-        if([[NSString stringWithFormat:@"%@",existEventUserIDStr] isEqualToString:[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]])
-            return YES;
+        if([[NSString stringWithFormat:@"%@",existEventUserIDStr] isEqualToString:[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]]){
+            //if([[existEvents objectForKey:@"event_type"] isEqualToString:[eventsData objectForKey:@"event_type"]])
+                return YES;
+            //else
+              //  return NO;
+        }
+        
     }
     return NO;
 }
@@ -2506,7 +2435,7 @@ static NSDateFormatter *customDateFormat=nil;
             [linkedInEvent setObject:[result objectForKey:@"picture-url"] forKey:@"pic_url"];
         else
             [linkedInEvent setObject:@"" forKey:@"pic_url"];
-        [linkedInEvent setObject:@"" forKey:@"ProfilePicture"];
+        //[linkedInEvent setObject:@"" forKey:@"ProfilePicture"];
         
         
         [eventsToCelebrateArray addObject:linkedInEvent];
@@ -2645,7 +2574,7 @@ static NSDateFormatter *customDateFormat=nil;
     [picturesOperationQueue cancelAllOperations];
     [picturesOperationQueue release];
    
-    //[fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+    //[fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForProfilePicFileName:@""] error:nil];
     
     dispatch_release(ImageLoader_Q);
     dispatch_release(ImageLoader_Q_ForEvents);

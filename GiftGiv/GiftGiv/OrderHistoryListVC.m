@@ -99,7 +99,7 @@ static NSDateFormatter *customDateFormat=nil;
     /*if([[ordersList objectAtIndex:indexPath.row]objectForKey:@"ProfilePicture"])
         cell.profilePic.image=[[ordersList objectAtIndex:indexPath.row]objectForKey:@"ProfilePicture"];*/
     if([[[ordersList objectAtIndex:indexPath.row] objectForKey:@"OrderDetails"] recipientId]){
-        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] recipientId]]];
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[[[ordersList objectAtIndex:indexPath.row]objectForKey:@"OrderDetails"] recipientId]]];
         
         if([fm fileExistsAtPath:filePath]){
             cell.profilePic.image=[UIImage imageWithContentsOfFile:filePath];
@@ -169,7 +169,7 @@ static NSDateFormatter *customDateFormat=nil;
     for(int i=0;i<ordersCount;i++){
         
         
-            if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[ordersList objectAtIndex:i]objectForKey:@"OrderDetails"] recipientId]]]]){
+            if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[[[ordersList objectAtIndex:i]objectForKey:@"OrderDetails"] recipientId]]]]){
                
                                                
                 dispatch_async(ImageLoader_Q, ^{
@@ -186,7 +186,7 @@ static NSDateFormatter *customDateFormat=nil;
                     else {
                         
                         
-                        NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",[[[ordersList objectAtIndex:i]objectForKey:@"OrderDetails"] recipientId]]]; //Add the file name
+                        NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[[[ordersList objectAtIndex:i]objectForKey:@"OrderDetails"] recipientId]]]; //Add the file name
                         [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
                         
                         dispatch_async(dispatch_get_main_queue(), ^(void) {

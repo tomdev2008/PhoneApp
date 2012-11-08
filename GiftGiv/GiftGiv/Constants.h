@@ -17,10 +17,11 @@ static NSString *const kOAuthConsumerSecret  =  @"EP1SkFM3aLchEM2O";// @"hSdUKzt
 //Device currect OS version, which we used for page control color dots
 #define currentiOSVersion [[[UIDevice currentDevice] systemVersion] doubleValue]
 
-#define WebServiceURL @"http://giftgiv.cloudapp.net/giftgivservice/Service.svc"
+#define WebServiceURL @"http://giftgivstage.cloudapp.net/giftgivservice/Service.svc"
 //Staging: http://giftgivstage.cloudapp.net/giftgivservice/Service.svc?wsdl
 //Local: http://10.11.32.211:81/Service.svc?wsdl
 //Production: http://giftgiv.cloudapp.net/GiftGivService/Service.svc
+
 
 #define SOAPRequestMsg(msgbody) [NSString stringWithFormat:@"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n<soapenv:Header/>\n<soapenv:Body>\n%@\n</soapenv:Body>\n</soapenv:Envelope>",msgbody]
 
@@ -30,9 +31,8 @@ static NSString *const kOAuthConsumerSecret  =  @"EP1SkFM3aLchEM2O";// @"hSdUKzt
 
 #define events_category_1 @"all upcoming"
 #define events_category_2 @"birthdays"
-#define events_category_3 @"events to celebrate"//@"relationships"
-#define events_category_4 @"celebrate them"//@"new job"
-#define events_category_5 @"linkedIn contacts"//@"congratulations"
+#define events_category_3 @"events to celebrate"
+#define events_category_4 @"celebrate them"
 
 // Paypal API
 #define MERCHANT_USERNAME /*@"gadda._1345733424_biz_api1.gmail.com"*/@"giftgivco_api1.gmail.com"

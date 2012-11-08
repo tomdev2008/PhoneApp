@@ -89,7 +89,7 @@
     
     
         
-    NSString *filePath = [GetCachesPathForTargetFile cachePathForFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+    NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
     NSFileManager *fm=[NSFileManager defaultManager];
     if([fm fileExistsAtPath:filePath]){
         profileImgView.image=[UIImage imageWithContentsOfFile:filePath];

@@ -67,7 +67,7 @@
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     //[[NSUserDefaults standardUserDefaults]removeObjectForKey:@"FBAccessTokenKey"];
     [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForGiftItemFileName:@""] error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForFileName:@""] error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForProfilePicFileName:@""] error:nil];
     
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
     
