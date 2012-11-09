@@ -139,18 +139,18 @@
                 float newHeight;
                 //125-40==> such that it will give 20px white space around the thumbnail in the teal colored box
                 if(thumbnail.size.width>thumbnail.size.height){
-                    newWidth=125-40;
-                    newHeight=((125-40)*aspectRatioY)/aspectRatioX;
+                    newWidth=120-20;
+                    newHeight=((120-20)*aspectRatioY)/aspectRatioX;
                     
                 }
                 else if(thumbnail.size.width<thumbnail.size.height){
-                    newWidth=((125-40)*aspectRatioX)/aspectRatioY;
-                    newHeight=125-40;
+                    newWidth=((120-20)*aspectRatioX)/aspectRatioY;
+                    newHeight=120-20;
                     
                 }
                 else{
-                    newWidth=125-40;
-                    newHeight=125-40;
+                    newWidth=120-20;
+                    newHeight=120-20;
                     
                 }
                 UIImage *targetImg=[thumbnail imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];
@@ -457,9 +457,9 @@
 		cell.selectionStyle=UITableViewCellSelectionStyleNone;
         
         [cell.giftIcon_one.layer setBorderColor:[[UIColor colorWithRed:0.0 green:0.66 blue:0.68 alpha:1.0]CGColor]];
-        [cell.giftIcon_one.layer setBorderWidth:3.0];
+        [cell.giftIcon_one.layer setBorderWidth:2.0];
         [cell.giftIcon_two.layer setBorderColor:[[UIColor colorWithRed:0.0 green:0.66 blue:0.68 alpha:1.0]CGColor]];
-        [cell.giftIcon_two.layer setBorderWidth:3.0];
+        [cell.giftIcon_two.layer setBorderWidth:2.0];
         [cell.giftIcon_one addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
         [cell.giftIcon_two addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
 		

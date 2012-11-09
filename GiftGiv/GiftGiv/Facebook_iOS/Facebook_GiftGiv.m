@@ -325,6 +325,45 @@ static NSCalendar *gregorian=nil;
     [fbGiftGivDelegate facebookDidRequestFailed];
 }
 
+//Algorithm to track the photos/statuses
+/*
+ Get all friends
+ 
+ For each friend{
+    //photos (For better performance, we used multiquery for each 50 friends)
+    Get all photos which are modified from past 3 days{
+        for each photo{
+            if comments count or likes count are greater than or equal 15{
+                Get the all comments respective to the photo/event ID{
+                    For each comment{
+                        If the comment text matches with the search keywords respective to birthdays/anniversaries/congratulations/newjob{
+                            Get the particular user details (name, picture url) as we dont get these details with the above query{
+                                Add this as an event with respective to the user
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    //Statuses (For better performance, we used batch requests for each 50 friends
+    Get status messages from past 2 days{
+        For each status message{
+            If comments or likes count greater than or equal 15{
+                If status message text matches with any of the searched keywords respective to birthdays/anniversaries/congratulations/newjob{
+                    Add this as an event with respective to the user
+                }
+                else{
+                    For each comment{
+                        If comment message text matches with any of the searched keyword respective to birthdays/anniversaries/congratulations/newjob{
+                            Add this as an event with respective to the user
+                        }
+                    }
+                }
+            }
+    }
+ 
+ */
+
 - (void)request:(FBRequest *)request didLoad:(id)result{
 
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
@@ -387,6 +426,7 @@ static NSCalendar *gregorian=nil;
                                                                         andParams:params
                                                                     andHttpMethod:@"POST"
                                                                       andDelegate:self];
+                    // pass the values with request, when we receive the delegate, we will handle with this friend ID.
                     [friendUserIds setValue:[friendDict objectForKey:@"uid"] forKey:[fbReqPhotos.params objectForKey:@"queries"]];
                     [fbRequestsArray addObject:fbReqPhotos];
                     [requestJsonArrayForPhotos removeAllObjects];
