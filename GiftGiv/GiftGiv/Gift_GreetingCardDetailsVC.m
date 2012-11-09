@@ -22,7 +22,6 @@
 @synthesize frontGreetingImg;
 @synthesize frontLbl;
 @synthesize backLbl;
-@synthesize zoomInImgView;
 @synthesize greetingNameLbl;
 @synthesize flowerImgView;
 @synthesize greetingPrice;
@@ -32,7 +31,8 @@
 @synthesize giftItemInfo;
 @synthesize dateLabel;
 @synthesize shippingCostLbl;
-
+@synthesize zoomDoneBtn;
+@synthesize giftTitleInZoomScreen;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -57,16 +57,11 @@
 {
     [super viewDidLoad];
     
-    /*if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"]){
-        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"];
-    }
-    else*/
-        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
        
     profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
     
-    //[self loadGiftImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
     NSString *profilePicId;
     
     if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
@@ -120,9 +115,7 @@
     
     
     shippingCostLbl.frame= CGRectMake(greetingPrice.frame.origin.x+3+greetingPrice.frame.size.width, shippingCostLbl.frame.origin.y, shippingCostLbl.frame.size.width, shippingCostLbl.frame.size.height);
-    
-    
-    
+   
     giftDetailsContentScroll.frame=CGRectMake(0, 44, 320,416);
     [self.view addSubview:giftDetailsContentScroll];
     
@@ -195,6 +188,13 @@
         day++;
     }
     dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
+
+    giftTitleInZoomScreen.text=[giftItemInfo giftTitle];
+    
+    [zoomDoneBtn.layer setBorderColor:[[UIColor whiteColor]CGColor]];
+    [zoomDoneBtn.layer setBorderWidth:1.0];
+    [zoomDoneBtn.layer setCornerRadius:5.0];
+
 }
 -(NSString *)getMonthName:(int)monthNum{
     switch (monthNum) {
@@ -280,42 +280,83 @@
 }
 
 -(void)zoomInOutForCards:(UITapGestureRecognizer*)tapRecog{
-    CGPoint tapLocation=[tapRecog locationInView:giftDetailsContentScroll];
     
+    CGPoint tapLocation=[tapRecog locationInView:giftDetailsContentScroll];
+     
     //zoom out
-    if([zoomInImgView superview]){
-        //if(CGRectContainsPoint(zoomInImgView.frame, tapLocation))
-            [zoomInImgView removeFromSuperview];
+    if(zoomScrollView!=nil && [zoomScrollView superview]){
+        if(CGRectContainsPoint(zoomScrollView.frame, tapLocation)){
+            
+            [zoomScrollView fullZoomToPoint:tapRecog];
+            if(zoomDoneBtn.hidden){
+                zoomDoneBtn.hidden=NO;
+                giftTitleInZoomScreen.hidden=NO;
+            }
+            else{
+                zoomDoneBtn.hidden=YES;
+                giftTitleInZoomScreen.hidden=YES;
+            }
+            return;
+        }
+        
     }
     else{
         if(flowerImgView.hidden){
-            zoomInImgView.image=nil;
             if(CGRectContainsPoint(backGreetingImg.frame, tapLocation)){
-                if(![zoomInImgView superview]){
-                    zoomInImgView.frame=CGRectMake(0, 0, 320, 460);
-                    [self.view addSubview:zoomInImgView];
-                }
-                zoomInImgView.image=backGreetingImg.image;
-                //Assign inside/back image to zoomInImgView
-                //zoomInImgView.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
+                
+                zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
+                zoomScrollView.theContainerView.image=backGreetingImg.image;
+               
+                zoomScrollView.message=self;
+                [self.view addSubview:zoomScrollView];
+                
+                zoomDoneBtn.frame=CGRectMake(240, 30, 70, 31);
+                [self.view addSubview:zoomDoneBtn];
+                giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
+                [self.view addSubview:giftTitleInZoomScreen];
+                
+                /*zoomDoneBtn.hidden=YES;
+                zoomScrollView.hidden=YES;
+                giftTitleInZoomScreen.hidden=YES;*/
+                
+                //[self animateZoominView:backGreetingImg shouldShow:YES];
             } 
             if(CGRectContainsPoint(frontGreetingImg.frame, tapLocation)){
-                if(![zoomInImgView superview]){
-                    zoomInImgView.frame=CGRectMake(0, 0, 320, 460);
-                    [self.view addSubview:zoomInImgView];
-                }
-                zoomInImgView.image=frontGreetingImg.image;
-                //Assign front image to zoomInImgView
-                //zoomInImgView.image=[ImageAllocationObject loadImageObjectName:@"" ofType:@""];
+               
+                zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
+                zoomScrollView.theContainerView.image=frontGreetingImg.image;
+               
+                zoomScrollView.message=self;
+                [self.view addSubview:zoomScrollView];
+                
+                zoomDoneBtn.frame=CGRectMake(240, 30, 70, 31);
+                [self.view addSubview:zoomDoneBtn];
+                giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
+                [self.view addSubview:giftTitleInZoomScreen];
+                
+                /*zoomDoneBtn.hidden=YES;
+                //zoomScrollView.hidden=YES;
+                giftTitleInZoomScreen.hidden=YES;
+                */
             }
         }
         else{
             if(CGRectContainsPoint(flowerImgView.frame, tapLocation)){
-                if(![zoomInImgView superview]){
-                    zoomInImgView.frame=CGRectMake(0, 0, 320, 460);
-                    [self.view addSubview:zoomInImgView];
-                }
-                zoomInImgView.image=flowerImgView.image;
+                
+                zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
+                zoomScrollView.theContainerView.image=flowerImgView.image;
+                
+                zoomScrollView.message=self;
+                [self.view addSubview:zoomScrollView];
+                
+                zoomDoneBtn.frame=CGRectMake(240, 30, 70, 31);
+                [self.view addSubview:zoomDoneBtn];
+                giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
+                [self.view addSubview:giftTitleInZoomScreen];
+               
+                /*zoomDoneBtn.hidden=YES;
+                //zoomScrollView.hidden=YES;
+                giftTitleInZoomScreen.hidden=YES;*/
                 
             } 
         }
@@ -433,13 +474,14 @@
     [self setPersonalMsgTxt:nil];
     [self setMsgInputAccessoryView:nil];
     [self setFlowerImgView:nil];
-    [self setZoomInImgView:nil];
     [self setDetailsBgView:nil];
     [self setDodBgView:nil];
     [self setDodPicker:nil];
     [self setGiftDetailsLbl:nil];
     [self setInnerViewForGreetDetails:nil];
     [self setShippingCostLbl:nil];
+    [self setGiftTitleInZoomScreen:nil];
+    [self setZoomDoneBtn:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -469,13 +511,14 @@
     [personalMsgTxt release];
     [msgInputAccessoryView release];
     [flowerImgView release];
-    [zoomInImgView release];
     [detailsBgView release];
     [dodBgView release];
     [dodPicker release];
     [giftDetailsLbl release];
     [innerViewForGreetDetails release];
     [shippingCostLbl release];
+    [giftTitleInZoomScreen release];
+    [zoomDoneBtn release];
     [super dealloc];
 }
 
@@ -589,4 +632,28 @@
     return nil;
 }
 #pragma mark -
+- (IBAction)zoomDoneAction:(id)sender {
+    zoomDoneBtn.hidden=YES;
+    giftTitleInZoomScreen.hidden=YES;
+    zoomScrollView.hidden=YES;
+    if(zoomScrollView!=nil){
+        [zoomScrollView removeFromSuperview];
+        [zoomDoneBtn removeFromSuperview];
+        [giftTitleInZoomScreen removeFromSuperview];
+        [zoomScrollView release];
+        zoomScrollView=nil;
+    }
+        
+}
+- (void)contentView:(GfitZoomInView *)contentView touchesBegan:(NSSet *)touches{
+    if(zoomDoneBtn.hidden){
+        zoomDoneBtn.hidden=NO;
+        giftTitleInZoomScreen.hidden=NO;
+    }
+    else{
+        zoomDoneBtn.hidden=YES;
+        giftTitleInZoomScreen.hidden=YES;
+    }
+    
+}
 @end

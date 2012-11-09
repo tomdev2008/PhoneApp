@@ -161,6 +161,7 @@
 		BD0A36EA163FE3A800988508 /* searchicon.png in Resources */ = {isa = PBXBuildFile; fileRef = BD0A36E6163FE3A800988508 /* searchicon.png */; };
 		BD0A36EC163FE58900988508 /* graybar2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD0A36EB163FE58900988508 /* graybar2@2x.png */; };
 		BD0A36EE163FE5A500988508 /* graybar2.png in Resources */ = {isa = PBXBuildFile; fileRef = BD0A36ED163FE5A500988508 /* graybar2.png */; };
+		BD0BDB93164D00C400E30799 /* GfitZoomInView.m in Sources */ = {isa = PBXBuildFile; fileRef = BD0BDB91164CEEC800E30799 /* GfitZoomInView.m */; };
 		BD1B2D811648F5F60078C0B9 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD1B2D801648F5F60078C0B9 /* Default-568h@2x.png */; };
 		BD1B2DB416494B460078C0B9 /* ECNetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BD1B2D86164948270078C0B9 /* ECNetworkHandler.m */; };
 		BD1B2DB516494B460078C0B9 /* Address.m in Sources */ = {isa = PBXBuildFile; fileRef = BD1B2D88164949A90078C0B9 /* Address.m */; };
@@ -443,6 +444,8 @@
 		BD0A36E6163FE3A800988508 /* searchicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchicon.png; sourceTree = "<group>"; };
 		BD0A36EB163FE58900988508 /* graybar2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "graybar2@2x.png"; sourceTree = "<group>"; };
 		BD0A36ED163FE5A500988508 /* graybar2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graybar2.png; sourceTree = "<group>"; };
+		BD0BDB90164CEEC800E30799 /* GfitZoomInView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GfitZoomInView.h; sourceTree = "<group>"; };
+		BD0BDB91164CEEC800E30799 /* GfitZoomInView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GfitZoomInView.m; sourceTree = "<group>"; };
 		BD1B2D801648F5F60078C0B9 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		BD1B2D83164947BA0078C0B9 /* libPayPalEC.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPayPalEC.a; sourceTree = "<group>"; };
 		BD1B2D84164947BA0078C0B9 /* PayPal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PayPal.h; sourceTree = "<group>"; };
@@ -1195,6 +1198,8 @@
 		7EDC191315BFB76B00FF7789 /* Gift Details */ = {
 			isa = PBXGroup;
 			children = (
+				BD0BDB90164CEEC800E30799 /* GfitZoomInView.h */,
+				BD0BDB91164CEEC800E30799 /* GfitZoomInView.m */,
 				7EDA102615C12A880073CB8D /* Gift Cards */,
 				7EAE79DB15C6BFCD00D67C27 /* Greeting Card Details */,
 			);
@@ -1422,6 +1427,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD0BDB93164D00C400E30799 /* GfitZoomInView.m in Sources */,
 				BD1B2DB416494B460078C0B9 /* ECNetworkHandler.m in Sources */,
 				BD1B2DB516494B460078C0B9 /* Address.m in Sources */,
 				BD1B2DB616494B460078C0B9 /* BillingAgreementDetails.m in Sources */,

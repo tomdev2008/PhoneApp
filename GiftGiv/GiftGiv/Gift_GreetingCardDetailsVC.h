@@ -11,11 +11,16 @@
 #import "ImageAllocationObject.h"
 #import "SendOptionsVC.h"
 #import "GiftItemObject.h"
+#import "GfitZoomInView.h"
 
-@interface Gift_GreetingCardDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate>{
+@interface Gift_GreetingCardDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,GfitZoomInViewDelegate>{
     CGPoint svos;
     NSMutableArray *monthsArray,*daysArray;
+    GfitZoomInView *zoomScrollView;
 }
+- (IBAction)zoomDoneAction:(id)sender;
+@property (retain, nonatomic) IBOutlet UIButton *zoomDoneBtn;
+@property (retain, nonatomic) IBOutlet UILabel *giftTitleInZoomScreen;
 @property (retain, nonatomic) IBOutlet UIView *detailsBgView;
 @property (retain, nonatomic) IBOutlet UIScrollView *giftDetailsContentScroll;
 @property (retain, nonatomic) IBOutlet UIImageView *profilePic;
@@ -30,7 +35,6 @@
 @property (retain, nonatomic) IBOutlet UIImageView *frontGreetingImg;
 @property (retain, nonatomic) IBOutlet UILabel *frontLbl;
 @property (retain, nonatomic) IBOutlet UILabel *backLbl;
-@property (retain, nonatomic) IBOutlet UIImageView *zoomInImgView;
 @property (retain, nonatomic) IBOutlet UILabel *greetingNameLbl;
 @property (retain, nonatomic) IBOutlet UIImageView *flowerImgView;
 @property (retain, nonatomic) IBOutlet UILabel *greetingPrice;
@@ -47,7 +51,8 @@
 - (IBAction)showDatePicker:(id)sender;
 
 - (void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView;
+- (void)animateZoominView:(UIImageView*)imgView shouldShow:(BOOL)show;
 
--(NSString *)getMonthName:(int)monthNum;
+- (NSString *)getMonthName:(int)monthNum;
 
 @end
