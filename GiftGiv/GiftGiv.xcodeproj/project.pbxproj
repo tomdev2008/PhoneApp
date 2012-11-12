@@ -988,9 +988,9 @@
 		7ECD8F8D15E7C8D800E9B0C7 /* Paypal */ = {
 			isa = PBXGroup;
 			children = (
+				BD1B2D83164947BA0078C0B9 /* libPayPalEC.a */,
 				7ECD8F8F15E7C8F900E9B0C7 /* WebViewController.h */,
 				7ECD8F9015E7C8F900E9B0C7 /* WebViewController.m */,
-				BD1B2D83164947BA0078C0B9 /* libPayPalEC.a */,
 				BD1B2D84164947BA0078C0B9 /* PayPal.h */,
 				7ECD8F9215E7C90100E9B0C7 /* Network Handler */,
 			);

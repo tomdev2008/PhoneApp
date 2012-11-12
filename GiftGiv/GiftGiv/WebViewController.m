@@ -111,11 +111,16 @@
 -(void)paymentSuccess:(NSString *)transactionID {
 	if([CheckNetwork connectedToNetwork]){
         
-        
-        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]];
+        NSString *soapmsgFormat;
+        if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]){
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]];
+        }
+        else{
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_userID"]];
+        }
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        //NSLog(@"%@",soapRequestString);
+        NSLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetUser"];
         
         GetUserRequest *getUser=[[GetUserRequest alloc]init];
@@ -154,7 +159,7 @@
         
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        //NSLog(@"%@",soapRequestString);
+        NSLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddOrder"];
         
         AddOrderRequest *addOrder=[[AddOrderRequest alloc]init];
@@ -166,7 +171,7 @@
 }
 -(void) responseForAddOrder:(NSMutableString*)orderCode{
     
-    
+    NSLog(@"Order code...%@",orderCode);
     
     if([selectedGift objectForKey:@"RecipientMailID"]){
         if([CheckNetwork connectedToNetwork]){

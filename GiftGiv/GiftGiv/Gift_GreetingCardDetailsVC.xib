@@ -466,7 +466,7 @@
 							<object class="IBUILabel" id="585527445">
 								<reference key="NSNextResponder" ref="719495508"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{81, 42}, {155, 21}}</string>
+								<string key="NSFrame">{{81, 42}, {229, 21}}</string>
 								<reference key="NSSuperview" ref="719495508"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="95507751"/>
@@ -475,7 +475,7 @@
 								<int key="IBUIContentMode">7</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<string key="IBUIText">(shipping costs included)</string>
+								<string key="IBUIText">(shipping costs and sales tax, if applicable, included)</string>
 								<reference key="IBUITextColor" ref="819985548"/>
 								<nil key="IBUIHighlightedColor"/>
 								<int key="IBUIBaselineAdjustment">1</int>
@@ -492,7 +492,7 @@
 									<double key="NSSize">9</double>
 									<int key="NSfFlags">16</int>
 								</object>
-								<double key="preferredMaxLayoutWidth">155</double>
+								<double key="preferredMaxLayoutWidth">229</double>
 							</object>
 							<object class="IBUILabel" id="95507751">
 								<reference key="NSNextResponder" ref="719495508"/>
@@ -1472,7 +1472,6 @@
 						<string key="profilePic">UIImageView</string>
 						<string key="shippingCostLbl">UILabel</string>
 						<string key="zoomDoneBtn">UIButton</string>
-						<string key="zoomInImgView">UIImageView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="backGreetingImg">
@@ -1562,10 +1561,6 @@
 						<object class="IBToOneOutletInfo" key="zoomDoneBtn">
 							<string key="name">zoomDoneBtn</string>
 							<string key="candidateClassName">UIButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="zoomInImgView">
-							<string key="name">zoomInImgView</string>
-							<string key="candidateClassName">UIImageView</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

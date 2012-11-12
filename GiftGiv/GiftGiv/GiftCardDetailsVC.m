@@ -34,6 +34,8 @@
 @synthesize dodPicker;
 @synthesize dateLabel;
 @synthesize shippingCostLbl;
+@synthesize zoomDoneBtn;
+@synthesize giftTitleInZoomScreen;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -179,6 +181,11 @@
     monthsArray=[[NSMutableArray alloc]init];
     daysArray=[[NSMutableArray alloc]init];
     
+    UITapGestureRecognizer *tapRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(zoomInOutForCards:)];
+    tapRecognizer.numberOfTapsRequired=2;
+    [self.view addGestureRecognizer:tapRecognizer];
+    [tapRecognizer release];
+    giftTitleInZoomScreen.text=[giftItemInfo giftTitle];
     
     NSDateComponents *components = [[NSCalendar currentCalendar] components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
     int month=[components month];
@@ -197,6 +204,51 @@
         day++;
     }
     dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
+    [zoomDoneBtn.layer setBorderColor:[[UIColor whiteColor]CGColor]];
+    [zoomDoneBtn.layer setBorderWidth:1.0];
+    [zoomDoneBtn.layer setCornerRadius:5.0];
+}
+-(void)zoomInOutForCards:(UITapGestureRecognizer*)tapRecog{
+    
+    CGPoint tapLocation=[tapRecog locationInView:giftDetailsScroll];
+    
+    //zoom out
+    if(zoomScrollView!=nil && [zoomScrollView superview]){
+        if(CGRectContainsPoint(zoomScrollView.frame, tapLocation)){
+            
+            [zoomScrollView fullZoomToPoint:tapRecog];
+            if(zoomDoneBtn.hidden){
+                zoomDoneBtn.hidden=NO;
+                giftTitleInZoomScreen.hidden=NO;
+            }
+            else{
+                zoomDoneBtn.hidden=YES;
+                giftTitleInZoomScreen.hidden=YES;
+            }
+            return;
+        }
+        
+    }
+    else{
+        
+            if(CGRectContainsPoint(giftImg.frame, tapLocation)){
+                
+                zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
+                zoomScrollView.theContainerView.image=giftImg.image;
+                
+                zoomScrollView.message=self;
+                [self.view addSubview:zoomScrollView];
+                
+                zoomDoneBtn.frame=CGRectMake(240, 30, 70, 31);
+                [self.view addSubview:zoomDoneBtn];
+                giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
+                [self.view addSubview:giftTitleInZoomScreen];
+                
+            }
+            
+        }
+        
+    
     
 }
 -(NSString *)getMonthName:(int)monthNum{
@@ -725,7 +777,19 @@
         [prevNextSegmentControl setEnabled:NO forSegmentAtIndex:1];
     }
 }
-
+- (IBAction)zoomDoneAction:(id)sender {
+    zoomDoneBtn.hidden=YES;
+    giftTitleInZoomScreen.hidden=YES;
+    zoomScrollView.hidden=YES;
+    if(zoomScrollView!=nil){
+        [zoomScrollView removeFromSuperview];
+        [zoomDoneBtn removeFromSuperview];
+        [giftTitleInZoomScreen removeFromSuperview];
+        [zoomScrollView release];
+        zoomScrollView=nil;
+    }
+    
+}
 #pragma mark -
 - (void)viewDidUnload
 {
@@ -753,6 +817,8 @@
     [self setGiftDetails:nil];
     [self setGiftOptionsListBgView:nil];
     [self setShippingCostLbl:nil];
+    [self setGiftTitleInZoomScreen:nil];
+    [self setZoomDoneBtn:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -766,6 +832,8 @@
 
 
 - (void)dealloc {
+    [giftTitleInZoomScreen release];
+    [zoomDoneBtn release];
     [monthsArray release];
     [daysArray release];
     [dateLabel release];
@@ -931,6 +999,17 @@
         }
             
             break;
+    }
+    
+}
+- (void)contentView:(GfitZoomInView *)contentView touchesBegan:(NSSet *)touches{
+    if(zoomDoneBtn.hidden){
+        zoomDoneBtn.hidden=NO;
+        giftTitleInZoomScreen.hidden=NO;
+    }
+    else{
+        zoomDoneBtn.hidden=YES;
+        giftTitleInZoomScreen.hidden=YES;
     }
     
 }

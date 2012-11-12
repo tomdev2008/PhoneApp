@@ -14,7 +14,7 @@
 
 -(void)makeReqToAddOrder:(NSMutableURLRequest *)request{
 	
-    
+    //NSLog(@"%@",request);
 	//Asynchronous URL connection
 	theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 	
@@ -37,6 +37,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
 	
 	NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
+    NSLog(@"%@",theXML);
 	[webData release];
 	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     [theXML release];
@@ -51,6 +52,7 @@
 	
 	//delegate method to send the response after parsing finished successfully
 	if([xmlParser parse]){
+       
 		[addorderDelegate responseForAddOrder:orderResponse];
 	}
 	[orderResponse  release];

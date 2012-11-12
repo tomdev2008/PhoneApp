@@ -85,7 +85,7 @@
 
 - (CATransition *)getAnimationForEventGroup:(NSString *)animationType;
 
-- (void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails;
+- (void)makeRequestToAddUserForFB:(NSMutableDictionary*)userDetails;
 
 //- (NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate;
 

@@ -1924,7 +1924,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [self makeRequestToLoadImagesUsingOperations:listOfBirthdayEvents];
         
-        [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];
+        [self makeRequestToAddUserForFB:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];
     }
     
     
@@ -2009,13 +2009,21 @@ static NSDateFormatter *customDateFormat=nil;
        
 }
 
--(void)makeRequestToAddUserForBirthdays:(NSMutableDictionary*)userDetails{
-    
+-(void)makeRequestToAddUserForFB:(NSMutableDictionary*)userDetails{
+    NSLog(@"%@",userDetails);
     if([CheckNetwork connectedToNetwork]){
-        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddNormalUser>\n<tem:fbId>%@</tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddNormalUser>",[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"event_date"]];
+        
+        NSString *picURL;
+        if([userDetails objectForKey:@"pic_square"]){
+            picURL=[userDetails objectForKey:@"pic_square"];
+        }
+        else
+            picURL=FacebookPicURL([userDetails objectForKey:@"uid"]);
+        
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddNormalUser>\n<tem:fbId>%@</tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>%@</tem:profilePictureUrl>\n</tem:AddNormalUser>",[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],picURL];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        //NSLog(@"%@",soapRequestString);
+        NSLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddNormalUser"];
         
         AddUserRequest *addUser=[[AddUserRequest alloc]init];
@@ -2034,7 +2042,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma mark - Events from statuses
 - (void)birthdayEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
-    NSLog(@"event...%@",eventDetails);
+    
     if(!isEventsLoadingFromFB)
         return;
     for (NSDictionary *existEvents in listOfBirthdayEvents){
@@ -2083,6 +2091,36 @@ static NSDateFormatter *customDateFormat=nil;
     
     [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
     [eventDetails setObject:@"birthday" forKey:@"event_type"];
+    
+    NSLog(@"Birthday..%@",eventDetails);
+    NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:eventDetails];
+    if([eventDetails objectForKey:@"FBID"]){
+        [tempDict setObject:[eventDetails objectForKey:@"FBID"] forKey:@"uid"];
+        NSArray *fbnameComponents=[[eventDetails objectForKey:@"FBName"]componentsSeparatedByString:@" "];
+        if([fbnameComponents count]>1){
+            [tempDict setObject:[fbnameComponents objectAtIndex:0] forKey:@"first_name"];
+            [tempDict setObject:[fbnameComponents objectAtIndex:1] forKey:@"last_name"];
+        }
+        else{
+            [tempDict setObject:[eventDetails objectForKey:@"FBName"] forKey:@"first_name"];
+            [tempDict setObject:@"" forKey:@"last_name"];
+        }
+    }
+    else{
+        [tempDict setObject:[[eventDetails objectForKey:@"from"] objectForKey:@"id"] forKey:@"uid"];
+        NSArray *fbnameComponents=[[[eventDetails objectForKey:@"from"] objectForKey:@"name"]componentsSeparatedByString:@" "];
+        if([fbnameComponents count]>1){
+            [tempDict setObject:[fbnameComponents objectAtIndex:0] forKey:@"first_name"];
+            [tempDict setObject:[fbnameComponents objectAtIndex:1] forKey:@"last_name"];
+        }
+        else{
+            [tempDict setObject:[[eventDetails objectForKey:@"from"] objectForKey:@"name"] forKey:@"first_name"];
+            [tempDict setObject:@"" forKey:@"last_name"];
+        }
+    }
+    
+    [self makeRequestToAddUserForFB:tempDict];
+    [tempDict release];
     //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
     [listOfBirthdayEvents addObject:eventDetails];
     [allupcomingEvents addObject:eventDetails];
@@ -2150,6 +2188,40 @@ static NSDateFormatter *customDateFormat=nil;
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
         //[eventDetails setObject:@"new job" forKey:@"event_type"];
         //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
+        NSLog(@"newjob...%@",eventDetails);
+        
+        NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:eventDetails];
+        if([eventDetails objectForKey:@"FBID"]){
+            [tempDict setObject:[eventDetails objectForKey:@"FBID"] forKey:@"uid"];
+            NSArray *fbnameComponents=[[eventDetails objectForKey:@"FBName"]componentsSeparatedByString:@" "];
+            if([fbnameComponents count]>1){
+                [tempDict setObject:[fbnameComponents objectAtIndex:0] forKey:@"first_name"];
+                [tempDict setObject:[fbnameComponents objectAtIndex:1] forKey:@"last_name"];
+            }
+            else{
+                [tempDict setObject:[eventDetails objectForKey:@"FBName"] forKey:@"first_name"];
+                [tempDict setObject:@"" forKey:@"last_name"];
+            }
+        }
+        else{
+            [tempDict setObject:[[eventDetails objectForKey:@"from"] objectForKey:@"id"] forKey:@"uid"];
+            NSArray *fbnameComponents=[[[eventDetails objectForKey:@"from"] objectForKey:@"name"]componentsSeparatedByString:@" "];
+            if([fbnameComponents count]>1){
+                [tempDict setObject:[fbnameComponents objectAtIndex:0] forKey:@"first_name"];
+                [tempDict setObject:[fbnameComponents objectAtIndex:1] forKey:@"last_name"];
+            }
+            else{
+                [tempDict setObject:[[eventDetails objectForKey:@"from"] objectForKey:@"name"] forKey:@"first_name"];
+                [tempDict setObject:@"" forKey:@"last_name"];
+            }
+        }
+        
+        [self makeRequestToAddUserForFB:tempDict];
+        [tempDict release];
+        
+        
+        
+        
         [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
         [self performSelector:@selector(checkTotalNumberOfGroups)];
@@ -2168,6 +2240,7 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 - (void)anniversaryEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
+    
     if(!isEventsLoadingFromFB)
         return;
     
@@ -2199,8 +2272,40 @@ static NSDateFormatter *customDateFormat=nil;
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
         
         //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
+        
+        NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:eventDetails];
+        if([eventDetails objectForKey:@"FBID"]){
+            [tempDict setObject:[eventDetails objectForKey:@"FBID"] forKey:@"uid"];
+            NSArray *fbnameComponents=[[eventDetails objectForKey:@"FBName"]componentsSeparatedByString:@" "];
+            if([fbnameComponents count]>1){
+                [tempDict setObject:[fbnameComponents objectAtIndex:0] forKey:@"first_name"];
+                [tempDict setObject:[fbnameComponents objectAtIndex:1] forKey:@"last_name"];
+            }
+            else{
+                [tempDict setObject:[eventDetails objectForKey:@"FBName"] forKey:@"first_name"];
+                [tempDict setObject:@"" forKey:@"last_name"];
+            }
+        }
+        else{
+            [tempDict setObject:[[eventDetails objectForKey:@"from"] objectForKey:@"id"] forKey:@"uid"];
+            NSArray *fbnameComponents=[[[eventDetails objectForKey:@"from"] objectForKey:@"name"]componentsSeparatedByString:@" "];
+            if([fbnameComponents count]>1){
+                [tempDict setObject:[fbnameComponents objectAtIndex:0] forKey:@"first_name"];
+                [tempDict setObject:[fbnameComponents objectAtIndex:1] forKey:@"last_name"];
+            }
+            else{
+                [tempDict setObject:[[eventDetails objectForKey:@"from"] objectForKey:@"name"] forKey:@"first_name"];
+                [tempDict setObject:@"" forKey:@"last_name"];
+            }
+        }
+        
+        [self makeRequestToAddUserForFB:tempDict];
+        [tempDict release];
+        
+        
         [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
+        NSLog(@"anniversary..%@",eventDetails);
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         //[self performSelector:@selector(updateNextColumnTitle)];
         
@@ -2244,6 +2349,38 @@ static NSDateFormatter *customDateFormat=nil;
         //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
         [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
+        NSLog(@"congrats events...%@",eventDetails);
+        
+        NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:eventDetails];
+        if([eventDetails objectForKey:@"FBID"]){
+            [tempDict setObject:[eventDetails objectForKey:@"FBID"] forKey:@"uid"];
+            NSArray *fbnameComponents=[[eventDetails objectForKey:@"FBName"]componentsSeparatedByString:@" "];
+            if([fbnameComponents count]>1){
+                [tempDict setObject:[fbnameComponents objectAtIndex:0] forKey:@"first_name"];
+                [tempDict setObject:[fbnameComponents objectAtIndex:1] forKey:@"last_name"];
+            }
+            else{
+                [tempDict setObject:[eventDetails objectForKey:@"FBName"] forKey:@"first_name"];
+                [tempDict setObject:@"" forKey:@"last_name"];
+            }
+        }
+        else{
+            [tempDict setObject:[[eventDetails objectForKey:@"from"] objectForKey:@"id"] forKey:@"uid"];
+            NSArray *fbnameComponents=[[[eventDetails objectForKey:@"from"] objectForKey:@"name"]componentsSeparatedByString:@" "];
+            if([fbnameComponents count]>1){
+                [tempDict setObject:[fbnameComponents objectAtIndex:0] forKey:@"first_name"];
+                [tempDict setObject:[fbnameComponents objectAtIndex:1] forKey:@"last_name"];
+            }
+            else{
+                [tempDict setObject:[[eventDetails objectForKey:@"from"] objectForKey:@"name"] forKey:@"first_name"];
+                [tempDict setObject:@"" forKey:@"last_name"];
+            }
+        }
+        
+        [self makeRequestToAddUserForFB:tempDict];
+        [tempDict release];
+        
+        
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         //[self performSelector:@selector(updateNextColumnTitle)];
         
@@ -2494,7 +2631,7 @@ static NSDateFormatter *customDateFormat=nil;
         //response will return userID.
         if(birthdayEventUserNoToAddAsUser<[listOfBirthdayEvents count]){
             birthdayEventUserNoToAddAsUser++;
-            [self makeRequestToAddUserForBirthdays:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];   
+            [self makeRequestToAddUserForFB:[listOfBirthdayEvents objectAtIndex:birthdayEventUserNoToAddAsUser-1]];
         }
     }
    

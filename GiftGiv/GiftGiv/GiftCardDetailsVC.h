@@ -11,16 +11,21 @@
 #import "ImageAllocationObject.h"
 #import "SendOptionsVC.h"
 #import "GiftItemObject.h"
+#import "GfitZoomInView.h"
 
-@interface GiftCardDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate>{
+@interface GiftCardDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,GfitZoomInViewDelegate>{
     CGPoint svos;
     int selectedPriceRow;
     int selectedElectronicPhysicRow;
     NSMutableArray *electronicPhysicalList;
     NSMutableArray *monthsArray,*daysArray;
+    GfitZoomInView *zoomScrollView;
 }
+- (IBAction)zoomDoneAction:(id)sender;
 - (IBAction)electronicPhysicNavigatorAction:(id)sender;
 - (IBAction)electronicPhysicSelDone:(id)sender;
+@property (retain, nonatomic) IBOutlet UIButton *zoomDoneBtn;
+@property (retain, nonatomic) IBOutlet UILabel *giftTitleInZoomScreen;
 @property (retain, nonatomic) IBOutlet UIView *giftOptionsListBgView;
 @property (retain, nonatomic) IBOutlet OHAttributedLabel *giftDetails;
 @property (retain, nonatomic) IBOutlet UISegmentedControl *electronicPhysicSelNavigator;

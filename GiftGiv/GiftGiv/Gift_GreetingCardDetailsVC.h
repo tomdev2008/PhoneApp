@@ -51,7 +51,6 @@
 - (IBAction)showDatePicker:(id)sender;
 
 - (void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView;
-- (void)animateZoominView:(UIImageView*)imgView shouldShow:(BOOL)show;
 
 - (NSString *)getMonthName:(int)monthNum;
 
