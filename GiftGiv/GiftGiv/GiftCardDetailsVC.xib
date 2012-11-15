@@ -1021,17 +1021,8 @@
 				<bool key="IBUIUserInteractionEnabled">NO</bool>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<string key="IBUIText">Label</string>
-				<object class="NSColor" key="IBUITextColor">
-					<int key="NSColorSpace">3</int>
-					<bytes key="NSWhite">MQA</bytes>
-					<reference key="NSCustomColorSpace" ref="42459658"/>
-				</object>
 				<nil key="IBUIHighlightedColor"/>
-				<object class="NSColor" key="IBUIShadowColor">
-					<int key="NSColorSpace">3</int>
-					<bytes key="NSWhite">MAA</bytes>
-					<reference key="NSCustomColorSpace" ref="42459658"/>
-				</object>
+				<reference key="IBUIShadowColor" ref="65026114"/>
 				<string key="IBUIShadowOffset">{0, 1}</string>
 				<int key="IBUIBaselineAdjustment">0</int>
 				<int key="IBUINumberOfLines">2</int>

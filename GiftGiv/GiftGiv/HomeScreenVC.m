@@ -222,7 +222,7 @@ static NSDateFormatter *customDateFormat=nil;
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetFacebookList>\n<tem:userId>%@</tem:userId>\n<tem:facebookAccessToken>%@</tem:facebookAccessToken>\n</tem:GetFacebookList>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        NSLog(@"%@",soapRequestString);
+        //NSLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetFacebookList"];
         
         FacebookContactsReq *fbContacts=[[FacebookContactsReq alloc]init];
@@ -238,7 +238,7 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark Contacts Delegate
 -(void) receivedContacts:(NSMutableArray*)response{
     int friendsCount=[response count];
-    NSLog(@"Received contacts..%d",friendsCount);
+    //NSLog(@"Received contacts..%d",friendsCount);
     if(friendsCount){
         //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         
@@ -340,7 +340,7 @@ static NSDateFormatter *customDateFormat=nil;
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetEvents>\n<tem:userId>%@</tem:userId>\n<tem:typeEventList>Display</tem:typeEventList>\n</tem:GetEvents>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"]];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        NSLog(@"events request..%@",soapRequestString);
+        //NSLog(@"events request..%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetEvents"];
         
         GetEventsRequest *getEvents=[[GetEventsRequest alloc]init];
@@ -1205,6 +1205,9 @@ static NSDateFormatter *customDateFormat=nil;
                 [tempInfoDict setObject:[[searchContactsArray objectAtIndex:indexPath.row] objectForKey:@"event_type"] forKey:@"eventName"];
                 if([[searchContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"])
                     [tempInfoDict setObject:[[searchContactsArray objectAtIndex:indexPath.row]objectForKey:@"pic_url"] forKey:@"linkedIn_pic_url"];
+                else{
+                    [tempInfoDict setObject:[[searchContactsArray objectAtIndex:indexPath.row]objectForKey:@"ProfilePicURLToTake"] forKey:@"FBProfilePic"];
+                }
             //}
             
             /*else{
@@ -2010,7 +2013,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 -(void)makeRequestToAddUserForFB:(NSMutableDictionary*)userDetails{
-    NSLog(@"%@",userDetails);
+    
     if([CheckNetwork connectedToNetwork]){
         
         NSString *picURL;
@@ -2023,7 +2026,7 @@ static NSDateFormatter *customDateFormat=nil;
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddNormalUser>\n<tem:fbId>%@</tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>%@</tem:profilePictureUrl>\n</tem:AddNormalUser>",[userDetails objectForKey:@"uid"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],picURL];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        NSLog(@"%@",soapRequestString);
+        //NSLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddNormalUser"];
         
         AddUserRequest *addUser=[[AddUserRequest alloc]init];
@@ -2061,11 +2064,11 @@ static NSDateFormatter *customDateFormat=nil;
         else
             eventDetailsUserIDStr=[NSString stringWithFormat:@"%@",[[eventDetails objectForKey:@"from"]objectForKey:@"id"]];
         if([[NSString stringWithFormat:@"%@",existEventUserIDStr] isEqualToString:[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]]){
-            NSLog(@"same..");
+            //NSLog(@"same..");
             return ;
         }
         else{
-            NSLog(@"%@,%@,not same..",[NSString stringWithFormat:@"%@",existEventUserIDStr],[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]);
+            //NSLog(@"%@,%@,not same..",[NSString stringWithFormat:@"%@",existEventUserIDStr],[NSString stringWithFormat:@"%@",eventDetailsUserIDStr]);
         }
     }
     
@@ -2092,7 +2095,7 @@ static NSDateFormatter *customDateFormat=nil;
     [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
     [eventDetails setObject:@"birthday" forKey:@"event_type"];
     
-    NSLog(@"Birthday..%@",eventDetails);
+    
     NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:eventDetails];
     if([eventDetails objectForKey:@"FBID"]){
         [tempDict setObject:[eventDetails objectForKey:@"FBID"] forKey:@"uid"];
@@ -2188,7 +2191,7 @@ static NSDateFormatter *customDateFormat=nil;
         [eventDetails setObject:[customDateFormat stringFromDate:convertedDateFromString]forKey:@"event_date"];
         //[eventDetails setObject:@"new job" forKey:@"event_type"];
         //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
-        NSLog(@"newjob...%@",eventDetails);
+        
         
         NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:eventDetails];
         if([eventDetails objectForKey:@"FBID"]){
@@ -2305,7 +2308,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
-        NSLog(@"anniversary..%@",eventDetails);
+        
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         //[self performSelector:@selector(updateNextColumnTitle)];
         
@@ -2349,7 +2352,7 @@ static NSDateFormatter *customDateFormat=nil;
         //[eventDetails setObject:@"" forKey:@"ProfilePicture"];
         [eventsToCelebrateArray addObject:eventDetails];
         [allupcomingEvents addObject:eventDetails];
-        NSLog(@"congrats events...%@",eventDetails);
+        
         
         NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithDictionary:eventDetails];
         if([eventDetails objectForKey:@"FBID"]){
@@ -2539,7 +2542,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 -(void)makeRequestToAddUserForLinkedIn:(NSString*)requestString{
     NSString *soapRequestString=SOAPRequestMsg(requestString);
-    NSLog(@"%@",soapRequestString);
+    
     NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddUser"];
     
     AddUser_LinkedInRequest *addUser=[[AddUser_LinkedInRequest alloc]init];
@@ -2602,7 +2605,7 @@ static NSDateFormatter *customDateFormat=nil;
 
 #pragma mark - Add User Request delegate
 -(void) responseForLnAddUser:(NSMutableDictionary*)response{
-    NSLog(@"AddUser response..%@",response);
+    
     if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
         [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
     }
@@ -2614,7 +2617,7 @@ static NSDateFormatter *customDateFormat=nil;
             isLnContactsLoading=YES;
             NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetLinkedInList>\n<tem:userId>%@</tem:userId>\n<tem:linkedInAccessToken>%@</tem:linkedInAccessToken>\n<tem:linkedInSecretKey>%@</tem:linkedInSecretKey>\n<tem:tokenVerifier>%@</tem:tokenVerifier>\n</tem:GetLinkedInList>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInAccessToken"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInSecretKey"],[[NSUserDefaults standardUserDefaults]objectForKey:@"LinkedInOauthVerifier"]];
             NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-            NSLog(@"%@",soapRequestString);
+            //NSLog(@"%@",soapRequestString);
             NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetLinkedInList"];
             
             LinkedInContactsRequest *lnContacts=[[LinkedInContactsRequest alloc]init];

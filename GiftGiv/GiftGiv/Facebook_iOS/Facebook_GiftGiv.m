@@ -452,7 +452,7 @@ static NSCalendar *gregorian=nil;
                 }
                
             }
-            //If there are any pending requests, will prepared them after finishes the 50 friends set
+            //If there are any pending requests, will prepare them after finishes the 50 friends set
             if([requestJsonArrayForPhotos count]){
                 NSString *requestJson = [NSString stringWithFormat:@"{%@}", [requestJsonArrayForPhotos componentsJoinedByString:@","]];
                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"queries"];
@@ -460,6 +460,7 @@ static NSCalendar *gregorian=nil;
                                                                     andParams:params
                                                                 andHttpMethod:@"POST"
                                                                   andDelegate:self];
+                //We will be checking with the count of requests and responses, based on that we will disable the network indicator. For that reason, we are adding the values to friendUserIds when we make the request.
                 [friendUserIds setValue:@"" forKey:[fbReqPhotos.params objectForKey:@"queries"]];
                 [fbRequestsArray addObject:fbReqPhotos];
                 [requestJsonArrayForPhotos removeAllObjects];
@@ -469,6 +470,8 @@ static NSCalendar *gregorian=nil;
                 NSString *requestJson = [NSString stringWithFormat:@"[ %@ ]", [requestJsonArray componentsJoinedByString:@","]];
                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"batch"];
                 FBRequest *fbReqStatuses=[[self facebook] requestWithGraphPath:@"" andParams:params andHttpMethod:@"POST" andDelegate:self];
+                
+                //We will be checking with the count of requests and responses, based on that we will disable the network indicator. For that reason, we are adding the values to friendUserIds when we make the request.
                 [friendUserIds setValue:@"" forKey:[fbReqStatuses.params objectForKey:@"batch"]];
                 [requestJsonArray removeAllObjects];
                 [fbRequestsArray addObject:fbReqStatuses];
@@ -479,12 +482,12 @@ static NSCalendar *gregorian=nil;
         if([request isEqual:getFBBirthdaysReq]){
             if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
                 return;
-            
+            //List of birthdays received
             if([result isKindOfClass:[NSArray class]])
                 [fbGiftGivDelegate receivedBirthDayEvents:(NSMutableArray *)result];
         }
         switch (currentAPICall) {
-                
+                //Received the user details
             case kAPIGetUserDetails:
                  
                 if ([result isKindOfClass:[NSArray class]] && ([result count] > 0)) {
@@ -492,7 +495,8 @@ static NSCalendar *gregorian=nil;
                 }
                 [fbGiftGivDelegate facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)result];
                 break;
-                          
+                
+                //Received the statuses/photos information
             case kAPIGetJSONForStatuses:
                 responseCount++;
                 if([result isKindOfClass:[NSArray class]]){
@@ -521,12 +525,13 @@ static NSCalendar *gregorian=nil;
                                             if([[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"]){
                                                 int commentsCount=[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
                                                 int likesCount=[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"likes"] objectForKey:@"data"] count];
+                                                //check if the comments or likes are more than or equal to 15
                                                 if(commentsCount>=15 || likesCount>=15){
                                                     NSString *messageStr=[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"message"];
                                                     
                                                     BOOL isEventStatusFound=NO;
                                                     if(!isEventStatusFound){
-                                                        
+                                                        //If birthday search keyword matched then send this event to the delegate
                                                         for (NSString *searchedString in birthdaySearchStrings){
                                                             
                                                             if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
@@ -538,6 +543,7 @@ static NSCalendar *gregorian=nil;
                                                         }
                                                     }
                                                     if(!isEventStatusFound){
+                                                         //If anniversary search keyword matched then send this event to the delegate
                                                         for (NSString *searchedString in anniversarySearchStrings){
                                                             if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
                                                                 isEventStatusFound=YES;
@@ -547,6 +553,7 @@ static NSCalendar *gregorian=nil;
                                                         }
                                                     }
                                                     if(!isEventStatusFound){
+                                                         //If new job search keyword matched then send this event to the delegate
                                                         for (NSString *searchedString in newJobSearchStrings){
                                                             if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
                                                                 isEventStatusFound=YES;
@@ -556,6 +563,7 @@ static NSCalendar *gregorian=nil;
                                                         }
                                                     }
                                                     if(!isEventStatusFound){
+                                                         //If congrats search keyword matched then send this event to the delegate
                                                         for (NSString *searchedString in congratsSearchStrings){
                                                             if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
                                                                 isEventStatusFound=YES;
@@ -566,6 +574,7 @@ static NSCalendar *gregorian=nil;
                                                     }
                                                     
                                                     if(!isEventStatusFound){
+                                                        //Checking with comments text
                                                         BOOL isEventsFromCommentsFound=NO;
                                                         for(int j=0;j<commentsCount;j++){
                                                             NSString *commentsStr=[[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
@@ -625,6 +634,7 @@ static NSCalendar *gregorian=nil;
                     }
                     
                     else{
+                        //Related to photo events (get the profile of the event found with the comments text for the photo event)
                         for (int i=0;i<resultCount;i++){
                             
                             if([[result objectAtIndex:i] objectForKey:@"pic_square"]){
@@ -660,8 +670,11 @@ static NSCalendar *gregorian=nil;
                                     int listCountOfResultSetForEachQuery=[[[result objectAtIndex:i] objectForKey:@"fql_result_set"] count];
                                     for(int j=0;j<listCountOfResultSetForEachQuery;j++){
                                         NSMutableDictionary *overviewOfPhotoObject=(NSMutableDictionary*)[[[result objectAtIndex:i] objectForKey:@"fql_result_set"] objectAtIndex:j];
+                                        
+                                        //Check if the comments count or likes count more than or equal to 15
                                         if([[[overviewOfPhotoObject  objectForKey:@"like_info"] objectForKey:@"like_count"] intValue]>=15 || [[[overviewOfPhotoObject objectForKey:@"comment_info"] objectForKey:@"comment_count"] intValue]>=15){
-                                            
+
+                                            //Get the details of a photo with comments
                                             NSString *getCommentsForPhoto=[NSString stringWithFormat:@"SELECT object_id,text from comment where object_id=%@",[overviewOfPhotoObject objectForKey:@"object_id"]];
                                             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                                            getCommentsForPhoto, @"query",

@@ -110,7 +110,7 @@
 
 -(void)paymentSuccess:(NSString *)transactionID {
 	if([CheckNetwork connectedToNetwork]){
-        
+       
         NSString *soapmsgFormat;
         if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]){
             soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]];
@@ -159,7 +159,7 @@
         
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        NSLog(@"%@",soapRequestString);
+        //NSLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddOrder"];
         
         AddOrderRequest *addOrder=[[AddOrderRequest alloc]init];
@@ -175,12 +175,20 @@
     
     if([selectedGift objectForKey:@"RecipientMailID"]){
         if([CheckNetwork connectedToNetwork]){
+            NSString *profilePicURL;
             
+            if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"]){
+                profilePicURL=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_pic_url"];
+                
+            }
+            else{
+                 profilePicURL=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"FBProfilePic"];
+            }
             
-            NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:SendEmail>\n<tem:orderId>%@</tem:orderId>\n<tem:toEmail>%@</tem:toEmail>\n<tem:subject>%@</tem:subject>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n<tem:optionalMessage>Hi %@ -\n\nCongratulations!!! I wish I could be with you to take part in this celebration. However, I have selected a small gift at giftgiv to celebrate this joyous occasion. Can you please send your address so that giftgiv can deliver it to you?</tem:optionalMessage>\n</tem:SendEmail>",orderCode,[selectedGift objectForKey:@"RecipientMailID"],[selectedGift objectForKey:@"EventName"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientName"]];
+            NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:SendEmail>\n<tem:orderId>%@</tem:orderId>\n<tem:toEmail>%@</tem:toEmail>\n<tem:subject>%@</tem:subject>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n<tem:optionalMessage>Hi %@ -\n\nCongratulations!!! I wish I could be with you to take part in this celebration. However, I have selected a small gift at giftgiv to celebrate this joyous occasion. Can you please send your address so that giftgiv can deliver it to you?</tem:optionalMessage>\n<tem:recipientProfilePic>%@ </tem:recipientProfilePic></tem:SendEmail>",orderCode,[selectedGift objectForKey:@"RecipientMailID"],[selectedGift objectForKey:@"EventName"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientName"],profilePicURL];
             
             NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-           // NSLog(@"%@",soapRequestString);
+            //NSLog(@"%@",soapRequestString);
             NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"SendEmail"];
             
             SendEmailRequest *mailReq=[[SendEmailRequest alloc]init];

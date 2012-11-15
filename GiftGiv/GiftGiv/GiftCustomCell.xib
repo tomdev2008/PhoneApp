@@ -103,15 +103,15 @@
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
 						<float key="IBUIMinimumFontSize">8</float>
-						<object class="IBUIFontDescription" key="IBUIFontDescription" id="12145009">
+						<object class="IBUIFontDescription" key="IBUIFontDescription" id="252992205">
 							<string key="name">Helvetica-Bold</string>
 							<string key="family">Helvetica</string>
 							<int key="traits">2</int>
-							<double key="pointSize">9</double>
+							<double key="pointSize">8</double>
 						</object>
-						<object class="NSFont" key="IBUIFont" id="978760534">
+						<object class="NSFont" key="IBUIFont" id="390035652">
 							<string key="NSName">Helvetica-Bold</string>
-							<double key="NSSize">9</double>
+							<double key="NSSize">8</double>
 							<int key="NSfFlags">16</int>
 						</object>
 					</object>
@@ -193,8 +193,8 @@
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
 						<float key="IBUIMinimumFontSize">8</float>
-						<reference key="IBUIFontDescription" ref="12145009"/>
-						<reference key="IBUIFont" ref="978760534"/>
+						<reference key="IBUIFontDescription" ref="252992205"/>
+						<reference key="IBUIFont" ref="390035652"/>
 					</object>
 					<object class="IBUILabel" id="659310061">
 						<reference key="NSNextResponder" ref="147396572"/>

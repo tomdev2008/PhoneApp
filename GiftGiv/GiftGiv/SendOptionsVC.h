@@ -68,4 +68,5 @@
 -(void)refreshTheFormForOption:(int)optionIndex;
 -(BOOL)validateMail:(NSString *)email;
 -(NSString*)getEmailAddressOfRecipient:(NSString*)contactName;
+-(NSString*)getPhoneNumOfRecipient:(NSString*)contactName;
 @end

@@ -87,6 +87,7 @@
         
         
         NSXMLParser *tempParaser=[[NSXMLParser alloc]initWithData:[currentElementValue dataUsingEncoding:NSUTF8StringEncoding]];
+        currentElementValue=nil;
         tempParaser.delegate=self;
         if([tempParaser parse]){
             NSLog(@"parsed successfully");
@@ -101,7 +102,7 @@
     }
     
     
-    if([argElementName isEqualToString:@"UserId"])
+    else if([argElementName isEqualToString:@"UserId"])
         lnContact.userId=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     else if([argElementName isEqualToString:@"firstname"]){

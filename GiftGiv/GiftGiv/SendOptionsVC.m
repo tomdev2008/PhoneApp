@@ -75,7 +75,7 @@
     
     profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
     emailTxtFld.text=[self getEmailAddressOfRecipient:profileNameLbl.text];
-    
+    phoneNumTxtFld.text=[self getPhoneNumOfRecipient:profileNameLbl.text];
     NSString *profilePicId;
     
     if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
@@ -172,22 +172,18 @@
     CFIndex numberOfContacts  = ABAddressBookGetPersonCount(allPeople);
     
     
-    
-    
     for(int i = 0; i < numberOfContacts; i++){
         NSString* name = @"";
-       // NSString* phone = @"";
         NSString* email = @"";
         
         ABRecordRef aPerson = CFArrayGetValueAtIndex(allContacts, i);
         ABMultiValueRef fnameProperty = ABRecordCopyValue(aPerson, kABPersonFirstNameProperty);
         ABMultiValueRef lnameProperty = ABRecordCopyValue(aPerson, kABPersonLastNameProperty);
         
-        //ABMultiValueRef phoneProperty = ABRecordCopyValue(aPerson, kABPersonPhoneProperty);
         ABMultiValueRef emailProperty = ABRecordCopyValue(aPerson, kABPersonEmailProperty);
         
         NSArray *emailArray = (NSArray *)ABMultiValueCopyArrayOfAllValues(emailProperty);
-        //NSArray *phoneArray = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phoneProperty);
+        
         CFRelease(emailProperty);
         
         if (fnameProperty != nil) {
@@ -199,17 +195,13 @@
             CFRelease(lnameProperty);
         }
        
-       
-        
         if([name caseInsensitiveCompare:contactName]==NSOrderedSame){
             
         
             if ([emailArray count] > 0) {
                 if ([emailArray count] > 1) {
                     email = [email stringByAppendingString:[NSString stringWithFormat:@"%@", [emailArray objectAtIndex:0]]];
-                    /*for (int i = 0; i < [emailArray count]; i++) {
-                     email = [email stringByAppendingString:[NSString stringWithFormat:@"%@\n", [emailArray objectAtIndex:i]]];
-                     }*/
+                    
                 }else {
                     email = [NSString stringWithFormat:@"%@", [emailArray objectAtIndex:0]];
                 }
@@ -220,16 +212,62 @@
             return email;
         }
         [emailArray release];
-        /*if ([phoneArray count] > 0) {
-            if ([phoneArray count] > 1) {
-                for (int i = 0; i < [phoneArray count]; i++) {
-                    phone = [phone stringByAppendingString:[NSString stringWithFormat:@"%@\n", [phoneArray objectAtIndex:i]]];
-                }
-            }else {
-                phone = [NSString stringWithFormat:@"%@", [phoneArray objectAtIndex:0]];
-            }
-        }*/
         
+        
+    }
+    
+    CFRelease(allContacts);
+    CFRelease(allPeople);
+    return @"";
+}
+-(NSString*)getPhoneNumOfRecipient:(NSString*)contactName{
+    ABAddressBookRef allPeople = ABAddressBookCreate();
+    CFArrayRef allContacts = ABAddressBookCopyArrayOfAllPeople(allPeople);
+    CFIndex numberOfContacts  = ABAddressBookGetPersonCount(allPeople);
+    
+    
+    for(int i = 0; i < numberOfContacts; i++){
+        NSString* name = @"";
+        NSString* phone = @"";
+               
+        ABRecordRef aPerson = CFArrayGetValueAtIndex(allContacts, i);
+        ABMultiValueRef fnameProperty = ABRecordCopyValue(aPerson, kABPersonFirstNameProperty);
+        ABMultiValueRef lnameProperty = ABRecordCopyValue(aPerson, kABPersonLastNameProperty);
+        
+        ABMultiValueRef phoneProperty = ABRecordCopyValue(aPerson, kABPersonPhoneProperty);
+        
+        NSArray *phoneArray = (NSArray *)ABMultiValueCopyArrayOfAllValues(phoneProperty);
+        CFRelease(phoneProperty);
+        
+        if (fnameProperty != nil) {
+            name = [NSString stringWithFormat:@"%@", fnameProperty];
+            CFRelease(fnameProperty);
+        }
+        if (lnameProperty != nil) {
+            name = [name stringByAppendingString:[NSString stringWithFormat:@" %@", lnameProperty]];
+            CFRelease(lnameProperty);
+        }
+        
+        
+        
+        if([name caseInsensitiveCompare:contactName]==NSOrderedSame){
+            
+            
+            if ([phoneArray count] > 0) {
+                if ([phoneArray count] > 1) {
+                    for (int i = 0; i < [phoneArray count]; i++) {
+                        phone = [phone stringByAppendingString:[NSString stringWithFormat:@"%@\n", [phoneArray objectAtIndex:i]]];
+                    }
+                }
+                else {
+                    phone = [NSString stringWithFormat:@"%@", [phoneArray objectAtIndex:0]];
+                }
+             }
+            [phoneArray release];
+            CFRelease(allContacts);
+            CFRelease(allPeople);
+            return phone;
+        }
         
     }
     

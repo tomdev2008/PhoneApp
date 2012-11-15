@@ -52,7 +52,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    NSLog(@"gift summary..%@",giftSummaryDict);
     giftSummaryScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:giftSummaryScroll];
     

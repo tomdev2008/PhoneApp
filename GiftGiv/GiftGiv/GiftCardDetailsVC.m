@@ -204,7 +204,7 @@
         day++;
     }
     dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
-    [zoomDoneBtn.layer setBorderColor:[[UIColor whiteColor]CGColor]];
+    [zoomDoneBtn.layer setBorderColor:[[UIColor blackColor]CGColor]];
     [zoomDoneBtn.layer setBorderWidth:1.0];
     [zoomDoneBtn.layer setCornerRadius:5.0];
 }
@@ -239,9 +239,9 @@
                 zoomScrollView.message=self;
                 [self.view addSubview:zoomScrollView];
                 
-                zoomDoneBtn.frame=CGRectMake(240, 30, 70, 31);
+                zoomDoneBtn.frame=CGRectMake(240, 10, 70, 31);
                 [self.view addSubview:zoomDoneBtn];
-                giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
+                giftTitleInZoomScreen.frame=CGRectMake(10, 420, 300, 41);
                 [self.view addSubview:giftTitleInZoomScreen];
                 
             }

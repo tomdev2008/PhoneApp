@@ -70,7 +70,7 @@ static inline CGFloat ZoomScaleThatFits(CGSize target, CGSize source)
 		self.showsHorizontalScrollIndicator = NO;
 		self.contentMode = UIViewContentModeRedraw;
 		self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-		self.backgroundColor = [UIColor blackColor];
+		self.backgroundColor = [UIColor whiteColor];
 		self.userInteractionEnabled = YES;
 		self.autoresizesSubviews = NO;
 		self.bouncesZoom = YES;
@@ -83,7 +83,7 @@ static inline CGFloat ZoomScaleThatFits(CGSize target, CGSize source)
         theContainerView.userInteractionEnabled = NO;
         theContainerView.contentMode = UIViewContentModeScaleAspectFit;
         //theContainerView.autoresizingMask = UIViewAutoresizingNone;
-        theContainerView.backgroundColor = [UIColor blackColor];
+        theContainerView.backgroundColor = [UIColor clearColor];
         
         
         

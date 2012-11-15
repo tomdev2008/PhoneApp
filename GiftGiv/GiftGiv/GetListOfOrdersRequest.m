@@ -35,14 +35,14 @@
 //Connection finished successful
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
 	
-	NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
+	NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSUTF8StringEncoding];
 	[webData release];
 	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     [theXML release];
   	NSString *convertedStr=[updated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-    //NSLog(@"%@",convertedStr);
+    //NSLog(@"converted...%@",convertedStr);
     //[theXML release];
-    webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
+    webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSUTF8StringEncoding];
     
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
 	
@@ -87,6 +87,7 @@
 
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
+    
 	if([argElementName isEqualToString:@"Table"]){
         NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithObjectsAndKeys:order,@"OrderDetails", nil];
         [listOfOrders addObject:tempDict];

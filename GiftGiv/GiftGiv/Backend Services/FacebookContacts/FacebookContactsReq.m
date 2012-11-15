@@ -86,6 +86,7 @@
 
                 
         NSXMLParser *tempParaser=[[NSXMLParser alloc]initWithData:[currentElementValue dataUsingEncoding:NSUTF8StringEncoding]];
+        currentElementValue=nil;
         tempParaser.delegate=self;
         if([tempParaser parse]){
             NSLog(@"FB contacts parsing is done, received %d contacts",[receivedResponse count]);
@@ -101,8 +102,10 @@
     }
     
         
-    if([argElementName isEqualToString:@"UserId"])
+    else if([argElementName isEqualToString:@"UserId"]){
+        
         fbContact.userId=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }
     
     else if([argElementName isEqualToString:@"firstname"]){
         
