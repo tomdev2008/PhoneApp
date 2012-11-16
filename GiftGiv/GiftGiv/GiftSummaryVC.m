@@ -275,7 +275,7 @@
 - (IBAction)paymentBtnAction:(id)sender {
     
     [self showProgressHUD:self.view withMsg:nil];
-    [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_SANDBOX withDelegate:self];
+    [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_LIVE withDelegate:self];
     
     
 }
