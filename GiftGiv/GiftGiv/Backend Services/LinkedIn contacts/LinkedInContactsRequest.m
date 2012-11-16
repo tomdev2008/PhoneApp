@@ -20,7 +20,7 @@
 		webData = [[NSMutableData alloc] init];
 	}
 	else
-		NSLog(@"theConnection is NULL");
+		GGLog(@"theConnection is NULL");
     
 }
 #pragma mark -
@@ -78,7 +78,7 @@
 
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
-    //NSLog(@"%@,%@",argElementName,currentElementValue);
+    //GGLog(@"%@,%@",argElementName,currentElementValue);
     if([argElementName isEqualToString:@"GetLinkedInListResult"]){
         
         currentElementValue=(NSMutableString*)[currentElementValue stringByReplacingOccurrencesOfString:@"<?xml version=\"1.0\" encoding=\"utf-16\"?>" withString:@""];
@@ -90,12 +90,12 @@
         currentElementValue=nil;
         tempParaser.delegate=self;
         if([tempParaser parse]){
-            NSLog(@"parsed successfully");
+            GGLog(@"parsed successfully");
             //if([fbContactsDelegate respondsToSelector(receivedFBContacts:) withObject:receivedResponse])
             [lnContactsDelegate receivedContacts:receivedResponse];
         }
         else
-            NSLog(@"parsing failed..");
+            GGLog(@"parsing failed..");
         [receivedResponse  release];
         [tempParaser release];
         
@@ -120,7 +120,7 @@
     else if([argElementName isEqualToString:@"dob"]){
         //0001-01-01T00:00:00
         NSString *dateOfBirth=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        //NSLog(@"%@",dateOfBirth);
+        //GGLog(@"%@",dateOfBirth);
         lnContact.dob=[[dateOfBirth componentsSeparatedByString:@"T"] objectAtIndex:0];
     }
     else if([argElementName isEqualToString:@"location"]){

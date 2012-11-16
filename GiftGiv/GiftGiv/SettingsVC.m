@@ -40,7 +40,7 @@
     lnkd_giftgiv_settings=[[LinkedIn_GiftGiv alloc]init];
     lnkd_giftgiv_settings.lnkInGiftGivDelegate=self;
     
-    settinsScroll.contentSize=CGSizeMake(320, 480);
+    settinsScroll.contentSize=CGSizeMake(320, 483);
     
     if(showAboutUs)
         [settinsScroll setContentOffset:CGPointMake(0, 230)];
@@ -63,7 +63,7 @@
 #pragma mark - Facebook Logout delegate
 - (void)facebookDidLoggedOut{
    [[NSNotificationCenter defaultCenter] postNotificationName:@"UserLoggedOut" object:nil];
-    NSLog(@"seetings facebook log out..");
+    GGLog(@"seetings facebook log out..");
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     //[[NSUserDefaults standardUserDefaults]removeObjectForKey:@"FBAccessTokenKey"];
     [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForGiftItemFileName:@""] error:nil];
@@ -173,7 +173,7 @@
 
 - (void)linkedInDidLoggedOut{
     if(![[fb_giftgiv_settings facebook] isSessionValid]){
-        NSLog(@"linkedin logout");
+        GGLog(@"linkedin logout");
         [self stopHUD];
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         [self.navigationController popToRootViewControllerAnimated:YES];

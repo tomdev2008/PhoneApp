@@ -23,7 +23,7 @@
 		webData = [[NSMutableData alloc] init];
 	}
 	else
-		NSLog(@"theConnection is NULL");
+		GGLog(@"theConnection is NULL");
         }
 #pragma mark -
 #pragma mark Connection delegates
@@ -42,7 +42,7 @@
 	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     [theXML release];
   	NSString *convertedStr=[updated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-    //NSLog(@"converte.. %@",convertedStr);
+    //GGLog(@"converte.. %@",convertedStr);
     webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSUTF8StringEncoding];
     
     

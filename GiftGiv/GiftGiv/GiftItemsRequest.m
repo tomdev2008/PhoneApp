@@ -22,7 +22,7 @@
 		webData = [[NSMutableData alloc] init];
 	}
 	else
-		NSLog(@"theConnection is NULL");
+		GGLog(@"theConnection is NULL");
 }
 #pragma mark -
 #pragma mark Connection delegates
@@ -41,7 +41,7 @@
 	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     [theXML release];
   	NSString *convertedStr=[updated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-    //NSLog(@"%@",theXML);
+    //GGLog(@"%@",theXML);
     webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
     
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
@@ -87,7 +87,7 @@
 
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
-	//NSLog(@"%@",argElementName);
+	//GGLog(@"%@",argElementName);
 	if([argElementName isEqualToString:@"Id"])
         giftItem.giftId=[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     

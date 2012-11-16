@@ -87,7 +87,7 @@ error = _error;
         if (([[params objectForKey:key] isKindOfClass:[UIImage class]])
             ||([[params objectForKey:key] isKindOfClass:[NSData class]])) {
             if ([httpMethod isEqualToString:@"GET"]) {
-                NSLog(@"can not use GET to upload a file");
+                GGLog(@"can not use GET to upload a file");
             }
             continue;
         }

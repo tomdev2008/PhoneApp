@@ -53,7 +53,7 @@ static NSDateFormatter *customDateFormat=nil;
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetOrdersandUserDetails>\n<tem:senderId>%@</tem:senderId>\n</tem:GetOrdersandUserDetails>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"]];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        NSLog(@"%@",soapRequestString);
+        GGLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetOrdersandUserDetails"];
         
         GetListOfOrdersRequest *ordersReq=[[GetListOfOrdersRequest alloc]init];

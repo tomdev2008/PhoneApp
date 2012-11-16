@@ -756,8 +756,7 @@
     
 }
 -(void)priceSelectedByPicker:(UITapGestureRecognizer*)sender{
-    //NSLog(@"%d",[sender.view tag]);
-    
+        
     selectedPriceRow=[sender.view tag];
     [pricePicker selectRow:selectedPriceRow inComponent:0 animated:YES];
     

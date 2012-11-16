@@ -50,7 +50,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 - (id)initWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret delegate:(id<RDLinkedInEngineDelegate>)delegate {
   self = [super init];
   if( self != nil ) {
-      NSLog(@"oaconsumer...key=%@ and secret=%@..",consumerKey,consumerSecret);
+      
     rdDelegate = delegate;
     rdOAuthConsumer = [[OAConsumer alloc] initWithKey:consumerKey secret:consumerSecret];
     rdConnections = [[NSMutableDictionary alloc] init];
@@ -181,7 +181,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 
 - (RDLinkedInConnectionID *)sendAPIRequestWithURL:(NSURL *)url HTTPMethod:(NSString *)method body:(NSData *)body {
   if( !self.isAuthorized ) return nil;
-  RDLOG(@"sending API request to %@", url);
+  //RDLOG(@"sending API request to %@", url);
   
   // create and configure the URL request
   OAMutableURLRequest* request = [[[OAMutableURLRequest alloc] initWithURL:url
@@ -202,7 +202,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
     [request setHTTPBody:body];
   }
     NSString *bodyString = [[[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding] autorelease];
-  NSLog(@"HTTPBody=%@", bodyString);
+  GGLog(@"HTTPBody=%@", bodyString);
   // initiate a URL connection with this request
   RDLinkedInHTTPURLConnection* connection = [[[RDLinkedInHTTPURLConnection alloc] initWithRequest:request delegate:self] autorelease];
   if( connection ) {
@@ -290,7 +290,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   
   [rdOAuthAccessToken release];
   rdOAuthAccessToken = [[OAToken alloc] initWithHTTPResponseBody:dataString];
-  RDLOG(@"LinkedIn access token Key:%@\n Secret:%@", rdOAuthAccessToken.key,rdOAuthAccessToken.secret);
+  //RDLOG(@"LinkedIn access token Key:%@\n Secret:%@", rdOAuthAccessToken.key,rdOAuthAccessToken.secret);
     [[NSUserDefaults standardUserDefaults]setObject:rdOAuthAccessToken.key forKey:@"LinkedInAccessToken"];
     [[NSUserDefaults standardUserDefaults]setObject:rdOAuthAccessToken.secret forKey:@"LinkedInSecretKey"];
     [[NSUserDefaults standardUserDefaults]setObject:rdOAuthAccessToken.pin forKey:@"LinkedInOauthVerifier"];

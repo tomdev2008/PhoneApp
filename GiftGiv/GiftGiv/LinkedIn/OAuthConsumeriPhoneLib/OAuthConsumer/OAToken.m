@@ -56,7 +56,7 @@
 
 - (id)initWithHTTPResponseBody:(NSString *)body 
 {
-    NSLog(@"oatoken..body..%@",body);
+    GGLog(@"oatoken..body..%@",body);
 	if (self = [super init])
 	{
 		NSArray *pairs = [body componentsSeparatedByString:@"&"];

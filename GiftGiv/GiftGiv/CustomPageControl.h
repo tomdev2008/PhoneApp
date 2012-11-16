@@ -10,7 +10,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ImageAllocationObject.h"
-#import "Constants.h"
+//#import "Constants.h"
 
 
 @interface CustomPageControl : UIPageControl

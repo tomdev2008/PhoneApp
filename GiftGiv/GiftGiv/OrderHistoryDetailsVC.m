@@ -51,7 +51,7 @@ static NSDateFormatter *customDateFormat=nil;
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    //NSLog(@"%@",orderDetails.price);
+    //GGLog(@"%@",orderDetails.price);
     orderDetailsScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:orderDetailsScroll];
     
@@ -192,7 +192,7 @@ static NSDateFormatter *customDateFormat=nil;
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetGiftItem>\n<tem:id>%@</tem:id>\n</tem:GetGiftItem>",orderDetails.itemId];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        //NSLog(@"%@",soapRequestString);
+        //GGLog(@"%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetGiftItem"];
         
         GetGiftItemRequest *getGiftItem=[[GetGiftItemRequest alloc]init];

@@ -7,7 +7,7 @@
 //
 
 #import "Facebook_GiftGiv.h"
-#import "Constants.h"
+//#import "Constants.h"
 
 @interface Facebook_GiftGiv()
 
@@ -48,7 +48,7 @@ static NSCalendar *gregorian=nil;
             }
             
             
-            //NSLog(@"AccessToken= %@ \n ExpirationDate= %@", facebook.accessToken, facebook.expirationDate);
+            //GGLog(@"AccessToken= %@ \n ExpirationDate= %@", facebook.accessToken, facebook.expirationDate);
             fbRequestsArray=[[NSMutableArray alloc]init];
         }
     }
@@ -122,7 +122,7 @@ static NSCalendar *gregorian=nil;
  * Called when the user dismissed the dialog without logging in.
  */
 - (void)fbDidNotLogin:(BOOL)cancelled{
-    NSLog(@"fbDidNotLogin");
+    GGLog(@"fbDidNotLogin");
     [fbGiftGivDelegate facebookDidCancelledLogin];
     
 }
@@ -320,7 +320,7 @@ static NSCalendar *gregorian=nil;
  * Called when an error prevents the request from completing successfully.
  */
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error{
-    NSLog(@"request failed with error=%@",error);
+    GGLog(@"request failed with error=%@",error);
     responseCount++;
     [fbGiftGivDelegate facebookDidRequestFailed];
 }
@@ -513,7 +513,7 @@ static NSCalendar *gregorian=nil;
                                 [json release];
                                 
                                 if ( httpCode != 200 ) {
-                                    NSLog( @"Facebook request error: code: %d  message: %@", httpCode, resultantJson );
+                                    GGLog( @"Facebook request error: code: %d  message: %@", httpCode, resultantJson );
                                 }
                                 else {
                                     int totalCountForMessages=[[resultantJson objectForKey:@"data"] count];
@@ -836,10 +836,10 @@ static NSCalendar *gregorian=nil;
                 
         }
     }
-    
-	
+   
     
 }
+//Check whether the message/text contains a searched keyword
 -(BOOL)checkWhetherText:(NSString*)sourceText contains:(NSString*)searchedKeyword{
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF contains[cd] %@)", searchedKeyword];
     

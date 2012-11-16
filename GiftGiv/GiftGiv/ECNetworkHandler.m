@@ -210,9 +210,9 @@ static ECNetworkHandler *instance = nil;
 			}
 		}
 	}
-#ifdef DEBUG
-	NSLog(@"%@ does not contain %@", [container class], elementName);
-#endif
+
+	GGLog(@"%@ does not contain %@", [container class], elementName);
+
 	return nil;
 }	
 
@@ -247,7 +247,7 @@ static ECNetworkHandler *instance = nil;
 			[url appendFormat:@"&drt=%@", [deviceReferenceToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 		}
 		
-		NSLog(@"REDIRECT URL = [%@]", url);
+		GGLog(@"REDIRECT URL = [%@]", url);
 		
 		return url;
 	}
@@ -304,9 +304,9 @@ static ECNetworkHandler *instance = nil;
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.ecURL]];
 	[request setHTTPMethod:@"POST"];
 	NSString *reqXML = [self toXML:obj];
-#ifdef DEBUG
-	NSLog(@"*******Request******** to URL: %@\n%@", self.ecURL, reqXML);
-#endif
+
+	GGLog(@"*******Request******** to URL: %@\n%@", self.ecURL, reqXML);
+
 	[request setHTTPBody:[reqXML dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	self.data = nil;
@@ -387,10 +387,9 @@ static ECNetworkHandler *instance = nil;
 -(void)connectionDidFinishLoading:(NSURLConnection*)theConnection {
 	//so self data now has the complete image 
 	self.connection=nil;
-	
-#ifdef DEBUG
-	NSLog(@"*******Response********\n%@", [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]);
-#endif	
+
+	GGLog(@"*******Response********\n%@", [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]);
+
 	NSObject *obj = [self parseObjectFromSavedData];
 	self.data = nil;
 	
@@ -407,9 +406,9 @@ static ECNetworkHandler *instance = nil;
 	self.connection = nil;
 	self.data = nil;
 	
-#ifdef DEBUG
-	NSLog(@"*******Error********\n%@", [error localizedDescription]);
-#endif	
+
+	GGLog(@"*******Error********\n%@", [error localizedDescription]);
+
 	if (delegate != nil) {
 		id<ExpressCheckoutResponseHandler> listener = delegate;
 		self.delegate = nil;

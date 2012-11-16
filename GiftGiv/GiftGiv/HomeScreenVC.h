@@ -16,7 +16,6 @@
 #import "SettingsVC.h"
 #import "Facebook_GiftGiv.h"
 #import "AddUserRequest.h"
-#import "Constants.h"
 #import "CheckNetwork.h"
 #import "CoomonRequestCreationObject.h"
 #import "CustomDateDisplay.h"
@@ -45,22 +44,23 @@
     NSMutableArray *allupcomingEvents;
     NSMutableArray *eventsToCelebrateArray;
     NSMutableArray *listOfContactsArray;
-    NSMutableArray *linkedInContactsArray;
     
     NSMutableArray *globalContactsList;
    
            
-    NSMutableArray *searchUpcomingEventsArray,*searchBirthdayEvents,*searchEventsToCelebrateArray,*searchContactsArray;
+    NSMutableArray *searchContactsArray;
     
     
     NSMutableArray *categoryTitles;
     Facebook_GiftGiv *fb_giftgiv_home;
     LinkedIn_GiftGiv *lnkd_giftgiv_home;
+    
     BOOL isEventsLoadingFromFB;
     BOOL isSearchEnabled;
     BOOL isFBContactsLoading;
     BOOL isLnContactsLoading;
     BOOL isCancelledImgOperations;
+    
     NSFileManager *fm;
     NSOperationQueue *picturesOperationQueue;
     dispatch_queue_t ImageLoader_Q, ImageLoader_Q_ForEvents;
@@ -72,8 +72,7 @@
 @property (retain, nonatomic) IBOutlet CustomPageControl *pageControlForEventGroups;
 @property (retain, nonatomic) IBOutlet UITableView *eventsTable;
 @property (retain, nonatomic) IBOutlet UILabel *eventTitleLbl;
-//@property (retain, nonatomic) IBOutlet UILabel *eventTitle_2_Lbl;
-//@property (retain, nonatomic) IBOutlet UITableView *events_2_Table;
+
 @property (retain, nonatomic) IBOutlet UISearchBar *searchBar;
 
 @property (retain, nonatomic) IBOutlet UIView *searchBgView;
@@ -87,13 +86,12 @@
 
 - (void)makeRequestToAddUserForFB:(NSMutableDictionary*)userDetails;
 
-//- (NSString*)updatedDateToBeDisplayedForTheEvent:(id)eventDate;
-
 - (BOOL)checkWhetherEventExistInTheListOfEvents:(NSMutableDictionary*)eventsData;
 
 - (void)sortEvents:(NSMutableArray*)listOfEvents eventCategory:(int)catNum;
 
 - (void)storeAllupcomingsForSuccessScreen;
+
 #pragma mark - Progress HUD
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
 - (void) stopHUD;

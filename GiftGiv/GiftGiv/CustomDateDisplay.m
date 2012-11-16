@@ -39,7 +39,7 @@ static NSCalendar *gregorianCalendar=nil;
         gregorianCalendar= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *components = [gregorianCalendar components:NSDayCalendarUnit fromDate:[customDateFormat dateFromString:startDateString] toDate:[customDateFormat dateFromString:endDateString] options:0];
     
-    //NSLog(@"%d",[components day]);
+    //GGLog(@"%d",[components day]);
     //[gregorianCalendar release];
     
     switch ([components day]) {

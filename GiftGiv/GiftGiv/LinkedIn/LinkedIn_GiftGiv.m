@@ -8,7 +8,7 @@
 //
 
 #import "LinkedIn_GiftGiv.h"
-#import "Constants.h"
+//#import "Constants.h"
 #import "AppDelegate.h"
 #import "RDLinkedIn.h"
 
@@ -48,7 +48,7 @@ static NSCalendar *gregorianCalendar=nil;
         [viwController presentModalViewController:loginController animated:NO];
     }
     else {
-        //NSLog(@"Already authenticated");
+        //GGLog(@"Already authenticated");
     }
 }
 
@@ -359,7 +359,7 @@ static NSCalendar *gregorianCalendar=nil;
 }
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestFailed:(RDLinkedInConnectionID *)identifier withError:(NSError *)error {
-    NSLog(@"++ LinkedIn engine reports failure for connection %@\n%@", identifier, [error localizedDescription]);
+    GGLog(@"++ LinkedIn engine reports failure for connection %@\n%@", identifier, [error localizedDescription]);
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
    [lnkInGiftGivDelegate linkedInDidRequestFailed];
 }
@@ -374,12 +374,12 @@ static NSCalendar *gregorianCalendar=nil;
 
 - (void)linkedInAuthorizationControllerFailed:(RDLinkedInAuthorizationController *)controller {
     [lnkInGiftGivDelegate linkedInDidRequestFailed];
-    NSLog(@"failed!");
+    GGLog(@"failed!");
 }
 
 - (void)linkedInAuthorizationControllerCanceled:(RDLinkedInAuthorizationController *)controller {
     [lnkInGiftGivDelegate linkedInDidCancelledLogin];
-    NSLog(@"cancelled!");
+    GGLog(@"cancelled!");
 }
 
 @end

@@ -236,7 +236,7 @@
 			CFRelease(newFont);
 		} else {
 			CFStringRef fontName = CTFontCopyFullName(currentFont);
-			NSLog(@"[OHAttributedLabel] Warning: can't find a bold font variant for font %@. Try another font family (like Helvetica) instead.",
+			GGLog(@"[OHAttributedLabel] Warning: can't find a bold font variant for font %@. Try another font family (like Helvetica) instead.",
                   (BRIDGE_CAST NSString*)fontName);
             if (fontName) CFRelease(fontName);
 		}

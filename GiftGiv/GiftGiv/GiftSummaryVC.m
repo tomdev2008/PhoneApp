@@ -52,7 +52,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSLog(@"gift summary..%@",giftSummaryDict);
+    GGLog(@"gift summary..%@",giftSummaryDict);
     giftSummaryScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:giftSummaryScroll];
     
@@ -146,7 +146,7 @@
 }
 
 -(void)loadImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
-    //NSLog(@"%@",imgURL);
+    //GGLog(@"%@",imgURL);
     __block NSString *tempImgURL=imgURL;
     dispatch_queue_t ImageLoader_Q;
     ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
@@ -264,7 +264,7 @@
 //This method is called when a device reference token could not be fetched.
 - (void)couldNotFetchDeviceReferenceToken {
 	//optionally check the errorMessage property to see what the problem was
-	//NSLog(@"DEVICE REFERENCE TOKEN ERROR: %@", [PayPal getPayPalInst].errorMessage);
+	//GGLog(@"DEVICE REFERENCE TOKEN ERROR: %@", [PayPal getPayPalInst].errorMessage);
 	
 	//clear any previously-stored token
 	[ECNetworkHandler sharedInstance].deviceReferenceToken = @"";

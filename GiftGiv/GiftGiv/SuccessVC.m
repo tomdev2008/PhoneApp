@@ -73,7 +73,7 @@
         if(urlStr_id){
             
             
-            //NSLog(@"%@",[NSString stringWithFormat:@"%@.png",urlStr_id]);
+            //GGLog(@"%@",[NSString stringWithFormat:@"%@.png",urlStr_id]);
             if (![fm fileExistsAtPath: [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",urlStr_id]]]){
                                 
                 NSString *picture_url=nil;
@@ -352,7 +352,7 @@
         [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"EventID"] forKey:@"msgID"];
     else    
         [tempInfoDict setObject:[[upcomingEvents objectAtIndex:[sender tag]] objectForKey:@"id"] forKey:@"msgID"];
-    //NSLog(@" temp dict..%@",tempInfoDict);
+    //GGLog(@" temp dict..%@",tempInfoDict);
     
     [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
     

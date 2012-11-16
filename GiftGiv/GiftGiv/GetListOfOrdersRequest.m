@@ -21,7 +21,7 @@
 		webData = [[NSMutableData alloc] init];
 	}
 	else
-		NSLog(@"theConnection is NULL");
+		GGLog(@"theConnection is NULL");
 }
 #pragma mark -
 #pragma mark Connection delegates
@@ -40,7 +40,7 @@
 	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     [theXML release];
   	NSString *convertedStr=[updated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-    //NSLog(@"converted...%@",convertedStr);
+    //GGLog(@"converted...%@",convertedStr);
     //[theXML release];
     webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSUTF8StringEncoding];
     
@@ -105,7 +105,7 @@
     else if([argElementName isEqualToString:@"ProfilePictureUrl"]){
         order.profilePictureUrl=(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         /*NSData *picData=[NSData dataWithContentsOfURL:[NSURL URLWithString:order.profilePictureUrl]];
-         //NSLog(@"%@",order.profilePictureUrl);
+         //GGLog(@"%@",order.profilePictureUrl);
          if(picData!=nil){
          order.profilePicImg=[UIImage imageWithData:picData];
          }

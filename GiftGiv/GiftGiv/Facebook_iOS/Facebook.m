@@ -418,7 +418,7 @@ static void *finishedContext = @"finishedContext";
     }
     
     NSDictionary *params = [self parseURLParams:query];
-    NSLog(@"parameters...%@",params);
+    GGLog(@"parameters...%@",params);
     NSString *accessToken = [params objectForKey:@"access_token"];
     
     // If the URL doesn't contain the access token, an error has occurred.
@@ -516,7 +516,7 @@ static void *finishedContext = @"finishedContext";
 - (FBRequest*)requestWithParams:(NSMutableDictionary *)params
                     andDelegate:(id <FBRequestDelegate>)delegate {
     if ([params objectForKey:@"method"] == nil) {
-        NSLog(@"API Method must be specified");
+        GGLog(@"API Method must be specified");
         return nil;
     }
     

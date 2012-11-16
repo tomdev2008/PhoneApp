@@ -22,7 +22,7 @@
 		webData = [[NSMutableData alloc] init];
 	}
 	else
-		NSLog(@"theConnection is NULL");
+		GGLog(@"theConnection is NULL");
 }
 #pragma mark -
 #pragma mark Connection delegates
@@ -40,7 +40,7 @@
 	NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
     
     NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
-    //NSLog(@"XML...%@",theXML);
+    //GGLog(@"XML...%@",theXML);
     [theXML release];
 	[webData release];
 	

@@ -14,7 +14,7 @@
 
 -(void)makeReqToAddOrder:(NSMutableURLRequest *)request{
 	
-    //NSLog(@"%@",request);
+    //GGLog(@"%@",request);
 	//Asynchronous URL connection
 	theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 	
@@ -22,7 +22,7 @@
 		webData = [[NSMutableData alloc] init];
 	}
 	else
-		NSLog(@"theConnection is NULL");
+		GGLog(@"theConnection is NULL");
 }
 #pragma mark -
 #pragma mark Connection delegates
@@ -37,7 +37,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
 	
 	NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
-    NSLog(@"%@",theXML);
+    GGLog(@"%@",theXML);
 	[webData release];
 	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     [theXML release];

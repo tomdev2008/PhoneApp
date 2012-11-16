@@ -126,7 +126,7 @@
 }
 - (void)receivedDetailedEventInfo:(NSMutableDictionary*)eventDetails{
     
-    //NSLog(@"details..%@",eventDetails);
+    //GGLog(@"details..%@",eventDetails);
     
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     
@@ -184,7 +184,7 @@
         CGSize eventDescription_maxSize = CGSizeMake(310, 100);
         CGSize eventDescription_newSize=[eventDescription.text sizeWithFont:eventDescription.font constrainedToSize:eventDescription_maxSize lineBreakMode:UILineBreakModeWordWrap];
         eventDescription.frame=CGRectMake(5, 0,310, eventDescription_newSize.height+28);
-        //NSLog(@"%@",NSStringFromCGSize(eventDescription_newSize));
+        //GGLog(@"%@",NSStringFromCGSize(eventDescription_newSize));
         
         
         likesCommentsLbl.frame=CGRectMake(13, eventDescription.frame.origin.y+eventDescription.frame.size.height+5, 221, 21);
@@ -193,7 +193,7 @@
     }
     float tableHeight=0;
     for(int i=0;i<commentsCount;i++){
-        UIFont *cellFont = [UIFont fontWithName:@"Helvetica" size:14.0];
+        UIFont *cellFont = [UIFont fontWithName:@"Helvetica-Light" size:12.0];
         CGSize constraintSize = CGSizeMake(246.0f, MAXFLOAT);
         
         CGSize labelSize = [[NSString stringWithFormat:@"%@ %@",[[[listOfComments objectAtIndex:i]objectForKey:@"from"]objectForKey:@"name"],[[listOfComments objectAtIndex:i]objectForKey:@"message"]] sizeWithFont:cellFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
@@ -242,22 +242,22 @@
         NSString *profileNameAndComment=[NSString stringWithFormat:@"%@ %@",[[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"from"]objectForKey:@"name"],[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"message"]];
         NSMutableAttributedString* attrStr = [NSMutableAttributedString attributedStringWithString:profileNameAndComment];
         
-        attrStr.font=[UIFont fontWithName:@"Helvetica" size:14];
+        attrStr.font=[UIFont fontWithName:@"Helvetica-Light" size:12];
         [attrStr setTextColor:[UIColor blackColor]];
         
         [attrStr setTextColor:[UIColor colorWithRed:0 green:0.67 blue:0.66 alpha:1.0] range:[profileNameAndComment rangeOfString:[[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"from"]objectForKey:@"name"]]];
-        [attrStr setFont:[UIFont fontWithName:@"Helvetica-Bold" size:14] range:[profileNameAndComment rangeOfString:[[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"from"]objectForKey:@"name"]]];
+        [attrStr setFont:[UIFont fontWithName:@"Helvetica-Bold" size:12] range:[profileNameAndComment rangeOfString:[[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"from"]objectForKey:@"name"]]];
         cell.commentsLbl.attributedText = attrStr;
     }
     else{
         NSString *profileNameAndComment=[NSString stringWithFormat:@"%@ %@ %@",[[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"person"]objectForKey:@"first-name"],[[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"person"]objectForKey:@"last-name"],[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"comment"]];
         NSMutableAttributedString* attrStr = [NSMutableAttributedString attributedStringWithString:profileNameAndComment];
         
-        attrStr.font=[UIFont fontWithName:@"Helvetica-Bold" size:14];
+        attrStr.font=[UIFont fontWithName:@"Helvetica-Bold" size:12];
         [attrStr setTextColor:[UIColor colorWithRed:0 green:0.67 blue:0.66 alpha:1.0]];
         
         [attrStr setTextColor:[UIColor blackColor] range:[profileNameAndComment rangeOfString:[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"comment"]]];
-        [attrStr setFont:[UIFont fontWithName:@"Helvetica" size:14] range:[profileNameAndComment rangeOfString:[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"comment"]]];
+        [attrStr setFont:[UIFont fontWithName:@"Helvetica-Light" size:12] range:[profileNameAndComment rangeOfString:[[listOfComments objectAtIndex:indexPath.row]objectForKey:@"comment"]]];
         cell.commentsLbl.attributedText = attrStr;
     }
     cell.commentsLbl.textAlignment = UITextAlignmentLeft;
@@ -272,7 +272,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    UIFont *cellFont = [UIFont fontWithName:@"Helvetica" size:14.0];
+    UIFont *cellFont = [UIFont fontWithName:@"Helvetica-Light" size:12.0];
     CGSize constraintSize = CGSizeMake(246.0f, MAXFLOAT);
     CGSize labelSize;
     if([[listOfComments objectAtIndex:indexPath.row]objectForKey:@"from"]){
@@ -391,7 +391,7 @@
         /*CGSize eventDescription_maxSize = CGSizeMake(310, 100);
         CGSize eventDescription_newSize=[eventDescription.text sizeWithFont:eventDescription.font constrainedToSize:eventDescription_maxSize lineBreakMode:UILineBreakModeWordWrap];
         eventDescription.frame=CGRectMake(5, 0,310, eventDescription_newSize.height+28);
-        //NSLog(@"%@",NSStringFromCGSize(eventDescription_newSize));
+        //GGLog(@"%@",NSStringFromCGSize(eventDescription_newSize));
         
         
         likesCommentsLbl.frame=CGRectMake(13, eventDescription.frame.origin.y+eventDescription.frame.size.height+5, 221, 21);*/
@@ -401,7 +401,7 @@
         
         float tableHeight=0;
         for(int i=0;i<commentsCount;i++){
-            UIFont *cellFont = [UIFont fontWithName:@"Helvetica" size:14.0];
+            UIFont *cellFont = [UIFont fontWithName:@"Helvetica-Light" size:12.0];
             CGSize constraintSize = CGSizeMake(246.0f, MAXFLOAT);
             
             CGSize labelSize = [[NSString stringWithFormat:@"%@ %@ %@",[[[listOfComments objectAtIndex:i]objectForKey:@"person"]objectForKey:@"first-name"],[[[listOfComments objectAtIndex:i]objectForKey:@"person"]objectForKey:@"last-name"],[[listOfComments objectAtIndex:i]objectForKey:@"comment"]] sizeWithFont:cellFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];

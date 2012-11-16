@@ -41,8 +41,8 @@
     
     Facebook_GiftGiv *fb_giftgiv=[[Facebook_GiftGiv alloc]init];
     
-    //NSLog(@"facebook..%@",[[fb_giftgiv facebook] isSessionValid]);
-    //NSLog(@"linkedin..%@",[[LinkedIn_GiftGiv sharedSingleton]isLinkedInAuthorized]);
+    //GGLog(@"facebook..%@",[[fb_giftgiv facebook] isSessionValid]);
+    //GGLog(@"linkedin..%@",[[LinkedIn_GiftGiv sharedSingleton]isLinkedInAuthorized]);
     
     
     
