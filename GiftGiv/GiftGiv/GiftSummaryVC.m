@@ -180,7 +180,9 @@
                 
                 if(![targetImgView isEqual:profilePic])
                 {
-                    if(giftImage.size.width<125 || giftImage.size.height<125){
+                    targetImgView.image=giftImage;
+                    [self performSelector:@selector(reloadGiftDetails)];
+                    /*if(giftImage.size.width<125 || giftImage.size.height<125){
                         targetImgView.frame= CGRectMake(targetImgView.frame.origin.x, targetImgView.frame.origin.y+(giftImage.size.height)/4, giftImage.size.width, giftImage.size.height);
                         targetImgView.image=giftImage;
                     }
@@ -191,7 +193,7 @@
                         
                          [self performSelector:@selector(reloadGiftDetails)];                    
                        
-                    }
+                    }*/
                     
                 }
                 else
