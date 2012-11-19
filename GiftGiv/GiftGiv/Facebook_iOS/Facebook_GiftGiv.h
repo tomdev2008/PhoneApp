@@ -7,9 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FBConnect.h"
-#import "Facebook.h"
-#import "ApplicationHelpers.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 typedef enum apiCall {
     kNOAPICall,
@@ -44,9 +42,9 @@ typedef enum apiCall {
 - (void)facebookDidCancelledLogin;
 @end
 
-@interface Facebook_GiftGiv : NSObject <FBSessionDelegate,FBRequestDelegate>
+@interface Facebook_GiftGiv : NSObject
 {
-    Facebook *facebook;
+    //Facebook *facebook;
     
     int currentAPICall;
     
@@ -66,10 +64,10 @@ typedef enum apiCall {
     int responseCount;
 }
 @property (nonatomic, retain) NSMutableArray *fbRequestsArray;
-@property (nonatomic, retain) Facebook *facebook;
+@property (nonatomic, retain) FBSession *facebook;
 @property (nonatomic, assign) id <Facebook_GiftGivDelegate>fbGiftGivDelegate;
 
-- (Facebook *)facebook;
+- (FBSession *)facebook;
 - (void)extendAccessTokenIfNeeded;
 - (void)authorizeOurAppWithFacebook;
 - (void)logoutOfFacebook;
@@ -79,5 +77,7 @@ typedef enum apiCall {
 - (void)getEventDetails:(NSString*)statusID;
 - (NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd;
 - (void) releaseFacebook;
--(BOOL)checkWhetherText:(NSString*)sourceText contains:(NSString*)searchedKeyword;
+- (BOOL)checkWhetherText:(NSString*)sourceText contains:(NSString*)searchedKeyword;
+- (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI;
+- (void) closeSession;
 @end

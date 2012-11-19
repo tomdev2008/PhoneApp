@@ -97,9 +97,10 @@
     // it's a good practice to refresh the access token also when the app becomes active.
     // This gives apps that seldom make api calls a higher chance of having a non expired
     // access token.
-    Facebook_GiftGiv *fb_gift=[[Facebook_GiftGiv alloc]init];
+    /*Facebook_GiftGiv *fb_gift=[[Facebook_GiftGiv alloc]init];
     [[fb_gift facebook] extendAccessTokenIfNeeded];
-    [fb_gift release];
+    [fb_gift release];*/
+    [FBSession.activeSession handleDidBecomeActive];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -115,7 +116,15 @@
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
     [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForProfilePicFileName:@""] error:nil];
     [fm removeItemAtPath:[GetCachesPathForTargetFile cachePathForGiftItemFileName:@""] error:nil];
+    [FBSession.activeSession close];
     
+}
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    // attempt to extract a token from the url
+    return [FBSession.activeSession handleOpenURL:url];
 }
 
 @end

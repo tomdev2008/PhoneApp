@@ -7,7 +7,7 @@
 //
 
 #import "Facebook_GiftGiv.h"
-//#import "Constants.h"
+#import "ApplicationHelpers.h"
 
 @interface Facebook_GiftGiv()
 
@@ -27,38 +27,38 @@ static NSCalendar *gregorian=nil;
 
 #pragma mark Facebook_GiftGiv class methods
 
-- (Facebook *)facebook{
+- (FBSession *)facebook{
     
-    if (facebook==nil) {
-    
-        facebook = [[Facebook alloc] initWithAppId:KFacebookAppId andDelegate:self];
+    if (![[FBSession activeSession]isOpen]) {
+        
+        //        facebook = [[Facebook alloc] initWithAppId:KFacebookAppId andDelegate:self];
         // Check and retrieve authorization information
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *fbAccessToken=[defaults objectForKey:@"FBAccessTokenKey"];
         NSDate *fbExpirationDateKey=[defaults objectForKey:@"FBExpirationDateKey"];
         if (fbAccessToken && fbExpirationDateKey) {
-            self.facebook.accessToken = fbAccessToken;
-            self.facebook.expirationDate = fbExpirationDateKey;
+            [FBSession activeSession].accessToken = fbAccessToken;
+            [FBSession activeSession].expirationDate = fbExpirationDateKey;
             
             if([fbRequestsArray count]){
-                for(FBRequest *request in fbRequestsArray){
-                    [request  cancelConnection];
+                for(FBRequestConnection *request in fbRequestsArray){
+                    [request  cancel];
                 }
                 [fbRequestsArray removeAllObjects];
             }
             
             
-            //GGLog(@"AccessToken= %@ \n ExpirationDate= %@", facebook.accessToken, facebook.expirationDate);
+            //NSLog(@"AccessToken= %@ \n ExpirationDate= %@", facebook.accessToken, facebook.expirationDate);
             fbRequestsArray=[[NSMutableArray alloc]init];
         }
     }
     return facebook;
 }
 - (void) releaseFacebook{
-    if(facebook!=nil){
+    if([[FBSession activeSession]isOpen]){
         if([fbRequestsArray count]){
-            for(FBRequest *request in fbRequestsArray){
-                [request  cancelConnection];
+            for(FBRequestConnection *request in fbRequestsArray){
+                [request  cancel];
             }
             [fbRequestsArray removeAllObjects];
         }
@@ -66,11 +66,50 @@ static NSCalendar *gregorian=nil;
             [fbRequestsArray release];
             fbRequestsArray=nil;
         }
-        self.facebook.accessToken=nil;
-        self.facebook.expirationDate=nil;
-        [facebook release];
-        facebook=nil;
+        [FBSession activeSession].accessToken=nil;
+        [FBSession activeSession].expirationDate=nil;
+        
     }
+}
+- (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
+    
+    return [FBSession openActiveSessionWithReadPermissions:[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",nil]
+                                              allowLoginUI:allowLoginUI
+                                         completionHandler:^(FBSession *session,
+                                                             FBSessionState state,
+                                                             NSError *error) {
+                                             switch (state) {
+                                                 case FBSessionStateClosedLoginFailed:
+                                                 {
+                                                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                                         message:error.localizedDescription
+                                                                                                        delegate:nil
+                                                                                               cancelButtonTitle:@"OK"
+                                                                                               otherButtonTitles:nil];
+                                                     [alertView show];
+                                                     [alertView release];
+                                                 }
+                                                     
+                                                     break;
+                                                 case FBSessionStateOpen:
+                                                 {
+                                                     [self storeAuthData:[[FBSession activeSession] accessToken] expiresAt:[[FBSession activeSession] expirationDate]];
+                                                     
+                                                     [fbGiftGivDelegate facebookLoggedIn];
+                                                     [self apiFQLIMe];
+                                                 }
+                                                     break;
+                                                     
+                                                 default:
+                                                     break;
+                                             }
+                                             
+                                         }];
+    
+}
+- (void) closeSession {
+    
+    [FBSession.activeSession closeAndClearTokenInformation];
 }
 #pragma mark -
 #pragma mark Login helper
@@ -82,71 +121,26 @@ static NSCalendar *gregorian=nil;
     NSString *fbAccessToken=[[NSUserDefaults standardUserDefaults] objectForKey:@"FBAccessTokenKey"];
     NSDate *fbExpirationDateKey=[[NSUserDefaults standardUserDefaults] objectForKey:@"FBExpirationDateKey"];
     
-    if (fbAccessToken && fbExpirationDateKey)
-    {
-        self.facebook.accessToken = fbAccessToken;
-        self.facebook.expirationDate = fbExpirationDateKey;
+    if (!FBSession.activeSession.isOpen) {
+        // if the session is closed, then we open it here, and establish a handler for state changes
+        [self openSessionWithAllowLoginUI:YES];
     }
     
-    if (![facebook isSessionValid]) {
-        [self.facebook authorize:[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",nil]]; //email to get user's mail address
-        
-        
+    
+    if (fbAccessToken && fbExpirationDateKey)
+    {
+        [FBSession activeSession].accessToken = fbAccessToken;
+        [FBSession activeSession].expirationDate = fbExpirationDateKey;
     }
 }
 
 -(void)logoutOfFacebook{
-    [[self facebook] logout];
-}
--(void)extendAccessTokenIfNeeded
-{
-    // Although the SDK attempts to refresh its access tokens when it makes API calls,
-    // it's a good practice to refresh the access token also when the app becomes active.
-    // This gives apps that seldom make api calls a higher chance of having a non expired
-    // access token.
-    [[self facebook] extendAccessTokenIfNeeded];
-}
-#pragma mark - Facebook Delegate methodes
-/**
- * Called when the user successfully logged in.
- */
-
-- (void)fbDidLogin {
-    [self storeAuthData:[[self facebook] accessToken] expiresAt:[[self facebook] expirationDate]];
-    [fbGiftGivDelegate facebookLoggedIn];
-    [self apiFQLIMe];
     
-}
-
-/**
- * Called when the user dismissed the dialog without logging in.
- */
-- (void)fbDidNotLogin:(BOOL)cancelled{
-    GGLog(@"fbDidNotLogin");
-    [fbGiftGivDelegate facebookDidCancelledLogin];
     
-}
-
-/**
- * Called after the access token was extended. If your application has any
- * references to the previous access token (for example, if your application
- * stores the previous access token in persistent storage), your application
- * should overwrite the old access token with the new one in this method.
- * See extendAccessToken for more details.
- */
-- (void)fbDidExtendToken:(NSString*)accessToken
-               expiresAt:(NSDate*)expiresAt{
-    [self storeAuthData:accessToken expiresAt:expiresAt];
-}
-- (void)storeAuthData:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {
-    [[NSUserDefaults standardUserDefaults]setObject:accessToken forKey:@"FBAccessTokenKey"];
-    [[NSUserDefaults standardUserDefaults]setObject:expiresAt forKey:@"FBExpirationDateKey"];
-   
-}
-/**
- * Called when the user logged out.
- */
-- (void)fbDidLogout{
+    [FBSession activeSession].accessToken = nil;
+    [FBSession activeSession].expirationDate = nil;
+    [FBSession.activeSession closeAndClearTokenInformation];
+    [FBSession.activeSession close];
     
     NSHTTPCookie *cookie;
     NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -168,9 +162,6 @@ static NSCalendar *gregorian=nil;
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"FBExpirationDateKey"];
         //[defaults synchronize];
         
-        for(FBRequest *request in fbRequestsArray){
-            [request  cancelConnection];
-        }
         
     }
     
@@ -196,19 +187,15 @@ static NSCalendar *gregorian=nil;
     }
     
     [fbGiftGivDelegate facebookDidLoggedOut];
+   
 }
 
-/**
- * Called when the current session has expired. This might happen when:
- *  - the access token expired
- *  - the app has been disabled
- *  - the user revoked the app's permissions
- *  - the user changed his or her password
- */
-- (void)fbSessionInvalidated{
-    
-    AlertWithMessageAndDelegate(NSLocalizedString(@"FacebookSessionExpired", @""), NSLocalizedString(@"YourSessionExpired", @""),nil);
-    [self fbDidLogout];
+#pragma mark - Facebook Delegate methodes
+
+- (void)storeAuthData:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {
+    [[NSUserDefaults standardUserDefaults]setObject:accessToken forKey:@"FBAccessTokenKey"];
+    [[NSUserDefaults standardUserDefaults]setObject:expiresAt forKey:@"FBExpirationDateKey"];
+   
 }
 
 #pragma mark - FQLs and GraphAPI
@@ -218,14 +205,26 @@ static NSCalendar *gregorian=nil;
     // and since the minimum profile picture size is 180 pixels wide we should be able
     // to get a 100 pixel wide version of the profile picture
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   @"SELECT uid,first_name,last_name,birthday_date FROM user WHERE uid=me()", @"query",
+                                   @"SELECT uid,first_name,last_name,birthday_date FROM user WHERE uid=me()", @"q",
                                    nil];
     currentAPICall=kAPIGetUserDetails;
-    FBRequest *aboutMeReq=[[self facebook] requestWithMethodName:@"fql.query"
-                                                andParams:params
-                                            andHttpMethod:@"POST"
-                                              andDelegate:self];
-    [fbRequestsArray addObject:aboutMeReq];
+    // Make the API request that uses FQL
+    [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
+      HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
+          if (error) {
+              NSLog(@"Error: %@", [error localizedDescription]);
+          } else {
+              
+              if ([result isKindOfClass:[NSArray class]] && ([result count] > 0)) {
+                  result = [result objectAtIndex:0];
+              }
+                            
+              if([result objectForKey:@"data"]){
+                  [fbGiftGivDelegate facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)[[result objectForKey:@"data"]objectAtIndex:0]];
+              }
+            }
+      }];
+    
 }
 //Get my friend birthdays
 - (void)listOfBirthdayEvents{
@@ -239,14 +238,27 @@ static NSCalendar *gregorian=nil;
         NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND birthday_date >= \"%@\" AND birthday_date <= \"%@\" ORDER BY birthday_date ASC",startDate,endDate];
         
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                       getBirthdaysQuery, @"query",
+                                       getBirthdaysQuery, @"q",
                                        nil];
         
-        getFBBirthdaysReq=[[self facebook] requestWithMethodName:@"fql.query"
-                                                      andParams:params
-                                                  andHttpMethod:@"POST"
-                                                    andDelegate:self];
-        [fbRequestsArray addObject:getFBBirthdaysReq];
+        // Make the API request that uses FQL
+        [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
+                                     HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
+                                         if (error) {
+                                             NSLog(@"Error: %@", [error localizedDescription]);
+                                         } else {
+                                             if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
+                                                 return;
+                                             //List of birthdays received
+                                             
+                                             if([result isKindOfClass:[NSDictionary class]]){
+                                                 if([[result objectForKey:@"data"] isKindOfClass:[NSArray class]]){
+                                                     [fbGiftGivDelegate receivedBirthDayEvents:(NSMutableArray *)[result objectForKey:@"data"]];
+                                                 }
+                                             }
+                                             
+                                         }
+                                     }];
     }
     
 }
@@ -257,10 +269,10 @@ static NSCalendar *gregorian=nil;
         
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
        
-        [fbRequestsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        /*[fbRequestsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             FBRequest*reqObj= (FBRequest*)obj ;
             [reqObj.connection cancel];
-        }];
+        }];*/
        
         if(friendUserIds!=nil && [friendUserIds count]){
             responseCount=0;
@@ -273,23 +285,42 @@ static NSCalendar *gregorian=nil;
         NSString *getFriendsQuery=@"SELECT uid, name, first_name, last_name, birthday_date, pic_square from user where uid in (SELECT uid2 FROM friend WHERE uid1=me())";
         
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                       getFriendsQuery, @"query",
+                                       getFriendsQuery, @"q",
                                        nil];
         
-        getFriendsListReq=[[self facebook] requestWithMethodName:@"fql.query"
-                                                    andParams:params
-                                                andHttpMethod:@"POST"
-                                                  andDelegate:self];
-       
-        [fbRequestsArray addObject:getFriendsListReq];
+        // Make the API request that uses FQL
+        [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
+                                     HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
+                                         if (error) {
+                                             GGLog(@"Error: %@", [error localizedDescription]);
+                                         } else {
+                                             if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
+                                                 return;
+                                             //Received list of friends, here we should get the statuses and photos
+                                             if(![[result objectForKey:@"data"]isKindOfClass:[NSArray class]])
+                                                 return;
+                                             
+                                             
+                                         }
+                                     }];
         
         
     }
     
 }
 - (void)getEventDetails:(NSString*)statusID{
+    [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@",statusID] completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if(error){
+            GGLog(@"Error: %@", [error localizedDescription]);
+        }
+        else{
+            
+            if([result isKindOfClass:[NSDictionary class]]){
+                [fbGiftGivDelegate receivedDetailedEventInfo:(NSMutableDictionary*)result];
+            }
+        }
+    }];
     
-    getDetailedEventReq=[[self facebook] requestWithGraphPath:[NSString stringWithFormat:@"%@",statusID] andDelegate:self];
 }
 #pragma mark -
 -(NSString*)getNewDateForCurrentDateByAddingTimeIntervalInDays:(int)daysToAdd{
@@ -364,7 +395,7 @@ static NSCalendar *gregorian=nil;
  
  */
 
-- (void)request:(FBRequest *)request didLoad:(id)result{
+/*- (void)request:(FBRequest *)request didLoad:(id)result{
 
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
         
@@ -838,7 +869,7 @@ static NSCalendar *gregorian=nil;
     }
    
     
-}
+}*/
 //Check whether the message/text contains a searched keyword
 -(BOOL)checkWhetherText:(NSString*)sourceText contains:(NSString*)searchedKeyword{
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF contains[cd] %@)", searchedKeyword];

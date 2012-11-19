@@ -105,10 +105,11 @@
         case 13:
         {
             [self showProgressHUD:self.view withMsg:nil];
-            if([[fb_giftgiv_settings facebook] isSessionValid]){
+            if([[FBSession activeSession] isOpen]){
                 if([CheckNetwork connectedToNetwork]){
                     
                     [fb_giftgiv_settings logoutOfFacebook];
+                    [self stopHUD];
                 }
                 else{
                     [self stopHUD];

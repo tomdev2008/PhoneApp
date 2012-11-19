@@ -131,9 +131,9 @@ static NSDateFormatter *customDateFormat=nil;
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
         
         //Cancel if there are any pending requests
-        for(FBRequest *request in fb_giftgiv_home.fbRequestsArray){
+        /*for(FBRequest *request in fb_giftgiv_home.fbRequestsArray){
             [request  cancelConnection];
-        }
+        }*/
         [fb_giftgiv_home.fbRequestsArray removeAllObjects];
         
         if([searchBgView superview]){
@@ -157,7 +157,7 @@ static NSDateFormatter *customDateFormat=nil;
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
         [eventsTable reloadData];
-        if([[fb_giftgiv_home facebook]isSessionValid]){
+        if([FBSession activeSession].isOpen){
             //If the UserId (referred in giftgiv server) is available, then get the events and contacts from our server.
             if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
                 isEventsLoadingFromFB=NO;
@@ -216,8 +216,9 @@ static NSDateFormatter *customDateFormat=nil;
 -(void)receivedGiftGivUserId{
     
     if(!isFBContactsLoading){
-        [self performSelector:@selector(makeRequestToGetFacebookContacts) ];
         isFBContactsLoading=YES;
+        [self performSelector:@selector(makeRequestToGetFacebookContacts) ];
+        
     }
     if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
         [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];

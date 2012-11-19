@@ -45,12 +45,12 @@
     //GGLog(@"linkedin..%@",[[LinkedIn_GiftGiv sharedSingleton]isLinkedInAuthorized]);
     
     
-    
-    if([[fb_giftgiv facebook] isSessionValid]){
+    if([FBSession activeSession].isOpen){
         [self performSelector:@selector(loadHomeScreen) withObject:nil afterDelay:2.0];
     }
     else
         [self performSelector:@selector(loadSignInScreen) withObject:nil afterDelay:2.0];
+    
     
     [fb_giftgiv release];
     
