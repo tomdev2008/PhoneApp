@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <FacebookSDK/FacebookSDK.h>
+#import "SBJSON.h"
 
 typedef enum apiCall {
     kNOAPICall,
@@ -68,7 +69,7 @@ typedef enum apiCall {
 @property (nonatomic, assign) id <Facebook_GiftGivDelegate>fbGiftGivDelegate;
 
 - (FBSession *)facebook;
-- (void)extendAccessTokenIfNeeded;
+//- (void)extendAccessTokenIfNeeded;
 - (void)authorizeOurAppWithFacebook;
 - (void)logoutOfFacebook;
 - (void)apiFQLIMe;
