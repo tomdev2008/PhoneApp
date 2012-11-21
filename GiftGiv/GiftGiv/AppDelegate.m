@@ -14,6 +14,14 @@
 @synthesize window = _window;
 @synthesize navController;
 
+NSString *const FBSessionStateChangedNotification =
+@"thegiftgiv.com:FBSessionStateChangedNotification"; //bundle identifier should place here for facebook automatic login.
+
+/*The bundle identifier of your project.
+In your FB a/c the filed named "iOS Bundle ID:" under head Native iOS App.
+The notification string value in your AppDelegate.m
+NSString *const FBSessionStateChangedNotification = @"yourbundleid:FBSessionStateChangedNotification";
+*/
 - (void)dealloc
 {
     [_window release];

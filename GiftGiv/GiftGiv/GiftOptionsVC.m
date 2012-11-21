@@ -74,18 +74,18 @@
         profilePicImg.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
     }
         
-    if(currentiOSVersion<6.0){
+    //if(currentiOSVersion<6.0){
         pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
         pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
-    }
+    //}
     
-    else if(currentiOSVersion>=6.0){
+    /*else if(currentiOSVersion>=6.0){
         
         //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
         [giftCategoryPageControl setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.83529 alpha:1.0]];
         [giftCategoryPageControl setPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.8353 alpha:0.5]];
         
-    }
+    }*/
     
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
@@ -378,7 +378,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (IBAction)giftCategoriesPaeControlAction:(id)sender {
-    if(currentiOSVersion<6.0){
+    //if(currentiOSVersion<6.0){
         for (int i = 0; i < [giftCategoryPageControl.subviews count]; i++)
         {
             UIImageView* dot = [giftCategoryPageControl.subviews objectAtIndex:i];
@@ -387,7 +387,7 @@
             else
                 dot.image = pageInactiveImage;
         }
-    }
+    //}
     
     if(giftCategoryPageControl.currentPage>giftCatNum-1){
         giftCatNum=giftCategoryPageControl.currentPage+1;
@@ -652,10 +652,10 @@
 
 - (void)dealloc {
     
-    if(currentiOSVersion<6.0){
+    //if(currentiOSVersion<6.0){
         [pageActiveImage release];
         [pageInactiveImage release]; 
-    }
+    //}
     if([giftCategoriesList count])
         [giftCategoriesList removeAllObjects];
     if(giftCategoriesList!=nil){

@@ -80,17 +80,17 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     
-    if(currentiOSVersion<6.0){
+    //if(currentiOSVersion<6.0){
         pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
         pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
-    }
+    //}
     
-    if(currentiOSVersion>=6.0){
+    /*if(currentiOSVersion>=6.0){
         
         //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
         [pageControlForEventGroups setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.83529 alpha:1.0]];
         [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.8353 alpha:0.5]];
-    }
+    }*/
     
     [[NSNotificationCenter defaultCenter] addObserver:picturesOperationQueue selector:@selector(cancelAllOperations) name:UIApplicationWillTerminateNotification object:nil];
     
@@ -166,6 +166,7 @@ static NSDateFormatter *customDateFormat=nil;
                 
                 //Get the events from giftgiv server
                 [self performSelector:@selector(makeRequestToGetEvents)];
+                isFBContactsLoading=YES;
                 //Get the list of contacts for the loggedIn user
                 [self performSelector:@selector(makeRequestToGetFacebookContacts)];
                 
@@ -248,6 +249,7 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark Contacts Delegate
 -(void) receivedContacts:(NSMutableArray*)response{
     int friendsCount=[response count];
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     //GGLog(@"Received contacts..%d",friendsCount);
     if(friendsCount){
         
@@ -1333,7 +1335,7 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark - Pagecontrol
 - (IBAction)pageControlActionForEventGroups:(id)sender {
     
-    if(currentiOSVersion<6.0){
+    //if(currentiOSVersion<6.0){
         for (int i = 0; i < [pageControlForEventGroups.subviews count]; i++)
         {
             UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
@@ -1342,7 +1344,7 @@ static NSDateFormatter *customDateFormat=nil;
             else
                 dot.image = pageInactiveImage;
         }
-    }
+    //}
     
     if(pageControlForEventGroups.currentPage>eventGroupNum-1){
         eventGroupNum=pageControlForEventGroups.currentPage+1;
@@ -2198,10 +2200,10 @@ static NSDateFormatter *customDateFormat=nil;
     
     [searchContactsArray release];
     
-    if(currentiOSVersion<6.0){
+    //if(currentiOSVersion<6.0){
         [pageActiveImage release];
         [pageInactiveImage release];
-    }
+    //}
     if([globalContactsList count]){
         [globalContactsList removeAllObjects];
         [globalContactsList release];

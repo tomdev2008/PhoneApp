@@ -8,7 +8,7 @@
 //
 
 //Facebook APP ID
-//#define KFacebookAppId /*@"410784185600350"*/@"363735827035251"
+//#define KFacebookAppId @"363735827035251" /*@"410784185600350"*/ //facebookappID can be set it on Info.plist as per the latest facebook sdk
 
 //LinkedIn
 static NSString *const kOAuthConsumerKey     = @"ss74vefvnvjr";///@"m4towaw6vrhn";

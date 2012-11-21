@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "GetCachesPathForTargetFile.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 @class SplashScreenVC;
 

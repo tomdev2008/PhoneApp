@@ -37,13 +37,13 @@
     [super setCurrentPage:page];
     
     //Need to check the iOS6.0 respected to the subviews for page control
-    if(currentiOSVersion<6.0)
+    //if(currentiOSVersion<6.0)
         [self updateDots];
-    else{
+    //else{
         //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
         /*[self setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0]];
          [self setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
-    }
+    //}
         
 }
 

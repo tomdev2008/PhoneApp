@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "SBJSON.h"
-
+extern NSString *const FBSessionStateChangedNotification;
 typedef enum apiCall {
     kNOAPICall,
     kAPIGetUserDetails,
