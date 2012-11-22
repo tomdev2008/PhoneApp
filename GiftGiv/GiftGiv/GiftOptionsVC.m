@@ -267,7 +267,7 @@
     
         
     totalCats=[giftCategoriesList count];
-    giftCategoryPageControl.numberOfPages=totalCats;    
+    giftCategoryPageControl.numberOfPages=totalCats;
     giftCatNum=1;
     giftCategoryPageControl.currentPage=giftCatNum-1;
     
@@ -397,6 +397,7 @@
         giftCatNum=giftCategoryPageControl.currentPage+1;
         [self swipingForGiftCategories:0];
     }
+    
 }
 -(void)swipingForGiftCategories:(int)swipeDirectionNum{
     if(swipeDirectionNum==1){

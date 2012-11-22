@@ -8,7 +8,7 @@
 //
 
 //Facebook APP ID
-//#define KFacebookAppId @"363735827035251" /*@"410784185600350"*/ //facebookappID can be set it on Info.plist as per the latest facebook sdk
+//#define KFacebookAppId @"363735827035251" /*@"444479945615270"*/ //facebookappID can be set it on Info.plist as per the latest facebook sdk and also update the bundle identifier in AppDelegate.m 
 
 //LinkedIn
 static NSString *const kOAuthConsumerKey     = @"ss74vefvnvjr";///@"m4towaw6vrhn";
@@ -17,7 +17,7 @@ static NSString *const kOAuthConsumerSecret  =  @"EP1SkFM3aLchEM2O";// @"hSdUKzt
 //Device currect OS version, which we used for page control color dots
 #define currentiOSVersion [[[UIDevice currentDevice] systemVersion] doubleValue]
 
-#define WebServiceURL @"http://giftgiv.cloudapp.net/giftgivservice/Service.svc"
+#define WebServiceURL @"http://giftgivstage.cloudapp.net/giftgivservice/Service.svc"
 //Staging: http://giftgivstage.cloudapp.net/giftgivservice/Service.svc?wsdl
 //Local: http://10.11.32.211:81/Service.svc?wsdl
 //Production: http://giftgiv.cloudapp.net/GiftGivService/Service.svc
@@ -39,7 +39,7 @@ static NSString *const kOAuthConsumerSecret  =  @"EP1SkFM3aLchEM2O";// @"hSdUKzt
 #define MERCHANT_PASSWORD /*@"1345733447"*/@"JRRX8T275RR2CUJ6"
 #define MERCHANT_SIGNATURE /*@"AFcWxV21C7fd0v3bYYYRCpSSRl31A6Ag-LWYqcLdoPqXZc0llHvYYb8n"*/@"Arr0.D-RwOqYOFyV8ttxDMemqffWANgJJVGDAj8G8NGFu937Bfpf81Hm"
 
-#define LogEnable 0  //0==> Disable, 1==> Enable
+#define LogEnable 1  //0==> Disable, 1==> Enable
 
 #define GGLog(__FORMAT__, ...) {if(LogEnable)NSLog(__FORMAT__, ##__VA_ARGS__);}
 

@@ -7,7 +7,7 @@
 //
 
 #import "CustomPageControl.h"
-
+#import "AppDelegate.h"
 @implementation CustomPageControl
 
 -(id) initWithCoder:(NSCoder *)aDecoder
@@ -22,14 +22,47 @@
 
 -(void) updateDots
 {
-    for (int i = 0; i < [self.subviews count]; i++)
-    {
-        UIImageView* dot = [self.subviews objectAtIndex:i];
-        if (i == self.currentPage)
-            dot.image = activeImage;
-        else
-            dot.image = inactiveImage;
+    AppDelegate *appdel=[[UIApplication sharedApplication]delegate];
+   UIViewController *currentVC = appdel.navController.visibleViewController;
+    if([currentVC isMemberOfClass:NSClassFromString(@"GiftOptionsVC")]){
+        for (int i = 0; i < [self.subviews count]; i++)
+        {
+            if(i==0){
+                UIImageView* dot = [self.subviews objectAtIndex:i];
+                if (i == self.currentPage){
+                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 14, 14.5);
+                    dot.image =[[ImageAllocationObject loadImageObjectName:@"searchicon" ofType:@"png"] retain];
+                }
+                else{
+                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 14, 14.5);
+                    dot.image = [[ImageAllocationObject loadImageObjectName:@"searchicon" ofType:@"png"] retain];
+                }
+                    
+                
+            }
+            else{
+                UIImageView* dot = [self.subviews objectAtIndex:i];
+                if (i == self.currentPage)
+                    dot.image = activeImage;
+                else
+                    dot.image = inactiveImage;
+                
+            }
+        }
+
     }
+    else{
+        for (int i = 0; i < [self.subviews count]; i++)
+        {
+            UIImageView* dot = [self.subviews objectAtIndex:i];
+            if (i == self.currentPage)
+                dot.image = activeImage;
+            else
+                dot.image = inactiveImage;
+        }
+        
+    }
+     
 }
 
 -(void) setCurrentPage:(NSInteger)page

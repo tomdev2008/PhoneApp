@@ -78,6 +78,8 @@ static NSCalendar *gregorian=nil;
                                          completionHandler:^(FBSession *session,
                                                              FBSessionState state,
                                                              NSError *error) {
+                                             GGLog(@"error:%@",[error localizedDescription]);
+                                             GGLog(@"%d",state);
                                              switch (state) {
                                                  case FBSessionStateClosedLoginFailed:
                                                  {
@@ -385,722 +387,386 @@ static NSCalendar *gregorian=nil;
                                                  requestCountForBatch++;
                                                  [requestJsonArrayForPhotos addObject:getPhotosQuery];
                                                  
-                                                 //For every 50 friends, will make multiquery
+                                                 //For every 20 friends (as per the API suggested, will make multiquery
                                                  if(requestCountForBatch%20==0){
-                                                     NSString *requestJson = [NSString stringWithFormat:@"[{\"method\":\"POST\", \"relative_url\":\"method/fql.multiquery?queries={%@}\"}]", [requestJsonArrayForPhotos componentsJoinedByString:@","]];
-                                                     [requestJsonArrayForPhotos removeAllObjects];
-                                                     
-                                                     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"batch"];
-                                                     [FBRequestConnection startWithGraphPath:@"" parameters:params HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                         if(error){
-                                                             
-                                                         }
-                                                         else{
-                                                             //GGLog(@"RESULT---%@",result);
-                                                             
-                                                             int resultCount=[result count];
-                                                             for ( int i=0; i < resultCount; i++ ) {
-                                                                 NSDictionary *response = [result objectAtIndex:i];
-                                                                 if(![response isKindOfClass:[NSNull class]]){
-                                                                     int httpCode = [[response objectForKey:@"code"] intValue];
-                                                                     
-                                                                     
-                                                                     if ( httpCode != 200 ) {
-                                                                         GGLog( @"Facebook request error: code: %d ", httpCode );
-                                                                     }
-                                                                     else {
-                                                                         SBJSON *json=[[SBJSON alloc]init];
-                                                                         NSArray *resultantJson=(NSArray*)[json objectWithString:[response objectForKey:@"body"]];
-                                                                         [json release];
-                                                                         for(NSDictionary* resultDict in resultantJson){
-                                                                             if([resultDict objectForKey:@"fql_result_set"]){
-                                                                                 int listCountOfResultSetForEachQuery=[[resultDict objectForKey:@"fql_result_set"] count];
-                                                                                 for(int j=0;j<listCountOfResultSetForEachQuery;j++){
-                                                                                     NSMutableDictionary *overviewOfPhotoObject=(NSMutableDictionary*)[[resultDict objectForKey:@"fql_result_set"] objectAtIndex:j];
-                                                                                     
-                                                                                     //Check if the comments count or likes count more than or equal to 15
-                                                                                     if([[[overviewOfPhotoObject  objectForKey:@"like_info"] objectForKey:@"like_count"] intValue]>=15 || [[[overviewOfPhotoObject objectForKey:@"comment_info"] objectForKey:@"comment_count"] intValue]>=15){
-                                                                                         
-                                                                                         //Get the details of a photo with comments
-                                                                                         NSString *getCommentsForPhoto=[NSString stringWithFormat:@"SELECT object_id,text from comment where object_id=%@",[overviewOfPhotoObject objectForKey:@"object_id"]];
-                                                                                         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                                                                                                        getCommentsForPhoto, @"q",
-                                                                                                                        nil];
-                                                                                         [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                      HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
-                                                                                                                          if(error){
-                                                                                                                              
-                                                                                                                          }
-                                                                                                                          else{
-                                                                                                                              
-                                                                                                                              BOOL isEventFound=NO;
-                                                                                                                              int commentsTextCount=[[result objectForKey:@"data" ]count];
-                                                                                                                              for(int i=0;i<commentsTextCount;i++){
-                                                                                                                                  NSString *commentsStr=[[[result objectForKey:@"data" ] objectAtIndex:i] objectForKey:@"text"];
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  for (NSString *searchedString in birthdaySearchStrings){
-                                                                                                                                      if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                                          isEventFound=YES;
-                                                                                                                                          NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
-                                                                                                                                          
-                                                                                                                                          NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
-                                                                                                                                          [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                                                                       HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                                                                                                                                           if(error){
-                                                                                                                                                                               
-                                                                                                                                                                           }
-                                                                                                                                                                           else{
-                                                                                                                                                                               NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
-                                                                                                                                                                               
-                                                                                                                                                                               [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
-                                                                                                                                                                               [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
-                                                                                                                                                                               [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
-                                                                                                                                                                               [tempDict setObject:@"birthday" forKey:@"EventName"];
-                                                                                                                                                                               [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
-                                                                                                                                                                               [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];
-                                                                                                                                                                               [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:tempDict];
-                                                                                                                                                                               
-                                                                                                                                                                               
-                                                                                                                                                                               
-                                                                                                                                                                               [tempDict release];
-                                                                                                                                                                           }
-                                                                                                                                                                       }];
-                                                                                                                                          
-                                                                                                                                          //break;
-                                                                                                                                      }
-                                                                                                                                  }
-                                                                                                                                  if(!isEventFound){
-                                                                                                                                      for (NSString *searchedString in newJobSearchStrings){
-                                                                                                                                          
-                                                                                                                                          if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                                              isEventFound=YES;
-                                                                                                                                              NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
-                                                                                                                                              
-                                                                                                                                              NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
-                                                                                                                                              [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                                                                           HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                                                                                                                                               if(error){
-                                                                                                                                                                                   
-                                                                                                                                                                               }
-                                                                                                                                                                               else{
-                                                                                                                                                                                   NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
-                                                                                                                                                                                   
-                                                                                                                                                                                   [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
-                                                                                                                                                                                   [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
-                                                                                                                                                                                   [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
-                                                                                                                                                                                   [tempDict setObject:@"new job" forKey:@"EventName"];
-                                                                                                                                                                                   [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
-                                                                                                                                                                                   [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];
-                                                                                                                                                                                   [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:tempDict];
-                                                                                                                                                                                   
-                                                                                                                                                                                   
-                                                                                                                                                                                   
-                                                                                                                                                                                   [tempDict release];
-                                                                                                                                                                               }
-                                                                                                                                                                           }];
-                                                                                                                                              
-                                                                                                                                              //break;
-                                                                                                                                          }
-                                                                                                                                      }}
-                                                                                                                                  if(!isEventFound){
-                                                                                                                                      for (NSString *searchedString in anniversarySearchStrings){
-                                                                                                                                          
-                                                                                                                                          if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                                              isEventFound=YES;
-                                                                                                                                              NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
-                                                                                                                                              
-                                                                                                                                              NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
-                                                                                                                                              [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                                                                           HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                                                                                                                                               if(error){
-                                                                                                                                                                                   
-                                                                                                                                                                               }
-                                                                                                                                                                               else{
-                                                                                                                                                                                   NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
-                                                                                                                                                                                   
-                                                                                                                                                                                   [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
-                                                                                                                                                                                   [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
-                                                                                                                                                                                   [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
-                                                                                                                                                                                   [tempDict setObject:@"relationships" forKey:@"EventName"];
-                                                                                                                                                                                   [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];                                                                                                              [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
-                                                                                                                                                                                   
-                                                                                                                                                                                   [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:tempDict];
-                                                                                                                                                                                   
-                                                                                                                                                                                   
-                                                                                                                                                                                   
-                                                                                                                                                                                   [tempDict release];
-                                                                                                                                                                               }
-                                                                                                                                                                           }];
-                                                                                                                                              
-                                                                                                                                              //break;
-                                                                                                                                          }
-                                                                                                                                      }}
-                                                                                                                                  
-                                                                                                                                  if(!isEventFound){
-                                                                                                                                                                                                      for (NSString *searchedString in congratsSearchStrings){
-                                                                                                                                          
-                                                                                                                                                                                                              if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                                                                                                                       isEventFound=YES;
-                                                                                                                                              NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
-                                                                                                                                              
-                                                                                                                                              NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
-                                                                                                                                              [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                                                                           HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                                                                                                                                               if(error){
-                                                                                                                                                                                   
-                                                                                                                                                                               }
-                                                                                                                                                                               else{
-                                                                                                                                                                                                                                                                                                NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
-                                                                                                                                                                                   
-                                                                                                                                                                                   [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
-                                                                                                                                                                                   [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
-                                                                                                                                                                                   [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
-                                                                                                                                                                                   [tempDict setObject:@"congratulations" forKey:@"EventName"];
-                                                                                                                                                                                   [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];                                                                                                              [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
-                                                                                                                                                                                   
-                                                                                                                                                                                   [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:tempDict];
-                                                                                                                                                                                   
-                                                                                                                                                                                   
-                                                                                                                                                                                   
-                                                                                                                                                                                   [tempDict release];
-                                                                                                                                                                               }
-                                                                                                                                                                           }];
-                                                                                                                                              
-                                                                                                                                              //break;
-                                                                                                                                          }
-                                                                                                                                      }}
-                                                                                                                              }
-                                                                                                                              
-                                                                                                                              
-                                                                                                                              
-                                                                                                                          }
-                                                                                                                      }];
-                                                                                         
-                                                                                     }
-                                                                                     
-                                                                                 }
-                                                                             }
-                                                                         }
-                                                                         
-                                                                     }
-                                                                 }
-                                                                 
-                                                                 
-                                                                 
-                                                             }}
-                                                     }];
+                                                     [self executePhotoMultiquery:requestJsonArrayForPhotos];
                                                  }
+                                                 
                                                  
                                                  
                                                  // for every 50 friends, will prepare a batch request
                                                  if(requestCountForBatch%50==0){
-                                                     
-                                                     NSString *requestJson = [NSString stringWithFormat:@"[ %@ ]", [requestJsonArray componentsJoinedByString:@","]];
-                                                     [requestJsonArray removeAllObjects];
-                                                     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"batch"];
-                                                     [FBRequestConnection startWithGraphPath:@"" parameters:params HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                         if(error){
-                                                             
-                                                         }
-                                                         else{
-                                                             
-                                                             int resultCount=[result count];
-                                                             //Batch statuses
-                                                             
-                                                                 for ( int i=0; i < resultCount; i++ ) {
-                                                                     NSDictionary *response = [result objectAtIndex:i];
-                                                                     if(![response isKindOfClass:[NSNull class]]){
-                                                                         int httpCode = [[response objectForKey:@"code"] intValue];
-                                                                         
-                                                                         SBJSON *json=[[SBJSON alloc]init];
-                                                                         NSDictionary *resultantJson=(NSDictionary*)[json objectWithString:[response objectForKey:@"body"]];
-                                                                         [json release];
-                                                                         
-                                                                         if ( httpCode != 200 ) {
-                                                                             GGLog( @"Facebook request error: code: %d  message: %@", httpCode, resultantJson );
-                                                                         }
-                                                                         else {
-                                                                             int totalCountForMessages=[[resultantJson objectForKey:@"data"] count];
-                                                                             if(totalCountForMessages){
-                                                                                 
-                                                                                 for(int i=0;i<totalCountForMessages;i++){
-                                                                                     
-                                                                                     //Statuses
-                                                                                     if([[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"]){
-                                                                                         int commentsCount=[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
-                                                                                         int likesCount=[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"likes"] objectForKey:@"data"] count];
-                                                                                         //check if the comments or likes are more than or equal to 15
-                                                                                         if(commentsCount>=15 || likesCount>=15){
-                                                                                             NSString *messageStr=[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"message"];
-                                                                                             
-                                                                                             BOOL isEventStatusFound=NO;
-                                                                                             if(!isEventStatusFound){
-                                                                                                 //If birthday search keyword matched then send this event to the delegate
-                                                                                                 for (NSString *searchedString in birthdaySearchStrings){
-                                                                                                     
-                                                                                                     if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
-                                                                                                         
-                                                                                                         isEventStatusFound=YES;
-                                                                                                         [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                         //break;
-                                                                                                     }
-                                                                                                 }
-                                                                                             }
-                                                                                             if(!isEventStatusFound){
-                                                                                                 //If anniversary search keyword matched then send this event to the delegate
-                                                                                                 for (NSString *searchedString in anniversarySearchStrings){
-                                                                                                     if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
-                                                                                                         isEventStatusFound=YES;
-                                                                                                         [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                         //break;
-                                                                                                     }
-                                                                                                 }
-                                                                                             }
-                                                                                             if(!isEventStatusFound){
-                                                                                                 //If new job search keyword matched then send this event to the delegate
-                                                                                                 for (NSString *searchedString in newJobSearchStrings){
-                                                                                                     if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
-                                                                                                         isEventStatusFound=YES;
-                                                                                                         [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                         //break;
-                                                                                                     }
-                                                                                                 }
-                                                                                             }
-                                                                                             if(!isEventStatusFound){
-                                                                                                 //If congrats search keyword matched then send this event to the delegate
-                                                                                                 for (NSString *searchedString in congratsSearchStrings){
-                                                                                                     if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
-                                                                                                         isEventStatusFound=YES;
-                                                                                                         [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                         //break;
-                                                                                                     }
-                                                                                                 }
-                                                                                             }
-                                                                                             
-                                                                                             if(!isEventStatusFound){
-                                                                                                 //Checking with comments text
-                                                                                                 BOOL isEventsFromCommentsFound=NO;
-                                                                                                 for(int j=0;j<commentsCount;j++){
-                                                                                                     NSString *commentsStr=[[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
-                                                                                                     
-                                                                                                     if(!isEventsFromCommentsFound){
-                                                                                                         for (NSString *searchedString in birthdaySearchStrings){
-                                                                                                             if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                 isEventsFromCommentsFound=YES;
-                                                                                                                 [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                                 //break;
-                                                                                                             }
-                                                                                                         }
-                                                                                                     }
-                                                                                                     
-                                                                                                     if(!isEventsFromCommentsFound){
-                                                                                                         for (NSString *searchedString in anniversarySearchStrings){
-                                                                                                             if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                 isEventsFromCommentsFound=YES;
-                                                                                                                 [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                                 //break;
-                                                                                                             }
-                                                                                                         }
-                                                                                                     }
-                                                                                                     if(!isEventsFromCommentsFound){
-                                                                                                         for (NSString *searchedString in newJobSearchStrings){
-                                                                                                             if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                 isEventsFromCommentsFound=YES;
-                                                                                                                 [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                                 //break;
-                                                                                                             }
-                                                                                                         }
-                                                                                                     }
-                                                                                                     if(!isEventsFromCommentsFound){
-                                                                                                         for (NSString *searchedString in congratsSearchStrings){
-                                                                                                             if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                 isEventsFromCommentsFound=YES;
-                                                                                                                 [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                                 //break;
-                                                                                                             }
-                                                                                                         }
-                                                                                                     }
-                                                                                                     
-                                                                                                 }
-                                                                                             }
-                                                                                         }
-                                                                                     }
-                                                                                     
-                                                                                     
-                                                                                 }
-                                                                                 
-                                                                                 
-                                                                             }
-                                                                         }
-                                                                     }
-                                                                     
-                                                                 }
-                                                             
-                                                             
-                                                             
-                                                         }
-                                                     }];
+                                                     [self executeStatusedMultiquery:requestJsonArray];
                                                  }
                                              }
                                              
                                              if([requestJsonArrayForPhotos count]){
-                                                 NSString *requestJson = [NSString stringWithFormat:@"[{\"method\":\"POST\", \"relative_url\":\"method/fql.multiquery?queries={%@}\"}]", [requestJsonArrayForPhotos componentsJoinedByString:@","]];
-                                                 [requestJsonArrayForPhotos removeAllObjects];
-                                                 
-                                                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"batch"];
-                                                 [FBRequestConnection startWithGraphPath:@"" parameters:params HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                     if(error){
-                                                         
-                                                     }
-                                                     else{
-                                                         GGLog(@"RESULT---%@",result);
-                                                         
-                                                         int resultCount=[result count];
-                                                         for ( int i=0; i < resultCount; i++ ) {
-                                                             NSDictionary *response = [result objectAtIndex:i];
-                                                             if(![response isKindOfClass:[NSNull class]]){
-                                                                 int httpCode = [[response objectForKey:@"code"] intValue];
-                                                                 
-                                                                 
-                                                                 if ( httpCode != 200 ) {
-                                                                     GGLog( @"Facebook request error: code: %d ", httpCode );
-                                                                 }
-                                                                 else {
-                                                                     SBJSON *json=[[SBJSON alloc]init];
-                                                                     NSArray *resultantJson=(NSArray*)[json objectWithString:[response objectForKey:@"body"]];
-                                                                     [json release];
-                                                                     for(NSDictionary* resultDict in resultantJson){
-                                                                         if([resultDict objectForKey:@"fql_result_set"]){
-                                                                             int listCountOfResultSetForEachQuery=[[resultDict objectForKey:@"fql_result_set"] count];
-                                                                             for(int j=0;j<listCountOfResultSetForEachQuery;j++){
-                                                                                 NSMutableDictionary *overviewOfPhotoObject=(NSMutableDictionary*)[[resultDict objectForKey:@"fql_result_set"] objectAtIndex:j];
-                                                                                 
-                                                                                 //Check if the comments count or likes count more than or equal to 15
-                                                                                 if([[[overviewOfPhotoObject  objectForKey:@"like_info"] objectForKey:@"like_count"] intValue]>=15 || [[[overviewOfPhotoObject objectForKey:@"comment_info"] objectForKey:@"comment_count"] intValue]>=15){
-                                                                                     
-                                                                                     //Get the details of a photo with comments
-                                                                                     NSString *getCommentsForPhoto=[NSString stringWithFormat:@"SELECT object_id,text from comment where object_id=%@",[overviewOfPhotoObject objectForKey:@"object_id"]];
-                                                                                     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                                                                                                    getCommentsForPhoto, @"q",
-                                                                                                                    nil];
-                                                                                     [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                  HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
-                                                                                                                      if(error){
-                                                                                                                          
-                                                                                                                      }
-                                                                                                                      else{
-                                                                                                                          
-                                                                                                                          BOOL isEventFound=NO;
-                                                                                                                          int commentsTextCount=[[result objectForKey:@"data" ]count];
-                                                                                                                          for(int i=0;i<commentsTextCount;i++){
-                                                                                                                              NSString *commentsStr=[[[result objectForKey:@"data" ] objectAtIndex:i] objectForKey:@"text"];
-                                                                                                                              
-                                                                                                                              
-                                                                                                                              for (NSString *searchedString in birthdaySearchStrings){
-                                                                                                                                  if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                                      isEventFound=YES;
-                                                                                                                                      NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
-                                                                                                                                      
-                                                                                                                                      NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
-                                                                                                                                      [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                                                                   HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                                                                                                                                       if(error){
-                                                                                                                                                                           
-                                                                                                                                                                       }
-                                                                                                                                                                       else{
-                                                                                                                                                                           NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
-                                                                                                                                                                           
-                                                                                                                                                                           [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
-                                                                                                                                                                           [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
-                                                                                                                                                                           [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
-                                                                                                                                                                           [tempDict setObject:@"birthday" forKey:@"EventName"];
-                                                                                                                                                                           [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
-                                                                                                                                                                           [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];
-                                                                                                                                                                           [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:tempDict];
-                                                                                                                                                                           
-                                                                                                                                                                           
-                                                                                                                                                                           
-                                                                                                                                                                           [tempDict release];
-                                                                                                                                                                       }
-                                                                                                                                                                   }];
-                                                                                                                                      
-                                                                                                                                      //break;
-                                                                                                                                  }
-                                                                                                                              }
-                                                                                                                              if(!isEventFound){
-                                                                                                                                  for (NSString *searchedString in newJobSearchStrings){
-                                                                                                                                      
-                                                                                                                                      if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                                          isEventFound=YES;
-                                                                                                                                          NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
-                                                                                                                                          
-                                                                                                                                          NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
-                                                                                                                                          [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                                                                       HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                                                                                                                                           if(error){
-                                                                                                                                                                               
-                                                                                                                                                                           }
-                                                                                                                                                                           else{
-                                                                                                                                                                               NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
-                                                                                                                                                                               
-                                                                                                                                                                               [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
-                                                                                                                                                                               [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
-                                                                                                                                                                               [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
-                                                                                                                                                                               [tempDict setObject:@"new job" forKey:@"EventName"];
-                                                                                                                                                                               [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
-                                                                                                                                                                               [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];
-                                                                                                                                                                               [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:tempDict];
-                                                                                                                                                                               
-                                                                                                                                                                               
-                                                                                                                                                                               
-                                                                                                                                                                               [tempDict release];
-                                                                                                                                                                           }
-                                                                                                                                                                       }];
-                                                                                                                                          
-                                                                                                                                          //break;
-                                                                                                                                      }
-                                                                                                                                  }}
-                                                                                                                              if(!isEventFound){
-                                                                                                                                  for (NSString *searchedString in anniversarySearchStrings){
-                                                                                                                                      
-                                                                                                                                      if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                                          isEventFound=YES;
-                                                                                                                                          NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
-                                                                                                                                          
-                                                                                                                                          NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
-                                                                                                                                          [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                                                                       HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                                                                                                                                           if(error){
-                                                                                                                                                                               
-                                                                                                                                                                           }
-                                                                                                                                                                           else{
-                                                                                                                                                                               NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
-                                                                                                                                                                               
-                                                                                                                                                                               [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
-                                                                                                                                                                               [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
-                                                                                                                                                                               [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
-                                                                                                                                                                               [tempDict setObject:@"relationships" forKey:@"EventName"];
-                                                                                                                                                                               [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];                                                                                                              [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
-                                                                                                                                                                               
-                                                                                                                                                                               [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:tempDict];
-                                                                                                                                                                               
-                                                                                                                                                                               
-                                                                                                                                                                               
-                                                                                                                                                                               [tempDict release];
-                                                                                                                                                                           }
-                                                                                                                                                                       }];
-                                                                                                                                          
-                                                                                                                                          //break;
-                                                                                                                                      }
-                                                                                                                                  }}
-                                                                                                                              
-                                                                                                                              if(!isEventFound){
-                                                                                                                                                                                                  for (NSString *searchedString in congratsSearchStrings){
-                                                                                                                                      
-                                                                                                                                                                                                          if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                                                                                                                                   isEventFound=YES;
-                                                                                                                                          NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
-                                                                                                                                          
-                                                                                                                                          NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
-                                                                                                                                          [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                                                                                                                                                       HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                                                                                                                                           if(error){
-                                                                                                                                                                               
-                                                                                                                                                                           }
-                                                                                                                                                                           else{
-                                                                                                                                                                                                                                                                                            NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
-                                                                                                                                                                               
-                                                                                                                                                                               [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
-                                                                                                                                                                               [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
-                                                                                                                                                                               [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
-                                                                                                                                                                               [tempDict setObject:@"congratulations" forKey:@"EventName"];
-                                                                                                                                                                               [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];                                                                                                              [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
-                                                                                                                                                                               
-                                                                                                                                                                               [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:tempDict];
-                                                                                                                                                                               
-                                                                                                                                                                               
-                                                                                                                                                                               
-                                                                                                                                                                               [tempDict release];
-                                                                                                                                                                           }
-                                                                                                                                                                       }];
-                                                                                                                                          
-                                                                                                                                          //break;
-                                                                                                                                      }
-                                                                                                                                  }}
-                                                                                                                          }
-                                                                                                                          
-                                                                                                                          
-                                                                                                                          
-                                                                                                                      }
-                                                                                                                  }];
-                                                                                     
-                                                                                 }
-                                                                                 
-                                                                             }
-                                                                         }
-                                                                     }
-                                                                     
-                                                                 }
-                                                             }
-                                                             
-                                                             
-                                                             
-                                                         }}
-                                                 }];
+                                                 [self executePhotoMultiquery:requestJsonArrayForPhotos];
                                              }
                                              if([requestJsonArray count]){
-                                                 NSString *requestJson = [NSString stringWithFormat:@"[ %@ ]", [requestJsonArray componentsJoinedByString:@","]];
-                                                 [requestJsonArray removeAllObjects];
-                                                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"batch"];
-                                                 [FBRequestConnection startWithGraphPath:@"" parameters:params HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
-                                                     if(error){
-                                                         
-                                                     }
-                                                     else{
-                                                         //GGLog(@"Result..%@",result);
-                                                         int resultCount=[result count];
-                                                         //Batch statuses
-                                                         
-                                                         for ( int i=0; i < resultCount; i++ ) {
-                                                             NSDictionary *response = [result objectAtIndex:i];
-                                                             if(![response isKindOfClass:[NSNull class]]){
-                                                                 int httpCode = [[response objectForKey:@"code"] intValue];
-                                                                 
-                                                                 SBJSON *json=[[SBJSON alloc]init];
-                                                                 NSDictionary *resultantJson=(NSDictionary*)[json objectWithString:[response objectForKey:@"body"]];
-                                                                 [json release];
-                                                                 
-                                                                 if ( httpCode != 200 ) {
-                                                                     GGLog( @"Facebook request error: code: %d  message: %@", httpCode, resultantJson );
-                                                                 }
-                                                                 else {
-                                                                     int totalCountForMessages=[[resultantJson objectForKey:@"data"] count];
-                                                                     if(totalCountForMessages){
-                                                                         
-                                                                         for(int i=0;i<totalCountForMessages;i++){
-                                                                             
-                                                                             //Statuses
-                                                                             if([[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"]){
-                                                                                 int commentsCount=[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
-                                                                                 int likesCount=[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"likes"] objectForKey:@"data"] count];
-                                                                                 //check if the comments or likes are more than or equal to 15
-                                                                                 if(commentsCount>=15 || likesCount>=15){
-                                                                                     NSString *messageStr=[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"message"];
-                                                                                     
-                                                                                     BOOL isEventStatusFound=NO;
-                                                                                     if(!isEventStatusFound){
-                                                                                         //If birthday search keyword matched then send this event to the delegate
-                                                                                         for (NSString *searchedString in birthdaySearchStrings){
-                                                                                             
-                                                                                             if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
-                                                                                                 
-                                                                                                 isEventStatusFound=YES;
-                                                                                                 [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                 break;
-                                                                                             }
-                                                                                         }
-                                                                                     }
-                                                                                     if(!isEventStatusFound){
-                                                                                         //If anniversary search keyword matched then send this event to the delegate
-                                                                                         for (NSString *searchedString in anniversarySearchStrings){
-                                                                                             if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
-                                                                                                 isEventStatusFound=YES;
-                                                                                                 [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                 break;
-                                                                                             }
-                                                                                         }
-                                                                                     }
-                                                                                     if(!isEventStatusFound){
-                                                                                         //If new job search keyword matched then send this event to the delegate
-                                                                                         for (NSString *searchedString in newJobSearchStrings){
-                                                                                             if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
-                                                                                                 isEventStatusFound=YES;
-                                                                                                 [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                 break;
-                                                                                             }
-                                                                                         }
-                                                                                     }
-                                                                                     if(!isEventStatusFound){
-                                                                                         //If congrats search keyword matched then send this event to the delegate
-                                                                                         for (NSString *searchedString in congratsSearchStrings){
-                                                                                             if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
-                                                                                                 isEventStatusFound=YES;
-                                                                                                 [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                 break;
-                                                                                             }
-                                                                                         }
-                                                                                     }
-                                                                                     
-                                                                                     if(!isEventStatusFound){
-                                                                                         //Checking with comments text
-                                                                                         BOOL isEventsFromCommentsFound=NO;
-                                                                                         for(int j=0;j<commentsCount;j++){
-                                                                                             NSString *commentsStr=[[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
-                                                                                             
-                                                                                             if(!isEventsFromCommentsFound){
-                                                                                                 for (NSString *searchedString in birthdaySearchStrings){
-                                                                                                     if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                         isEventsFromCommentsFound=YES;
-                                                                                                         [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                         break;
-                                                                                                     }
-                                                                                                 }
-                                                                                             }
-                                                                                             
-                                                                                             if(!isEventsFromCommentsFound){
-                                                                                                 for (NSString *searchedString in anniversarySearchStrings){
-                                                                                                     if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                         isEventsFromCommentsFound=YES;
-                                                                                                         [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                         break;
-                                                                                                     }
-                                                                                                 }
-                                                                                             }
-                                                                                             if(!isEventsFromCommentsFound){
-                                                                                                 for (NSString *searchedString in newJobSearchStrings){
-                                                                                                     if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                         isEventsFromCommentsFound=YES;
-                                                                                                         [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                         break;
-                                                                                                     }
-                                                                                                 }
-                                                                                             }
-                                                                                             if(!isEventsFromCommentsFound){
-                                                                                                 for (NSString *searchedString in congratsSearchStrings){
-                                                                                                     if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
-                                                                                                         isEventsFromCommentsFound=YES;
-                                                                                                         [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
-                                                                                                         break;
-                                                                                                     }
-                                                                                                 }
-                                                                                             }
-                                                                                             
-                                                                                         }
-                                                                                     }
-                                                                                 }
-                                                                             }
-                                                                             
-                                                                             
-                                                                         }
-                                                                         
-                                                                         
-                                                                     }
-                                                                 }
-                                                             }
-                                                             
-                                                         }
-                                                         
-                                                         
-                                                         
-                                                     }
-                                                 }];
+                                                 [self executeStatusedMultiquery:requestJsonArray];
                                              }
                                              
                                          }}];
         
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     }
+    
+}
+-(void)executePhotoMultiquery:(NSMutableArray*)jsonrequestArray{
+    
+        NSString *requestJson = [NSString stringWithFormat:@"[{\"method\":\"POST\", \"relative_url\":\"method/fql.multiquery?queries={%@}\"}]", [jsonrequestArray componentsJoinedByString:@","]];
+        [jsonrequestArray removeAllObjects];
+        
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"batch"];
+        [FBRequestConnection startWithGraphPath:@"" parameters:params HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
+            if(error){
+                
+            }
+            else{
+                //GGLog(@"RESULT---%@",result);
+                
+                int resultCount=[result count];
+                for ( int i=0; i < resultCount; i++ ) {
+                    NSDictionary *response = [result objectAtIndex:i];
+                    if(![response isKindOfClass:[NSNull class]]){
+                        int httpCode = [[response objectForKey:@"code"] intValue];
+                        
+                        
+                        if ( httpCode != 200 ) {
+                            GGLog( @"Facebook request error: code: %d ", httpCode );
+                        }
+                        else {
+                            SBJSON *json=[[SBJSON alloc]init];
+                            NSArray *resultantJson=(NSArray*)[json objectWithString:[response objectForKey:@"body"]];
+                            [json release];
+                            for(NSDictionary* resultDict in resultantJson){
+                                if([resultDict objectForKey:@"fql_result_set"]){
+                                    int listCountOfResultSetForEachQuery=[[resultDict objectForKey:@"fql_result_set"] count];
+                                    for(int j=0;j<listCountOfResultSetForEachQuery;j++){
+                                        NSMutableDictionary *overviewOfPhotoObject=(NSMutableDictionary*)[[resultDict objectForKey:@"fql_result_set"] objectAtIndex:j];
+                                        
+                                        //Check if the comments count or likes count more than or equal to 15
+                                        if([[[overviewOfPhotoObject  objectForKey:@"like_info"] objectForKey:@"like_count"] intValue]>=15 || [[[overviewOfPhotoObject objectForKey:@"comment_info"] objectForKey:@"comment_count"] intValue]>=15){
+                                            
+                                            //Get the details of a photo with comments
+                                            NSString *getCommentsForPhoto=[NSString stringWithFormat:@"SELECT object_id,text from comment where object_id=%@",[overviewOfPhotoObject objectForKey:@"object_id"]];
+                                            NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                                                           getCommentsForPhoto, @"q",
+                                                                           nil];
+                                            [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
+                                                                         HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
+                                                                             if(error){
+                                                                                 
+                                                                             }
+                                                                             else{
+                                                                                 
+                                                                                 BOOL isEventFound=NO;
+                                                                                 int commentsTextCount=[[result objectForKey:@"data" ]count];
+                                                                                 for(int i=0;i<commentsTextCount;i++){
+                                                                                     NSString *commentsStr=[[[result objectForKey:@"data" ] objectAtIndex:i] objectForKey:@"text"];
+                                                                                     
+                                                                                     
+                                                                                     for (NSString *searchedString in birthdaySearchStrings){
+                                                                                         if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
+                                                                                             isEventFound=YES;
+                                                                                             NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
+                                                                                             
+                                                                                             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
+                                                                                             [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
+                                                                                                                          HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
+                                                                                                                              if(error){
+                                                                                                                                  
+                                                                                                                              }
+                                                                                                                              else{
+                                                                                                                                  NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
+                                                                                                                                  
+                                                                                                                                  [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
+                                                                                                                                  [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
+                                                                                                                                  [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
+                                                                                                                                  [tempDict setObject:@"birthday" forKey:@"EventName"];
+                                                                                                                                  [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
+                                                                                                                                  [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];
+                                                                                                                                  [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:tempDict];
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                  [tempDict release];
+                                                                                                                              }
+                                                                                                                          }];
+                                                                                             
+                                                                                             //break;
+                                                                                         }
+                                                                                     }
+                                                                                     if(!isEventFound){
+                                                                                         for (NSString *searchedString in newJobSearchStrings){
+                                                                                             
+                                                                                             if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
+                                                                                                 isEventFound=YES;
+                                                                                                 NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
+                                                                                                 
+                                                                                                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
+                                                                                                 [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
+                                                                                                                              HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
+                                                                                                                                  if(error){
+                                                                                                                                      
+                                                                                                                                  }
+                                                                                                                                  else{
+                                                                                                                                      NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
+                                                                                                                                      
+                                                                                                                                      [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
+                                                                                                                                      [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
+                                                                                                                                      [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
+                                                                                                                                      [tempDict setObject:@"new job" forKey:@"EventName"];
+                                                                                                                                      [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
+                                                                                                                                      [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];
+                                                                                                                                      [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:tempDict];
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      [tempDict release];
+                                                                                                                                  }
+                                                                                                                              }];
+                                                                                                 
+                                                                                                 //break;
+                                                                                             }
+                                                                                         }}
+                                                                                     if(!isEventFound){
+                                                                                         for (NSString *searchedString in anniversarySearchStrings){
+                                                                                             
+                                                                                             if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
+                                                                                                 isEventFound=YES;
+                                                                                                 NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
+                                                                                                 
+                                                                                                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
+                                                                                                 [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
+                                                                                                                              HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
+                                                                                                                                  if(error){
+                                                                                                                                      
+                                                                                                                                  }
+                                                                                                                                  else{
+                                                                                                                                      NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
+                                                                                                                                      
+                                                                                                                                      [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
+                                                                                                                                      [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
+                                                                                                                                      [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
+                                                                                                                                      [tempDict setObject:@"relationships" forKey:@"EventName"];
+                                                                                                                                      [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];                                                                                                              [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
+                                                                                                                                      
+                                                                                                                                      [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:tempDict];
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      [tempDict release];
+                                                                                                                                  }
+                                                                                                                              }];
+                                                                                                 
+                                                                                                 //break;
+                                                                                             }
+                                                                                         }}
+                                                                                     
+                                                                                     if(!isEventFound){
+                                                                                         for (NSString *searchedString in congratsSearchStrings){
+                                                                                             
+                                                                                             if(!isEventFound && [self checkWhetherText:commentsStr contains:searchedString]){
+                                                                                                 isEventFound=YES;
+                                                                                                 NSString *getProfile=[NSString stringWithFormat:@"SELECT name, pic_square from user where uid=%@",[resultDict objectForKey:@"name"]];
+                                                                                                 
+                                                                                                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:getProfile, @"q",nil];
+                                                                                                 [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
+                                                                                                                              HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
+                                                                                                                                  if(error){
+                                                                                                                                      
+                                                                                                                                  }
+                                                                                                                                  else{
+                                                                                                                                      NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]init];
+                                                                                                                                      
+                                                                                                                                      [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"name"] forKey:@"FBName"];
+                                                                                                                                      [tempDict setObject:[[[result objectForKey:@"data" ] objectAtIndex:0]objectForKey:@"pic_square"] forKey:@"pic_square"];
+                                                                                                                                      [tempDict setObject:[NSString stringWithFormat:@"%@",[overviewOfPhotoObject objectForKey:@"object_id"]] forKey:@"EventID"];
+                                                                                                                                      [tempDict setObject:@"congratulations" forKey:@"EventName"];
+                                                                                                                                      [tempDict setObject:[resultDict objectForKey:@"name"] forKey:@"FBID"];                                                                                                              [tempDict setObject:[NSDate dateWithTimeIntervalSince1970:[[overviewOfPhotoObject objectForKey:@"created"]floatValue]] forKey:@"PhotoCreatedDate"];
+                                                                                                                                      
+                                                                                                                                      [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:tempDict];
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      [tempDict release];
+                                                                                                                                  }
+                                                                                                                              }];
+                                                                                                 
+                                                                                                 //break;
+                                                                                             }
+                                                                                         }}
+                                                                                 }
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                             }
+                                                                         }];
+                                            
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                    
+                    
+                    
+                }}
+        }];
+   
+}
+-(void)executeStatusedMultiquery:(NSMutableArray*)jsonrequestArray{
+        NSString *requestJson = [NSString stringWithFormat:@"[ %@ ]", [jsonrequestArray componentsJoinedByString:@","]];
+        [jsonrequestArray removeAllObjects];
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"batch"];
+        [FBRequestConnection startWithGraphPath:@"" parameters:params HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result,NSError *error){
+            if(error){
+                
+            }
+            else{
+                
+                int resultCount=[result count];
+                //Batch statuses
+                
+                for ( int i=0; i < resultCount; i++ ) {
+                    NSDictionary *response = [result objectAtIndex:i];
+                    if(![response isKindOfClass:[NSNull class]]){
+                        int httpCode = [[response objectForKey:@"code"] intValue];
+                        
+                        SBJSON *json=[[SBJSON alloc]init];
+                        NSDictionary *resultantJson=(NSDictionary*)[json objectWithString:[response objectForKey:@"body"]];
+                        [json release];
+                        
+                        if ( httpCode != 200 ) {
+                            GGLog( @"Facebook request error: code: %d  message: %@", httpCode, resultantJson );
+                        }
+                        else {
+                            int totalCountForMessages=[[resultantJson objectForKey:@"data"] count];
+                            if(totalCountForMessages){
+                                
+                                for(int i=0;i<totalCountForMessages;i++){
+                                    
+                                    //Statuses
+                                    if([[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"]){
+                                        int commentsCount=[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] count];
+                                        int likesCount=[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"likes"] objectForKey:@"data"] count];
+                                        //check if the comments or likes are more than or equal to 15
+                                        if(commentsCount>=15 || likesCount>=15){
+                                            NSString *messageStr=[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"message"];
+                                            
+                                            BOOL isEventStatusFound=NO;
+                                            if(!isEventStatusFound){
+                                                //If birthday search keyword matched then send this event to the delegate
+                                                for (NSString *searchedString in birthdaySearchStrings){
+                                                    
+                                                    if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
+                                                        
+                                                        isEventStatusFound=YES;
+                                                        [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
+                                                        //break;
+                                                    }
+                                                }
+                                            }
+                                            if(!isEventStatusFound){
+                                                //If anniversary search keyword matched then send this event to the delegate
+                                                for (NSString *searchedString in anniversarySearchStrings){
+                                                    if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
+                                                        isEventStatusFound=YES;
+                                                        [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
+                                                        //break;
+                                                    }
+                                                }
+                                            }
+                                            if(!isEventStatusFound){
+                                                //If new job search keyword matched then send this event to the delegate
+                                                for (NSString *searchedString in newJobSearchStrings){
+                                                    if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
+                                                        isEventStatusFound=YES;
+                                                        [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
+                                                        //break;
+                                                    }
+                                                }
+                                            }
+                                            if(!isEventStatusFound){
+                                                //If congrats search keyword matched then send this event to the delegate
+                                                for (NSString *searchedString in congratsSearchStrings){
+                                                    if(!isEventStatusFound && [self checkWhetherText:messageStr contains:searchedString]){
+                                                        isEventStatusFound=YES;
+                                                        [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
+                                                        //break;
+                                                    }
+                                                }
+                                            }
+                                            
+                                            if(!isEventStatusFound){
+                                                //Checking with comments text
+                                                BOOL isEventsFromCommentsFound=NO;
+                                                for(int j=0;j<commentsCount;j++){
+                                                    NSString *commentsStr=[[[[[[resultantJson objectForKey:@"data"]objectAtIndex:i] objectForKey:@"comments"] objectForKey:@"data"] objectAtIndex:j] objectForKey:@"message"];
+                                                    
+                                                    if(!isEventsFromCommentsFound){
+                                                        for (NSString *searchedString in birthdaySearchStrings){
+                                                            if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
+                                                                isEventsFromCommentsFound=YES;
+                                                                [fbGiftGivDelegate birthdayEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
+                                                                //break;
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    if(!isEventsFromCommentsFound){
+                                                        for (NSString *searchedString in anniversarySearchStrings){
+                                                            if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
+                                                                isEventsFromCommentsFound=YES;
+                                                                [fbGiftGivDelegate anniversaryEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
+                                                                //break;
+                                                            }
+                                                        }
+                                                    }
+                                                    if(!isEventsFromCommentsFound){
+                                                        for (NSString *searchedString in newJobSearchStrings){
+                                                            if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
+                                                                isEventsFromCommentsFound=YES;
+                                                                [fbGiftGivDelegate newJobEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
+                                                                //break;
+                                                            }
+                                                        }
+                                                    }
+                                                    if(!isEventsFromCommentsFound){
+                                                        for (NSString *searchedString in congratsSearchStrings){
+                                                            if(!isEventsFromCommentsFound && [self checkWhetherText:commentsStr contains:searchedString]){
+                                                                isEventsFromCommentsFound=YES;
+                                                                [fbGiftGivDelegate congratsEventDetailsFromStatusOrPhoto:[[resultantJson objectForKey:@"data"]objectAtIndex:i]];
+                                                                //break;
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                    
+                                }
+                                
+                                
+                            }
+                        }
+                    }
+                    
+                }
+                
+                
+                
+            }
+        }];
+    
     
 }
 - (void)getEventDetails:(NSString*)statusID{

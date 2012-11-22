@@ -35,7 +35,7 @@ NSString *const FBSessionStateChangedNotification = @"yourbundleid:FBSessionStat
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
     
-    
+   
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
     [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackOpaque];
@@ -50,6 +50,7 @@ NSString *const FBSessionStateChangedNotification = @"yourbundleid:FBSessionStat
     //[self.window addSubview:navController.view];
     self.window.rootViewController=navController;
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 

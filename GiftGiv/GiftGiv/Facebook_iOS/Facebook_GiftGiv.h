@@ -41,6 +41,8 @@ typedef enum apiCall {
 - (void)facebookDidLoggedOut;
 - (void)facebookDidRequestFailed;
 - (void)facebookDidCancelledLogin;
+-(void)executePhotoMultiquery:(NSMutableArray*)jsonrequestArray;
+-(void)executeStatusedMultiquery:(NSMutableArray*)jsonrequestArray;
 @end
 
 @interface Facebook_GiftGiv : NSObject
