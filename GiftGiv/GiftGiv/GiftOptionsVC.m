@@ -18,7 +18,7 @@
 @synthesize eventNameLbl;
 
 @synthesize searchFld;
-@synthesize searchBgView;
+@synthesize searchGiftsBgView;
 @synthesize categoryTitleLbl;
 
 
@@ -267,9 +267,9 @@
     
         
     totalCats=[giftCategoriesList count];
-    giftCategoryPageControl.numberOfPages=totalCats;
+    giftCategoryPageControl.numberOfPages=totalCats+1;
     giftCatNum=1;
-    giftCategoryPageControl.currentPage=giftCatNum-1;
+    giftCategoryPageControl.currentPage=giftCatNum;
     
     
     [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
@@ -287,36 +287,32 @@
         [currentGiftItems release];
         currentGiftItems=nil;
     }
-    
+    categoryTitleLbl.text=nil;
     if([listOfAllGiftItems count]){
-        
-        for(NSMutableDictionary *giftItemDict in listOfAllGiftItems){
-            
-            if([categoryId isEqualToString:[[giftItemDict objectForKey:@"GiftDetails"]giftCategoryId]]){
-                if(currentGiftItems==nil){
-                    currentGiftItems=[[NSMutableArray alloc]init];
+        if(!isSearchEnabled){
+            for(NSMutableDictionary *giftItemDict in listOfAllGiftItems){
+                
+                if([categoryId isEqualToString:[[giftItemDict objectForKey:@"GiftDetails"]giftCategoryId]]){
+                    if(currentGiftItems==nil){
+                        currentGiftItems=[[NSMutableArray alloc]init];
+                    }
+                    
+                    [currentGiftItems addObject:giftItemDict];
                 }
                 
-                [currentGiftItems addObject:giftItemDict];
             }
-                     
+        
+            categoryTitleLbl.text=[[giftCategoriesList objectAtIndex:giftCatNum-1] catName];
         }
-    }
-    categoryTitleLbl.text=nil;
-    categoryTitleLbl.text=[[giftCategoriesList objectAtIndex:giftCatNum-1] catName];
-    /*NSArray *tableCells=[giftsTable visibleCells];
-    if([tableCells count]){
-        NSMutableArray *indexPathsList=[[NSMutableArray alloc]init];
-        for(int i=0; i<[tableCells count];i++ ){
-            NSIndexPath *indexPath=[giftsTable indexPathForCell:(GiftCustomCell*)[tableCells objectAtIndex:i]];
-            
-            [indexPathsList addObject:indexPath];
+        else{
+            categoryTitleLbl.text=searchFld.text;
         }
-        [giftsTable reloadRowsAtIndexPaths:indexPathsList withRowAnimation:UITableViewRowAnimationNone];
-        [indexPathsList release];
+    
     }
-    else*/
-        [giftsTable reloadData];
+    
+    
+    
+    [giftsTable reloadData];
 }
 #pragma mark -
 -(BOOL)checkWhetherGiftItemsAvailableInACategory:(NSString*)categoryId{
@@ -340,7 +336,8 @@
     if(totalCats>1){
         //previous
         if (swipeRecognizer.direction == UISwipeGestureRecognizerDirectionRight) {
-            if(giftCatNum>1)
+            
+            if(giftCatNum>0)
             {						
                 giftCatNum--;
                 
@@ -348,7 +345,7 @@
                 
                 
             }
-            else if(giftCatNum==1)
+            else if(giftCatNum==0)
             {
                 giftCatNum=totalCats;
                 [self swipingForGiftCategories:0];
@@ -356,6 +353,7 @@
         }
         //next
         else if (swipeRecognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
+            
             if(giftCatNum<totalCats)
             {					
                 giftCatNum++;
@@ -366,11 +364,12 @@
             }
             else if(giftCatNum==totalCats)
             {
-                giftCatNum=1;
+                giftCatNum=0;
                 [self swipingForGiftCategories:1];
             }
         }
-        giftCategoryPageControl.currentPage=giftCatNum-1;
+        
+        giftCategoryPageControl.currentPage=giftCatNum;
     }
     
 }
@@ -378,23 +377,38 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (IBAction)giftCategoriesPaeControlAction:(id)sender {
-    //if(currentiOSVersion<6.0){
-        for (int i = 0; i < [giftCategoryPageControl.subviews count]; i++)
-        {
+    
+    for (int i = 0; i < [giftCategoryPageControl.subviews count]; i++)
+    {
+        if(i==0){
+            UIImageView* dot = [giftCategoryPageControl.subviews objectAtIndex:i];
+            if (i == giftCategoryPageControl.currentPage){
+                dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+                dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
+            }
+            else{
+                dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+                dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
+            }
+            
+            
+        }
+        else{
             UIImageView* dot = [giftCategoryPageControl.subviews objectAtIndex:i];
             if (i == giftCategoryPageControl.currentPage)
                 dot.image = pageActiveImage;
             else
                 dot.image = pageInactiveImage;
         }
-    //}
+    }
+    
     
     if(giftCategoryPageControl.currentPage>giftCatNum-1){
-        giftCatNum=giftCategoryPageControl.currentPage+1;
+        giftCatNum=giftCategoryPageControl.currentPage;
         [self swipingForGiftCategories:1];
     }
     else{
-        giftCatNum=giftCategoryPageControl.currentPage+1;
+        giftCatNum=giftCategoryPageControl.currentPage;
         [self swipingForGiftCategories:0];
     }
     
@@ -411,8 +425,34 @@
     
           
     [giftItemsBgView.layer addAnimation:tranAnimationForGiftCategories forKey:@"groupAnimation"];
-   
-    [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
+    categoryTitleLbl.text=@"";
+    if(giftCatNum==0){
+        isSearchEnabled=YES;
+        
+        searchGiftsBgView.frame=CGRectMake(0, 0, 320, 44);
+        if(![searchGiftsBgView superview]){
+            
+            [self.view addSubview:searchGiftsBgView];
+        }
+        [searchFld becomeFirstResponder];
+        if([currentGiftItems count])
+            [currentGiftItems removeAllObjects];
+        [giftsTable reloadData];
+        
+        
+    }
+    else{
+        if([searchGiftsBgView superview]){
+            searchFld.text=@"";
+            [searchFld resignFirstResponder];
+            [searchGiftsBgView removeFromSuperview];
+        }
+        
+        isSearchEnabled=NO;
+        [self loadCurrentGiftItemsForCategory:[[giftCategoriesList objectAtIndex:giftCatNum-1]catId]];
+    }
+    
+    
         
 }
 -(CATransition *)getAnimationForGiftCategories:(NSString *)animationType{
@@ -583,26 +623,61 @@
     
     
 }
-#pragma mark -
-/*- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar_1{
+#pragma mark - Search
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar_1{
+    
     
     [searchFld resignFirstResponder];
-    searchBgView.frame=CGRectMake(0, 0, 320, 44);
-        
+    //No gift item available
+    if(![currentGiftItems count]){
+            
+    }
+       
+    
 }
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar_1{
-    
-    searchBgView.frame=CGRectMake(0, 0, 320, 44);
     [searchFld becomeFirstResponder];
 }
 - (void)searchBar:(UISearchBar *)searchBar_1 textDidChange:(NSString *)searchText{
     
-}*/
+    
+    if([searchFld.text isEqualToString:@""]){
+        if([currentGiftItems count])
+            [currentGiftItems removeAllObjects];
+    }
+    if([listOfAllGiftItems count]){
+        [currentGiftItems removeAllObjects];
+        
+        for (NSMutableDictionary *giftItem in listOfAllGiftItems)
+        {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                      @"(SELF contains[cd] %@)", searchFld.text];
+            
+            BOOL resultName = [predicate evaluateWithObject:[[giftItem objectForKey:@"GiftDetails"]giftTitle]];
+            if(resultName)
+                
+            {
+                [currentGiftItems addObject:giftItem];
+                
+                
+            }
+            
+            
+        }
+        categoryTitleLbl.text=searchFld.text;
+    }
+    
+    [self performSelector:@selector(reloadTheSearchGiftsBitDelay) withObject:nil afterDelay:0.01];
+}
+-(void)reloadTheSearchGiftsBitDelay{
+    [giftsTable reloadData];
+}
 
 
 #pragma mark - ProgressHUD methods
 
-- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr  
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr
 {
 	HUD = [[MBProgressHUD alloc] initWithView:targetView];
 	
@@ -638,7 +713,7 @@
     [self setGiftsTable:nil];
     [self setCategoryTitleLbl:nil];
     [self setGiftItemsBgView:nil];
-    [self setSearchBgView:nil];
+    [self setSearchGiftsBgView:nil];
     [self setSearchFld:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
@@ -686,11 +761,9 @@
     
     [categoryTitleLbl release];
     [giftItemsBgView release];
-    [searchBgView release];
+    [searchGiftsBgView release];
     [searchFld release];
     [super dealloc];
 }
 
-- (IBAction)searchCancelAction:(id)sender {
-}
 @end

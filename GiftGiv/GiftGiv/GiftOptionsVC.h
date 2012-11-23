@@ -30,11 +30,12 @@
     NSMutableArray *giftCategoriesList;
     NSMutableArray *listOfAllGiftItems;
     NSMutableArray *currentGiftItems;
-    NSFileManager *fm;    
+    NSFileManager *fm;
+    BOOL isSearchEnabled;
 }
-- (IBAction)searchCancelAction:(id)sender;
+
 @property (retain, nonatomic) IBOutlet UISearchBar *searchFld;
-@property (retain, nonatomic) IBOutlet UIView *searchBgView;
+@property (retain, nonatomic) IBOutlet UIView *searchGiftsBgView;
 @property (retain, nonatomic) IBOutlet UILabel *categoryTitleLbl;
 @property (retain, nonatomic) IBOutlet UIView *giftItemsBgView;
 

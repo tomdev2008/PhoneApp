@@ -9,8 +9,7 @@
 #import "HomeScreenVC.h"
 
 @implementation HomeScreenVC
-@synthesize searchBar;
-@synthesize searchBgView;
+
 @synthesize contactsSearchBar;
 @synthesize contactsSearchView;
 @synthesize eventsBgView;
@@ -78,19 +77,9 @@ static NSDateFormatter *customDateFormat=nil;
     
     searchContactsArray=[[NSMutableArray alloc]init];
     
-    
-    
-    //if(currentiOSVersion<6.0){
-        pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
-        pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
-    //}
-    
-    /*if(currentiOSVersion>=6.0){
-        
-        //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
-        [pageControlForEventGroups setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.83529 alpha:1.0]];
-        [pageControlForEventGroups setPageIndicatorTintColor:[UIColor colorWithRed:0.5255 green:0.8392 blue:0.8353 alpha:0.5]];
-    }*/
+    pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
+    pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
+   
     
     [[NSNotificationCenter defaultCenter] addObserver:picturesOperationQueue selector:@selector(cancelAllOperations) name:UIApplicationWillTerminateNotification object:nil];
     
@@ -136,11 +125,7 @@ static NSDateFormatter *customDateFormat=nil;
         }*/
         [fb_giftgiv_home.fbRequestsArray removeAllObjects];
         
-        if([searchBgView superview]){
-            [searchBgView removeFromSuperview];
-            isSearchEnabled=NO;
-        }
-        
+       
         if([searchContactsArray count])
             [searchContactsArray removeAllObjects];
         
@@ -599,36 +584,27 @@ static NSDateFormatter *customDateFormat=nil;
     if([categoryTitles count])
         [categoryTitles removeAllObjects];
     
-    if([searchBgView superview]){
+    if([allupcomingEvents count]){
         
-        if([searchContactsArray count]){
-            [categoryTitles addObject:events_category_4];
-            totalGroups++;
-        }
-        
+        [categoryTitles addObject:events_category_1];
+        totalGroups++;
     }
-    else{
-        if([allupcomingEvents count]){
-            
-            [categoryTitles addObject:events_category_1];
-            totalGroups++;
-        }
-        if([listOfBirthdayEvents count]){
-            
-            [categoryTitles addObject:events_category_2];
-            totalGroups++;
-        }
+    if([listOfBirthdayEvents count]){
         
-        if([eventsToCelebrateArray count]){
-            [categoryTitles addObject:events_category_3];
-            totalGroups++;
-        }
-        if([listOfContactsArray count]){
-            [categoryTitles addObject:events_category_4];
-            totalGroups++;
-        }
-        
+        [categoryTitles addObject:events_category_2];
+        totalGroups++;
     }
+    
+    if([eventsToCelebrateArray count]){
+        [categoryTitles addObject:events_category_3];
+        totalGroups++;
+    }
+    if([listOfContactsArray count]){
+        [categoryTitles addObject:events_category_4];
+        totalGroups++;
+    }
+    
+    
     
     
     pageControlForEventGroups.numberOfPages=totalGroups;
@@ -1039,7 +1015,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 
 
-- (IBAction)searchCancelAction:(id)sender {
+/*- (IBAction)searchCancelAction:(id)sender {
     [searchBar resignFirstResponder];
     searchBar.text=@"";
     [searchBgView removeFromSuperview];
@@ -1047,35 +1023,35 @@ static NSDateFormatter *customDateFormat=nil;
     [self performSelector:@selector(checkTotalNumberOfGroups)];
     
     [eventsTable reloadData];
-}
+}*/
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar_1{
     
-    if([searchBar_1 isEqual:searchBar]){
+    /*if([searchBar_1 isEqual:searchBar]){
         [searchBar resignFirstResponder];
         searchBgView.frame=CGRectMake(0, 0, 320, 44);
         
     }
-    else{
+    else{*/
         [contactsSearchBar resignFirstResponder];
         if(![searchContactsArray count]){
             eventTitleLbl.text=@"No results found";
         }
-    }
+    //}
     
     
 }
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar_1{
-    if([searchBar_1 isEqual:searchBar]){
+    /*if([searchBar_1 isEqual:searchBar]){
         searchBgView.frame=CGRectMake(0, 0, 320, 44);
         [searchBar becomeFirstResponder];
     }
-    else{
+    else{*/
         [contactsSearchBar becomeFirstResponder];
-    }
+    //}
 }
 - (void)searchBar:(UISearchBar *)searchBar_1 textDidChange:(NSString *)searchText{
     
-    if([searchBar_1 isEqual:searchBar]){
+    /*if([searchBar_1 isEqual:searchBar]){
         isSearchEnabled=YES;
         if([searchText isEqualToString:@""]){
             isSearchEnabled=NO;
@@ -1091,8 +1067,7 @@ static NSDateFormatter *customDateFormat=nil;
                                               @"(SELF contains[cd] %@)", searchBar.text];
                     
                     if([event objectForKey:@"from"]){
-                        
-                        [[[event objectForKey:@"from"] objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                       
                         BOOL resultName = [predicate evaluateWithObject:[[event objectForKey:@"from"] objectForKey:@"name"]];
                         
                         if(resultName)
@@ -1102,8 +1077,7 @@ static NSDateFormatter *customDateFormat=nil;
                         }
                     }
                     else{
-                        //GGLog(@"name.. %@,%@",[event objectForKey:@"name"],searchText);
-                        [[event objectForKey:@"name"] compare:searchBar.text options:NSCaseInsensitiveSearch];
+                       
                         BOOL resultName = [predicate evaluateWithObject:[event objectForKey:@"name"]];
                         if(resultName)
                             
@@ -1116,14 +1090,12 @@ static NSDateFormatter *customDateFormat=nil;
                     
                 }
             }
-            
-            
-            
+        
         }
         
         [self performSelector:@selector(checkTotalNumberOfGroups)];
-    }
-    else{
+    }*/
+    /*else{*/
         if([contactsSearchBar.text isEqualToString:@""]){
             if([searchContactsArray count])
                 [searchContactsArray removeAllObjects];
@@ -1166,7 +1138,7 @@ static NSDateFormatter *customDateFormat=nil;
             else
                 eventTitleLbl.text=@"";
         }
-    }
+    //}
     [eventsTable reloadData];
 }
 
@@ -2170,8 +2142,6 @@ static NSDateFormatter *customDateFormat=nil;
     [self setPageControlForEventGroups:nil];
     [self setEventsTable:nil];
     
-    [self setSearchBgView:nil];
-    [self setSearchBar:nil];
     [self setContactsSearchView:nil];
     [self setContactsSearchBar:nil];
     [super viewDidUnload];
@@ -2199,11 +2169,10 @@ static NSDateFormatter *customDateFormat=nil;
     [lnkd_giftgiv_home setLnkInGiftGivDelegate:nil];
     
     [searchContactsArray release];
-    
-    //if(currentiOSVersion<6.0){
-        [pageActiveImage release];
-        [pageInactiveImage release];
-    //}
+   
+    [pageActiveImage release];
+    [pageInactiveImage release];
+   
     if([globalContactsList count]){
         [globalContactsList removeAllObjects];
         [globalContactsList release];
@@ -2220,9 +2189,7 @@ static NSDateFormatter *customDateFormat=nil;
     [eventTitleLbl release];
     [pageControlForEventGroups release];
     [eventsTable release];
-    
-    [searchBgView release];
-    [searchBar release];
+      
     [contactsSearchView release];
     [contactsSearchBar release];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"GiftGivUserIDReceived" object:nil];

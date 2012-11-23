@@ -23,25 +23,26 @@
 -(void) updateDots
 {
     AppDelegate *appdel=[[UIApplication sharedApplication]delegate];
-   UIViewController *currentVC = appdel.navController.visibleViewController;
+    UIViewController *currentVC = appdel.navController.visibleViewController;
     if([currentVC isMemberOfClass:NSClassFromString(@"GiftOptionsVC")]){
         for (int i = 0; i < [self.subviews count]; i++)
         {
             if(i==0){
                 UIImageView* dot = [self.subviews objectAtIndex:i];
                 if (i == self.currentPage){
-                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 14, 14.5);
-                    dot.image =[[ImageAllocationObject loadImageObjectName:@"searchicon" ofType:@"png"] retain];
+                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+                    dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
                 }
                 else{
-                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 14, 14.5);
-                    dot.image = [[ImageAllocationObject loadImageObjectName:@"searchicon" ofType:@"png"] retain];
+                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+                    dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
                 }
                     
                 
             }
             else{
                 UIImageView* dot = [self.subviews objectAtIndex:i];
+                
                 if (i == self.currentPage)
                     dot.image = activeImage;
                 else
@@ -69,15 +70,8 @@
 {
     [super setCurrentPage:page];
     
-    //Need to check the iOS6.0 respected to the subviews for page control
-    //if(currentiOSVersion<6.0)
-        [self updateDots];
-    //else{
-        //Enable the below statements when the project is compiled with iOS 6.0 and change the colors for the dots
-        /*[self setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0 green:0.66 blue:0.67 alpha:1.0]];
-         [self setPageIndicatorTintColor:[UIColor colorWithRed:0.4431 green:0.8902 blue:0.9254 alpha:1.0]];*/
-    //}
-        
+    [self updateDots];
+    
 }
 
 @end

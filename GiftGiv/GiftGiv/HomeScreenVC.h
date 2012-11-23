@@ -73,9 +73,6 @@
 @property (retain, nonatomic) IBOutlet UITableView *eventsTable;
 @property (retain, nonatomic) IBOutlet UILabel *eventTitleLbl;
 
-@property (retain, nonatomic) IBOutlet UISearchBar *searchBar;
-
-@property (retain, nonatomic) IBOutlet UIView *searchBgView;
 - (IBAction)settingsAction:(id)sender;
 - (IBAction)showContactUsScreen:(id)sender;
 - (IBAction)pageControlActionForEventGroups:(id)sender;
@@ -99,7 +96,6 @@
 
 -(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath;
 - (IBAction)showSearchView:(id)sender;
-- (IBAction)searchCancelAction:(id)sender;
 
 -(void)makeRequestToLoadImagesUsingOperations:(id)source;
 -(void)checkAndStartOperationToDownloadPicForTheEvent:(NSDictionary*)eventData;
