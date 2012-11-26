@@ -250,7 +250,7 @@ static NSCalendar *gregorian=nil;
         [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
                                      HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
                                          if (error) {
-                                             NSLog(@"Error: %@", [error localizedDescription]);
+                                             GGLog(@"Error: %@", [error localizedDescription]);
                                          } else {
                                              if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
                                                  return;
@@ -773,6 +773,7 @@ static NSCalendar *gregorian=nil;
     GGLog(@"event ID..%@",statusID);
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@",statusID] completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if(error){
+            [fbGiftGivDelegate facebookDidRequestFailed];
             GGLog(@"Error: %@", [error localizedDescription]);
         }
         else{

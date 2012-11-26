@@ -126,7 +126,7 @@
 }
 - (void)receivedDetailedEventInfo:(NSMutableDictionary*)eventDetails{
     
-    //GGLog(@"details..%@",eventDetails);
+    GGLog(@"details..%@",eventDetails);
     
     //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
     

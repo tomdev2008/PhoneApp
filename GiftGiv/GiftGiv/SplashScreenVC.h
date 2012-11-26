@@ -12,7 +12,9 @@
 #import "SignInVC.h"
 #import "Facebook_GiftGiv.h"
 
-@interface SplashScreenVC : UIViewController
+@interface SplashScreenVC : UIViewController{
+    IBOutlet UIImageView *logo_ImgView;
+}
 
 @property (retain, nonatomic) IBOutlet UIActivityIndicatorView *loadingIndicator;
 

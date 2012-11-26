@@ -63,7 +63,7 @@
 
 - (void)loadView {
   [super loadView];
-  self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin| UIViewAutoresizingFlexibleHeight;
   
   /*rdNavBar = [[UINavigationBar alloc] initWithFrame:CGRectZero];
   [rdNavBar setTintColor:[UIColor colorWithRed:0 green:0.68 blue:0.69 alpha:1.0]];  
@@ -86,8 +86,8 @@
     | UIViewAutoresizingFlexibleBottomMargin;*/
     
   
-  rdWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, /*rdNavBar.frame.size.height*/0, 320,460/*rdNavBar.frame.size.height*/)];
-  rdWebView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+  rdWebView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+  rdWebView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin| UIViewAutoresizingFlexibleHeight;
   rdWebView.delegate = self;
   rdWebView.scalesPageToFit = YES;
   rdWebView.dataDetectorTypes = UIDataDetectorTypeNone;

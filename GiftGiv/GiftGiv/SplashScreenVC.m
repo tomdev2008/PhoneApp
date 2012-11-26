@@ -31,7 +31,10 @@
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
-{
+{   logo_ImgView.center=self.view.center;
+    CGPoint pnt=loadingIndicator.center;
+    pnt=CGPointMake(self.view.center.x, self.view.center.y+60.0);
+    loadingIndicator.center=pnt;
     [super viewDidLoad];
     
 }

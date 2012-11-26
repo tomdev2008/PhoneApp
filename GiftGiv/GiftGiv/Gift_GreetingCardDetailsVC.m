@@ -303,8 +303,8 @@
     else{
         if(flowerImgView.hidden){
             if(CGRectContainsPoint(backGreetingImg.frame, tapLocation)){
-                
                 zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
+                
                 zoomScrollView.theContainerView.image=backGreetingImg.image;
                
                 zoomScrollView.message=self;
@@ -322,8 +322,8 @@
                 //[self animateZoominView:backGreetingImg shouldShow:YES];
             } 
             if(CGRectContainsPoint(frontGreetingImg.frame, tapLocation)){
-               
                 zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
+                
                 zoomScrollView.theContainerView.image=frontGreetingImg.image;
                
                 zoomScrollView.message=self;
@@ -343,7 +343,9 @@
         else{
             if(CGRectContainsPoint(flowerImgView.frame, tapLocation)){
                 
+                
                 zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
+                
                 zoomScrollView.theContainerView.image=flowerImgView.image;
                 
                 zoomScrollView.message=self;
@@ -397,7 +399,8 @@
 }
 - (void)textViewDidBeginEditing:(UITextView *)textView{
     
-    giftDetailsContentScroll.userInteractionEnabled=NO;
+    //giftDetailsContentScroll.userInteractionEnabled=NO;
+    
     svos = giftDetailsContentScroll.contentOffset;
 	CGPoint pt;
 	CGRect rc = [textView bounds];
@@ -431,7 +434,7 @@
             [(UITextField*)subview setUserInteractionEnabled:NO];
         }
     }
-    giftDetailsContentScroll.userInteractionEnabled=NO;
+    //giftDetailsContentScroll.userInteractionEnabled=NO;
     svos = giftDetailsContentScroll.contentOffset;
 	CGPoint pt;
 	CGRect rc = [dateLabel bounds];
@@ -444,7 +447,9 @@
     if(dodBgView.hidden)
         dodBgView.hidden=NO;
     if(![dodBgView superview]){
-        dodBgView.frame=CGRectMake(0, 220, 320, 260);
+        CGRect origFrame=dodBgView.frame;//CGRectMake(0, 220, 320, 260);
+        origFrame.origin.y=(self.view.frame.size.height - origFrame.size.height)+20;
+        dodBgView.frame=origFrame;
         [self.view.window addSubview:dodBgView];
     }
     

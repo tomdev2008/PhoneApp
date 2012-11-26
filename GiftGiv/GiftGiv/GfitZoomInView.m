@@ -69,14 +69,14 @@ static inline CGFloat ZoomScaleThatFits(CGSize target, CGSize source)
 		self.showsVerticalScrollIndicator = NO;
 		self.showsHorizontalScrollIndicator = NO;
 		self.contentMode = UIViewContentModeRedraw;
-		self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		self.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin| UIViewAutoresizingFlexibleHeight;
 		self.backgroundColor = [UIColor whiteColor];
 		self.userInteractionEnabled = YES;
-		self.autoresizesSubviews = NO;
+		//self.autoresizesSubviews = YES;
 		self.bouncesZoom = YES;
 		self.delegate = self;
         
-		
+        GGLog(NSStringFromCGRect(self.bounds));
 		theContainerView = [[UIImageView alloc] initWithFrame:self.bounds];
         //theContentView.bounds=CGRectInset(theContentView.bounds, 4, 4);
 		//theContainerView.autoresizesSubviews = NO;
@@ -84,8 +84,6 @@ static inline CGFloat ZoomScaleThatFits(CGSize target, CGSize source)
         theContainerView.contentMode = UIViewContentModeScaleAspectFit;
         //theContainerView.autoresizingMask = UIViewAutoresizingNone;
         theContainerView.backgroundColor = [UIColor clearColor];
-        
-        
         
         self.contentSize = theContainerView.bounds.size; // Content size same as view size
         self.contentOffset = CGPointMake((0.0f - CONTENT_INSET), (0.0f - CONTENT_INSET)); // Offset

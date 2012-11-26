@@ -29,7 +29,7 @@ static NSString *const kOAuthConsumerSecret  =  @"EP1SkFM3aLchEM2O";// @"hSdUKzt
 #define FacebookPicURL(userid) [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture",userid]
 
 
-#define events_category_1 @"all upcoming"
+#define events_category_1 @"all"
 #define events_category_2 @"birthdays"
 #define events_category_3 @"events to celebrate"
 #define events_category_4 @"celebrate them"
@@ -39,7 +39,7 @@ static NSString *const kOAuthConsumerSecret  =  @"EP1SkFM3aLchEM2O";// @"hSdUKzt
 #define MERCHANT_PASSWORD /*@"1345733447"*/@"JRRX8T275RR2CUJ6"
 #define MERCHANT_SIGNATURE /*@"AFcWxV21C7fd0v3bYYYRCpSSRl31A6Ag-LWYqcLdoPqXZc0llHvYYb8n"*/@"Arr0.D-RwOqYOFyV8ttxDMemqffWANgJJVGDAj8G8NGFu937Bfpf81Hm"
 
-#define LogEnable 0  //0==> Disable, 1==> Enable
+#define LogEnable 0 //0==> Disable, 1==> Enable
 
 #define GGLog(__FORMAT__, ...) {if(LogEnable)NSLog(__FORMAT__, ##__VA_ARGS__);}
 

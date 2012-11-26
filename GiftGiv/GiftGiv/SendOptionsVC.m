@@ -639,7 +639,9 @@
     if(addressEmailSMSSelPickerBgView.hidden)
         addressEmailSMSSelPickerBgView.hidden=NO;
     if(![addressEmailSMSSelPickerBgView superview]){
-        addressEmailSMSSelPickerBgView.frame=CGRectMake(0, 220, 320, 260);
+        CGRect origFrame=addressEmailSMSSelPickerBgView.frame;
+        origFrame.origin.y=(self.view.frame.size.height - origFrame.size.height)+20;
+        addressEmailSMSSelPickerBgView.frame=origFrame;
         [self.view.window addSubview:addressEmailSMSSelPickerBgView];
     }
     
@@ -733,7 +735,9 @@
     if(statePickerBgView.hidden)
         statePickerBgView.hidden=NO;
     if(![statePickerBgView superview]){
-        statePickerBgView.frame=CGRectMake(0, 220, 320, 260);
+        CGRect origFrame=statePickerBgView.frame;
+        origFrame.origin.y=(self.view.frame.size.height - origFrame.size.height)+20;
+        statePickerBgView.frame=origFrame;
         [self.view.window addSubview:statePickerBgView];
     }
     

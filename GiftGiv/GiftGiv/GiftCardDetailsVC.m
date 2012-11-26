@@ -233,7 +233,11 @@
         
             if(CGRectContainsPoint(giftImg.frame, tapLocation)){
                 
+                GGLog(NSStringFromCGRect(self.view.bounds));
+                
                 zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
+                
+                
                 zoomScrollView.theContainerView.image=giftImg.image;
                 
                 zoomScrollView.message=self;
@@ -427,7 +431,7 @@
             [(UIButton*)subview setUserInteractionEnabled:NO];
         }
     }
-    giftDetailsScroll.userInteractionEnabled=NO;
+    //giftDetailsScroll.userInteractionEnabled=NO;
     svos = giftDetailsScroll.contentOffset;
 	CGPoint pt;
 	CGRect rc = [textView bounds];

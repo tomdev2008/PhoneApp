@@ -186,6 +186,7 @@
 		BD9D34B6166337C700D05C0D /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD9D34B5166337C700D05C0D /* FacebookSDK.framework */; };
 		BD9D34B9166337E200D05C0D /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD9D34B7166337E200D05C0D /* FacebookSDKResources.bundle */; };
 		BD9D34BA166337E200D05C0D /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD9D34B8166337E200D05C0D /* FBUserSettingsViewResources.bundle */; };
+		BD9D34BC166342E900D05C0D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD9D34BB166342E900D05C0D /* Default-568h@2x.png */; };
 		BDAE91E3162EB11F004089DC /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91DE162EAE01004089DC /* OHAttributedLabel.m */; };
 		BDAE91E4162EB11F004089DC /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E0162EAE1B004089DC /* NSAttributedString+Attributes.m */; };
 		BDAE91E5162EB11F004089DC /* NSTextCheckingResult+ExtendedURL.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E2162EB0FE004089DC /* NSTextCheckingResult+ExtendedURL.m */; };
@@ -492,6 +493,7 @@
 		BD9D34B5166337C700D05C0D /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		BD9D34B7166337E200D05C0D /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		BD9D34B8166337E200D05C0D /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
+		BD9D34BB166342E900D05C0D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		BDAE91DD162EAE01004089DC /* OHAttributedLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OHAttributedLabel.h; sourceTree = "<group>"; };
 		BDAE91DE162EAE01004089DC /* OHAttributedLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OHAttributedLabel.m; sourceTree = "<group>"; };
 		BDAE91DF162EAE1B004089DC /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
@@ -1165,6 +1167,7 @@
 		7ED7EA2315B6F1EE008DFDE3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BD9D34BB166342E900D05C0D /* Default-568h@2x.png */,
 				7EED2FB215C7A031001160BB /* ListOfStates.plist */,
 				7E5EF71A15B929C300C1D252 /* Normal */,
 				7E5EF71815B929BB00C1D252 /* Retina */,
@@ -1422,6 +1425,7 @@
 				BDF33526165F6643005C5E7F /* searchdotinactive.png in Resources */,
 				BD9D34B9166337E200D05C0D /* FacebookSDKResources.bundle in Resources */,
 				BD9D34BA166337E200D05C0D /* FBUserSettingsViewResources.bundle in Resources */,
+				BD9D34BC166342E900D05C0D /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
