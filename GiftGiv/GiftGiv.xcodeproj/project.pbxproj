@@ -156,7 +156,6 @@
 		BD0A36EC163FE58900988508 /* graybar2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD0A36EB163FE58900988508 /* graybar2@2x.png */; };
 		BD0A36EE163FE5A500988508 /* graybar2.png in Resources */ = {isa = PBXBuildFile; fileRef = BD0A36ED163FE5A500988508 /* graybar2.png */; };
 		BD0BDB93164D00C400E30799 /* GfitZoomInView.m in Sources */ = {isa = PBXBuildFile; fileRef = BD0BDB91164CEEC800E30799 /* GfitZoomInView.m */; };
-		BD1B2D811648F5F60078C0B9 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD1B2D801648F5F60078C0B9 /* Default-568h@2x.png */; };
 		BD1B2DB416494B460078C0B9 /* ECNetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BD1B2D86164948270078C0B9 /* ECNetworkHandler.m */; };
 		BD1B2DB516494B460078C0B9 /* Address.m in Sources */ = {isa = PBXBuildFile; fileRef = BD1B2D88164949A90078C0B9 /* Address.m */; };
 		BD1B2DB616494B460078C0B9 /* BillingAgreementDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = BD1B2D8A164949A90078C0B9 /* BillingAgreementDetails.m */; };
@@ -438,7 +437,6 @@
 		BD0A36ED163FE5A500988508 /* graybar2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graybar2.png; sourceTree = "<group>"; };
 		BD0BDB90164CEEC800E30799 /* GfitZoomInView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GfitZoomInView.h; sourceTree = "<group>"; };
 		BD0BDB91164CEEC800E30799 /* GfitZoomInView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GfitZoomInView.m; sourceTree = "<group>"; };
-		BD1B2D801648F5F60078C0B9 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		BD1B2D83164947BA0078C0B9 /* libPayPalEC.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPayPalEC.a; sourceTree = "<group>"; };
 		BD1B2D84164947BA0078C0B9 /* PayPal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PayPal.h; sourceTree = "<group>"; };
 		BD1B2D85164948260078C0B9 /* ECNetworkHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECNetworkHandler.h; sourceTree = "<group>"; };
@@ -1101,7 +1099,6 @@
 		7ED7EA0D15B6F1EE008DFDE3 = {
 			isa = PBXGroup;
 			children = (
-				BD1B2D801648F5F60078C0B9 /* Default-568h@2x.png */,
 				7ED7EA2215B6F1EE008DFDE3 /* GiftGiv */,
 				7ED7EA1B15B6F1EE008DFDE3 /* Frameworks */,
 				7ED7EA1915B6F1EE008DFDE3 /* Products */,
@@ -1419,7 +1416,6 @@
 				BD0A36EA163FE3A800988508 /* searchicon.png in Resources */,
 				BD0A36EC163FE58900988508 /* graybar2@2x.png in Resources */,
 				BD0A36EE163FE5A500988508 /* graybar2.png in Resources */,
-				BD1B2D811648F5F60078C0B9 /* Default-568h@2x.png in Resources */,
 				BDF33520165F6626005C5E7F /* searchdotactive@2x.png in Resources */,
 				BDF33521165F6626005C5E7F /* searchdotinactive@2x.png in Resources */,
 				BDF33525165F6643005C5E7F /* searchdotactive.png in Resources */,
