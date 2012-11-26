@@ -142,7 +142,7 @@ static NSDateFormatter *customDateFormat=nil;
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
         [eventsTable reloadData];
-        if([FBSession activeSession].isOpen){
+        if([FBSession activeSession].isOpen||[FBSession activeSession].state == FBSessionStateCreatedTokenLoaded){
             //If the UserId (referred in giftgiv server) is available, then get the events and contacts from our server.
             if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
                 isEventsLoadingFromFB=NO;

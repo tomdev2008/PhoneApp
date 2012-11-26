@@ -105,7 +105,7 @@
         case 13:
         {
             [self showProgressHUD:self.view withMsg:nil];
-            if([[FBSession activeSession] isOpen]){
+            if([FBSession activeSession].isOpen||[FBSession activeSession].state == FBSessionStateCreatedTokenLoaded){
                 if([CheckNetwork connectedToNetwork]){
                     
                     [fb_giftgiv_settings logoutOfFacebook];
@@ -173,7 +173,7 @@
 }
 
 - (void)linkedInDidLoggedOut{
-    if(![[fb_giftgiv_settings facebook] isSessionValid]){
+    if(![FBSession activeSession].isOpen){
         GGLog(@"linkedin logout");
         [self stopHUD];
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];

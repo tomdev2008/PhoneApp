@@ -184,9 +184,9 @@
 		BD4469B6165A501D00CC136E /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469B5165A501D00CC136E /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BD4469B9165A502300CC136E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469B8165A502300CC136E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BD4469BB165A502C00CC136E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469BA165A502C00CC136E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		BD4469BD165A505100CC136E /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469BC165A505100CC136E /* FacebookSDK.framework */; };
-		BD4469C0165A509D00CC136E /* FacebookSDKResources.bundle in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469BE165A509D00CC136E /* FacebookSDKResources.bundle */; };
-		BD4469C1165A509D00CC136E /* FBUserSettingsViewResources.bundle in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469BF165A509D00CC136E /* FBUserSettingsViewResources.bundle */; };
+		BD9D34B6166337C700D05C0D /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD9D34B5166337C700D05C0D /* FacebookSDK.framework */; };
+		BD9D34B9166337E200D05C0D /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD9D34B7166337E200D05C0D /* FacebookSDKResources.bundle */; };
+		BD9D34BA166337E200D05C0D /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD9D34B8166337E200D05C0D /* FBUserSettingsViewResources.bundle */; };
 		BDAE91E3162EB11F004089DC /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91DE162EAE01004089DC /* OHAttributedLabel.m */; };
 		BDAE91E4162EB11F004089DC /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E0162EAE1B004089DC /* NSAttributedString+Attributes.m */; };
 		BDAE91E5162EB11F004089DC /* NSTextCheckingResult+ExtendedURL.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E2162EB0FE004089DC /* NSTextCheckingResult+ExtendedURL.m */; };
@@ -491,9 +491,9 @@
 		BD4469B5165A501D00CC136E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		BD4469B8165A502300CC136E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		BD4469BA165A502C00CC136E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		BD4469BC165A505100CC136E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
-		BD4469BE165A509D00CC136E /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = ../../../Documents/FacebookSDK/FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
-		BD4469BF165A509D00CC136E /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FBUserSettingsViewResources.bundle; path = ../../../Documents/FacebookSDK/FacebookSDK.framework/Versions/A/Resources/FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
+		BD9D34B5166337C700D05C0D /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		BD9D34B7166337E200D05C0D /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKResources.bundle; sourceTree = "<group>"; };
+		BD9D34B8166337E200D05C0D /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
 		BDAE91DD162EAE01004089DC /* OHAttributedLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OHAttributedLabel.h; sourceTree = "<group>"; };
 		BDAE91DE162EAE01004089DC /* OHAttributedLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OHAttributedLabel.m; sourceTree = "<group>"; };
 		BDAE91DF162EAE1B004089DC /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
@@ -515,9 +515,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD4469C0165A509D00CC136E /* FacebookSDKResources.bundle in Frameworks */,
-				BD4469C1165A509D00CC136E /* FBUserSettingsViewResources.bundle in Frameworks */,
-				BD4469BD165A505100CC136E /* FacebookSDK.framework in Frameworks */,
 				BD4469BB165A502C00CC136E /* Social.framework in Frameworks */,
 				BD4469B9165A502300CC136E /* Accounts.framework in Frameworks */,
 				BD4469B6165A501D00CC136E /* AdSupport.framework in Frameworks */,
@@ -532,6 +529,7 @@
 				7ED7EA1D15B6F1EE008DFDE3 /* UIKit.framework in Frameworks */,
 				7ED7EA1F15B6F1EE008DFDE3 /* Foundation.framework in Frameworks */,
 				7ED7EA2115B6F1EE008DFDE3 /* CoreGraphics.framework in Frameworks */,
+				BD9D34B6166337C700D05C0D /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1122,9 +1120,9 @@
 			isa = PBXGroup;
 			children = (
 				7E0AB542160AEB93003DD08A /* libxml2.2.dylib */,
-				BD4469BE165A509D00CC136E /* FacebookSDKResources.bundle */,
-				BD4469BF165A509D00CC136E /* FBUserSettingsViewResources.bundle */,
-				BD4469BC165A505100CC136E /* FacebookSDK.framework */,
+				BD9D34B7166337E200D05C0D /* FacebookSDKResources.bundle */,
+				BD9D34B8166337E200D05C0D /* FBUserSettingsViewResources.bundle */,
+				BD9D34B5166337C700D05C0D /* FacebookSDK.framework */,
 				BD4469BA165A502C00CC136E /* Social.framework */,
 				BD4469B8165A502300CC136E /* Accounts.framework */,
 				BD4469B5165A501D00CC136E /* AdSupport.framework */,
@@ -1426,6 +1424,8 @@
 				BDF33521165F6626005C5E7F /* searchdotinactive@2x.png in Resources */,
 				BDF33525165F6643005C5E7F /* searchdotactive.png in Resources */,
 				BDF33526165F6643005C5E7F /* searchdotinactive.png in Resources */,
+				BD9D34B9166337E200D05C0D /* FacebookSDKResources.bundle in Resources */,
+				BD9D34BA166337E200D05C0D /* FBUserSettingsViewResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

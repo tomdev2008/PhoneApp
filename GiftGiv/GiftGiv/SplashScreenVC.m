@@ -45,7 +45,7 @@
     //GGLog(@"linkedin..%@",[[LinkedIn_GiftGiv sharedSingleton]isLinkedInAuthorized]);
     //[FBSession activeSession].state == FBSessionStateCreatedTokenLoaded
     
-    if([FBSession activeSession].isOpen){
+    if([FBSession activeSession].state == FBSessionStateCreatedTokenLoaded){
                 
         [self performSelector:@selector(loadHomeScreen) withObject:nil afterDelay:2.0];
     }
