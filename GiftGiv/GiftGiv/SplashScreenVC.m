@@ -31,10 +31,15 @@
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
-{   logo_ImgView.center=self.view.center;
-    CGPoint pnt=loadingIndicator.center;
-    pnt=CGPointMake(self.view.center.x, self.view.center.y+60.0);
-    loadingIndicator.center=pnt;
+{
+    //iPhone 5 display
+    if([[UIScreen mainScreen] bounds].size.height == 568){
+        logo_ImgView.frame=CGRectMake(logo_ImgView.frame.origin.x, logo_ImgView.frame.origin.y+25, logo_ImgView.frame.size.width, logo_ImgView.frame.size.height);
+        loadingIndicator.frame=CGRectMake(loadingIndicator.frame.origin.x, loadingIndicator.frame.origin.y+25, loadingIndicator.frame.size.width, loadingIndicator.frame.size.height);
+    }
+    else{
+        
+    }
     [super viewDidLoad];
     
 }
@@ -42,18 +47,33 @@
     
     //Check whether facebook session is valid or not, Based on the availability load either splash screen or Home/Events screen
     
-    //Facebook_GiftGiv *fb_giftgiv=[[Facebook_GiftGiv alloc]init];
+    
     
     //GGLog(@"facebook..%@",[[fb_giftgiv facebook] isSessionValid]);
     //GGLog(@"linkedin..%@",[[LinkedIn_GiftGiv sharedSingleton]isLinkedInAuthorized]);
     //[FBSession activeSession].state == FBSessionStateCreatedTokenLoaded
+    GGLog(@"FBSessionState=%d",[[FBSession activeSession] state]);
     
-    if([FBSession activeSession].state == FBSessionStateCreatedTokenLoaded){
-                
+    NSString *fbAccessToken=[[NSUserDefaults standardUserDefaults] objectForKey:@"FBAccessTokenKey"];
+    NSDate *fbExpirationDateKey=[[NSUserDefaults standardUserDefaults] objectForKey:@"FBExpirationDateKey"];
+    BOOL isrequiredDataAvailable=(fbAccessToken!=nil && [fbAccessToken length]) && (fbExpirationDateKey!=nil);
+    if (isrequiredDataAvailable) {
+        Facebook_GiftGiv *fb_giftgiv=[[Facebook_GiftGiv alloc]init];
+        [fb_giftgiv authorizeOurAppWithFacebook];
         [self performSelector:@selector(loadHomeScreen) withObject:nil afterDelay:2.0];
+        [fb_giftgiv release];
     }
-    else
+    else{
         [self performSelector:@selector(loadSignInScreen) withObject:nil afterDelay:2.0];
+    }
+    
+    if([FBSession activeSession].isOpen){//[FBSession activeSession].isOpen
+        
+        
+    }
+    else{
+        
+    }
     
     
     //[fb_giftgiv release];

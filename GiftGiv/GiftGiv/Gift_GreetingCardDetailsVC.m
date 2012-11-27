@@ -312,7 +312,14 @@
                 
                 zoomDoneBtn.frame=CGRectMake(240, 10, 70, 31);
                 [self.view addSubview:zoomDoneBtn];
-                giftTitleInZoomScreen.frame=CGRectMake(10, 420, 300, 41);
+                
+                if([[UIScreen mainScreen] bounds].size.height == 568){
+                    giftTitleInZoomScreen.frame=CGRectMake(10, 480, 300, 41);
+                }
+                else
+                    giftTitleInZoomScreen.frame=CGRectMake(10, 420, 300, 41);
+                
+                
                 [self.view addSubview:giftTitleInZoomScreen];
                 
                 /*zoomDoneBtn.hidden=YES;
@@ -331,7 +338,14 @@
                 
                 zoomDoneBtn.frame=CGRectMake(240, 30, 70, 31);
                 [self.view addSubview:zoomDoneBtn];
-                giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
+                
+                if([[UIScreen mainScreen] bounds].size.height == 568){
+                    giftTitleInZoomScreen.frame=CGRectMake(10, 480, 300, 41);
+                }
+                else
+                    giftTitleInZoomScreen.frame=CGRectMake(10, 420, 300, 41);
+                
+                //giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
                 [self.view addSubview:giftTitleInZoomScreen];
                 
                 /*zoomDoneBtn.hidden=YES;
@@ -353,7 +367,12 @@
                 
                 zoomDoneBtn.frame=CGRectMake(240, 30, 70, 31);
                 [self.view addSubview:zoomDoneBtn];
-                giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
+                if([[UIScreen mainScreen] bounds].size.height == 568){
+                    giftTitleInZoomScreen.frame=CGRectMake(10, 480, 300, 41);
+                }
+                else
+                    giftTitleInZoomScreen.frame=CGRectMake(10, 420, 300, 41);
+                //giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
                 [self.view addSubview:giftTitleInZoomScreen];
                
                 /*zoomDoneBtn.hidden=YES;

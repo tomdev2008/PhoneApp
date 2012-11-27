@@ -72,45 +72,55 @@ static NSCalendar *gregorian=nil;
     }
 }
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
+    NSArray *permissions=[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",nil];
     
-    return [FBSession openActiveSessionWithReadPermissions:[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",nil]
-                                              allowLoginUI:allowLoginUI
-                                         completionHandler:^(FBSession *session,
-                                                             FBSessionState state,
+    return [FBSession openActiveSessionWithReadPermissions:permissions
+                      allowLoginUI:allowLoginUI
+                      completionHandler:^(FBSession *session,FBSessionState state,
                                                              NSError *error) {
-                                             GGLog(@"error:%@",[error localizedDescription]);
-                                             GGLog(@"%d",state);
-                                             switch (state) {
-                                                 case FBSessionStateClosedLoginFailed:
-                                                 {
-                                                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                                         message:error.localizedDescription
-                                                                                                        delegate:nil
-                                                                                               cancelButtonTitle:@"OK"
-                                                                                               otherButtonTitles:nil];
-                                                     [alertView show];
-                                                     [alertView release];
-                                                 }
-                                                     
-                                                     break;
-                                                 case FBSessionStateOpen:
-                                                 {
-                                                     [self storeAuthData:[[FBSession activeSession] accessToken] expiresAt:[[FBSession activeSession] expirationDate]];
-                                                     
-                                                     [fbGiftGivDelegate facebookLoggedIn];
-                                                     [self apiFQLIMe];
-                                                 }
-                                                     break;
-                                                     
-                                                 default:
-                                                     break;
-                                             }
-                                             [[NSNotificationCenter defaultCenter]
-                                              postNotificationName:FBSessionStateChangedNotification
-                                              object:session];
-                                             
-                                         }];
+                       GGLog(@"error:%@",[error localizedDescription]);
+                       GGLog(@"%d",state);
+                       [self sessionStateChanged:session state:state error:error];
+                      }];
     
+}
+
+/*
+ * Callback for session changes.
+ */
+- (void)sessionStateChanged:(FBSession *)session
+                      state:(FBSessionState) state
+                      error:(NSError *)error
+{
+    switch (state) {
+        case FBSessionStateClosedLoginFailed:
+        {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                message:error.localizedDescription
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+            [alertView release];
+        }
+            
+            break;
+        case FBSessionStateOpen:
+        {
+            [self storeAuthData:[[FBSession activeSession] accessToken] expiresAt:[[FBSession activeSession] expirationDate]];
+            
+            [fbGiftGivDelegate facebookLoggedIn];
+            [self apiFQLIMe];
+        }
+            break;
+            
+        default:
+            break;
+    }
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:FBSessionStateChangedNotification
+     object:session];
 }
 - (void) closeSession {
     

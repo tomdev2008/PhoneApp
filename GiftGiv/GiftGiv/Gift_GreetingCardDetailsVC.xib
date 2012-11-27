@@ -81,7 +81,7 @@
 			</object>
 			<object class="IBUILabel" id="537244273">
 				<reference key="NSNextResponder"/>
-				<int key="NSvFlags">292</int>
+				<int key="NSvFlags">260</int>
 				<string key="NSFrameSize">{300, 41}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>

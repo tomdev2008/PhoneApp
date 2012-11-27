@@ -53,6 +53,7 @@
 								<string key="NSFrame">{{20, 0}, {280, 36}}</string>
 								<reference key="NSSuperview" ref="906454922"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="276226491"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -63,7 +64,7 @@
 						<string key="NSFrame">{{0, 378}, {320, 36}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="276226491"/>
+						<reference key="NSNextKeyView" ref="1005727111"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -181,7 +182,7 @@
 					</object>
 					<object class="IBUIView" id="276226491">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">280</int>
+						<int key="NSvFlags">264</int>
 						<array class="NSMutableArray" key="NSSubviews">
 							<object class="IBUIImageView" id="797788639">
 								<reference key="NSNextResponder" ref="276226491"/>
@@ -374,7 +375,7 @@
 								<string key="NSFrame">{{263, 27}, {42, 21}}</string>
 								<reference key="NSSuperview" ref="276226491"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="1005727111"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -457,6 +458,7 @@
 						<string key="NSFrameSize">{320, 44}</string>
 						<reference key="NSSuperview" ref="593607541"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<int key="IBUIContentMode">3</int>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<string key="IBPlaceholder">search friends to celebrate</string>

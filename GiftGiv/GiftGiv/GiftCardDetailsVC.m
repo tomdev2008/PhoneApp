@@ -7,6 +7,8 @@
 //
 
 #import "GiftCardDetailsVC.h"
+#define kPSAnimationDuration 0.35f
+#define kPSFullscreenAnimationBounce 20
 
 @implementation GiftCardDetailsVC
 @synthesize profileNameLbl;
@@ -231,30 +233,45 @@
     }
     else{
         
-            if(CGRectContainsPoint(giftImg.frame, tapLocation)){
-                
-                GGLog(NSStringFromCGRect(self.view.bounds));
-                
-                zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
-                
-                
-                zoomScrollView.theContainerView.image=giftImg.image;
-                
-                zoomScrollView.message=self;
-                [self.view addSubview:zoomScrollView];
-                
-                zoomDoneBtn.frame=CGRectMake(240, 10, 70, 31);
-                [self.view addSubview:zoomDoneBtn];
-                giftTitleInZoomScreen.frame=CGRectMake(10, 420, 300, 41);
-                [self.view addSubview:giftTitleInZoomScreen];
-                
+        if(CGRectContainsPoint(giftImg.frame, tapLocation))
+        {
+            
+            GGLog(NSStringFromCGRect(self.view.bounds));
+            
+            zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
+            zoomScrollView.theContainerView.image=giftImg.image;
+            zoomScrollView.message=self;
+            [self.view addSubview:zoomScrollView];
+            /*
+            // view hierarchy change needs some time propagating, don't use UIViewAnimationOptionBeginFromCurrentState when just changed // //| UIViewAnimationOptionAllowUserInteraction
+            [UIView animateWithDuration: kPSAnimationDuration delay: 0.0
+                                options:UIViewAnimationOptionBeginFromCurrentState
+                             animations:^{
+                                 zoomScrollView.transform = CGAffineTransformIdentity;
+                                 CGRect windowBounds = [UIScreen mainScreen].bounds;
+                                 
+                                 [zoomScrollView setFrame:CGRectMake(windowBounds.origin.x - kPSFullscreenAnimationBounce, windowBounds.origin.y - kPSFullscreenAnimationBounce, windowBounds.size.width + kPSFullscreenAnimationBounce*2, windowBounds.size.height + kPSFullscreenAnimationBounce*2)];
+                                 
+                             }
+                             completion:^(BOOL finished) {
+             }];
+*/
+            
+            zoomDoneBtn.frame=CGRectMake(240, 10, 70, 31);
+            [self.view addSubview:zoomDoneBtn];
+            
+            if([[UIScreen mainScreen] bounds].size.height == 568){
+                giftTitleInZoomScreen.frame=CGRectMake(10, 480, 300, 41);
             }
+            else
+                giftTitleInZoomScreen.frame=CGRectMake(10, 420, 300, 41);
+            [self.view addSubview:giftTitleInZoomScreen];
             
         }
         
-    
-    
+    }
 }
+
 -(NSString *)getMonthName:(int)monthNum{
     switch (monthNum) {
         case 1:

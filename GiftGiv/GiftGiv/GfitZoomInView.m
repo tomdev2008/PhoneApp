@@ -69,7 +69,7 @@ static inline CGFloat ZoomScaleThatFits(CGSize target, CGSize source)
 		self.showsVerticalScrollIndicator = NO;
 		self.showsHorizontalScrollIndicator = NO;
 		self.contentMode = UIViewContentModeRedraw;
-		self.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin| UIViewAutoresizingFlexibleHeight;
+		self.autoresizingMask =  UIViewAutoresizingFlexibleBottomMargin| UIViewAutoresizingFlexibleHeight;
 		self.backgroundColor = [UIColor whiteColor];
 		self.userInteractionEnabled = YES;
 		//self.autoresizesSubviews = YES;
@@ -162,7 +162,7 @@ static inline CGFloat ZoomScaleThatFits(CGSize target, CGSize source)
     
     
     CGRect viewBounds=CGRectZero;
-    viewBounds.size=CGSizeMake(320, 460);
+    viewBounds.size=[self bounds].size;//CGSizeMake(320, 460);
        
     if (!CGSizeEqualToSize(viewBounds.size, self.frame.size))self.frame=viewBounds;
                 

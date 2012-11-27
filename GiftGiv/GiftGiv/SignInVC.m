@@ -9,6 +9,7 @@
 #import "SignInVC.h"
 
 @implementation SignInVC
+@synthesize loginBtn,loginLbl,giftgivLogo;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,6 +34,17 @@
 {
     fb_giftgiv=[[Facebook_GiftGiv alloc]init];
     fb_giftgiv.fbGiftGivDelegate=self;
+    
+    if([[UIScreen mainScreen] bounds].size.height == 568){
+        loginBtn.frame=CGRectMake(loginBtn.frame.origin.x, loginBtn.frame.origin.y+25, loginBtn.frame.size.width, loginBtn.frame.size.height);
+        loginLbl.frame=CGRectMake(loginLbl.frame.origin.x, loginLbl.frame.origin.y+25, loginLbl.frame.size.width, loginLbl.frame.size.height);
+        giftgivLogo.frame=CGRectMake(giftgivLogo.frame.origin.x, giftgivLogo.frame.origin.y+25, giftgivLogo.frame.size.width, giftgivLogo.frame.size.height);
+    }
+    else{
+        
+    }
+    
+    
     [super viewDidLoad];
     
 }
@@ -270,6 +282,9 @@
 - (void)viewDidUnload
 {
     
+    [self setGiftgivLogo:nil];
+    [self setLoginLbl:nil];
+    [self setLoginBtn:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -283,6 +298,9 @@
 
 - (void)dealloc {
     [fb_giftgiv release];
+    [giftgivLogo release];
+    [loginLbl release];
+    [loginBtn release];
     [super dealloc];
 }
 
