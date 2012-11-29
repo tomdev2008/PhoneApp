@@ -100,11 +100,13 @@ static NSDateFormatter *customDateFormat=nil;
     UISwipeGestureRecognizer *swipeLeftRecognizer=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipingForEventGroups:)];
     swipeLeftRecognizer.direction=UISwipeGestureRecognizerDirectionLeft;
     [eventsBgView addGestureRecognizer:swipeLeftRecognizer];
+    
     [swipeLeftRecognizer release];
     
     UISwipeGestureRecognizer *swipeRightRecognizer=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipingForEventGroups:)];
     swipeRightRecognizer.direction=UISwipeGestureRecognizerDirectionRight;
     [eventsBgView addGestureRecognizer:swipeRightRecognizer];
+    
     [swipeRightRecognizer release];
 }
 -(void)getEventsFromLinkedIn{

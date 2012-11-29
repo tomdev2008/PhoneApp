@@ -76,17 +76,55 @@
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     }
+    
+    [self performSelector:@selector(makeRequestForInvalidatingTheToken)];
+    
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"MyGiftGivUserId"];
+    /*if(![lnkd_giftgiv_settings isLinkedInAuthorized]){
+        [self stopHUD];
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+     */
+}
+
+#pragma mark -
+-(void)makeRequestForInvalidatingTheToken{
+    if([CheckNetwork connectedToNetwork]){
+        //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
+        GGLog(@"gift home id..%@",[[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]);
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:UpdateAccessTokenValidity>\n<tem:userId>%@</tem:userId>\n<tem:validity>0</tem:validity>\n</tem:UpdateAccessTokenValidity>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"]];
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+        GGLog(@"events request..%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"UpdateAccessTokenValidity"];
+        
+        ValidationOfTheTokenRequest *validate=[[ValidationOfTheTokenRequest alloc]init];
+        [validate setValidateTokenDelegate:self];
+        [validate validateTheTokenRequest:theRequest];
+        [validate release];
+    }
+    /*else{
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+        AlertWithMessageAndDelegate(@"Network connectivity", @"Please check your network connection", nil);
+    }*/
+}
+-(void) statusOfValidation:(NSString*)response{
+    GGLog(@"status..%@",response);
     if(![lnkd_giftgiv_settings isLinkedInAuthorized]){
         [self stopHUD];
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
-
+-(void) requestFailed{
+    if(![lnkd_giftgiv_settings isLinkedInAuthorized]){
+        [self stopHUD];
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+}
 #pragma mark -
-
-
 - (IBAction)syncActions:(id)sender {
     
     switch ([sender tag]) {
@@ -230,9 +268,6 @@
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
--(void) requestFailed{
-}
-
 - (void)dealloc {
     
     [[fb_giftgiv_settings facebook]setAccessToken:nil];

@@ -230,7 +230,7 @@
 #pragma mark - Add User Request delegate
 -(void) responseForAddUser:(NSMutableDictionary*)response{
     //GGLog(@"add user..%@,%@",response,[[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]);
-    
+    GGLog(@"Received gift giv user...%@",[response objectForKey:@"GiftGivUser"]);
     if([response objectForKey:@"GiftGivUser"]){
         
         [[NSUserDefaults standardUserDefaults]setObject:[response objectForKey:@"GiftGivUser"] forKey:@"MyGiftGivUserId"];

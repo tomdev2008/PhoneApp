@@ -78,8 +78,8 @@ static NSCalendar *gregorian=nil;
                       allowLoginUI:allowLoginUI
                       completionHandler:^(FBSession *session,FBSessionState state,
                                                              NSError *error) {
-                       GGLog(@"error:%@",[error localizedDescription]);
-                       GGLog(@"%d",state);
+                       
+                       
                        [self sessionStateChanged:session state:state error:error];
                       }];
     

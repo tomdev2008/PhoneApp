@@ -13,9 +13,10 @@
 #import "LinkedIn_GiftGiv.h"
 #import "MBProgressHUD.h"
 #import "GetCachesPathForTargetFile.h"
-//#import "Constants.h"
+#import "CoomonRequestCreationObject.h"
+#import "ValidationOfTheTokenRequest.h"
 
-@interface SettingsVC : UIViewController<Facebook_GiftGivDelegate,LinkedIn_GiftGivDelegate,MBProgressHUDDelegate>
+@interface SettingsVC : UIViewController<Facebook_GiftGivDelegate,LinkedIn_GiftGivDelegate,MBProgressHUDDelegate,ValidationOfTheTokenRequestDelegate>
 {
     Facebook_GiftGiv *fb_giftgiv_settings;
     LinkedIn_GiftGiv *lnkd_giftgiv_settings;
