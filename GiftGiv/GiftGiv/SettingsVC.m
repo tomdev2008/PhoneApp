@@ -143,42 +143,46 @@
         case 13:
         {
             [self showProgressHUD:self.view withMsg:nil];
-            if([FBSession activeSession].isOpen||[FBSession activeSession].state == FBSessionStateCreatedTokenLoaded){
-                if([CheckNetwork connectedToNetwork]){
-                    
-                    [fb_giftgiv_settings logoutOfFacebook];
-                    [self stopHUD];
-                }
-                else{
-                    [self stopHUD];
-                    AlertWithMessageAndDelegate(@"GiftGiv", @"Please check your network settings", nil);
-                }
-            }
-            /*else{
-             AlertWithMessageAndDelegate(@"GiftGiv", @"You are already logged out from facebook", nil); 
-             }*/
+            [self performSelector:@selector(performLogoutAction) withObject:nil afterDelay:0.01];
             
-            if([lnkd_giftgiv_settings isLinkedInAuthorized]){
-                
-                [lnkd_giftgiv_settings logOut];
-                
-                [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
-                
-                [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInAccessToken"];
-                [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInSecretKey"];
-                [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInOauthVerifier"];
-                if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
-                    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
-                if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
-                    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
-                }
-               
-                [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"MyLinkedInDetails"];
-                
-            }
         }
             break;
 
+    }
+}
+-(void)performLogoutAction{
+    if([FBSession activeSession].isOpen||[FBSession activeSession].state == FBSessionStateCreatedTokenLoaded){
+        if([CheckNetwork connectedToNetwork]){
+            
+            [fb_giftgiv_settings logoutOfFacebook];
+            [self stopHUD];
+        }
+        else{
+            [self stopHUD];
+            AlertWithMessageAndDelegate(@"GiftGiv", @"Please check your network settings", nil);
+        }
+    }
+    /*else{
+     AlertWithMessageAndDelegate(@"GiftGiv", @"You are already logged out from facebook", nil);
+     }*/
+    
+    if([lnkd_giftgiv_settings isLinkedInAuthorized]){
+        
+        [lnkd_giftgiv_settings logOut];
+        
+        [[UIApplication sharedApplication]setApplicationIconBadgeNumber:0];
+        
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInAccessToken"];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInSecretKey"];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"LinkedInOauthVerifier"];
+        if([[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"])
+            [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AllUpcomingEvents"];
+        if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+            [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
+        }
+        
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"MyLinkedInDetails"];
+        
     }
 }
 - (IBAction)internalLinkActions:(id)sender {

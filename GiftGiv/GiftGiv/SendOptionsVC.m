@@ -117,7 +117,7 @@
         [self refreshTheFormForOption:0];
         
     }
-    [listOfSendOptions addObject:@"SMS recipient for address"];
+    [listOfSendOptions addObject:@"Text recipient for address"];
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(126, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
@@ -323,7 +323,7 @@
                     emailsText.text=@"Please provide recipient's email address. We will send the gift to that address.";
                 }
                 else
-                    emailsText.text=@"We'll send an email to your recipient to securely ask for their mailing address. Don't worry: we won't give away to surprise.";
+                    emailsText.text=@"We'll send an email to your recipient to securely ask for their mailing address. Don't worry: we won't give away the surprise.";
                 
                 recipientemailContentView.frame=CGRectMake(23, 166, 275, 140);
                 [sendOptionsContentScroll addSubview:recipientemailContentView];

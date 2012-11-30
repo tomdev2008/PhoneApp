@@ -359,7 +359,7 @@ static NSCalendar *gregorian=nil;
                                                  newJobSearchStrings=[[NSMutableArray alloc]initWithObjects:@"got job", @"got new job", @"new job" ,nil];
                                              }
                                              if(anniversarySearchStrings==nil){
-                                                 anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"married", @"engaged", @"in a relationship", @"happy anniversary", @"anniversary" ,nil];
+                                                 anniversarySearchStrings=[[NSMutableArray alloc]initWithObjects:@"in a relationship", @"happy anniversary", @"anniversary" ,nil];
                                              }
                                              if(congratsSearchStrings==nil){
                                                  congratsSearchStrings=[[NSMutableArray alloc]initWithObjects:@"congrats", @"Congratulations" ,nil];

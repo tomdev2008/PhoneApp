@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
 #import "CustomPageControl.h"
 #import "ImageAllocationObject.h"
 #import "EventCustomCell.h"
@@ -28,12 +27,12 @@
 #import "AddUser_LinkedInRequest.h"
 #import "LinkedInContactsRequest.h"
 
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate>
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate,UIScrollViewDelegate>
 
 {
     int eventGroupNum;
     int totalGroups;
-    CATransition *tranAnimationForEventGroups;
+   
     MBProgressHUD *HUD;
     UIImage* pageActiveImage;
     UIImage* pageInactiveImage;
@@ -65,21 +64,17 @@
     NSOperationQueue *picturesOperationQueue;
     dispatch_queue_t ImageLoader_Q, ImageLoader_Q_ForEvents;
 }
+@property (retain, nonatomic) IBOutlet UIScrollView *eventsBgScroll;
 @property (retain, nonatomic) IBOutlet UISearchBar *contactsSearchBar;
 @property (retain, nonatomic) IBOutlet UIView *contactsSearchView;
 
-@property (retain, nonatomic) IBOutlet UIView *eventsBgView;
+
 @property (retain, nonatomic) IBOutlet CustomPageControl *pageControlForEventGroups;
-@property (retain, nonatomic) IBOutlet UITableView *eventsTable;
-@property (retain, nonatomic) IBOutlet UILabel *eventTitleLbl;
 
 - (IBAction)settingsAction:(id)sender;
 - (IBAction)showContactUsScreen:(id)sender;
 - (IBAction)pageControlActionForEventGroups:(id)sender;
 - (IBAction)showListOfOrders:(id)sender;
-- (void)swiping:(int)swipeDirectionNum;
-
-- (CATransition *)getAnimationForEventGroup:(NSString *)animationType;
 
 - (void)makeRequestToAddUserForFB:(NSMutableDictionary*)userDetails;
 
@@ -100,4 +95,6 @@
 -(void)makeRequestToLoadImagesUsingOperations:(id)source;
 -(void)checkAndStartOperationToDownloadPicForTheEvent:(NSDictionary*)eventData;
 -(BOOL)checkWhetherLinkedInEventExist:(NSMutableDictionary*)linkedInDict;
+-(NSMutableDictionary*)collectTheDetailsOfSelectedEventFor:(NSMutableDictionary*)sourceDict;
+-(NSMutableDictionary*)collectDetailsToGetEventDetailsForTheSelectedEvent:(NSMutableDictionary*)souceDict;
 @end

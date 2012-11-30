@@ -246,6 +246,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
          */
     }
     
+    
   OADataFetcher* fetcher = [[[OADataFetcher alloc] init] autorelease];	
   [fetcher fetchDataWithRequest:request delegate:self didFinishSelector:successSel didFailSelector:failSel];
 }

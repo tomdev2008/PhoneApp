@@ -29,7 +29,7 @@ static NSString *const kOAuthConsumerSecret  =  @"EP1SkFM3aLchEM2O";// @"hSdUKzt
 #define FacebookPicURL(userid) [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture",userid]
 
 
-#define events_category_1 @"all"
+#define events_category_1 @"all upcoming"
 #define events_category_2 @"birthdays"
 #define events_category_3 @"events to celebrate"
 #define events_category_4 @"celebrate them"
