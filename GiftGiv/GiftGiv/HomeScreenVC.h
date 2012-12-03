@@ -59,15 +59,16 @@
     BOOL isFBContactsLoading;
     BOOL isLnContactsLoading;
     BOOL isCancelledImgOperations;
-    
+    BOOL isSearchSringAvailable;
     NSFileManager *fm;
     NSOperationQueue *picturesOperationQueue;
     dispatch_queue_t ImageLoader_Q, ImageLoader_Q_ForEvents;
+    BOOL eventsPopulated;
 }
 @property (retain, nonatomic) IBOutlet UIScrollView *eventsBgScroll;
 @property (retain, nonatomic) IBOutlet UISearchBar *contactsSearchBar;
 @property (retain, nonatomic) IBOutlet UIView *contactsSearchView;
-
+@property (retain, nonatomic) NSMutableArray *listOfContactsArray;
 
 @property (retain, nonatomic) IBOutlet CustomPageControl *pageControlForEventGroups;
 
@@ -91,6 +92,7 @@
 
 -(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath;
 - (IBAction)showSearchView:(id)sender;
+- (IBAction)cancelTheSearch:(id)sender;
 
 -(void)makeRequestToLoadImagesUsingOperations:(id)source;
 -(void)checkAndStartOperationToDownloadPicForTheEvent:(NSDictionary*)eventData;

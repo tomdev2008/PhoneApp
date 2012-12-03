@@ -13,6 +13,7 @@
 @synthesize contactsSearchBar;
 @synthesize contactsSearchView;
 @synthesize pageControlForEventGroups;
+@synthesize listOfContactsArray;
 
 static NSDateFormatter *customDateFormat=nil;
 
@@ -323,7 +324,7 @@ static NSDateFormatter *customDateFormat=nil;
 -(void) receivedAllEvents:(NSMutableArray*)allEvents{
     
     int eventsCount=[allEvents count];
-    
+    //GGLog(@"Events receied from server..%@",allEvents);
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:eventsCount];
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     
@@ -345,7 +346,7 @@ static NSDateFormatter *customDateFormat=nil;
             NSString *eventType=[[[allEvents objectAtIndex:i]eventType]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             
             //Add events to the respective category/group
-            
+            GGLog(@"Event type..%@",eventType);
             if([eventType isEqualToString:@"Birthday"]){
                 [listOfBirthdayEvents addObject:eventDict];
             }
@@ -499,6 +500,7 @@ static NSDateFormatter *customDateFormat=nil;
     if([categoryTitles count])
         [categoryTitles removeAllObjects];
     
+    
     if([allupcomingEvents count]){
         
         [categoryTitles addObject:events_category_1];
@@ -515,10 +517,12 @@ static NSDateFormatter *customDateFormat=nil;
         totalGroups++;
     }
     if([listOfContactsArray count]){
+        
         [categoryTitles addObject:events_category_4];
         totalGroups++;
+        
     }
-    _eventsBgScroll.contentSize=CGSizeMake(320*totalGroups, _eventsBgScroll.bounds.size.height);
+    _eventsBgScroll.contentSize=CGSizeMake(320*(totalGroups+2), _eventsBgScroll.bounds.size.height);
     if([[_eventsBgScroll subviews] count]){
         for(id subView in [_eventsBgScroll subviews]){
             if([subView isKindOfClass:[UILabel class]] || [subView isKindOfClass:[UITableView class]]){
@@ -526,35 +530,60 @@ static NSDateFormatter *customDateFormat=nil;
             }
         }
     }
-    for(int i=0;i<totalGroups;i++){
-        UILabel *eventHeadingLbl=[[UILabel alloc]initWithFrame:CGRectMake(13+(320*i),8,297,47)];
-        eventHeadingLbl.autoresizesSubviews=UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
-        [eventHeadingLbl setText:[categoryTitles objectAtIndex:i]];
-        [eventHeadingLbl setTextColor:[UIColor colorWithRed:0 green:0.647 blue:0.647 alpha:1.0]];
-        [eventHeadingLbl setFont:[UIFont fontWithName:@"Helvetica-Light" size:27]];
-        [eventHeadingLbl setBackgroundColor:[UIColor clearColor]];
-        eventHeadingLbl.tag=i+1;
-        [_eventsBgScroll addSubview:eventHeadingLbl];
-        [eventHeadingLbl release];
-        
-        UITableView *tempEventsTable=[[UITableView alloc]initWithFrame:CGRectMake(10+(320*i), 59, 300, _eventsBgScroll.bounds.size.height-59)];
-        tempEventsTable.autoresizesSubviews=UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin |UIViewAutoresizingFlexibleRightMargin |UIViewAutoresizingFlexibleBottomMargin |UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [tempEventsTable setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-        tempEventsTable.tag=i+51;
-        [tempEventsTable setDataSource:self];
-        [tempEventsTable setDelegate:self];
-        [_eventsBgScroll addSubview:tempEventsTable];
-        [tempEventsTable release];
+    if(totalGroups>0){
+        eventsPopulated=YES;
+        //int tagIndexForTitle=0;
+        for(int i=0;i<totalGroups;i++){
+            UILabel *eventHeadingLbl=[[UILabel alloc]initWithFrame:CGRectMake(13+(320*(i+1)),8,297,47)];
+            eventHeadingLbl.autoresizesSubviews=UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
+            //GGLog(@"count %d and %d",totalGroups,i);
+           
+            eventHeadingLbl.tag=i+1;
+            [eventHeadingLbl setText:[categoryTitles objectAtIndex:i]];
+            [eventHeadingLbl setTextColor:[UIColor colorWithRed:0 green:0.647 blue:0.647 alpha:1.0]];
+            [eventHeadingLbl setFont:[UIFont fontWithName:@"Helvetica-Light" size:27]];
+            [eventHeadingLbl setBackgroundColor:[UIColor clearColor]];
+            
+            
+            [_eventsBgScroll addSubview:eventHeadingLbl];
+            [eventHeadingLbl release];
+            
+            UITableView *tempEventsTable=[[UITableView alloc]initWithFrame:CGRectMake(10+(320*(i+1)), 59, 300, _eventsBgScroll.bounds.size.height-59)];
+            tempEventsTable.autoresizesSubviews=UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin |UIViewAutoresizingFlexibleRightMargin |UIViewAutoresizingFlexibleBottomMargin |UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            [tempEventsTable setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+            
+            
+            tempEventsTable.tag=i+51;
+            
+            [tempEventsTable setDataSource:self];
+            [tempEventsTable setDelegate:self];
+            [_eventsBgScroll addSubview:tempEventsTable];
+            [tempEventsTable release];
+        }
     }
-    
-    
     pageControlForEventGroups.numberOfPages=totalGroups;
     if(totalGroups==1)
         eventGroupNum=1;
+    if(totalGroups==1 && [[categoryTitles objectAtIndex:0] isEqualToString:events_category_4]){
+        contactsSearchView.frame=CGRectMake(0, 0, 320, 44);
+        if(![contactsSearchView superview]){
+            
+            [self.view addSubview:contactsSearchView];
+        }
+        [contactsSearchBar becomeFirstResponder];
+    }
+    if(!eventsPopulated){
+        [_eventsBgScroll scrollRectToVisible:CGRectMake(320,0,320,416) animated:NO];
+        
+    }
+    if([listOfContactsArray count]){
+        pageControlForEventGroups.currentPage=eventGroupNum;
+    }
+    else
+        pageControlForEventGroups.currentPage=eventGroupNum-1;
     
     
     
-    pageControlForEventGroups.currentPage=eventGroupNum-1;
     
 }
 #pragma mark - Transition
@@ -817,7 +846,6 @@ static NSDateFormatter *customDateFormat=nil;
         if(tableView.tag==51)
         {
             NSMutableDictionary *tempInfoDict=[self collectTheDetailsOfSelectedEvent:[allupcomingEvents objectAtIndex:indexPath.row]];
-            //GGLog(@"%@",tempInfoDict);
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
             
         }
@@ -826,7 +854,6 @@ static NSDateFormatter *customDateFormat=nil;
         if(tableView.tag==52)
         {
             NSMutableDictionary *tempInfoDict=[self collectTheDetailsOfSelectedEvent:[listOfBirthdayEvents objectAtIndex:indexPath.row]];
-            //GGLog(@"%@",tempInfoDict);
             [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
                   
         }
@@ -836,7 +863,6 @@ static NSDateFormatter *customDateFormat=nil;
             if(tableView.tag==53)
             {
                 NSMutableDictionary *tempInfoDict=[self collectTheDetailsOfSelectedEvent:[eventsToCelebrateArray objectAtIndex:indexPath.row]];
-                //GGLog(@"%@",tempInfoDict);
                 [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
                 
             }
@@ -846,7 +872,6 @@ static NSDateFormatter *customDateFormat=nil;
             if(tableView.tag==52)
             {
                 NSMutableDictionary *tempInfoDict=[self collectTheDetailsOfSelectedEvent:[eventsToCelebrateArray objectAtIndex:indexPath.row]];
-                //GGLog(@"%@",tempInfoDict);
                 [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
                 
             }
@@ -858,7 +883,6 @@ static NSDateFormatter *customDateFormat=nil;
                 if(tableView.tag==53){
                     {
                         NSMutableDictionary *tempInfoDict=[self collectTheDetailsOfSelectedEvent:[searchContactsArray objectAtIndex:indexPath.row]];
-                        //GGLog(@"%@",tempInfoDict);
                         [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
                         
                     }
@@ -868,7 +892,6 @@ static NSDateFormatter *customDateFormat=nil;
                 if(tableView.tag==54)
                 {
                     NSMutableDictionary *tempInfoDict=[self collectTheDetailsOfSelectedEvent:[searchContactsArray objectAtIndex:indexPath.row]];
-                    //GGLog(@"%@",tempInfoDict);
                     [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
                     
                 }
@@ -878,7 +901,6 @@ static NSDateFormatter *customDateFormat=nil;
             if(tableView.tag==51)
             {
                 NSMutableDictionary *tempInfoDict=[self collectTheDetailsOfSelectedEvent:[searchContactsArray objectAtIndex:indexPath.row]];
-                //GGLog(@"%@",tempInfoDict);
                 [[NSUserDefaults standardUserDefaults]setObject:tempInfoDict forKey:@"SelectedEventDetails"];
                 
             }
@@ -929,14 +951,6 @@ static NSDateFormatter *customDateFormat=nil;
     if([listOfContactsArray count]&& eventGroupNum!=totalGroups){
         
         eventGroupNum=totalGroups;
-        pageControlForEventGroups.currentPage=eventGroupNum-1;
-                
-        GGLog(@"updated page control number..%d",eventGroupNum);
-        CGRect frame = _eventsBgScroll.frame;
-        frame.origin.x = frame.size.width * pageControlForEventGroups.currentPage;
-        frame.origin.y = 0;
-        [_eventsBgScroll scrollRectToVisible:frame animated:YES];
-        
         
         contactsSearchView.frame=CGRectMake(0, 0, 320, 44);
         if(![contactsSearchView superview]){
@@ -945,22 +959,32 @@ static NSDateFormatter *customDateFormat=nil;
         }
         [contactsSearchBar becomeFirstResponder];
         
+        pageControlForEventGroups.currentPage=eventGroupNum;
+                
+        GGLog(@"updated page control number..%d",eventGroupNum);
+        CGRect frame = _eventsBgScroll.frame;
+        frame.origin.x = frame.size.width *( pageControlForEventGroups.currentPage+1);
+        frame.origin.y = 0;
+        [_eventsBgScroll scrollRectToVisible:frame animated:YES];
+        
+        
     }
     
     
     
 }
 
-
-/*- (IBAction)searchCancelAction:(id)sender {
-    [searchBar resignFirstResponder];
-    searchBar.text=@"";
-    [searchBgView removeFromSuperview];
-    isSearchEnabled=NO;
-    [self performSelector:@selector(checkTotalNumberOfGroups)];
+- (IBAction)cancelTheSearch:(id)sender {
+    [contactsSearchBar setText:@""];
+    [contactsSearchBar resignFirstResponder];
+    if([searchContactsArray count])
+        [searchContactsArray removeAllObjects];
     
-    [eventsTable reloadData];
-}*/
+    [(UITableView*)[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews]count]-1] reloadData];
+    [_eventsBgScroll scrollRectToVisible:CGRectMake(320,_eventsBgScroll.frame.origin.y ,320,339) animated:NO];
+    pageControlForEventGroups.currentPage=1;
+}
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar_1{
     
     [contactsSearchBar resignFirstResponder];
@@ -978,9 +1002,13 @@ static NSDateFormatter *customDateFormat=nil;
     if([contactsSearchBar.text isEqualToString:@""]){
         if([searchContactsArray count])
             [searchContactsArray removeAllObjects];
+//        isSearchSringAvailable=NO;
+//        [self checkTotalNumberOfGroups];
     }
     if([listOfContactsArray count]){
         [searchContactsArray removeAllObjects];
+//        isSearchSringAvailable=YES;
+//        [self checkTotalNumberOfGroups];
         for (NSMutableDictionary *event in listOfContactsArray)
         {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:
@@ -998,7 +1026,6 @@ static NSDateFormatter *customDateFormat=nil;
                 }
             }
             else{
-                //GGLog(@"name.. %@,%@",[event objectForKey:@"name"],searchText);
                 [[event objectForKey:@"name"] compare:contactsSearchBar.text options:NSCaseInsensitiveSearch];
                 BOOL resultName = [predicate evaluateWithObject:[event objectForKey:@"name"]];
                 if(resultName)
@@ -1032,9 +1059,8 @@ static NSDateFormatter *customDateFormat=nil;
         }
     }
     
-    
-    [(UITableView*)[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews]count]-1] reloadData];
-    
+    if([[_eventsBgScroll subviews]count])
+        [(UITableView*)[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews]count]-1] reloadData];
 }
 
 #pragma mark - EventDetails
@@ -1044,7 +1070,6 @@ static NSDateFormatter *customDateFormat=nil;
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     }
-    GGLog(@"event group num..%d",eventGroupNum);
     
     if(eventGroupNum==1){
         
@@ -1131,35 +1156,101 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma mark - Pagecontrol
 - (IBAction)pageControlActionForEventGroups:(id)sender {
-    
-    //if(currentiOSVersion<6.0){
-        for (int i = 0; i < [pageControlForEventGroups.subviews count]; i++)
-        {
+        
+    for (int i = 0; i < [pageControlForEventGroups.subviews count]; i++)
+    {
+        /*UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
+         if (i == pageControlForEventGroups.currentPage)
+         dot.image = pageActiveImage;
+         else
+         dot.image = pageInactiveImage;*/
+        if(i==0 && [listOfContactsArray count]){
+            UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
+            if (i == pageControlForEventGroups.currentPage){
+                dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+                dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
+            }
+            else{
+                dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+                dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
+            }
+            
+            
+        }
+        else{
             UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
             if (i == pageControlForEventGroups.currentPage)
                 dot.image = pageActiveImage;
             else
                 dot.image = pageInactiveImage;
         }
-    //}
-    eventGroupNum=pageControlForEventGroups.currentPage+1;
-    GGLog(@"updated page control number..%d",eventGroupNum);
+    }
+    //GGLog(@"Before..%d,%d",eventGroupNum,pageControlForEventGroups.currentPage);
+    /*if(pageControlForEventGroups.currentPage==totalGroups && [listOfContactsArray count]){
+        eventGroupNum=totalGroups;
+        pageControlForEventGroups.currentPage=0;
+    }
+    else if(pageControlForEventGroups.currentPage!=totalGroups && [listOfContactsArray count]){
+        
+        pageControlForEventGroups.currentPage=pageControlForEventGroups.currentPage;
+        eventGroupNum=pageControlForEventGroups.currentPage;
+    }
+    else
+        eventGroupNum=pageControlForEventGroups.currentPage+1;*/
+    //GGLog(@"After...%d,%d",eventGroupNum,pageControlForEventGroups.currentPage);
     CGRect frame = _eventsBgScroll.frame;
-    frame.origin.x = frame.size.width * pageControlForEventGroups.currentPage;
+    frame.origin.y = 0;
+    if([listOfContactsArray count]){
+        GGLog(@"before...%d,%d",eventGroupNum,pageControlForEventGroups.currentPage);
+        //pageControlForEventGroups.currentPage=pageControlForEventGroups.currentPage+1;
+        if(pageControlForEventGroups.currentPage==0){
+            eventGroupNum=totalGroups;
+            frame.origin.x = frame.size.width * (totalGroups);
+            [_eventsBgScroll scrollRectToVisible:frame animated:NO];
+            return;
+        }
+        else
+            frame.origin.x = frame.size.width * (pageControlForEventGroups.currentPage);
+    }
+    else
+        frame.origin.x = frame.size.width * (pageControlForEventGroups.currentPage+1);
     frame.origin.y = 0;
     [_eventsBgScroll scrollRectToVisible:frame animated:YES];
     
     
 }
-
-- (void)scrollViewDidScroll:(UIScrollView *)sender{
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    //GGLog(@"content offset %f",_eventsBgScroll.contentOffset.x);
+    if (_eventsBgScroll.contentOffset.x == 0) {
+		// user is scrolling to the left from view 1 to view 4
+		// reposition offset to show view 4 that is on the right in the scroll view
+		[_eventsBgScroll scrollRectToVisible:CGRectMake(320*totalGroups,_eventsBgScroll.frame.origin.y ,320,339) animated:NO];
+	}
+	else if (_eventsBgScroll.contentOffset.x == 320*(totalGroups+1)) {
+		// user is scrolling to the right from view 4 to view 1
+		// reposition offset to show view 1 that is on the left in the scroll view
+		[_eventsBgScroll scrollRectToVisible:CGRectMake(320,_eventsBgScroll.frame.origin.y,320,339) animated:NO];
+	}
     
+
+}
+- (void)scrollViewDidScroll:(UIScrollView *)sender{
+    // The key is repositioning without animation
     if([sender isEqual:_eventsBgScroll]){
         CGFloat pageWidth = sender.frame.size.width;
-        int pagenum = floor((sender.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
-        pageControlForEventGroups.currentPage = pagenum;
-        eventGroupNum=pageControlForEventGroups.currentPage+1;
-        
+        int pagenum = floor((sender.contentOffset.x - pageWidth / 2) / pageWidth);
+        if(pagenum==totalGroups-1 && [listOfContactsArray count]){
+            pageControlForEventGroups.currentPage=0;
+            eventGroupNum=totalGroups;
+        }
+        else if(pagenum!=totalGroups-1 && [listOfContactsArray count]){
+            pageControlForEventGroups.currentPage = pagenum+1;
+            eventGroupNum=pageControlForEventGroups.currentPage;
+        }
+        else{
+            pageControlForEventGroups.currentPage = pagenum;
+            eventGroupNum=pageControlForEventGroups.currentPage+1;
+        }
         if(eventGroupNum!=totalGroups){
             
             if([contactsSearchView superview]){
@@ -1171,10 +1262,17 @@ static NSDateFormatter *customDateFormat=nil;
                 
                 [searchContactsArray removeAllObjects];
             }
-            [(UITableView*)[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews] count]-1] reloadData];
+            if([[_eventsBgScroll subviews]count])
+                [(UITableView*)[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews] count]-1] reloadData];
             
         }
         else if(eventGroupNum==totalGroups && [listOfContactsArray count]){
+            contactsSearchView.frame=CGRectMake(0, 0, 320, 44);
+            if(![contactsSearchView superview]){
+                
+                [self.view addSubview:contactsSearchView];
+            }
+            [contactsSearchBar becomeFirstResponder];
             int tagNum=[[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews] count]-1] tag];
             int tagForHeader=tagNum%10;
             
@@ -1183,12 +1281,7 @@ static NSDateFormatter *customDateFormat=nil;
             else{
                 [(UILabel*)[_eventsBgScroll viewWithTag:tagForHeader] setText:@""];
             }
-            contactsSearchView.frame=CGRectMake(0, 0, 320, 44);
-            if(![contactsSearchView superview]){
-                
-                [self.view addSubview:contactsSearchView];
-            }
-            [contactsSearchBar becomeFirstResponder];
+            
         }
     }
     

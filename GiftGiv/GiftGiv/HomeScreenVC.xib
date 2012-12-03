@@ -323,6 +323,7 @@
 								<string key="NSFrame">{{263, 27}, {42, 21}}</string>
 								<reference key="NSSuperview" ref="276226491"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -399,19 +400,46 @@
 				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<array class="NSMutableArray" key="NSSubviews">
-					<object class="IBUISearchBar" id="1065023636">
+					<object class="IBUIToolbar" id="574549443">
 						<reference key="NSNextResponder" ref="593607541"/>
-						<int key="NSvFlags">290</int>
-						<string key="NSFrameSize">{320, 44}</string>
+						<int key="NSvFlags">266</int>
+						<string key="NSFrame">{{0, -1}, {320, 44}}</string>
 						<reference key="NSSuperview" ref="593607541"/>
 						<reference key="NSWindow"/>
-						<int key="IBUIContentMode">3</int>
+						<string key="NSReuseIdentifierKey">_NS:9</string>
+						<bool key="IBUIOpaque">NO</bool>
+						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBPlaceholder">search friends to celebrate</string>
-						<object class="NSColor" key="IBTintColor">
+						<array class="NSMutableArray" key="IBUIItems">
+							<object class="IBUIBarButtonItem" id="101448013">
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<float key="IBUIWidth">243</float>
+								<reference key="IBUIToolbar" ref="574549443"/>
+								<int key="IBUISystemItemIdentifier">6</int>
+							</object>
+							<object class="IBUIBarButtonItem" id="605281322">
+								<string key="IBUITitle">Cancel</string>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIStyle">1</int>
+								<reference key="IBUIToolbar" ref="574549443"/>
+							</object>
+						</array>
+						<object class="NSColor" key="IBUITintColor" id="391655911">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MCAwLjY3MDU4ODIzNTMgMC42NjI3NDUwOTgAA</bytes>
 						</object>
+					</object>
+					<object class="IBUISearchBar" id="1065023636">
+						<reference key="NSNextResponder" ref="593607541"/>
+						<int key="NSvFlags">290</int>
+						<string key="NSFrameSize">{253, 44}</string>
+						<reference key="NSSuperview" ref="593607541"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
+						<int key="IBUIContentMode">3</int>
+						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+						<string key="IBPlaceholder">search friends to celebrate</string>
+						<reference key="IBTintColor" ref="391655911"/>
 						<object class="IBUITextInputTraits" key="IBTextInputTraits">
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						</object>
@@ -535,6 +563,14 @@
 					</object>
 					<int key="connectionID">84</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">cancelTheSearch:</string>
+						<reference key="source" ref="605281322"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">93</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -590,13 +626,9 @@
 						<reference key="object" ref="593607541"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="1065023636"/>
+							<reference ref="574549443"/>
 						</array>
 						<reference key="parent" ref="0"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">61</int>
-						<reference key="object" ref="1065023636"/>
-						<reference key="parent" ref="593607541"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">67</int>
@@ -677,6 +709,30 @@
 						<reference key="object" ref="126655087"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">85</int>
+						<reference key="object" ref="574549443"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="605281322"/>
+							<reference ref="101448013"/>
+						</array>
+						<reference key="parent" ref="593607541"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">86</int>
+						<reference key="object" ref="605281322"/>
+						<reference key="parent" ref="574549443"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">61</int>
+						<reference key="object" ref="1065023636"/>
+						<reference key="parent" ref="593607541"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">92</int>
+						<reference key="object" ref="101448013"/>
+						<reference key="parent" ref="574549443"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -703,13 +759,16 @@
 				<string key="76.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="81.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="82.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="85.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="86.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="9.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="92.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">84</int>
+			<int key="maxID">93</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -725,6 +784,7 @@
 					<string key="className">HomeScreenVC</string>
 					<string key="superclassName">UIViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="cancelTheSearch:">id</string>
 						<string key="pageControlActionForEventGroups:">id</string>
 						<string key="settingsAction:">id</string>
 						<string key="showContactUsScreen:">id</string>
@@ -732,6 +792,10 @@
 						<string key="showSearchView:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="cancelTheSearch:">
+							<string key="name">cancelTheSearch:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="pageControlActionForEventGroups:">
 							<string key="name">pageControlActionForEventGroups:</string>
 							<string key="candidateClassName">id</string>
@@ -756,10 +820,7 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="contactsSearchBar">UISearchBar</string>
 						<string key="contactsSearchView">UIView</string>
-						<string key="eventTitleLbl">UILabel</string>
 						<string key="eventsBgScroll">UIScrollView</string>
-						<string key="eventsBgView">UIView</string>
-						<string key="eventsTable">UITableView</string>
 						<string key="pageControlForEventGroups">CustomPageControl</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -771,21 +832,9 @@
 							<string key="name">contactsSearchView</string>
 							<string key="candidateClassName">UIView</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="eventTitleLbl">
-							<string key="name">eventTitleLbl</string>
-							<string key="candidateClassName">UILabel</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="eventsBgScroll">
 							<string key="name">eventsBgScroll</string>
 							<string key="candidateClassName">UIScrollView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="eventsBgView">
-							<string key="name">eventsBgView</string>
-							<string key="candidateClassName">UIView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="eventsTable">
-							<string key="name">eventsTable</string>
-							<string key="candidateClassName">UITableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="pageControlForEventGroups">
 							<string key="name">pageControlForEventGroups</string>
