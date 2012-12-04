@@ -18,4 +18,5 @@
 @property (retain, nonatomic) IBOutlet UILabel *giftPrice_two;
 @property (retain, nonatomic) IBOutlet UIImageView *giftImg_one;
 @property (retain, nonatomic) IBOutlet UIImageView *giftImg_two;
+@property NSInteger tableTagForCell;
 @end

@@ -126,7 +126,6 @@ static NSDateFormatter *customDateFormat=nil;
         
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
-        //[eventsTable reloadData];
         if([FBSession activeSession].isOpen||[FBSession activeSession].state == FBSessionStateCreatedTokenLoaded){
             //If the UserId (referred in giftgiv server) is available, then get the events and contacts from our server.
             if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
@@ -181,7 +180,6 @@ static NSDateFormatter *customDateFormat=nil;
         
     }
     
-    //[eventsTable reloadData];
     [super viewWillAppear:YES];
 }
 -(void)receivedGiftGivUserId{
@@ -437,14 +435,7 @@ static NSDateFormatter *customDateFormat=nil;
                         [(UITableView*)subview reloadData];
                     }
                 }
-                /*NSArray *tableCells=[eventsTable visibleCells];
-                //Reload only a particular cell which we received the image/profile picture
-                for(int i=0; i<[tableCells count];i++ ){
-                    if([[(EventCustomCell*)[tableCells objectAtIndex:i] profileId] isEqualToString:[NSString stringWithFormat:@"%@",[picDetails objectForKey:@"profile_id"]]]){
-                        NSIndexPath *indexPath=[eventsTable indexPathForCell:(EventCustomCell*)[tableCells objectAtIndex:i]];
-                        [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                    }
-                }*/
+                
                 
             });
         }
@@ -1038,24 +1029,24 @@ static NSDateFormatter *customDateFormat=nil;
             }
             
         }
-        int tagNum=[[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews] count]-1] tag];
-        int tagForHeader=tagNum%10;
+        //int tagNum=[[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews] count]-1] tag];
+        //int tagForHeader=tagNum%10;
         
         if([searchContactsArray count]){
             
-            if([[_eventsBgScroll viewWithTag:tagForHeader] isKindOfClass:[UIButton class]]){
+            /*if([[_eventsBgScroll viewWithTag:tagForHeader] isKindOfClass:[UIButton class]]){
                 [(UIButton*)[_eventsBgScroll viewWithTag:tagForHeader]setTitle:[categoryTitles objectAtIndex:totalGroups-1] forState:UIControlStateNormal];
             }
             else
-                [(UILabel*)[_eventsBgScroll viewWithTag:tagForHeader] setText:[categoryTitles objectAtIndex:totalGroups-1]];
+                [(UILabel*)[_eventsBgScroll viewWithTag:tagForHeader] setText:[categoryTitles objectAtIndex:totalGroups-1]];*/
         }
         else
         {
-            if([[_eventsBgScroll viewWithTag:tagForHeader] isKindOfClass:[UIButton class]]){
+            /*if([[_eventsBgScroll viewWithTag:tagForHeader] isKindOfClass:[UIButton class]]){
                 [(UIButton*)[_eventsBgScroll viewWithTag:tagForHeader]setTitle:@"" forState:UIControlStateNormal];
             }
             else
-                [(UILabel*)[_eventsBgScroll viewWithTag:tagForHeader] setText:@""];
+                [(UILabel*)[_eventsBgScroll viewWithTag:tagForHeader] setText:@""];*/
         }
     }
     
@@ -1273,14 +1264,14 @@ static NSDateFormatter *customDateFormat=nil;
                 [self.view addSubview:contactsSearchView];
             }
             [contactsSearchBar becomeFirstResponder];
-            int tagNum=[[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews] count]-1] tag];
+            /*int tagNum=[[[_eventsBgScroll subviews] objectAtIndex:[[_eventsBgScroll subviews] count]-1] tag];
             int tagForHeader=tagNum%10;
             
             if([[_eventsBgScroll viewWithTag:tagForHeader] isKindOfClass:[UIButton class]])
                 [(UIButton*)[_eventsBgScroll viewWithTag:tagForHeader] setTitle:@"" forState:UIControlStateNormal];
             else{
                 [(UILabel*)[_eventsBgScroll viewWithTag:tagForHeader] setText:@""];
-            }
+            }*/
             
         }
     }
@@ -1727,7 +1718,6 @@ static NSDateFormatter *customDateFormat=nil;
         if([eventsToCelebrateArray count]>1)
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
         
-        //[eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
         [self makeRequestToLoadImagesUsingOperations:eventDetails];
     }
@@ -1802,7 +1792,6 @@ static NSDateFormatter *customDateFormat=nil;
         if([eventsToCelebrateArray count]>1)
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
         
-        //[eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
         [self makeRequestToLoadImagesUsingOperations:eventDetails];
         
@@ -1958,7 +1947,6 @@ static NSDateFormatter *customDateFormat=nil;
 }
 - (void)linkedInDidRequestFailed{
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-    [self stopHUD];
 }
 - (void)receivedLinkedInNewEvent:(NSMutableDictionary*)result{
     
@@ -1994,7 +1982,6 @@ static NSDateFormatter *customDateFormat=nil;
             [self sortEvents:allupcomingEvents eventCategory:1];
         if([eventsToCelebrateArray count]>1)
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
-        //[eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
         [self makeRequestToLoadImagesUsingOperations:linkedInEvent];
         
@@ -2050,7 +2037,7 @@ static NSDateFormatter *customDateFormat=nil;
 -(void) requestFailed{
     //AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-    [self stopHUD];
+    
 }
 -(void)logoutFromAllAccounts{
     
@@ -2061,34 +2048,6 @@ static NSDateFormatter *customDateFormat=nil;
     [picturesOperationQueue cancelAllOperations];
     //[eventProfilePicOpQueue cancelAllOperations];
     isCancelledImgOperations=YES;
-}
-#pragma mark - ProgressHUD methods
-
-- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr
-{
-	HUD = [[MBProgressHUD alloc] initWithView:targetView];
-	
-	// Add HUD to screen
-	[targetView addSubview:HUD];
-	
-	// Regisete for HUD callbacks so we can remove it from the window at the right time
-	HUD.delegate = self;
-	
-	HUD.labelText=titleStr;
-	
-	// Show the HUD while the provided method executes in a new thread
-	[HUD show:YES];
-	
-}
-- (void)stopHUD{
-    if (![HUD isHidden]) {
-        [HUD setHidden:YES];
-    }
-}
-- (void)hudWasHidden:(MBProgressHUD *)hud
-{
-	[HUD removeFromSuperview];
-	HUD=nil;
 }
 #pragma mark -
 - (void)viewDidUnload

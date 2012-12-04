@@ -17,6 +17,7 @@
 @synthesize giftPrice_two;
 @synthesize giftImg_one;
 @synthesize giftImg_two;
+@synthesize tableTagForCell;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

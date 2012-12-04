@@ -19,12 +19,11 @@
 #import "UIImage+scaling.h"
 #import "GetCachesPathForTargetFile.h"
 
-@interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate,UISearchBarDelegate>{
+@interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,UITableViewDataSource,UITableViewDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate,UISearchBarDelegate>{
     
     int giftCatNum;
     int totalCats;
     MBProgressHUD *HUD;
-    CATransition *tranAnimationForGiftCategories;
     UIImage* pageActiveImage;
     UIImage* pageInactiveImage;
     NSMutableArray *giftCategoriesList;
@@ -36,22 +35,16 @@
 
 @property (retain, nonatomic) IBOutlet UISearchBar *searchFld;
 @property (retain, nonatomic) IBOutlet UIView *searchGiftsBgView;
-@property (retain, nonatomic) IBOutlet UILabel *categoryTitleLbl;
-@property (retain, nonatomic) IBOutlet UIView *giftItemsBgView;
-
 @property (retain, nonatomic) IBOutlet UIImageView *profilePicImg;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;
 @property (retain, nonatomic) IBOutlet UILabel *eventNameLbl;
-@property (retain, nonatomic) IBOutlet UITableView *giftsTable;
 @property (retain, nonatomic) IBOutlet CustomPageControl *giftCategoryPageControl;
+@property (retain, nonatomic) IBOutlet UIScrollView *giftsBgScroll;
 
+- (IBAction)cancelTheSearch:(id)sender;
 
 - (IBAction)backToEvents:(id)sender;
 - (IBAction)giftCategoriesPaeControlAction:(id)sender;
-
-- (void)swipingForGiftCategories:(int)swipeDirectionNum;
-
-- (CATransition *)getAnimationForGiftCategories:(NSString *)animationType;
 
 - (void)makeRequestToGetCategories;
 
@@ -60,7 +53,8 @@
 - (void) stopHUD;
 #pragma mark -
 
--(void)loadCurrentGiftItemsForCategory :(NSString*)categoryId;
+-(void)loadCurrentGiftItemsRespectiveToCategory;
 -(BOOL)checkWhetherGiftItemsAvailableInACategory:(NSString*)categoryId;
 -(int)getTheGCDFirstNum:(int)width secondNum:(int)height;
+
 @end

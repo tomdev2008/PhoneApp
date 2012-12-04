@@ -19,7 +19,6 @@
 #import "CoomonRequestCreationObject.h"
 #import "CustomDateDisplay.h"
 #import "OrderHistoryListVC.h"
-#import "MBProgressHUD.h"
 #import "GetEventsRequest.h"
 #import "FacebookContactsReq.h"
 #import "LinkedIn_GiftGiv.h"
@@ -27,13 +26,13 @@
 #import "AddUser_LinkedInRequest.h"
 #import "LinkedInContactsRequest.h"
 
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,MBProgressHUDDelegate,GetEventsDelegate,UISearchBarDelegate,FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate,UIScrollViewDelegate>
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,GetEventsDelegate,UISearchBarDelegate, FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate,UIScrollViewDelegate>
 
 {
     int eventGroupNum;
     int totalGroups;
    
-    MBProgressHUD *HUD;
+   
     UIImage* pageActiveImage;
     UIImage* pageInactiveImage;
     
@@ -85,10 +84,6 @@
 
 - (void)storeAllupcomingsForSuccessScreen;
 
-#pragma mark - Progress HUD
-- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
-- (void) stopHUD;
-#pragma mark -
 
 -(void)loadEventsData:(NSMutableArray*)sourceArray withCell:(EventCustomCell*)cell inTable:(UITableView*)table forIndexPath:(NSIndexPath*)indexPath;
 - (IBAction)showSearchView:(id)sender;
@@ -97,6 +92,11 @@
 -(void)makeRequestToLoadImagesUsingOperations:(id)source;
 -(void)checkAndStartOperationToDownloadPicForTheEvent:(NSDictionary*)eventData;
 -(BOOL)checkWhetherLinkedInEventExist:(NSMutableDictionary*)linkedInDict;
--(NSMutableDictionary*)collectTheDetailsOfSelectedEventFor:(NSMutableDictionary*)sourceDict;
+
+//Selected the event to go for GiftOptions page
+-(NSMutableDictionary*)collectTheDetailsOfSelectedEvent:(NSMutableDictionary*)sourceDict;
+
+//Get the event details for the selected event
 -(NSMutableDictionary*)collectDetailsToGetEventDetailsForTheSelectedEvent:(NSMutableDictionary*)souceDict;
+
 @end

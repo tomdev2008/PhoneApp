@@ -24,7 +24,8 @@
 {
     AppDelegate *appdel=[[UIApplication sharedApplication]delegate];
     UIViewController *currentVC = appdel.navController.visibleViewController;
-    BOOL shouldShowSearchIconInHomeScreen,isHomeScreen;
+    BOOL shouldShowSearchIconInHomeScreen=NO;
+    BOOL isHomeScreen=NO;
     if([currentVC isMemberOfClass:NSClassFromString(@"HomeScreenVC")]){
         isHomeScreen=YES;
         if([[currentVC listOfContactsArray] count]){
