@@ -203,7 +203,7 @@
 					</object>
 					<object class="IBUIScrollView" id="854320056">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">268</int>
+						<int key="NSvFlags">272</int>
 						<string key="NSFrame">{{0, 92}, {320, 343}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
@@ -617,22 +617,15 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="categoryTitleLbl">UILabel</string>
 						<string key="eventNameLbl">UILabel</string>
 						<string key="giftCategoryPageControl">CustomPageControl</string>
-						<string key="giftItemsBgView">UIView</string>
 						<string key="giftsBgScroll">UIScrollView</string>
-						<string key="giftsTable">UITableView</string>
 						<string key="profileNameLbl">UILabel</string>
 						<string key="profilePicImg">UIImageView</string>
 						<string key="searchFld">UISearchBar</string>
 						<string key="searchGiftsBgView">UIView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="categoryTitleLbl">
-							<string key="name">categoryTitleLbl</string>
-							<string key="candidateClassName">UILabel</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="eventNameLbl">
 							<string key="name">eventNameLbl</string>
 							<string key="candidateClassName">UILabel</string>
@@ -641,17 +634,9 @@
 							<string key="name">giftCategoryPageControl</string>
 							<string key="candidateClassName">CustomPageControl</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="giftItemsBgView">
-							<string key="name">giftItemsBgView</string>
-							<string key="candidateClassName">UIView</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="giftsBgScroll">
 							<string key="name">giftsBgScroll</string>
 							<string key="candidateClassName">UIScrollView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="giftsTable">
-							<string key="name">giftsTable</string>
-							<string key="candidateClassName">UITableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="profileNameLbl">
 							<string key="name">profileNameLbl</string>
