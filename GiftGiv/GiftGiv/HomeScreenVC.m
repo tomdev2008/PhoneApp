@@ -305,7 +305,7 @@ static NSDateFormatter *customDateFormat=nil;
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:GetEvents>\n<tem:userId>%@</tem:userId>\n<tem:typeEventList>Display</tem:typeEventList>\n</tem:GetEvents>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"]];
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        //GGLog(@"events request..%@",soapRequestString);
+        GGLog(@"events request..%@",soapRequestString);
         NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetEvents"];
         
         GetEventsRequest *getEvents=[[GetEventsRequest alloc]init];
@@ -322,7 +322,7 @@ static NSDateFormatter *customDateFormat=nil;
 -(void) receivedAllEvents:(NSMutableArray*)allEvents{
     
     int eventsCount=[allEvents count];
-    //GGLog(@"Events receied from server..%@",allEvents);
+    GGLog(@"Events receied from server..%@",allEvents);
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:eventsCount];
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     
@@ -470,13 +470,7 @@ static NSDateFormatter *customDateFormat=nil;
             
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 
-                /*NSArray *tableCells=[eventsTable visibleCells];
-                for(int i=0; i<[tableCells count];i++ ){
-                    if([[(EventCustomCell*)[tableCells objectAtIndex:i] profileId] isEqualToString:[NSString stringWithFormat:@"%@",[picDetails objectForKey:@"profile_id"]]]){
-                        NSIndexPath *indexPath=[eventsTable indexPathForCell:(EventCustomCell*)[tableCells objectAtIndex:i]];
-                        [eventsTable reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                    }
-                }*/
+                
                 
             });
         }
@@ -1150,19 +1144,17 @@ static NSDateFormatter *customDateFormat=nil;
         
     for (int i = 0; i < [pageControlForEventGroups.subviews count]; i++)
     {
-        /*UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
-         if (i == pageControlForEventGroups.currentPage)
-         dot.image = pageActiveImage;
-         else
-         dot.image = pageInactiveImage;*/
+        
         if(i==0 && [listOfContactsArray count]){
             UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 10, 10);
+            
             if (i == pageControlForEventGroups.currentPage){
-                dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+                
                 dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
             }
             else{
-                dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+                
                 dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
             }
             
@@ -1170,30 +1162,19 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else{
             UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
             if (i == pageControlForEventGroups.currentPage)
                 dot.image = pageActiveImage;
             else
                 dot.image = pageInactiveImage;
         }
     }
-    //GGLog(@"Before..%d,%d",eventGroupNum,pageControlForEventGroups.currentPage);
-    /*if(pageControlForEventGroups.currentPage==totalGroups && [listOfContactsArray count]){
-        eventGroupNum=totalGroups;
-        pageControlForEventGroups.currentPage=0;
-    }
-    else if(pageControlForEventGroups.currentPage!=totalGroups && [listOfContactsArray count]){
-        
-        pageControlForEventGroups.currentPage=pageControlForEventGroups.currentPage;
-        eventGroupNum=pageControlForEventGroups.currentPage;
-    }
-    else
-        eventGroupNum=pageControlForEventGroups.currentPage+1;*/
-    //GGLog(@"After...%d,%d",eventGroupNum,pageControlForEventGroups.currentPage);
+    
     CGRect frame = _eventsBgScroll.frame;
     frame.origin.y = 0;
     if([listOfContactsArray count]){
         GGLog(@"before...%d,%d",eventGroupNum,pageControlForEventGroups.currentPage);
-        //pageControlForEventGroups.currentPage=pageControlForEventGroups.currentPage+1;
+      
         if(pageControlForEventGroups.currentPage==0){
             eventGroupNum=totalGroups;
             frame.origin.x = frame.size.width * (totalGroups);
@@ -1546,7 +1527,7 @@ static NSDateFormatter *customDateFormat=nil;
         [self sortEvents:allupcomingEvents eventCategory:1];
     if([listOfBirthdayEvents count]>1)
         [self sortEvents:listOfBirthdayEvents eventCategory:2];
-    //[eventsTable reloadData];
+
     [self storeAllupcomingsForSuccessScreen];
     [self makeRequestToLoadImagesUsingOperations:eventDetails];
 }
@@ -1635,7 +1616,6 @@ static NSDateFormatter *customDateFormat=nil;
         if([eventsToCelebrateArray count])
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
         
-        //[eventsTable reloadData];
         [self storeAllupcomingsForSuccessScreen];
         [self makeRequestToLoadImagesUsingOperations:eventDetails];
         

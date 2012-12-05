@@ -149,7 +149,7 @@
     personalMsgTxt.inputAccessoryView=msgInputAccessoryView;
     
     //Dynamic[fit] label width respected to the size of the text
-    CGSize profileName_maxSize = CGSizeMake(126, 21);
+    CGSize profileName_maxSize = CGSizeMake(160, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     profileNameLbl.frame=CGRectMake(60, 19, profileName_new_size.width, 21);
     

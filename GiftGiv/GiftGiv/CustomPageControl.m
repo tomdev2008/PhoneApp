@@ -35,56 +35,46 @@
             shouldShowSearchIconInHomeScreen=NO;
         }
     }
-        for (int i = 0; i < [self.subviews count]; i++)
-        {
-            if(i==0 && isHomeScreen && shouldShowSearchIconInHomeScreen){
-                UIImageView* dot = [self.subviews objectAtIndex:i];
-                if (i == self.currentPage){
-                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
-                    dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
-                }
-                else{
-                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
-                    dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
-                }
-                    
+    for (int i = 0; i < [self.subviews count]; i++)
+    {
+        if(i==0 && isHomeScreen && shouldShowSearchIconInHomeScreen){
+            UIImageView* dot = [self.subviews objectAtIndex:i];
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 10, 10);
+            if (i == self.currentPage){
                 
-            }
-            else if(i==0 && !isHomeScreen){
-                UIImageView* dot = [self.subviews objectAtIndex:i];
-                if (i == self.currentPage){
-                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
-                    dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
-                }
-                else{
-                    dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
-                    dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
-                }
+                dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
             }
             else{
-                UIImageView* dot = [self.subviews objectAtIndex:i];
                 
-                if (i == self.currentPage)
-                    dot.image = activeImage;
-                else
-                    dot.image = inactiveImage;
+                dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
+            }
+            
+            
+        }
+        else if(i==0 && !isHomeScreen){
+            UIImageView* dot = [self.subviews objectAtIndex:i];
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 10, 10);
+            if (i == self.currentPage){
                 
+                dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
+            }
+            else{
+                
+                dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
             }
         }
-
-    //}
-    /*else{
-        for (int i = 0; i < [self.subviews count]; i++)
-        {
+        else{
             UIImageView* dot = [self.subviews objectAtIndex:i];
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
             if (i == self.currentPage)
                 dot.image = activeImage;
             else
                 dot.image = inactiveImage;
+            
         }
-        
-    }*/
-     
+    }
+
+
 }
 
 -(void) setCurrentPage:(NSInteger)page
