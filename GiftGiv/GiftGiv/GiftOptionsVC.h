@@ -40,6 +40,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *eventNameLbl;
 @property (retain, nonatomic) IBOutlet CustomPageControl *giftCategoryPageControl;
 @property (retain, nonatomic) IBOutlet UIScrollView *giftsBgScroll;
+@property (retain, nonatomic) IBOutlet UIImageView *searchBgImg;
 
 - (IBAction)cancelTheSearch:(id)sender;
 

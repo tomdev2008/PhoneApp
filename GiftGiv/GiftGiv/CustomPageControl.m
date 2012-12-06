@@ -39,33 +39,41 @@
     {
         if(i==0 && isHomeScreen && shouldShowSearchIconInHomeScreen){
             UIImageView* dot = [self.subviews objectAtIndex:i];
+            
             dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 10, 10);
+            
             if (i == self.currentPage){
                 
-                dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
+                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] ;
             }
             else{
                 
-                dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
+                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] ;
+                
             }
-            
-            
+           
+            GGLog(@"dot frame..%@",NSStringFromCGRect(dot.frame));
         }
         else if(i==0 && !isHomeScreen){
             UIImageView* dot = [self.subviews objectAtIndex:i];
+           
             dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 10, 10);
+           
             if (i == self.currentPage){
                 
-                dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
+                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] ;
             }
             else{
                 
-                dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
+                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] ;
             }
+            
         }
         else{
             UIImageView* dot = [self.subviews objectAtIndex:i];
+            
             dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+                     
             if (i == self.currentPage)
                 dot.image = activeImage;
             else
@@ -82,6 +90,7 @@
     [super setCurrentPage:page];
     
     [self updateDots];
+    
     
 }
 

@@ -68,6 +68,7 @@
 @property (retain, nonatomic) IBOutlet UISearchBar *contactsSearchBar;
 @property (retain, nonatomic) IBOutlet UIView *contactsSearchView;
 @property (retain, nonatomic) NSMutableArray *listOfContactsArray;
+@property (retain, nonatomic) IBOutlet UIImageView *searchBgImg;
 
 @property (retain, nonatomic) IBOutlet CustomPageControl *pageControlForEventGroups;
 

@@ -68,9 +68,9 @@
         profilePicImg.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
     }
         
-    
-        pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
-        pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
+    _searchBgImg.image=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
+    pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
     
     
     //Dynamic[fit] label width respected to the size of the text
@@ -366,11 +366,11 @@
             
             if (i == giftCategoryPageControl.currentPage){
                 
-                dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
+                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] ;
             }
             else{
                 
-                dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
+                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] ;
             }
             
             
@@ -693,7 +693,7 @@
         else{
             [(UILabel*)[_giftsBgScroll viewWithTag:1] setText:searchFld.text];
         }
-        
+        [tempSearchedArray release];
     }
     
     [self performSelector:@selector(reloadTheSearchGiftsBitDelay) withObject:nil afterDelay:0.01];
@@ -741,6 +741,7 @@
     [self setSearchGiftsBgView:nil];
     [self setSearchFld:nil];
     [self setGiftsBgScroll:nil];
+    [self setSearchBgImg:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -794,6 +795,7 @@
     [searchGiftsBgView release];
     [searchFld release];
     [_giftsBgScroll release];
+    [_searchBgImg release];
     [super dealloc];
 }
 

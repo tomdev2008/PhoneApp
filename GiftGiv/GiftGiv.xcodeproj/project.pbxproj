@@ -192,6 +192,8 @@
 		BDAE91E4162EB11F004089DC /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E0162EAE1B004089DC /* NSAttributedString+Attributes.m */; };
 		BDAE91E5162EB11F004089DC /* NSTextCheckingResult+ExtendedURL.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E2162EB0FE004089DC /* NSTextCheckingResult+ExtendedURL.m */; };
 		BDAE91F8162ED486004089DC /* CoreTextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91F7162ED45B004089DC /* CoreTextUtils.m */; };
+		BDB11FE11670AEBC0095B560 /* strip.png in Resources */ = {isa = PBXBuildFile; fileRef = BDB11FDF1670AEBC0095B560 /* strip.png */; };
+		BDB11FE21670AEBC0095B560 /* strip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BDB11FE01670AEBC0095B560 /* strip@2x.png */; };
 		BDC2B029163EBDA000D4D9DA /* AddUser_LinkedInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = BDC2B028163EBDA000D4D9DA /* AddUser_LinkedInRequest.m */; };
 		BDF33520165F6626005C5E7F /* searchdotactive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BDF3351E165F6626005C5E7F /* searchdotactive@2x.png */; };
 		BDF33521165F6626005C5E7F /* searchdotinactive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BDF3351F165F6626005C5E7F /* searchdotinactive@2x.png */; };
@@ -505,6 +507,8 @@
 		BDAE91E2162EB0FE004089DC /* NSTextCheckingResult+ExtendedURL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTextCheckingResult+ExtendedURL.m"; sourceTree = "<group>"; };
 		BDAE91F6162ED45B004089DC /* CoreTextUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreTextUtils.h; sourceTree = "<group>"; };
 		BDAE91F7162ED45B004089DC /* CoreTextUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreTextUtils.m; sourceTree = "<group>"; };
+		BDB11FDF1670AEBC0095B560 /* strip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = strip.png; sourceTree = "<group>"; };
+		BDB11FE01670AEBC0095B560 /* strip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "strip@2x.png"; sourceTree = "<group>"; };
 		BDC2B027163EBDA000D4D9DA /* AddUser_LinkedInRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddUser_LinkedInRequest.h; path = "Backend Services/AddUser_LinkedIn/AddUser_LinkedInRequest.h"; sourceTree = "<group>"; };
 		BDC2B028163EBDA000D4D9DA /* AddUser_LinkedInRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddUser_LinkedInRequest.m; path = "Backend Services/AddUser_LinkedIn/AddUser_LinkedInRequest.m"; sourceTree = "<group>"; };
 		BDF3351E165F6626005C5E7F /* searchdotactive@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "searchdotactive@2x.png"; sourceTree = "<group>"; };
@@ -870,6 +874,7 @@
 		7E5EF71815B929BB00C1D252 /* Retina */ = {
 			isa = PBXGroup;
 			children = (
+				BDB11FE01670AEBC0095B560 /* strip@2x.png */,
 				BDF3351E165F6626005C5E7F /* searchdotactive@2x.png */,
 				BDF3351F165F6626005C5E7F /* searchdotinactive@2x.png */,
 				BD0A36EB163FE58900988508 /* graybar2@2x.png */,
@@ -898,6 +903,7 @@
 		7E5EF71A15B929C300C1D252 /* Normal */ = {
 			isa = PBXGroup;
 			children = (
+				BDB11FDF1670AEBC0095B560 /* strip.png */,
 				BDF33523165F6643005C5E7F /* searchdotactive.png */,
 				BDF33524165F6643005C5E7F /* searchdotinactive.png */,
 				BD0A36ED163FE5A500988508 /* graybar2.png */,
@@ -1439,6 +1445,8 @@
 				BD9D34B9166337E200D05C0D /* FacebookSDKResources.bundle in Resources */,
 				BD9D34BA166337E200D05C0D /* FBUserSettingsViewResources.bundle in Resources */,
 				BD9D34BC166342E900D05C0D /* Default-568h@2x.png in Resources */,
+				BDB11FE11670AEBC0095B560 /* strip.png in Resources */,
+				BDB11FE21670AEBC0095B560 /* strip@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

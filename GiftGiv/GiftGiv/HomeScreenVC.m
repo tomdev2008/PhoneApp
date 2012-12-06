@@ -69,7 +69,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     allupcomingEvents=[[NSMutableArray alloc]init];
     
-   
+   _searchBgImg.image=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     
     searchContactsArray=[[NSMutableArray alloc]init];
     
@@ -1147,21 +1147,23 @@ static NSDateFormatter *customDateFormat=nil;
         
         if(i==0 && [listOfContactsArray count]){
             UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
+           
             dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 10, 10);
             
             if (i == pageControlForEventGroups.currentPage){
                 
-                dot.image =[[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] retain];
+                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] ;
             }
             else{
                 
-                dot.image = [[ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] retain];
+                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] ;
             }
             
             
         }
         else{
             UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
+            
             dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
             if (i == pageControlForEventGroups.currentPage)
                 dot.image = pageActiveImage;
@@ -1173,7 +1175,7 @@ static NSDateFormatter *customDateFormat=nil;
     CGRect frame = _eventsBgScroll.frame;
     frame.origin.y = 0;
     if([listOfContactsArray count]){
-        GGLog(@"before...%d,%d",eventGroupNum,pageControlForEventGroups.currentPage);
+        //GGLog(@"before...%d,%d",eventGroupNum,pageControlForEventGroups.currentPage);
       
         if(pageControlForEventGroups.currentPage==0){
             eventGroupNum=totalGroups;
@@ -2039,6 +2041,7 @@ static NSDateFormatter *customDateFormat=nil;
     [self setContactsSearchView:nil];
     [self setContactsSearchBar:nil];
     [self setEventsBgScroll:nil];
+    [self setSearchBgImg:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -2096,6 +2099,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
     }
     [_eventsBgScroll release];
+    [_searchBgImg release];
     [super dealloc];
 }
 

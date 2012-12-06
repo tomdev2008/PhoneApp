@@ -95,13 +95,7 @@ static NSCalendar *gregorian=nil;
     switch (state) {
         case FBSessionStateClosedLoginFailed:
         {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                message:error.localizedDescription
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles:nil];
-            [alertView show];
-            [alertView release];
+            GGLog(@"Session state closed or login failed");
         }
             
             break;

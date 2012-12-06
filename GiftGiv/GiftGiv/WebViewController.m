@@ -172,8 +172,8 @@
 -(void) responseForAddOrder:(NSMutableString*)orderCode{
     
     GGLog(@"Order code...%@",orderCode);
-    
-    if([selectedGift objectForKey:@"RecipientMailID"]){
+    int isElectronic=[[selectedGift objectForKey:@"IsElectronicSending"]integerValue];
+    if([selectedGift objectForKey:@"RecipientMailID"] && !isElectronic){
         if([CheckNetwork connectedToNetwork]){
             NSString *profilePicURL;
             
@@ -197,7 +197,7 @@
             [mailReq release];
         }
     }
-    else if([selectedGift objectForKey:@"RecipientPhoneNum"]){
+    else if([selectedGift objectForKey:@"RecipientPhoneNum"] && !isElectronic){
         if([CheckNetwork connectedToNetwork]){
             NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:SendSMS>\n<tem:orderId>%@</tem:orderId>\n<tem:toPhone>%@</tem:toPhone>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n</tem:SendSMS>",orderCode,[selectedGift objectForKey:@"RecipientPhoneNum"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[selectedGift objectForKey:@"RecipientName"]];
             
