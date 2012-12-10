@@ -94,18 +94,33 @@
     //eventNameLbl.text=[giftSummaryDict objectForKey:@"EventName"];
     
     personalMsgLbl.text=[giftSummaryDict objectForKey:@"PersonalMessage"];
-    if([giftSummaryDict objectForKey:@"RecipientAddress"]){
-        addressLbl.text=[giftSummaryDict objectForKey:@"RecipientAddress"];
+    
+    if([[giftSummaryDict objectForKey:@"IsElectronicSending"]integerValue]){
+        if([giftSummaryDict objectForKey:@"RecipientPhoneNum"]){
+            addressLbl.text=[giftSummaryDict objectForKey:@"RecipientPhoneNum"];
+            
+        }
+        else if([giftSummaryDict objectForKey:@"RecipientMailID"]){
+            addressLbl.text=[giftSummaryDict objectForKey:@"RecipientMailID"];
+            
+        }
         mailGiftToLbl.text=@"Mail Gift to:";
     }
-    else if([giftSummaryDict objectForKey:@"RecipientPhoneNum"]){
-        addressLbl.text=[giftSummaryDict objectForKey:@"RecipientPhoneNum"];
-        mailGiftToLbl.text=@"Address request sent to:";
+    else{
+        if([giftSummaryDict objectForKey:@"RecipientAddress"]){
+            addressLbl.text=[giftSummaryDict objectForKey:@"RecipientAddress"];
+            mailGiftToLbl.text=@"Mail Gift to:";
+        }
+        else if([giftSummaryDict objectForKey:@"RecipientPhoneNum"]){
+            addressLbl.text=[giftSummaryDict objectForKey:@"RecipientPhoneNum"];
+            mailGiftToLbl.text=@"Address request sent to:";
+        }
+        else if([giftSummaryDict objectForKey:@"RecipientMailID"]){
+            addressLbl.text=[giftSummaryDict objectForKey:@"RecipientMailID"];
+            mailGiftToLbl.text=@"Address request sent to:";
+        }
     }
-    else if([giftSummaryDict objectForKey:@"RecipientMailID"]){
-        addressLbl.text=[giftSummaryDict objectForKey:@"RecipientMailID"];
-        mailGiftToLbl.text=@"Address request sent to:";
-    }
+    
     
     
     //Dynamic[fit] label width respected to the size of the text

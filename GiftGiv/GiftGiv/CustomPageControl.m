@@ -14,8 +14,8 @@
 {
     self = [super initWithCoder:aDecoder];
     
-    activeImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
-    inactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
+    activeImage = [[ImageAllocationObject loadImageObjectName:@"dotactive2" ofType:@"png"] retain];
+    inactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive2" ofType:@"png"] retain];
     
     return self;
 }
@@ -40,15 +40,15 @@
         if(i==0 && isHomeScreen && shouldShowSearchIconInHomeScreen){
             UIImageView* dot = [self.subviews objectAtIndex:i];
             
-            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 10, 10);
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 12, 12);
             
             if (i == self.currentPage){
                 
-                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] ;
+                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive2" ofType:@"png"] ;
             }
             else{
                 
-                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] ;
+                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive2" ofType:@"png"] ;
                 
             }
            
@@ -57,22 +57,22 @@
         else if(i==0 && !isHomeScreen){
             UIImageView* dot = [self.subviews objectAtIndex:i];
            
-            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 10, 10);
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 12, 12);
            
             if (i == self.currentPage){
                 
-                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] ;
+                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive2" ofType:@"png"] ;
             }
             else{
                 
-                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] ;
+                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive2" ofType:@"png"] ;
             }
             
         }
         else{
             UIImageView* dot = [self.subviews objectAtIndex:i];
             
-            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 12);
                      
             if (i == self.currentPage)
                 dot.image = activeImage;

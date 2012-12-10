@@ -1,20 +1,19 @@
 //
-//  AddOrderRequest.m
+//  AlertOrderEmailRequest.m
 //  GiftGiv
 //
-//  Created by Srinivas G on 27/08/12.
+//  Created by Srinivas G on 12/10/12.
 //  Copyright (c) 2012 Teleparadigm Networks Limited. All rights reserved.
 //
 
-#import "AddOrderRequest.h"
+#import "AlertOrderEmailRequest.h"
 
-@implementation AddOrderRequest
+@implementation AlertOrderEmailRequest
+@synthesize alertOrderEmailDelegate;
 
-@synthesize addorderDelegate;
-
--(void)makeReqToAddOrder:(NSMutableURLRequest *)request{
+-(void)makeReqToAlertOrderEmail:(NSMutableURLRequest *)request{
 	
-    //GGLog(@"%@",request);
+    
 	//Asynchronous URL connection
 	theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 	
@@ -37,25 +36,23 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
 	
 	NSString * theXML = [[NSString alloc] initWithData:(NSData*) webData encoding:NSASCIIStringEncoding];
-    GGLog(@"%@",theXML);
 	[webData release];
 	NSString *updated_XML=[theXML stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     [theXML release];
   	NSString *convertedStr=[updated_XML stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-    
+    GGLog(@"converted string..%@",convertedStr);
     webData=(NSMutableData*)[convertedStr dataUsingEncoding:NSASCIIStringEncoding];
     
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
 	
 	[xmlParser setDelegate:self];
-    orderResponse=[[NSMutableString alloc]init];
+    receivedResponse=[[NSMutableString alloc]init];
 	
 	//delegate method to send the response after parsing finished successfully
 	if([xmlParser parse]){
-       
-		[addorderDelegate responseForAddOrder:orderResponse];
+		[alertOrderEmailDelegate responseForAlertOrderEmail:receivedResponse];
 	}
-	[orderResponse  release];
+	[receivedResponse  release];
 	[xmlParser release];
 	[theConnection release];
 }
@@ -65,7 +62,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error{
 	
 	//delegate method to indicate connection failed
-	[addorderDelegate requestFailed];
+	[alertOrderEmailDelegate requestFailed];
 	[webData release];
 	[theConnection release];
 }
@@ -76,9 +73,9 @@
 {
 	
 }
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string { 
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
 	
-	if(!currentElementValue) 
+	if(!currentElementValue)
 		currentElementValue = [[NSMutableString alloc] initWithString:string];
 	else
 		[currentElementValue appendString:string];
@@ -88,8 +85,8 @@
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
 	
-	if([argElementName isEqualToString:@"AddOrderv2Result"]){
-        orderResponse=currentElementValue;
+	if([argElementName isEqualToString:@"AlertOrderEmailResult"]){
+        receivedResponse=currentElementValue;
     }
     
 	currentElementValue=nil;

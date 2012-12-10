@@ -136,6 +136,12 @@
     
     //Send request to add an order
     if([CheckNetwork connectedToNetwork]){
+        NSString *sentAsStatus;
+        if([[selectedGift objectForKey:@"IsElectronicSending"]integerValue]){
+            sentAsStatus=@"electronic";
+        }
+        else
+            sentAsStatus=@"physical";
         
         NSString *soapmsgFormat=@"";
         if([selectedGift objectForKey:@"RecipientAddress"]){
@@ -145,22 +151,22 @@
             if([address count]==5){
                 address_2=[address objectAtIndex:4];
             }
-            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrder>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1>%@</tem:addressLine1>\n<tem:addressLine2>%@</tem:addressLine2>\n<tem:city>%@</tem:city>\n<tem:state>%@</tem:state>\n<tem:zip>%@</tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n</tem:AddOrder>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[address objectAtIndex:0],[address objectAtIndex:1],[address objectAtIndex:2],[address objectAtIndex:3],address_2,[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"]];
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1>%@</tem:addressLine1>\n<tem:addressLine2>%@</tem:addressLine2>\n<tem:city>%@</tem:city>\n<tem:state>%@</tem:state>\n<tem:zip>%@</tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>%@</tem:sentAs>\n</tem:AddOrderv2>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[address objectAtIndex:0],[address objectAtIndex:1],[address objectAtIndex:2],[address objectAtIndex:3],address_2,[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"],sentAsStatus];
         }
         else if([selectedGift objectForKey:@"RecipientMailID"]){
             
-            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrder>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email>%@</tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n</tem:AddOrder>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientMailID"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"]];
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email>%@</tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>%@</tem:sentAs>\n</tem:AddOrderv2>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientMailID"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"],sentAsStatus];
         }
         else if([selectedGift objectForKey:@"RecipientPhoneNum"]){
             
-            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrder>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone>%@</tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n</tem:AddOrder>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientPhoneNum"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"]];
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone>%@</tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>%@</tem:sentAs>\n</tem:AddOrderv2>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientPhoneNum"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"],sentAsStatus];
         }
         
         
         
         NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        //GGLog(@"%@",soapRequestString);
-        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddOrder"];
+        GGLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddOrderv2"];
         
         AddOrderRequest *addOrder=[[AddOrderRequest alloc]init];
         [addOrder setAddorderDelegate:self];
@@ -173,6 +179,25 @@
     
     GGLog(@"Order code...%@",orderCode);
     int isElectronic=[[selectedGift objectForKey:@"IsElectronicSending"]integerValue];
+    NSString *sentAsStatus;
+    if(isElectronic){
+        sentAsStatus=@"electronic";
+    }
+    else
+        sentAsStatus=@"physical";
+    NSString *soapmsgFormatAlertOrderEmail=[NSString stringWithFormat:@"<tem:AlertOrderEmail>\n<tem:senderName>%@ %@</tem:senderName>\n<tem:recipientName>%@</tem:recipientName>\n<tem:eventType>%@</tem:eventType>\n<tem:giftItem>%@</tem:giftItem>\n<tem:giftPrice>%@</tem:giftPrice>\n<tem:deliveryMethod>%@</tem:deliveryMethod>\n<tem:deliveryDate>%@</tem:deliveryDate></tem:AlertOrderEmail>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],sentAsStatus,[selectedGift objectForKey:@"DateOfDelivery"]];
+    
+    shouldPushToNextScreen=YES;
+    
+    NSString *soapRequestString=SOAPRequestMsg(soapmsgFormatAlertOrderEmail);
+    GGLog(@"%@",soapRequestString);
+    NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AlertOrderEmail"];
+    
+    AlertOrderEmailRequest *alertOrderMailReq=[[AlertOrderEmailRequest alloc]init];
+    [alertOrderMailReq setAlertOrderEmailDelegate:self];
+    [alertOrderMailReq makeReqToAlertOrderEmail:theRequest];
+    [alertOrderMailReq release];
+    
     if([selectedGift objectForKey:@"RecipientMailID"] && !isElectronic){
         if([CheckNetwork connectedToNetwork]){
             NSString *profilePicURL;
@@ -184,6 +209,7 @@
             else{
                  profilePicURL=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"FBProfilePic"];
             }
+            shouldPushToNextScreen=NO;
             
             NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:SendEmail>\n<tem:orderId>%@</tem:orderId>\n<tem:toEmail>%@</tem:toEmail>\n<tem:subject>%@</tem:subject>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n<tem:optionalMessage>Hi %@ -\n\nCongratulations!!! I wish I could be with you to take part in this celebration. However, I have selected a small gift at giftgiv to celebrate this joyous occasion. Can you please send your address so that giftgiv can deliver it to you?</tem:optionalMessage>\n<tem:recipientProfilePic>%@ </tem:recipientProfilePic></tem:SendEmail>",orderCode,[selectedGift objectForKey:@"RecipientMailID"],[selectedGift objectForKey:@"EventName"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientName"],profilePicURL];
             
@@ -199,6 +225,7 @@
     }
     else if([selectedGift objectForKey:@"RecipientPhoneNum"] && !isElectronic){
         if([CheckNetwork connectedToNetwork]){
+            shouldPushToNextScreen=NO;
             NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:SendSMS>\n<tem:orderId>%@</tem:orderId>\n<tem:toPhone>%@</tem:toPhone>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n</tem:SendSMS>",orderCode,[selectedGift objectForKey:@"RecipientPhoneNum"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[selectedGift objectForKey:@"RecipientName"]];
             
             NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
@@ -211,9 +238,7 @@
             [smsReq release];
         }
     }
-    else{
-        [self performSelector:@selector(pushToSuccessScreen)];
-    }
+    
 }
 -(void) responseForSendEmail:(NSMutableString*)response{
     
@@ -228,6 +253,15 @@
     //false -- failed
     [self performSelector:@selector(pushToSuccessScreen)];
     
+}
+-(void) responseForAlertOrderEmail:(NSMutableString*)response{
+    //true -- send
+    //false -- failed
+    
+    //shouldPushToNextScreen was set to NO when any other request is in progress to finish
+    
+    if(shouldPushToNextScreen)
+        [self performSelector:@selector(pushToSuccessScreen)];
 }
 -(void) requestFailed{
     //request faild.

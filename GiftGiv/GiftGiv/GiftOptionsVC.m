@@ -69,8 +69,8 @@
     }
         
     _searchBgImg.image=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
-    pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
+    pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive2" ofType:@"png"] retain];
+    pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive2" ofType:@"png"] retain];
     
     
     //Dynamic[fit] label width respected to the size of the text
@@ -366,11 +366,11 @@
             
             if (i == giftCategoryPageControl.currentPage){
                 
-                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] ;
+                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive2" ofType:@"png"] ;
             }
             else{
                 
-                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] ;
+                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive2" ofType:@"png"] ;
             }
             
             

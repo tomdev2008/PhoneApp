@@ -73,8 +73,8 @@ static NSDateFormatter *customDateFormat=nil;
     
     searchContactsArray=[[NSMutableArray alloc]init];
     
-    pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive" ofType:@"png"] retain];
-    pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive" ofType:@"png"] retain];
+    pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive2" ofType:@"png"] retain];
+    pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive2" ofType:@"png"] retain];
    
     
     [[NSNotificationCenter defaultCenter] addObserver:picturesOperationQueue selector:@selector(cancelAllOperations) name:UIApplicationWillTerminateNotification object:nil];
@@ -1148,15 +1148,15 @@ static NSDateFormatter *customDateFormat=nil;
         if(i==0 && [listOfContactsArray count]){
             UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
            
-            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 10, 10);
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 12, 12);
             
             if (i == pageControlForEventGroups.currentPage){
                 
-                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive" ofType:@"png"] ;
+                dot.image =[ImageAllocationObject loadImageObjectName:@"searchdotactive2" ofType:@"png"] ;
             }
             else{
                 
-                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive" ofType:@"png"] ;
+                dot.image = [ImageAllocationObject loadImageObjectName:@"searchdotinactive2" ofType:@"png"] ;
             }
             
             
@@ -1164,7 +1164,7 @@ static NSDateFormatter *customDateFormat=nil;
         else{
             UIImageView* dot = [pageControlForEventGroups.subviews objectAtIndex:i];
             
-            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 8);
+            dot.frame = CGRectMake(dot.frame.origin.x, dot.frame.origin.y, 8, 12);
             if (i == pageControlForEventGroups.currentPage)
                 dot.image = pageActiveImage;
             else
