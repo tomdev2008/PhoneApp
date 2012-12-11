@@ -8,13 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "SuccessVC.h"
-
 #import "PayPal.h"
 #import "SetExpressCheckoutRequestDetails.h"
 #import "ECNetworkHandler.h"
 #import "WebViewController.h"
 #import "PaymentDetails.h"
-
 #import "MBProgressHUD.h"
 #import "UIImage+scaling.h"
 
@@ -25,6 +23,7 @@
 
 @interface GiftSummaryVC : UIViewController<ExpressCheckoutResponseHandler,DeviceReferenceTokenDelegate,MBProgressHUDDelegate>{
     MBProgressHUD *HUD;
+    BOOL isFreeGiftItem;
 }
 
 @property (retain, nonatomic) IBOutlet UIScrollView *giftSummaryScroll;

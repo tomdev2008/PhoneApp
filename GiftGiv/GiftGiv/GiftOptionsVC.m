@@ -524,13 +524,17 @@
     cell.giftTitle_one.text=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftTitle];
     
     NSArray *priceArray_one=[[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)] objectForKey:@"GiftDetails"] giftPrice] componentsSeparatedByString:@";"];
-    
+        
     if([priceArray_one count]>1){
         ;
         cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@ - $%@",[priceArray_one objectAtIndex:0],[priceArray_one objectAtIndex:[priceArray_one count]-1]];
     }
-    else
-        cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftPrice]];
+    else{
+        NSString *priceValue=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftPrice];
+        if(priceValue!=nil && ![priceValue isEqualToString:@""])
+            cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",priceValue];
+                    
+    }
     UIImage *tempImg_one=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftThumbnail];
             
     if(tempImg_one==nil){
@@ -561,8 +565,13 @@
             
             cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@ - $%@",[priceArray_two objectAtIndex:0],[priceArray_two objectAtIndex:[priceArray_two count]-1]];
         }
-        else
-            cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftPrice]];
+        else{
+            
+            NSString *priceValue_2=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftPrice];
+            if(priceValue_2!=nil && ![priceValue_2 isEqualToString:@""])
+                cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",priceValue_2];
+            
+        }
         UIImage *tempImg_two=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftThumbnail];
         
         if(tempImg_two==nil){
@@ -607,15 +616,26 @@
         [giftCardDetails release];
     }
     else{
-        
-        Gift_GreetingCardDetailsVC *greetingCardDetails=[[Gift_GreetingCardDetailsVC alloc]initWithNibName:@"Gift_GreetingCardDetailsVC" bundle:nil];
-        if(![selectedGift.giftImageBackSideUrl length])
-            greetingCardDetails.isGreetingCard=NO;
-        else if([selectedGift.giftImageBackSideUrl length])
-            greetingCardDetails.isGreetingCard=YES;
-        greetingCardDetails.giftItemInfo=selectedGift;
-        [self.navigationController pushViewController:greetingCardDetails animated:YES];
-        [greetingCardDetails release];
+        GGLog(@"%@",selectedGift.giftPrice);
+        if([selectedGift.giftPrice isEqualToString:@""]){
+            FreeGiftItemDetailsVC *freeGiftItemDetails=[[FreeGiftItemDetailsVC alloc]initWithNibName:@"FreeGiftItemDetailsVC" bundle:nil];
+            
+            freeGiftItemDetails.giftItemInfo=selectedGift;
+            [self.navigationController pushViewController:freeGiftItemDetails animated:YES];
+            [freeGiftItemDetails release];
+            
+        }
+        else{
+            Gift_GreetingCardDetailsVC *greetingCardDetails=[[Gift_GreetingCardDetailsVC alloc]initWithNibName:@"Gift_GreetingCardDetailsVC" bundle:nil];
+            if(![selectedGift.giftImageBackSideUrl length])
+                greetingCardDetails.isGreetingCard=NO;
+            else if([selectedGift.giftImageBackSideUrl length])
+                greetingCardDetails.isGreetingCard=YES;
+            greetingCardDetails.giftItemInfo=selectedGift;
+            [self.navigationController pushViewController:greetingCardDetails animated:YES];
+            [greetingCardDetails release];
+        }
+       
     }
     
 }

@@ -55,19 +55,18 @@
     GGLog(@"gift summary..%@",giftSummaryDict);
     giftSummaryScroll.frame=CGRectMake(0, 44, 320, 416);
     [self.view addSubview:giftSummaryScroll];
+
+    if([[giftSummaryDict objectForKey:@"GiftPrice"] isEqualToString:@""])
+        isFreeGiftItem=YES;
     
-    /*if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"]){
-        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"];
-    }
-    else*/
-        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
      
     
     profileNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"];
     giftNameLbl.text=[giftSummaryDict objectForKey:@"GiftName"];
-    giftPriceLbl.text=[giftSummaryDict objectForKey:@"GiftPrice"];
-    
-    //[self loadImage:FacebookPicURL([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"]) forAnObject:profilePic];
+    if(![[giftSummaryDict objectForKey:@"GiftPrice"] isEqualToString:@""])
+        giftPriceLbl.text=[giftSummaryDict objectForKey:@"GiftPrice"];
+   
     NSString *profilePicId;
     
     if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
@@ -120,7 +119,12 @@
             mailGiftToLbl.text=@"Address request sent to:";
         }
     }
-    
+    if(isFreeGiftItem){
+        if([giftSummaryDict objectForKey:@"WallPost"])
+            mailGiftToLbl.text=@"Post on wall";
+        else
+            mailGiftToLbl.text=@"Mail Gift to:";
+    }
     
     
     //Dynamic[fit] label width respected to the size of the text
@@ -152,6 +156,9 @@
     mailGiftToLbl.frame=CGRectMake(mailGiftToLbl.frame.origin.x, recipientAddressHeadLbl.frame.origin.y+recipientAddressHeadLbl.frame.size.height-5, mailGiftToLbl.frame.size.width, mailGiftToLbl.frame.size.height);
     addressLbl.frame=CGRectMake(addressLbl.frame.origin.x, mailGiftToLbl.frame.origin.y+mailGiftToLbl.frame.size.height-3, addressLbl.frame.size.width, addressLbl.frame.size.height);
     disclosureLbl.frame=CGRectMake(disclosureLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+10, disclosureLbl.frame.size.width, disclosureLbl.frame.size.height);
+    
+    if(isFreeGiftItem)
+        paymentBtnLbl.text=@"SEND";
     
     paymentBtnLbl.frame=CGRectMake(paymentBtnLbl.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+17, paymentBtnLbl.frame.size.width, paymentBtnLbl.frame.size.height);
     paymentBtn.frame=CGRectMake(paymentBtn.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+10, paymentBtn.frame.size.width, paymentBtn.frame.size.height);
@@ -292,8 +299,25 @@
 - (IBAction)paymentBtnAction:(id)sender {
     
     [self showProgressHUD:self.view withMsg:nil];
-    [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_LIVE withDelegate:self];
     
+    if(isFreeGiftItem){
+        if([giftSummaryDict objectForKey:@"WallPost"]){
+            //Send the gift item to facebook wall
+        }
+        else if([giftSummaryDict objectForKey:@"RecipientPhoneNum"]){
+            //Make a service to send SMS
+            
+        }
+        else if([giftSummaryDict objectForKey:@"RecipientMailID"]){
+            //Make a service to send Email
+        }
+        SuccessVC *showSuccess = [[SuccessVC alloc] initWithNibName:@"SuccessVC" bundle:nil];
+        [self.navigationController pushViewController:showSuccess animated:YES];
+        [showSuccess release];
+    }
+    else{
+        [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_LIVE withDelegate:self];
+    }
     
 }
 -(void)paymentActionCalledWhenDeviceInitailized{

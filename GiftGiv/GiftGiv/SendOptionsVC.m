@@ -65,12 +65,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    /*if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"]){
-        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"];
-    }
-    else*/
-        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
+   
+    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
     
     
     profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
@@ -100,24 +96,40 @@
     
     listOfStates=[[NSMutableArray alloc]initWithArray:[[NSMutableDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ListOfStates" ofType:@"plist"]] objectForKey:@"StateCodes"]];   
     listOfSendOptions=[[NSMutableArray alloc]initWithCapacity:2];
+    
+    
     if(isSendElectronically){
         
         [listOfSendOptions addObject:@"Recipient email address"];
-             
+        
+        [listOfSendOptions addObject:@"Text recipient for address"];
         recipientAddressLbl.text=@"   Recipient email address";
         [self refreshTheFormForOption:1];
         
     }
     else{
-        [listOfSendOptions addObject:@"I know the address"];
         
-        [listOfSendOptions addObject:@"Email recipient for address"];
+        if([[sendingInfoDict objectForKey:@"GiftPrice"] isEqualToString:@""]){
+            recipientAddressLbl.text=@"   Post on wall";
+            [listOfSendOptions addObject:@"Post on wall"];
+            [listOfSendOptions addObject:@"Recipient email address"];
+            [listOfSendOptions addObject:@"Text recipient number"];
+            [self refreshTheFormForOption:3];
+            
+        }
+        else{
+            [listOfSendOptions addObject:@"I know the address"];
+            [listOfSendOptions addObject:@"Email recipient for address"];
+            [listOfSendOptions addObject:@"Text recipient for address"];
+            recipientAddressLbl.text=@"   I know the address";
+            [self refreshTheFormForOption:0];
+        }
         
-        recipientAddressLbl.text=@"   I know the address";
-        [self refreshTheFormForOption:0];
+        
+        
         
     }
-    [listOfSendOptions addObject:@"Text recipient for address"];
+    
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(160, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
@@ -367,6 +379,16 @@
             confirmLblFrame_sms.origin.y=370;
             confirmBtnLbl.frame=confirmLblFrame_sms;
             sendOptionsContentScroll.contentSize=CGSizeMake(320, 416);
+            break;
+            
+            //Wall posting
+        case 3:
+            if([recipientSMSContentView superview])
+                [recipientSMSContentView removeFromSuperview];
+            if([recipientemailContentView superview])
+                [recipientemailContentView removeFromSuperview];
+            sendOptionsContentScroll.contentSize=CGSizeMake(320, 416);
+            
             break;
             
     }
@@ -829,6 +851,14 @@
         }
         
     }
+    //Treat this as posting on wall for free gift items
+    else if([[sendingInfoDict objectForKey:@"GiftPrice"] isEqualToString:@""]){
+        GiftSummaryVC *giftSummary=[[GiftSummaryVC alloc]initWithNibName:@"GiftSummaryVC" bundle:nil];
+        [sendingInfoDict setObject:@"Yes" forKey:@"WallPost"];
+        giftSummary.giftSummaryDict=sendingInfoDict;
+        [self.navigationController pushViewController:giftSummary animated:YES];
+        [giftSummary release];
+    }
 }
 - (IBAction)stateSelectionDone:(id)sender {
     CATransition *animation = [CATransition animation];
@@ -888,6 +918,120 @@
     [(UISegmentedControl*)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
     [statesPicker selectRow:selectedStateRow inComponent:0 animated:YES];
     [statesPicker reloadComponent:0];
+}
+#pragma mark -
+- (IBAction)addressEmailSMSSelDoneAction:(id)sender {
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = 0.3f;
+    animation.type = kCATransitionPush;
+    animation.subtype=kCATransitionFromBottom;
+    [addressEmailSMSSelPickerBgView.layer addAnimation:animation forKey:@"animation"];
+    addressEmailSMSSelPickerBgView.hidden=YES;
+    
+    sendOptionsContentScroll.userInteractionEnabled=YES;
+    
+    for(UIView *subview in [sendOptionsContentScroll subviews]){
+        if([subview isKindOfClass:[UIButton class]]){
+            [(UIButton*)subview setUserInteractionEnabled:YES];
+        }
+        if([subview isKindOfClass:[UITextField class]]){
+            [(UITextField*)subview setUserInteractionEnabled:YES];
+        }
+    }
+    
+    
+    recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[listOfSendOptions objectAtIndex:selectedSendOptionRow]];
+
+    BOOL isFreeGiftItem=NO;
+    
+    if([[sendingInfoDict objectForKey:@"GiftPrice"] isEqualToString:@""]){
+        isFreeGiftItem=YES;
+    }
+    
+    switch (selectedSendOptionRow) {
+            
+        case 0:
+            
+            if(isSendElectronically){
+                [self refreshTheFormForOption:1];
+                
+            }
+            else{
+                if(isFreeGiftItem)
+                    [self refreshTheFormForOption:3];
+                else
+                    [self refreshTheFormForOption:0];
+                
+            }
+            
+            break;
+            
+        case 1:
+            if(isSendElectronically){
+                [self refreshTheFormForOption:2];
+                
+            }
+            else{
+                
+                [self refreshTheFormForOption:1];
+                
+            }
+            
+            break;
+            //SMS
+        case 2:
+            if(!isSendElectronically){
+                [self refreshTheFormForOption:2];
+                
+            }
+            
+            break;
+    }
+    
+    [sendOptionsContentScroll setContentOffset:CGPointMake(0, 0) animated:YES];
+    
+    
+    
+    
+}
+
+- (IBAction)addressEmailSMSNavigatorAction:(id)sender {
+    
+    switch ([(UISegmentedControl*)sender selectedSegmentIndex]) {
+            //previous
+        case 0:
+            
+            if(selectedSendOptionRow>0){
+                [(UISegmentedControl*)sender setEnabled:YES forSegmentAtIndex:1];
+                selectedSendOptionRow--;
+            }
+            
+            if(selectedSendOptionRow==0){
+                [(UISegmentedControl*)sender setEnabled:NO forSegmentAtIndex:0];
+            }
+            
+            break;
+            //next
+        case 1:
+            if(selectedSendOptionRow<[listOfSendOptions count]-1){
+                selectedSendOptionRow++;
+                [(UISegmentedControl*)sender setEnabled:YES forSegmentAtIndex:0];
+                
+            }
+            
+            if(selectedSendOptionRow==[listOfSendOptions count]-1){
+                [(UISegmentedControl*)sender setEnabled:NO forSegmentAtIndex:1];
+            }
+            
+            break;
+            
+            
+    }
+    [(UISegmentedControl*)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
+    [addressMailSMSPicker selectRow:selectedSendOptionRow inComponent:0 animated:YES];
+    [addressMailSMSPicker reloadComponent:0];
+    
 }
 #pragma mark -
 -(void)viewWillDisappear:(BOOL)animated{
@@ -983,110 +1127,5 @@
     [addEmailSMSSegment release];
     [super dealloc];
 }
-- (IBAction)addressEmailSMSSelDoneAction:(id)sender {
-    CATransition *animation = [CATransition animation];
-    animation.delegate = self;
-    animation.duration = 0.3f;
-    animation.type = kCATransitionPush;
-    animation.subtype=kCATransitionFromBottom;
-    [addressEmailSMSSelPickerBgView.layer addAnimation:animation forKey:@"animation"];
-    addressEmailSMSSelPickerBgView.hidden=YES;
-    
-    //[sendOptionsContentScroll setContentOffset:svos animated:YES];
-    sendOptionsContentScroll.userInteractionEnabled=YES;
-    
-    for(UIView *subview in [sendOptionsContentScroll subviews]){
-        if([subview isKindOfClass:[UIButton class]]){
-            [(UIButton*)subview setUserInteractionEnabled:YES];
-        }
-        if([subview isKindOfClass:[UITextField class]]){
-            [(UITextField*)subview setUserInteractionEnabled:YES];
-        }
-    }
-    
-    
-    recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[listOfSendOptions objectAtIndex:selectedSendOptionRow]];
-    
-    
-    
-    switch (selectedSendOptionRow) {
-            
-        case 0:
-            if(isSendElectronically){
-                [self refreshTheFormForOption:1];
-                //recipientAddressLbl.text=@"   Email recipient for address";
-            }
-            else{
-                [self refreshTheFormForOption:0];
-                //recipientAddressLbl.text=@"   I know the address";
-            }
-            //recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[actionSheet buttonTitleAtIndex:buttonIndex]];
-            break;
-            
-        case 1:
-            if(isSendElectronically){
-                [self refreshTheFormForOption:2];
-                //recipientAddressLbl.text=@"   SMS recipient for address";
-            }
-            else{
-                [self refreshTheFormForOption:1];
-                //recipientAddressLbl.text=@"   Email recipient for address";
-            }
-            //recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[actionSheet buttonTitleAtIndex:buttonIndex]];
-            break;
-            //SMS
-        case 2:
-            if(!isSendElectronically){
-                [self refreshTheFormForOption:2];
-                //recipientAddressLbl.text=[NSString stringWithFormat:@"   %@",[actionSheet buttonTitleAtIndex:buttonIndex]];
-                //recipientAddressLbl.text=@"   SMS recipient for address";
-            }
-            
-            break;
-    }
-    
-    [sendOptionsContentScroll setContentOffset:CGPointMake(0, 0) animated:YES];
-    
-    
-    
-    
-}
 
-- (IBAction)addressEmailSMSNavigatorAction:(id)sender {
-    
-    switch ([(UISegmentedControl*)sender selectedSegmentIndex]) {
-            //previous
-        case 0:
-            
-            if(selectedSendOptionRow>0){
-                [(UISegmentedControl*)sender setEnabled:YES forSegmentAtIndex:1];
-                selectedSendOptionRow--;                
-            }
-            
-            if(selectedSendOptionRow==0){
-                [(UISegmentedControl*)sender setEnabled:NO forSegmentAtIndex:0];
-            }
-            
-            break;
-            //next
-        case 1:
-            if(selectedSendOptionRow<[listOfSendOptions count]-1){
-                selectedSendOptionRow++;
-                [(UISegmentedControl*)sender setEnabled:YES forSegmentAtIndex:0];
-                
-            }
-            
-            if(selectedSendOptionRow==[listOfSendOptions count]-1){
-                [(UISegmentedControl*)sender setEnabled:NO forSegmentAtIndex:1];
-            }
-            
-            break;
-            
-            
-    }
-    [(UISegmentedControl*)sender setSelectedSegmentIndex:UISegmentedControlNoSegment];
-    [addressMailSMSPicker selectRow:selectedSendOptionRow inComponent:0 animated:YES];
-    [addressMailSMSPicker reloadComponent:0];
-    
-}
 @end

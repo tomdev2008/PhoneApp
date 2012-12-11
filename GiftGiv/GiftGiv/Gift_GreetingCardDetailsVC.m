@@ -106,7 +106,10 @@
     [tapRecognizer release];
     
     greetingNameLbl.text=[giftItemInfo giftTitle];
-    greetingPrice.text=[NSString stringWithFormat:@"$%@",[giftItemInfo giftPrice]];
+    if(![[giftItemInfo giftPrice] isEqualToString:@""]){
+        greetingPrice.text=[NSString stringWithFormat:@"$%@",[giftItemInfo giftPrice]];
+        shippingCostLbl.text=@"(shipping costs and sales tax, if applicable, included)";
+    }
     
     //Dynamic[fit] label width respected to the size of the text
     CGSize giftPriceLbl_maxsize = CGSizeMake(greetingPrice.frame.size.width, greetingPrice.frame.size.height);
@@ -608,15 +611,7 @@
     else
         return 100;
 }
-/*- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
-    
-    if(component==0)
-        return [self getMonthName:[[monthsArray objectAtIndex:row]intValue]];
-    else if(component==1)
-        return [daysArray objectAtIndex:row];
 
-    return nil;
-}*/
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
     if([pickerView isEqual:dodPicker]){
         if(component==0){

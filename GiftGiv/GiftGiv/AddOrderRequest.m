@@ -88,7 +88,7 @@
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
 	
-	if([argElementName isEqualToString:@"AddOrderv2Result"]){
+	if([argElementName isEqualToString:@"AddOrderResult"]){
         orderResponse=currentElementValue;
     }
     

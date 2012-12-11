@@ -52,7 +52,7 @@
                 
             }
            
-            GGLog(@"dot frame..%@",NSStringFromCGRect(dot.frame));
+            //GGLog(@"dot frame..%@",NSStringFromCGRect(dot.frame));
         }
         else if(i==0 && !isHomeScreen){
             UIImageView* dot = [self.subviews objectAtIndex:i];
