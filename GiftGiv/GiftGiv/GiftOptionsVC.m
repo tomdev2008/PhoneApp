@@ -99,7 +99,7 @@
             
             dispatch_async(ImageLoader_Q, ^{
                 
-                NSString *urlStr=[[[listOfAllGiftItems objectAtIndex:i]objectForKey:@"GiftDetails"] giftThumbnailUrl];
+                NSString *urlStr=[[[listOfAllGiftItems objectAtIndex:i]objectForKey:@"GiftDetails"] giftImageUrl];
                 
                 NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
                 UIImage *thumbnail = [UIImage imageWithData:data];

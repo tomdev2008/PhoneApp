@@ -25,8 +25,9 @@
 #import "GetCachesPathForTargetFile.h"
 #import "AddUser_LinkedInRequest.h"
 #import "LinkedInContactsRequest.h"
+#import "AddNormalUserv_2_Request.h"
 
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,GetEventsDelegate,UISearchBarDelegate, FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate,UIScrollViewDelegate>
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,GetEventsDelegate,UISearchBarDelegate, FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate,UIScrollViewDelegate,AddNormalUserv_2_RequestDelegate>
 
 {
     int eventGroupNum;

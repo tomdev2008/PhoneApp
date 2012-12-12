@@ -810,9 +810,7 @@ static NSDateFormatter *customDateFormat=nil;
         }
         
     }
-    
-    
-    
+        
 }
 
 #pragma mark - TableView Delegate
@@ -898,6 +896,26 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 -(NSMutableDictionary*)collectTheDetailsOfSelectedEvent:(NSMutableDictionary*)sourceDict{
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"DummyUserId"])
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"DummyUserId"];
+   
+    if([sourceDict objectForKey:@"uid"]){
+        if([[sourceDict objectForKey:@"uid"] isEqualToString:@"0"]){
+            NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddNormalUserv2>\n<tem:fbId></tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName></tem:lastName>\n<tem:profilePictureUrl></tem:profilePictureUrl>\n</tem:AddNormalUserv2>",[sourceDict objectForKey:@"name"]];
+            
+            NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+            //GGLog(@"%@",soapRequestString);
+            NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddNormalUserv2"];
+            
+            AddNormalUserv_2_Request *addUser=[[AddNormalUserv_2_Request alloc]init];
+            [addUser setAddNormalUserDelegate:self];
+            [addUser makeReqToAddNormalUserv2:theRequest];
+            [addUser release];
+            
+        }
+    }
+    
+    
     NSMutableDictionary *targetDict=[[NSMutableDictionary alloc]initWithCapacity:5];
     if([sourceDict objectForKey:@"from"]){
         [targetDict setObject:[[sourceDict objectForKey:@"from"]objectForKey:@"id"] forKey:@"userID"];
@@ -1036,6 +1054,18 @@ static NSDateFormatter *customDateFormat=nil;
         }
         else
         {
+            searchText=[searchText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if(searchText.length>0){
+                NSMutableDictionary *tempDict=[[NSMutableDictionary alloc]initWithCapacity:3];
+                [tempDict setObject:@"0" forKey:@"uid"];
+                [tempDict setObject:searchText forKey:@"name"];
+                [tempDict setObject:@"" forKey:@"event_type"];
+                [tempDict setObject:@"" forKey:@"FBUserLocation"];
+                [searchContactsArray addObject:tempDict];
+                [tempDict release];
+            }
+            
+            
             /*if([[_eventsBgScroll viewWithTag:tagForHeader] isKindOfClass:[UIButton class]]){
                 [(UIButton*)[_eventsBgScroll viewWithTag:tagForHeader]setTitle:@"" forState:UIControlStateNormal];
             }
@@ -1986,6 +2016,10 @@ static NSDateFormatter *customDateFormat=nil;
         [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
     }
     
+}
+-(void) responseForAddNormalUserv2:(NSMutableString*)userId{
+    GGLog(@"received..Id..%@",userId);
+    [[NSUserDefaults standardUserDefaults]setObject:userId forKey:@"DummyUserId"];
 }
 -(void)makeRequestToGetContactsForLinkedIn{
     if(!isLnContactsLoading){

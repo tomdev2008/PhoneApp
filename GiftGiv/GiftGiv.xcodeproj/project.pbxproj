@@ -202,6 +202,7 @@
 		BDF386F416770AFB005918CB /* dotactive2.png in Resources */ = {isa = PBXBuildFile; fileRef = BDF386F016770AFB005918CB /* dotactive2.png */; };
 		BDF3870816774A75005918CB /* FreeGiftItemDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = BDF3870616774A75005918CB /* FreeGiftItemDetailsVC.m */; };
 		BDF3870916774A75005918CB /* FreeGiftItemDetailsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = BDF3870716774A75005918CB /* FreeGiftItemDetailsVC.xib */; };
+		BDF9BC951678A78300B1998E /* AddNormalUserv_2_Request.m in Sources */ = {isa = PBXBuildFile; fileRef = BDF9BC941678A78300B1998E /* AddNormalUserv_2_Request.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -523,6 +524,8 @@
 		BDF3870516774A75005918CB /* FreeGiftItemDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreeGiftItemDetailsVC.h; sourceTree = "<group>"; };
 		BDF3870616774A75005918CB /* FreeGiftItemDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FreeGiftItemDetailsVC.m; sourceTree = "<group>"; };
 		BDF3870716774A75005918CB /* FreeGiftItemDetailsVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FreeGiftItemDetailsVC.xib; sourceTree = "<group>"; };
+		BDF9BC931678A78200B1998E /* AddNormalUserv_2_Request.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddNormalUserv_2_Request.h; path = "Backend Services/Add User/AddNormalUserv_2_Request.h"; sourceTree = "<group>"; };
+		BDF9BC941678A78300B1998E /* AddNormalUserv_2_Request.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddNormalUserv_2_Request.m; path = "Backend Services/Add User/AddNormalUserv_2_Request.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -834,6 +837,8 @@
 			children = (
 				7E2D17A715D1295200E78FF0 /* AddUserRequest.h */,
 				7E2D17A815D1295200E78FF0 /* AddUserRequest.m */,
+				BDF9BC931678A78200B1998E /* AddNormalUserv_2_Request.h */,
+				BDF9BC941678A78300B1998E /* AddNormalUserv_2_Request.m */,
 			);
 			name = "Add User";
 			sourceTree = "<group>";
@@ -1597,6 +1602,7 @@
 				BD2CC8C31667512900216861 /* ValidationOfTheTokenRequest.m in Sources */,
 				BD25138F1675E54900E23591 /* AlertOrderEmailRequest.m in Sources */,
 				BDF3870816774A75005918CB /* FreeGiftItemDetailsVC.m in Sources */,
+				BDF9BC951678A78300B1998E /* AddNormalUserv_2_Request.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

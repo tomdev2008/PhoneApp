@@ -109,31 +109,43 @@
 #pragma mark payment result handling methods
 
 -(void)paymentSuccess:(NSString *)transactionID {
-	if([CheckNetwork connectedToNetwork]){
-       
-        NSString *soapmsgFormat;
-        if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]){
-            soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]];
+
+	//If the recipient user is not from the events/contacts
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"DummyUserId"])
+        [self prepareRequestToAddOrderFor:[[NSUserDefaults standardUserDefaults]objectForKey:@"DummyUserId"]];
+    else{
+        if([CheckNetwork connectedToNetwork]){
+            
+            NSString *soapmsgFormat;
+            if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]){
+                soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]];
+            }
+            else{
+                soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_userID"]];
+            }
+            
+            NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+            GGLog(@"%@",soapRequestString);
+            NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetUser"];
+            
+            GetUserRequest *getUser=[[GetUserRequest alloc]init];
+            [getUser setGetuserDelegate:self];
+            [getUser makeRequestToGetUserId:theRequest];
+            [getUser release];
         }
-        else{
-            soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_userID"]];
-        }
-        
-        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-        GGLog(@"%@",soapRequestString);
-        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetUser"];
-        
-        GetUserRequest *getUser=[[GetUserRequest alloc]init];
-        [getUser setGetuserDelegate:self];
-        [getUser makeRequestToGetUserId:theRequest];
-        [getUser release];
     }
+    
+    
 	
     
 }
 -(void) responseForGetuser:(UserDetailsObject*)userdetails{
     
+    [self prepareRequestToAddOrderFor:userdetails.userId];
     
+    
+}
+-(void)prepareRequestToAddOrderFor:(NSString*)userId{
     //Send request to add an order
     if([CheckNetwork connectedToNetwork]){
         NSString *sentAsStatus;
@@ -151,15 +163,15 @@
             if([address count]==5){
                 address_2=[address objectAtIndex:4];
             }
-            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1>%@</tem:addressLine1>\n<tem:addressLine2>%@</tem:addressLine2>\n<tem:city>%@</tem:city>\n<tem:state>%@</tem:state>\n<tem:zip>%@</tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>%@</tem:sentAs>\n</tem:AddOrderv2>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[address objectAtIndex:0],[address objectAtIndex:1],[address objectAtIndex:2],[address objectAtIndex:3],address_2,[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"],sentAsStatus];
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1>%@</tem:addressLine1>\n<tem:addressLine2>%@</tem:addressLine2>\n<tem:city>%@</tem:city>\n<tem:state>%@</tem:state>\n<tem:zip>%@</tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>%@</tem:sentAs>\n</tem:AddOrderv2>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userId,[selectedGift objectForKey:@"RecipientName"],[address objectAtIndex:0],[address objectAtIndex:1],[address objectAtIndex:2],[address objectAtIndex:3],address_2,[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"],sentAsStatus];
         }
         else if([selectedGift objectForKey:@"RecipientMailID"]){
             
-            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email>%@</tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>%@</tem:sentAs>\n</tem:AddOrderv2>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientMailID"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"],sentAsStatus];
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email>%@</tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>%@</tem:sentAs>\n</tem:AddOrderv2>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientMailID"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"],sentAsStatus];
         }
         else if([selectedGift objectForKey:@"RecipientPhoneNum"]){
             
-            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone>%@</tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>%@</tem:sentAs>\n</tem:AddOrderv2>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userdetails.userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientPhoneNum"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"],sentAsStatus];
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone>%@</tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>%@</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>%@</tem:sentAs>\n</tem:AddOrderv2>",[selectedGift objectForKey:@"EventName"],[selectedGift objectForKey:@"PersonalMessage"],userId,[selectedGift objectForKey:@"RecipientName"],[selectedGift objectForKey:@"RecipientPhoneNum"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[selectedGift objectForKey:@"GiftID"],[[selectedGift objectForKey:@"GiftPrice"]stringByReplacingOccurrencesOfString:@"$" withString:@""],[selectedGift objectForKey:@"DateOfDelivery"],sentAsStatus];
         }
         
         
@@ -173,7 +185,6 @@
         [addOrder makeReqToAddOrder:theRequest];
         [addOrder release];
     }
-    
 }
 -(void) responseForAddOrder:(NSMutableString*)orderCode{
     
@@ -267,6 +278,7 @@
     //request faild.
 }
 -(void)pushToSuccessScreen{
+    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"DummyUserId"];
     SuccessVC *paymentSuccess = [[[SuccessVC alloc] initWithNibName:@"SuccessVC" bundle:nil] autorelease];
     UINavigationController *navController = self.navigationController;
     //paymentSuccess.transactionID = transactionID;

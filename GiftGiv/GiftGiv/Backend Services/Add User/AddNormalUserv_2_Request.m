@@ -1,18 +1,18 @@
 //
-//  AddOrderRequest.m
+//  AddNormalUserv_2_Request.m
 //  GiftGiv
 //
-//  Created by Srinivas G on 27/08/12.
+//  Created by Sriniva G on 12/12/12.
 //  Copyright (c) 2012 Teleparadigm Networks Limited. All rights reserved.
 //
 
-#import "AddOrderRequest.h"
+#import "AddNormalUserv_2_Request.h"
 
-@implementation AddOrderRequest
+@implementation AddNormalUserv_2_Request
 
-@synthesize addorderDelegate;
+@synthesize addNormalUserDelegate;
 
--(void)makeReqToAddOrder:(NSMutableURLRequest *)request{
+-(void)makeReqToAddNormalUserv2:(NSMutableURLRequest *)request{
 	
     //GGLog(@"%@",request);
 	//Asynchronous URL connection
@@ -48,14 +48,14 @@
     NSXMLParser *xmlParser=[[NSXMLParser alloc]initWithData:webData];
 	
 	[xmlParser setDelegate:self];
-    orderResponse=[[NSMutableString alloc]init];
+    addUserResponse=[[NSMutableString alloc]init];
 	
 	//delegate method to send the response after parsing finished successfully
 	if([xmlParser parse]){
-       
-		[addorderDelegate responseForAddOrder:orderResponse];
+        
+		[addNormalUserDelegate responseForAddNormalUserv2:addUserResponse];
 	}
-	[orderResponse  release];
+	[addUserResponse  release];
 	[xmlParser release];
 	[theConnection release];
 }
@@ -65,7 +65,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error{
 	
 	//delegate method to indicate connection failed
-	[addorderDelegate requestFailed];
+	[addNormalUserDelegate requestFailed];
 	[webData release];
 	[theConnection release];
 }
@@ -76,9 +76,9 @@
 {
 	
 }
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string { 
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
 	
-	if(!currentElementValue) 
+	if(!currentElementValue)
 		currentElementValue = [[NSMutableString alloc] initWithString:string];
 	else
 		[currentElementValue appendString:string];
@@ -88,8 +88,8 @@
 -(void) parser:(NSXMLParser*) parser didEndElement:(NSString*) argElementName namespaceURI:(NSString*) argNamespaceURI qualifiedName:(NSString*) argQualifiedName
 {
 	
-	if([argElementName isEqualToString:@"AddOrderv2Result"]){
-        orderResponse=currentElementValue;
+	if([argElementName isEqualToString:@"AddNormalUserv2Result"]){
+        addUserResponse=currentElementValue;
     }
     
 	currentElementValue=nil;

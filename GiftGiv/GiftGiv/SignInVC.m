@@ -84,7 +84,7 @@
             
             dispatch_async(ImageLoader_Q, ^{
                 
-                NSString *urlStr=[[[listOfGifts objectAtIndex:i]objectForKey:@"GiftDetails"] giftThumbnailUrl];
+                NSString *urlStr=[[[listOfGifts objectAtIndex:i]objectForKey:@"GiftDetails"] giftImageUrl];
                 
                 NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
                 UIImage *thumbnail = [UIImage imageWithData:data];
@@ -96,20 +96,20 @@
                 
                 float newWidth;
                 float newHeight;
-                //125-40==> such that it will give 20px white space around the thumbnail in the teal colored box
+                //120-20==> such that it will give 10px white space around the thumbnail in the teal colored box
                 if(thumbnail.size.width>thumbnail.size.height){
-                    newWidth=125-40;
-                    newHeight=((125-40)*aspectRatioY)/aspectRatioX;
+                    newWidth=120-20;
+                    newHeight=((120-20)*aspectRatioY)/aspectRatioX;
                     
                 }
                 else if(thumbnail.size.width<thumbnail.size.height){
-                    newWidth=((125-40)*aspectRatioX)/aspectRatioY;
-                    newHeight=125-40;
+                    newWidth=((120-20)*aspectRatioX)/aspectRatioY;
+                    newHeight=120-20;
                     
                 }
                 else{
-                    newWidth=125-40;
-                    newHeight=125-40;
+                    newWidth=120-20;
+                    newHeight=120-20;
                     
                 }
                 UIImage *targetImg=[thumbnail imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];

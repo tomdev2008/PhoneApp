@@ -76,6 +76,8 @@
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     }
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"DummyUserId"])
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"DummyUserId"];
     
     [self performSelector:@selector(makeRequestForInvalidatingTheToken)];
     

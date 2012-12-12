@@ -101,22 +101,22 @@
     }
     else if([argElementName isEqualToString:@"ImageUrl"]){
         currentElementValue=(NSMutableString*)[[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        //GGLog(@"image url..%@",currentElementValue);
         giftItem.giftImageUrl=currentElementValue;
         
     }
     else if([argElementName isEqualToString:@"ImageBackSideUrl"]){
         
         currentElementValue=(NSMutableString*)[[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+        //GGLog(@"backside url..%@",currentElementValue);
         giftItem.giftImageBackSideUrl=currentElementValue;
         
     }
     else if([argElementName isEqualToString:@"ThumbnailUrl"]){
         currentElementValue=(NSMutableString*)[[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-        
+        //GGLog(@"thumbnail url..%@",currentElementValue);
         giftItem.giftThumbnailUrl=currentElementValue;
-        /*NSData *imgData=[NSData dataWithContentsOfURL:[NSURL URLWithString:currentElementValue]];
-        if(imgData!=nil)
-            giftItem.giftThumbnail=[UIImage imageWithData:imgData];*/
+        
     }
     else if([argElementName isEqualToString:@"CategoryId"]){
         
