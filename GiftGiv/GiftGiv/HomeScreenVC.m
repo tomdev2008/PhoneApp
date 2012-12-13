@@ -195,6 +195,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 #pragma mark -
 -(void)makeRequestToGetFacebookContacts{
+    
     if([CheckNetwork connectedToNetwork]){
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
         //GGLog(@"gift home id..%@",[[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]);

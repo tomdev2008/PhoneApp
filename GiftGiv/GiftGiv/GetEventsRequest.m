@@ -107,6 +107,7 @@
         event.fb_EventId=currentElementValue;
     }
     else if([argElementName isEqualToString:@"FB_Name"]){
+        GGLog(@"Name..%@",currentElementValue);
         event.fb_Name=currentElementValue;
     }
     else if([argElementName isEqualToString:@"FB_Picture"]){

@@ -83,4 +83,6 @@ typedef enum apiCall {
 - (BOOL)checkWhetherText:(NSString*)sourceText contains:(NSString*)searchedKeyword;
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI;
 - (void) closeSession;
+
+//- (void)postStatusMessage;
 @end

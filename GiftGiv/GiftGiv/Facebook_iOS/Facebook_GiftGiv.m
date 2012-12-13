@@ -72,7 +72,7 @@ static NSCalendar *gregorian=nil;
     }
 }
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
-    NSArray *permissions=[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",nil];
+    NSArray *permissions=[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",/*@"status_update",*/nil];
     
     return [FBSession openActiveSessionWithReadPermissions:permissions
                       allowLoginUI:allowLoginUI
@@ -120,6 +120,19 @@ static NSCalendar *gregorian=nil;
     
     [FBSession.activeSession closeAndClearTokenInformation];
 }
+#pragma mark -
+/*- (void)postStatusMessage{
+    if([[FBSession activeSession]isOpen]){
+        GGLog(@"session opened");
+    }
+    else
+        GGLog(@"session closed");
+    [FBRequestConnection startForPostStatusUpdate:@"Hello testing" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        GGLog(@"Result..%@,%@",result,[error localizedDescription]);
+    }];
+    
+}*/
+
 #pragma mark -
 #pragma mark Login helper
 
@@ -217,6 +230,7 @@ static NSCalendar *gregorian=nil;
                                    @"SELECT uid,first_name,last_name,birthday_date FROM user WHERE uid=me()", @"q",
                                    nil];
     currentAPICall=kAPIGetUserDetails;
+    
     // Make the API request that uses FQL
     [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
                                  HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
@@ -233,6 +247,7 @@ static NSCalendar *gregorian=nil;
                                          }
                                      }
                                  }];
+    //[self postStatusMessage];
     
 }
 //Get my friend birthdays

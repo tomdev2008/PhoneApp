@@ -517,6 +517,11 @@
         [cell.giftIcon_two.layer setBorderWidth:2.0];
         [cell.giftIcon_one addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
         [cell.giftIcon_two addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.giftIcon_one.titleLabel setNumberOfLines:6];
+        [cell.giftIcon_two.titleLabel setNumberOfLines:6];
+        
+        [cell.giftIcon_one.titleLabel setTextAlignment:UITextAlignmentCenter];
+        [cell.giftIcon_two.titleLabel setTextAlignment:UITextAlignmentCenter];
 		
 	}
     cell.tag=indexPath.row;
@@ -533,6 +538,12 @@
         NSString *priceValue=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftPrice];
         if(priceValue!=nil && ![priceValue isEqualToString:@""])
             cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",priceValue];
+        else{
+            NSString *giftDetailsStr_1=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftDetails];
+            [cell.giftIcon_one setTitle:giftDetailsStr_1 forState:UIControlStateNormal];
+            [cell.giftIcon_one setTitle:giftDetailsStr_1 forState:UIControlStateHighlighted];
+            
+        }
                     
     }
     UIImage *tempImg_one=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftThumbnail];
@@ -570,6 +581,11 @@
             NSString *priceValue_2=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftPrice];
             if(priceValue_2!=nil && ![priceValue_2 isEqualToString:@""])
                 cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",priceValue_2];
+            else{
+                NSString *giftDetailsStr=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftDetails];
+                [cell.giftIcon_two setTitle:giftDetailsStr forState:UIControlStateNormal];
+                [cell.giftIcon_two setTitle:giftDetailsStr forState:UIControlStateHighlighted];
+            }
             
         }
         UIImage *tempImg_two=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftThumbnail];
