@@ -16,6 +16,7 @@
 #import "CoomonRequestCreationObject.h"
 #import "GetCachesPathForTargetFile.h"
 #import "GiftItemsRequest.h"
+#import "GiftOptionsVC.h"
 
 @interface SignInVC : UIViewController<Facebook_GiftGivDelegate,MBProgressHUDDelegate,AddUserRequestDelegate,GiftItemsRequestDelegate>
 {
@@ -28,6 +29,7 @@
 
 - (IBAction)logInAction:(id)sender;
 - (IBAction)termsAction:(id)sender;
+- (IBAction)showListOfGifts:(id)sender;
 
 - (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
 - (void)stopHUD;

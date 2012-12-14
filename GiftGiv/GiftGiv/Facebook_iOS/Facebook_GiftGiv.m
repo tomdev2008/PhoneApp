@@ -72,7 +72,7 @@ static NSCalendar *gregorian=nil;
     }
 }
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
-    NSArray *permissions=[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",/*@"status_update",*/nil];
+    NSArray *permissions=[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",@"status_update",nil];
     
     return [FBSession openActiveSessionWithReadPermissions:permissions
                       allowLoginUI:allowLoginUI
@@ -120,8 +120,8 @@ static NSCalendar *gregorian=nil;
     
     [FBSession.activeSession closeAndClearTokenInformation];
 }
-#pragma mark -
-/*- (void)postStatusMessage{
+/*#pragma mark -
+- (void)postStatusMessage{
     if([[FBSession activeSession]isOpen]){
         GGLog(@"session opened");
     }

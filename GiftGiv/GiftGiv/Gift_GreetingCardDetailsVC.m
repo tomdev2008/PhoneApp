@@ -56,28 +56,33 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
-    
-       
-    profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
-    
-    NSString *profilePicId;
-    
-    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
-        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
+        
+        
+        profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
+        
+        NSString *profilePicId;
+        
+        if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
+            profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+        }
+        else{
+            profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
+        }
+        
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+        NSFileManager *fm=[NSFileManager defaultManager];
+        if([fm fileExistsAtPath:filePath]){
+            profilePic.image=[UIImage imageWithContentsOfFile:filePath];
+        }
+        else{
+            profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+        }
     }
+     // If there is no event selected, we should not show the header part, and make sure to occupy the entire screen with the rest of UI elements
     else{
-        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
-    }
-    
-    NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
-    NSFileManager *fm=[NSFileManager defaultManager];
-    if([fm fileExistsAtPath:filePath]){
-        profilePic.image=[UIImage imageWithContentsOfFile:filePath];
-    }
-    else{
-        profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+        
     }
     if(isGreetingCard){
         flowerImgView.hidden=YES;
@@ -389,35 +394,40 @@
     
 }
 - (IBAction)sendOptionsScreenAction:(id)sender {
-    
-    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-    int month=[components month];
-    int year=[components year];
-    
-     
-    int selectedMonth=[[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]] intValue];
-    int selectedDay=[[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]] intValue];
-    if(selectedMonth<month)
-        year++;
-    
-    SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
-    sendOptions.isSendElectronically=NO;
-    NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
-    [giftAndSenderInfo setObject:[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] forKey:@"RecipientName"];
-    [giftAndSenderInfo setObject:eventNameLbl.text forKey:@"EventName"];
-    [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
-    [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
-    [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
-    
-    [giftAndSenderInfo setObject:greetingPrice.text forKey:@"GiftPrice"];
-    [giftAndSenderInfo setObject:[personalMsgTxt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
-    
-    [giftAndSenderInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
-    
-    sendOptions.sendingInfoDict=giftAndSenderInfo;
-    [giftAndSenderInfo release];
-    [self.navigationController pushViewController:sendOptions animated:YES];
-    [sendOptions release];
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+        int month=[components month];
+        int year=[components year];
+        
+        
+        int selectedMonth=[[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]] intValue];
+        int selectedDay=[[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]] intValue];
+        if(selectedMonth<month)
+            year++;
+        
+        SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
+        sendOptions.isSendElectronically=NO;
+        NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
+        [giftAndSenderInfo setObject:[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] forKey:@"RecipientName"];
+        [giftAndSenderInfo setObject:eventNameLbl.text forKey:@"EventName"];
+        [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
+        [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
+        [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
+        
+        [giftAndSenderInfo setObject:greetingPrice.text forKey:@"GiftPrice"];
+        [giftAndSenderInfo setObject:[personalMsgTxt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
+        
+        [giftAndSenderInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
+        
+        sendOptions.sendingInfoDict=giftAndSenderInfo;
+        [giftAndSenderInfo release];
+        [self.navigationController pushViewController:sendOptions animated:YES];
+        [sendOptions release];
+    }
+    //Show facebook login alert if the user is not yet logged in.
+    else{
+        
+    }
 }
 - (void)textViewDidBeginEditing:(UITextView *)textView{
     

@@ -69,31 +69,32 @@
     [super viewDidLoad];
     
     electronicPhysicalList=[[NSMutableArray alloc]initWithObjects:@"Electronically",@"Physically", nil];
-    
-    /*if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"]){
-        eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"FBUserLocation"];
-    }
-    else*/
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
         eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
         
-    profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
-    
-    NSString *profilePicId;
-    
-    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
-        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+        profileNameLbl.text=[[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] uppercaseString];
+        
+        NSString *profilePicId;
+        
+        if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
+            profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"];
+        }
+        else{
+            profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
+        }
+        
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+        NSFileManager *fm=[NSFileManager defaultManager];
+        if([fm fileExistsAtPath:filePath]){
+            profilePic.image=[UIImage imageWithContentsOfFile:filePath];
+        }
+        else{
+            profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+        }
     }
+    // If there is no event selected, we should not show the header part, and make sure to occupy the entire screen with the rest of UI elements
     else{
-        profilePicId= [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"];
-    }
-    
-    NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
-    NSFileManager *fm=[NSFileManager defaultManager];
-    if([fm fileExistsAtPath:filePath]){
-        profilePic.image=[UIImage imageWithContentsOfFile:filePath];
-    }
-    else{
-        profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+        
     }
     [self performSelector:@selector(loadGiftImage) withObject:nil afterDelay:0.001];
     
@@ -463,53 +464,45 @@
 	[giftDetailsScroll setContentOffset:pt animated:YES];
 }
 - (IBAction)senderDetailsScreenAction:(id)sender {
-    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-    int month=[components month];
-    int year=[components year];
     
-    
-    int selectedMonth=[[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]] intValue];
-    int selectedDay=[[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]] intValue];
-    if(selectedMonth<month)
-        year++;
-    SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
-    if([[sendMediaLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@"Electronically"]){
-        sendOptions.isSendElectronically=YES;
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
+        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+        int month=[components month];
+        int year=[components year];
+        
+        
+        int selectedMonth=[[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]] intValue];
+        int selectedDay=[[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]] intValue];
+        if(selectedMonth<month)
+            year++;
+        SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
+        if([[sendMediaLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@"Electronically"]){
+            sendOptions.isSendElectronically=YES;
+        }
+        else
+            sendOptions.isSendElectronically=NO;
+        NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
+        [giftAndSenderInfo setObject:[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] forKey:@"RecipientName"];
+        [giftAndSenderInfo setObject:eventNameLbl.text forKey:@"EventName"];
+        [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
+        [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
+        [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
+        [giftAndSenderInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
+        [giftAndSenderInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
+        [giftAndSenderInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
+        
+        sendOptions.sendingInfoDict=giftAndSenderInfo;
+        [giftAndSenderInfo release];
+        [self.navigationController pushViewController:sendOptions animated:YES];
+        [sendOptions release];
     }
-    else
-        sendOptions.isSendElectronically=NO;
-    NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
-    [giftAndSenderInfo setObject:[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] forKey:@"RecipientName"];
-    [giftAndSenderInfo setObject:eventNameLbl.text forKey:@"EventName"];
-    [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
-    [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
-    [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
-    [giftAndSenderInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
-    [giftAndSenderInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
-    [giftAndSenderInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
-    
-    sendOptions.sendingInfoDict=giftAndSenderInfo;
-    [giftAndSenderInfo release];
-    [self.navigationController pushViewController:sendOptions animated:YES];
-    [sendOptions release];
-}
-/*#pragma mark - Actionsheet delegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    
-    switch (buttonIndex) {
-            //Electronically
-        case 0:
-            sendMediaLbl.text=@"   Electronically";
-            break;
-            //Physically
-        case 1:
-            sendMediaLbl.text=@"   Physically";
-            break;
+    //Show facebook login alert if the user is not yet logged in.
+    else{
+        
     }
-    [giftDetailsScroll setContentOffset:svos animated:YES];
-    giftDetailsScroll.userInteractionEnabled=YES;
+    
 }
-#pragma mark -*/
+#pragma mark -
 - (IBAction)previousNextPriceSegmentAction:(id)sender {
     
     switch ([(UISegmentedControl*)sender selectedSegmentIndex]) {

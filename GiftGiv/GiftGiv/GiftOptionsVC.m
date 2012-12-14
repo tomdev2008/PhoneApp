@@ -46,26 +46,31 @@
     [self showProgressHUD:self.view withMsg:nil];
     
     NSMutableDictionary *selectedEventDetails=[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"];
-    
-    eventNameLbl.text=[selectedEventDetails objectForKey:@"eventName"];
-    
-    profileNameLbl.text=[[selectedEventDetails objectForKey:@"userName"] uppercaseString];
-    NSString *profilePicId;
-    
-    if([selectedEventDetails objectForKey:@"linkedIn_userID"]){
-        profilePicId= [selectedEventDetails objectForKey:@"linkedIn_userID"];
+    if(selectedEventDetails){
+        eventNameLbl.text=[selectedEventDetails objectForKey:@"eventName"];
+        
+        profileNameLbl.text=[[selectedEventDetails objectForKey:@"userName"] uppercaseString];
+        NSString *profilePicId;
+        
+        if([selectedEventDetails objectForKey:@"linkedIn_userID"]){
+            profilePicId= [selectedEventDetails objectForKey:@"linkedIn_userID"];
+        }
+        else{
+            profilePicId= [selectedEventDetails objectForKey:@"userID"];
+        }
+        
+        NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
+        
+        if([fm fileExistsAtPath:filePath]){
+            profilePicImg.image=[UIImage imageWithContentsOfFile:filePath];
+        }
+        else{
+            profilePicImg.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+        }
     }
+     // If there is no event selected, we should not show the header part, and make sure to occupy the entire screen with the rest of UI elements
     else{
-        profilePicId= [selectedEventDetails objectForKey:@"userID"];
-    }
-    
-    NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",profilePicId]];
-    
-    if([fm fileExistsAtPath:filePath]){
-        profilePicImg.image=[UIImage imageWithContentsOfFile:filePath];
-    }
-    else{
-        profilePicImg.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+        
     }
         
     _searchBgImg.image=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];

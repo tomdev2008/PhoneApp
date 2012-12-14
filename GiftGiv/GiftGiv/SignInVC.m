@@ -181,6 +181,12 @@
 - (IBAction)termsAction:(id)sender {
     [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://thegiftgiv.com/terms.html"]];
 }
+
+- (IBAction)showListOfGifts:(id)sender {
+    GiftOptionsVC *giftOptions=[[GiftOptionsVC alloc]initWithNibName:@"GiftOptionsVC" bundle:nil];
+    [self.navigationController pushViewController:giftOptions animated:YES];
+    [giftOptions release];
+}
 #pragma mark - Facebook giftgiv delegates
 - (void)facebookLoggedIn{
     HomeScreenVC *home=[[HomeScreenVC alloc]initWithNibName:@"HomeScreenVC" bundle:nil];

@@ -1061,7 +1061,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [tempDict setObject:@"0" forKey:@"uid"];
                 [tempDict setObject:searchText forKey:@"name"];
                 [tempDict setObject:@"" forKey:@"event_type"];
-                [tempDict setObject:@"" forKey:@"FBUserLocation"];
+                [tempDict setObject:@"Send a gift" forKey:@"FBUserLocation"];
                 [searchContactsArray addObject:tempDict];
                 [tempDict release];
             }
