@@ -901,7 +901,7 @@ static NSDateFormatter *customDateFormat=nil;
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"DummyUserId"];
    
     if([sourceDict objectForKey:@"uid"]){
-        if([[sourceDict objectForKey:@"uid"] isEqualToString:@"0"]){
+        if([[NSString stringWithFormat:@"%@",[sourceDict objectForKey:@"uid"]] isEqualToString:@"0"]){
             NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddNormalUserv2>\n<tem:fbId></tem:fbId>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName></tem:lastName>\n<tem:profilePictureUrl></tem:profilePictureUrl>\n</tem:AddNormalUserv2>",[sourceDict objectForKey:@"name"]];
             
             NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);

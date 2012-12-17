@@ -332,7 +332,7 @@
 	PaymentDetails *paymentDetails = [[[PaymentDetails alloc] init] autorelease];
 	[sreq addPaymentDetails:paymentDetails];
     sreq.NoShipping = DO_NOT_DISPLAY_SHIPPING;
-	//[sreq setSolutionType:SOLE];
+    [sreq setSolutionType:SOLE];
 	sreq.ReturnURL = RETURN_URL;
 	sreq.CancelURL = CANCEL_URL;
     

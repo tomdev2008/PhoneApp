@@ -70,7 +70,10 @@
     }
      // If there is no event selected, we should not show the header part, and make sure to occupy the entire screen with the rest of UI elements
     else{
-        
+        CGRect scrollFrame=_giftsBgScroll.frame;
+        scrollFrame.origin.y=44;
+        scrollFrame.size.height=scrollFrame.size.height+48;
+        _giftsBgScroll.frame=scrollFrame;
     }
         
     _searchBgImg.image=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];

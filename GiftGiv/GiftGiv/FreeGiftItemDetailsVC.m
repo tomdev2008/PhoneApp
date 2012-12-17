@@ -54,7 +54,7 @@
     }
      // If there is no event selected, we should not show the header part, and make sure to occupy the entire screen with the rest of UI elements
     else{
-        
+        _detailsBgView.frame=CGRectMake(_detailsBgView.frame.origin.x, _detailsBgView.frame.origin.y-47, _detailsBgView.frame.size.width, _detailsBgView.frame.size.height);
     }
     
     [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:_giftItemImg];
@@ -354,7 +354,14 @@
     }
     //Show facebook login alert if the user is not yet logged in.
     else{
+        AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Please login facebook to select an event of your loved ones", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);
+    }
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if(buttonIndex==1){
         
+        GGLog(@"make sure to login facebook");
     }
 }
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView

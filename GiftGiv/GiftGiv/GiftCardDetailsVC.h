@@ -21,6 +21,7 @@
     NSMutableArray *monthsArray,*daysArray;
     GfitZoomInView *zoomScrollView;
 }
+@property (retain, nonatomic) IBOutlet UILabel *detailsTxtLbl;
 - (IBAction)zoomDoneAction:(id)sender;
 - (IBAction)electronicPhysicNavigatorAction:(id)sender;
 - (IBAction)electronicPhysicSelDone:(id)sender;

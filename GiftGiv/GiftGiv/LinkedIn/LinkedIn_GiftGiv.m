@@ -185,10 +185,10 @@ static NSCalendar *gregorianCalendar=nil;
                         }
                     }
                     else if([[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"]isKindOfClass:[NSDictionary class]]){
-                        
+                        //GGLog(@"Updates1...%@",updateDict);
                         //take the update if it is related to position
                         if([[[[updateDict objectForKey:@"updated-fields"] objectForKey:@"update-field"] objectForKey:@"name"] isEqualToString:@"person/positions"]){
-                            
+                            //GGLog(@"Updates...%@",updateDict);
                             NSMutableDictionary *tempDict=[[NSMutableDictionary alloc] initWithCapacity:2];
                             [tempDict setObject:[[[updateDict objectForKey:@"update-content"]objectForKey:@"person"]objectForKey:@"id"] forKey:@"id"];
                             [tempDict setObject:[updateDict objectForKey:@"update-key"] forKey:@"update_key"];

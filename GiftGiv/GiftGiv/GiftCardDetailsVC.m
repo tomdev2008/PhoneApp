@@ -94,7 +94,13 @@
     }
     // If there is no event selected, we should not show the header part, and make sure to occupy the entire screen with the rest of UI elements
     else{
-        
+        CGRect giftImgRect=giftImg.frame;
+        giftImgRect.origin.y=giftImg.frame.origin.y-47;
+        giftImg.frame=giftImgRect;
+        _detailsTxtLbl.frame=CGRectMake(_detailsTxtLbl.frame.origin.x, _detailsTxtLbl.frame.origin.y-47, _detailsTxtLbl.frame.size.width, _detailsTxtLbl.frame.size.height);
+        giftNameLbl.frame=CGRectMake(giftNameLbl.frame.origin.x, giftNameLbl.frame.origin.y-47, giftNameLbl.frame.size.width, giftNameLbl.frame.size.height);
+        giftPriceLbl.frame=CGRectMake(giftPriceLbl.frame.origin.x, giftPriceLbl.frame.origin.y-47, giftPriceLbl.frame.size.width, giftPriceLbl.frame.size.height);
+        shippingCostLbl.frame=CGRectMake(shippingCostLbl.frame.origin.x, shippingCostLbl.frame.origin.y-47, shippingCostLbl.frame.size.width, shippingCostLbl.frame.size.height);
     }
     [self performSelector:@selector(loadGiftImage) withObject:nil afterDelay:0.001];
     
@@ -498,9 +504,16 @@
     }
     //Show facebook login alert if the user is not yet logged in.
     else{
-        
+        AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Please login facebook to select an event of your loved ones", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);
     }
     
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if(buttonIndex==1){
+    
+        GGLog(@"make sure to login facebook");
+    }
 }
 #pragma mark -
 - (IBAction)previousNextPriceSegmentAction:(id)sender {
@@ -835,6 +848,7 @@
     [self setShippingCostLbl:nil];
     [self setGiftTitleInZoomScreen:nil];
     [self setZoomDoneBtn:nil];
+    [self setDetailsTxtLbl:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -878,6 +892,7 @@
     [giftDetails release];
     [giftOptionsListBgView release];
     [shippingCostLbl release];
+    [_detailsTxtLbl release];
     [super dealloc];
 }
 

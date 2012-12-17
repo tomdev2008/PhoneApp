@@ -39,6 +39,8 @@
         loginBtn.frame=CGRectMake(loginBtn.frame.origin.x, loginBtn.frame.origin.y+25, loginBtn.frame.size.width, loginBtn.frame.size.height);
         loginLbl.frame=CGRectMake(loginLbl.frame.origin.x, loginLbl.frame.origin.y+25, loginLbl.frame.size.width, loginLbl.frame.size.height);
         giftgivLogo.frame=CGRectMake(giftgivLogo.frame.origin.x, giftgivLogo.frame.origin.y+25, giftgivLogo.frame.size.width, giftgivLogo.frame.size.height);
+        _orLabel.frame=CGRectMake(_orLabel.frame.origin.x, _orLabel.frame.origin.y+25, _orLabel.frame.size.width, _orLabel.frame.size.height);
+        _checkOutBtn.frame=CGRectMake(_checkOutBtn.frame.origin.x, _checkOutBtn.frame.origin.y+25, _checkOutBtn.frame.size.width, _checkOutBtn.frame.size.height);
     }
     else{
         
@@ -291,6 +293,8 @@
     [self setGiftgivLogo:nil];
     [self setLoginLbl:nil];
     [self setLoginBtn:nil];
+    [self setCheckOutBtn:nil];
+    [self setOrLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -307,6 +311,8 @@
     [giftgivLogo release];
     [loginLbl release];
     [loginBtn release];
+    [_checkOutBtn release];
+    [_orLabel release];
     [super dealloc];
 }
 

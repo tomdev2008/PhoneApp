@@ -23,6 +23,8 @@
     MBProgressHUD *HUD;
     Facebook_GiftGiv *fb_giftgiv;
 }
+@property (retain, nonatomic) IBOutlet UILabel *orLabel;
+@property (retain, nonatomic) IBOutlet UIButton *checkOutBtn;
 @property (retain, nonatomic) IBOutlet UIButton *loginBtn;
 @property (retain, nonatomic) IBOutlet UILabel *loginLbl;
 @property (retain, nonatomic) IBOutlet UIImageView *giftgivLogo;

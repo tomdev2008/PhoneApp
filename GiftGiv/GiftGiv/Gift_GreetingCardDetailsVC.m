@@ -56,6 +56,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if(isGreetingCard){
+        flowerImgView.hidden=YES;
+        frontLbl.hidden=NO;
+        backLbl.hidden=NO;
+        frontGreetingImg.hidden=NO;
+        backGreetingImg.hidden=NO;
+        [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:frontGreetingImg];
+        [self loadGiftImage:[giftItemInfo giftImageBackSideUrl] forAnObject:backGreetingImg];
+        detailsBgView.frame=CGRectMake(0, 589, 320, 300);
+        
+    }
+    else{
+        frontLbl.hidden=YES;
+        backLbl.hidden=YES;
+        frontGreetingImg.hidden=YES;
+        backGreetingImg.hidden=YES;
+        flowerImgView.hidden=NO;
+        [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:flowerImgView];
+        detailsBgView.frame=CGRectMake(0, 355, 320, 300);
+    }
+    
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
         eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
         
@@ -83,27 +105,24 @@
      // If there is no event selected, we should not show the header part, and make sure to occupy the entire screen with the rest of UI elements
     else{
         
-    }
-    if(isGreetingCard){
-        flowerImgView.hidden=YES;
-        frontLbl.hidden=NO;
-        backLbl.hidden=NO;
-        frontGreetingImg.hidden=NO;
-        backGreetingImg.hidden=NO;
-        [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:frontGreetingImg];
-        [self loadGiftImage:[giftItemInfo giftImageBackSideUrl] forAnObject:backGreetingImg];
-        detailsBgView.frame=CGRectMake(0, 589, 320, 300);
+        if(!frontGreetingImg.hidden){
+            frontGreetingImg.frame=CGRectMake(frontGreetingImg.frame.origin.x, frontGreetingImg.frame.origin.y-47, frontGreetingImg.frame.size.width, frontGreetingImg.frame.size.height);
+            frontLbl.frame=CGRectMake(frontLbl.frame.origin.x, frontLbl.frame.origin.y-47, frontLbl.frame.size.width, frontLbl.frame.size.height);
+            
+        }
+        if(!backGreetingImg.hidden){
+            backGreetingImg.frame=CGRectMake(backGreetingImg.frame.origin.x, backGreetingImg.frame.origin.y-47, backGreetingImg.frame.size.width, frontGreetingImg.frame.size.height);
+            backLbl.frame=CGRectMake(backLbl.frame.origin.x, backLbl.frame.origin.y-47, backLbl.frame.size.width, backLbl.frame.size.height);
+        }
+        if(!flowerImgView.hidden){
+            flowerImgView.frame=CGRectMake(flowerImgView.frame.origin.x, flowerImgView.frame.origin.y-47, flowerImgView.frame.size.width, flowerImgView.frame.size.height);
+            backLbl.frame=CGRectMake(backLbl.frame.origin.x, backLbl.frame.origin.y-47, backLbl.frame.size.width, backLbl.frame.size.height);
+        }
+            
         
+        detailsBgView.frame=CGRectMake(detailsBgView.frame.origin.x, detailsBgView.frame.origin.y-47, detailsBgView.frame.size.width, detailsBgView.frame.size.height);
     }
-    else{
-        frontLbl.hidden=YES;
-        backLbl.hidden=YES;
-        frontGreetingImg.hidden=YES;
-        backGreetingImg.hidden=YES;
-        flowerImgView.hidden=NO;
-        [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:flowerImgView];
-        detailsBgView.frame=CGRectMake(0, 355, 320, 300);
-    }
+    
     
     UITapGestureRecognizer *tapRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(zoomInOutForCards:)];
     tapRecognizer.numberOfTapsRequired=2;
@@ -426,7 +445,14 @@
     }
     //Show facebook login alert if the user is not yet logged in.
     else{
+        AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Please login facebook to select an event of your loved ones", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);
+    }
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if(buttonIndex==1){
         
+        GGLog(@"make sure to login facebook");
     }
 }
 - (void)textViewDidBeginEditing:(UITextView *)textView{

@@ -166,7 +166,7 @@
 					</object>
 					<object class="IBUIButton" id="943580477">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">264</int>
+						<int key="NSvFlags">261</int>
 						<string key="NSFrame">{{97, 293}, {147, 27}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
@@ -257,6 +257,22 @@
 						<reference key="destination" ref="158766354"/>
 					</object>
 					<int key="connectionID">15</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">checkOutBtn</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="943580477"/>
+					</object>
+					<int key="connectionID">20</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">orLabel</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="413552255"/>
+					</object>
+					<int key="connectionID">21</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -369,7 +385,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">19</int>
+			<int key="maxID">21</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -396,11 +412,17 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="checkOutBtn">UIButton</string>
 						<string key="giftgivLogo">UIImageView</string>
 						<string key="loginBtn">UIButton</string>
 						<string key="loginLbl">UILabel</string>
+						<string key="orLabel">UILabel</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="checkOutBtn">
+							<string key="name">checkOutBtn</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="giftgivLogo">
 							<string key="name">giftgivLogo</string>
 							<string key="candidateClassName">UIImageView</string>
@@ -411,6 +433,10 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="loginLbl">
 							<string key="name">loginLbl</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="orLabel">
+							<string key="name">orLabel</string>
 							<string key="candidateClassName">UILabel</string>
 						</object>
 					</dictionary>
