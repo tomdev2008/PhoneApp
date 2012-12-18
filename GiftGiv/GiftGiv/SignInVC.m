@@ -42,11 +42,7 @@
         _orLabel.frame=CGRectMake(_orLabel.frame.origin.x, _orLabel.frame.origin.y+25, _orLabel.frame.size.width, _orLabel.frame.size.height);
         _checkOutBtn.frame=CGRectMake(_checkOutBtn.frame.origin.x, _checkOutBtn.frame.origin.y+25, _checkOutBtn.frame.size.width, _checkOutBtn.frame.size.height);
     }
-    else{
-        
-    }
-    
-    
+       
     [super viewDidLoad];
     
 }
@@ -161,15 +157,11 @@
     //Check whether network connection is available to login facebook account
     
     if([CheckNetwork connectedToNetwork]){
-        //[self showProgressHUD:self.view withMsg:nil];
-        //authorize the application with facebook
-        //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:self];
-        
+               
         //Facebook
         if([sender tag]==1)
             [fb_giftgiv authorizeOurAppWithFacebook];
 
-        
     }
     
     else{
@@ -199,10 +191,7 @@
     //Add user in the database of giftgiv server
     [[NSUserDefaults standardUserDefaults]setObject:userDetails forKey:@"MyFBDetails"];
     //pic url: https://graph.facebook.com/1061420790/picture
-    
-    
-    //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
-    
+       
     
     if([CheckNetwork connectedToNetwork]){
         NSDateFormatter *dateformatter=[[NSDateFormatter alloc]init];
@@ -244,14 +233,9 @@
         [[NSUserDefaults standardUserDefaults]setObject:[response objectForKey:@"GiftGivUser"] forKey:@"MyGiftGivUserId"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"GiftGivUserIDReceived" object:nil];
     }
-    //GGLog(@"gift giv..%@",[[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]);
+   
     [self stopHUD];
     
-    //Once facebook logged in, will show Home/Events screen
-    /*HomeScreenVC *home=[[HomeScreenVC alloc]initWithNibName:@"HomeScreenVC" bundle:nil];
-    [self.navigationController pushViewController:home animated:NO];
-    [home release];
-    [[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];*/
     
 }
 -(void) requestFailed{

@@ -26,6 +26,7 @@
 #import "AddUser_LinkedInRequest.h"
 #import "LinkedInContactsRequest.h"
 #import "AddNormalUserv_2_Request.h"
+#import "GiftItemObject.h"
 
 @interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,GetEventsDelegate,UISearchBarDelegate, FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate,UIScrollViewDelegate,AddNormalUserv_2_RequestDelegate>
 
@@ -70,7 +71,7 @@
 @property (retain, nonatomic) IBOutlet UIView *contactsSearchView;
 @property (retain, nonatomic) NSMutableArray *listOfContactsArray;
 @property (retain, nonatomic) IBOutlet UIImageView *searchBgImg;
-
+@property (retain, nonatomic) GiftItemObject *giftDetailsWhichWasSelected;
 @property (retain, nonatomic) IBOutlet CustomPageControl *pageControlForEventGroups;
 
 - (IBAction)settingsAction:(id)sender;

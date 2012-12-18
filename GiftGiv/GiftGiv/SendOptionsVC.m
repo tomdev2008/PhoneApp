@@ -463,15 +463,7 @@
         return [listOfStates count];
     else{
         return [listOfSendOptions count];
-        /*if(!isSendElectronically)
-            [mediaActions addButtonWithTitle:@"I know the address"];
-        if(isSendElectronically)
-            [mediaActions addButtonWithTitle:@"Recipient email address"];
-        else
-            [mediaActions addButtonWithTitle:@"Email recipient for address"];
-        
-        [mediaActions addButtonWithTitle:@"SMS recipient for address"];*/
-        
+               
     }
     
 }

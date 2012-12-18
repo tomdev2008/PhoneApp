@@ -34,6 +34,7 @@
 @synthesize zoomDoneBtn;
 @synthesize giftTitleInZoomScreen;
 
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -56,7 +57,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    fb_giftgiv_detailsScreen=[[Facebook_GiftGiv alloc]init];
+    fb_giftgiv_detailsScreen.fbGiftGivDelegate=self;
     if(isGreetingCard){
         flowerImgView.hidden=YES;
         frontLbl.hidden=NO;
@@ -445,14 +447,37 @@
     }
     //Show facebook login alert if the user is not yet logged in.
     else{
-        AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Please login facebook to select an event of your loved ones", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);
+        
+        NSString *fbAccessToken=[[NSUserDefaults standardUserDefaults] objectForKey:@"FBAccessTokenKey"];
+        NSDate *fbExpirationDateKey=[[NSUserDefaults standardUserDefaults] objectForKey:@"FBExpirationDateKey"];
+        
+        //Load HomeScreen to show the list of events
+        if ((fbAccessToken!=nil && [fbAccessToken length]) && (fbExpirationDateKey!=nil)) {
+            Facebook_GiftGiv *fb_giftgiv=[[Facebook_GiftGiv alloc]init];
+            [fb_giftgiv authorizeOurAppWithFacebook];
+            
+            [fb_giftgiv release];
+            
+            HomeScreenVC *home=[[HomeScreenVC alloc]initWithNibName:@"HomeScreenVC" bundle:nil];
+            home.giftDetailsWhichWasSelected=giftItemInfo;
+            [self.navigationController pushViewController:home animated:NO];
+            [home release];
+            
+        }
+        //Show an alert
+        else{
+            AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Please login facebook to select an event of your loved ones", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);
+        }
+        
+        
+        
     }
 }
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     if(buttonIndex==1){
         
-        GGLog(@"make sure to login facebook");
+        [fb_giftgiv_detailsScreen authorizeOurAppWithFacebook];
     }
 }
 - (void)textViewDidBeginEditing:(UITextView *)textView{
@@ -582,6 +607,7 @@
     [shippingCostLbl release];
     [giftTitleInZoomScreen release];
     [zoomDoneBtn release];
+    [fb_giftgiv_detailsScreen release];
     [super dealloc];
 }
 
@@ -710,5 +736,65 @@
         giftTitleInZoomScreen.hidden=YES;
     }
     
+}
+#pragma mark - Facebook giftgiv delegates
+- (void)facebookLoggedIn{
+    
+    HomeScreenVC *home=[[HomeScreenVC alloc]initWithNibName:@"HomeScreenVC" bundle:nil];
+    home.giftDetailsWhichWasSelected=giftItemInfo;
+    [self.navigationController pushViewController:home animated:NO];
+    [home release];
+}
+- (void)facebookDidLoggedInWithUserDetails:(NSMutableDictionary*)userDetails{
+    //Add user in the database of giftgiv server
+    [[NSUserDefaults standardUserDefaults]setObject:userDetails forKey:@"MyFBDetails"];
+    //pic url: https://graph.facebook.com/1061420790/picture
+    
+    
+    if([CheckNetwork connectedToNetwork]){
+        NSDateFormatter *dateformatter=[[NSDateFormatter alloc]init];
+        [dateformatter setDateFormat:@"MM/dd/yyyy"];
+        NSDate *tempDate=[dateformatter dateFromString:[userDetails objectForKey:@"birthday_date"]];
+        [dateformatter setDateFormat:@"yyyy-MM-dd"];
+        NSString *dateString=[dateformatter stringFromDate:tempDate];
+        [dateformatter release];
+        
+        NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:AddGiftGivUser>\n<tem:fbId>%@</tem:fbId>\n<tem:fbAccessToken>%@</tem:fbAccessToken>\n<tem:firstName>%@</tem:firstName>\n<tem:lastName>%@</tem:lastName>\n<tem:profilePictureUrl>https://graph.facebook.com/%@/picture</tem:profilePictureUrl>\n<tem:dob>%@</tem:dob>\n<tem:email></tem:email></tem:AddGiftGivUser>",[userDetails objectForKey:@"uid"],[[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"],[userDetails objectForKey:@"first_name"],[userDetails objectForKey:@"last_name"],[userDetails objectForKey:@"uid"],dateString];
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+        GGLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddGiftGivUser"];
+        
+        AddUserRequest *addUser=[[AddUserRequest alloc]init];
+        [addUser setAddUserDelegate:self];
+        [addUser addUserServiceRequest:theRequest];
+        [addUser release];
+    }
+    
+    
+}
+- (void)facebookDidRequestFailed{
+    
+    //AlertWithMessageAndDelegate(@"Oops", @"facebook request failed", nil);
+}
+- (void)facebookDidCancelledLogin{
+    
+    
+}
+
+#pragma mark - Add User Request delegate
+-(void) responseForAddUser:(NSMutableDictionary*)response{
+    //GGLog(@"add user..%@,%@",response,[[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]);
+    GGLog(@"Received gift giv user...%@",[response objectForKey:@"GiftGivUser"]);
+    if([response objectForKey:@"GiftGivUser"]){
+        
+        [[NSUserDefaults standardUserDefaults]setObject:[response objectForKey:@"GiftGivUser"] forKey:@"MyGiftGivUserId"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"GiftGivUserIDReceived" object:nil];
+    }
+        
+}
+-(void) requestFailed{
+    //AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
+
 }
 @end

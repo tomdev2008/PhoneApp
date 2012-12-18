@@ -12,14 +12,21 @@
 #import "SendOptionsVC.h"
 #import "GiftItemObject.h"
 #import "GfitZoomInView.h"
+#import "Facebook_GiftGiv.h"
+#import "HomeScreenVC.h"
+#import "AddUserRequest.h"
+#import "CoomonRequestCreationObject.h"
 
-@interface GiftCardDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,GfitZoomInViewDelegate>{
+@interface GiftCardDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,GfitZoomInViewDelegate,Facebook_GiftGivDelegate,AddUserRequestDelegate>{
+    
     CGPoint svos;
     int selectedPriceRow;
     int selectedElectronicPhysicRow;
     NSMutableArray *electronicPhysicalList;
     NSMutableArray *monthsArray,*daysArray;
     GfitZoomInView *zoomScrollView;
+   
+    Facebook_GiftGiv *fb_giftgiv_detailsScreen;
 }
 @property (retain, nonatomic) IBOutlet UILabel *detailsTxtLbl;
 - (IBAction)zoomDoneAction:(id)sender;

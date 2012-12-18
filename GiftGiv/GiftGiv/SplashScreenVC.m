@@ -66,23 +66,11 @@
     else{
         [self performSelector:@selector(loadSignInScreen) withObject:nil afterDelay:2.0];
     }
-    
-    if([FBSession activeSession].isOpen){//[FBSession activeSession].isOpen
         
-        
-    }
-    else{
-        
-    }
-    
-    
-    //[fb_giftgiv release];
-    
     [super viewWillAppear:YES];
 }
 -(void)loadHomeScreen{
-    //[loadingIndicator setHidden:YES];
-    
+        
     //Load Home/Events by using Animation function EaseIn for Splash screen
 	CATransition *revealTransition=[self getRevealAnimation];
 	
@@ -93,7 +81,6 @@
     [home release];
 }
 -(void)loadSignInScreen{
-    //[loadingIndicator setHidden:YES];
     
     //Load signIn screen
     SignInVC *signIn=[[SignInVC alloc]initWithNibName:@"SignInVC" bundle:nil];

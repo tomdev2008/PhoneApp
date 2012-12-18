@@ -15,11 +15,16 @@
 #import "GetCachesPathForTargetFile.h"
 #import "NSAttributedString+Attributes.h"
 #import "SendOptionsVC.h"
+#import "Facebook_GiftGiv.h"
+#import "HomeScreenVC.h"
+#import "AddUserRequest.h"
+#import "CoomonRequestCreationObject.h"
 
-@interface FreeGiftItemDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,GfitZoomInViewDelegate>{
+@interface FreeGiftItemDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,GfitZoomInViewDelegate,Facebook_GiftGivDelegate,AddUserRequestDelegate>{
     CGPoint svos;
     NSMutableArray *monthsArray,*daysArray;
     GfitZoomInView *zoomScrollView;
+    Facebook_GiftGiv *fb_giftgiv_detailsScreen;
 }
 @property (retain, nonatomic) IBOutlet UILabel *eventNameLbl;
 @property (retain, nonatomic) IBOutlet UIImageView *profilePic;

@@ -17,7 +17,7 @@
 @synthesize eventNameLbl;
 @synthesize searchFld;
 @synthesize searchGiftsBgView;
-
+@synthesize selectedGiftItemDetails;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -41,6 +41,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if(selectedGiftItemDetails){
+        [self performSelector:@selector(showGiftDetailsScreen:) withObject:selectedGiftItemDetails];
+    }
+    
     fm=[NSFileManager defaultManager];
     
     [self showProgressHUD:self.view withMsg:nil];
@@ -92,6 +97,7 @@
     eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+5+profileNameLbl.frame.size.width, 64, eventName_newSize.width, 21);
     
     [self makeRequestToGetCategories];
+    
     
 
 }
@@ -239,14 +245,26 @@
     
     NSMutableIndexSet *indexSet=[[NSMutableIndexSet alloc] init];
 
-    for(int i=0;i<[giftCategoriesList count];i++){
+    
+    
+    [giftCategoriesList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if(![self checkWhetherGiftItemsAvailableInACategory:[obj catId]]){
+            [indexSet addIndex:idx];
+        }
+    }];
+    
+    [giftCategoriesList removeObjectsAtIndexes:indexSet];
+    [indexSet release];
+    
+    
+    /*for(int i=0;i<[giftCategoriesList count];i++){
         if(![self checkWhetherGiftItemsAvailableInACategory:[[giftCategoriesList objectAtIndex:i]catId]]){
             [indexSet addIndex:i];     
         }
     }
        
     [giftCategoriesList removeObjectsAtIndexes:indexSet];
-    [indexSet release];
+    [indexSet release];*/
     
     totalCats=[giftCategoriesList count];
     _giftsBgScroll.contentSize=CGSizeMake(320*(totalCats+3), _giftsBgScroll.bounds.size.height);
@@ -362,6 +380,7 @@
 }
 
 - (IBAction)backToEvents:(id)sender {
+    selectedGiftItemDetails=nil;
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (IBAction)giftCategoriesPaeControlAction:(id)sender {
@@ -630,8 +649,11 @@
     int rowNum=[(GiftCustomCell*)[(UIButton*)sender superview] tag];
     int tableTag=[(GiftCustomCell*)[(UIButton*)sender superview]tableTagForCell];
     int columNum=[sender tag];
-    GiftItemObject *selectedGift=[[[currentGiftItems objectAtIndex:tableTag-1]objectAtIndex:(rowNum*2+columNum)-1]objectForKey:@"GiftDetails"];
-
+    GiftItemObject *selectedGiftItem=[[[currentGiftItems objectAtIndex:tableTag-1]objectAtIndex:(rowNum*2+columNum)-1]objectForKey:@"GiftDetails"];
+    [self performSelector:@selector(showGiftDetailsScreen:) withObject:selectedGiftItem];
+        
+}
+-(void)showGiftDetailsScreen:(GiftItemObject*)selectedGift{
     //gift cards
     if([[selectedGift.giftPrice componentsSeparatedByString:@";"] count]>1){
         GiftCardDetailsVC *giftCardDetails=[[GiftCardDetailsVC alloc]initWithNibName:@"GiftCardDetailsVC" bundle:nil];
@@ -659,9 +681,8 @@
             [self.navigationController pushViewController:greetingCardDetails animated:YES];
             [greetingCardDetails release];
         }
-       
+        
     }
-    
 }
 #pragma mark - GCD
 -(int)getTheGCDFirstNum:(int)width secondNum:(int)height{
@@ -829,7 +850,7 @@
         [currentGiftItems release];
         currentGiftItems=nil;
     }
-    
+    [selectedGiftItemDetails release];
     
     [profilePicImg release];
     [profileNameLbl release];

@@ -14,7 +14,7 @@
 @synthesize contactsSearchView;
 @synthesize pageControlForEventGroups;
 @synthesize listOfContactsArray;
-
+@synthesize giftDetailsWhichWasSelected;
 static NSDateFormatter *customDateFormat=nil;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -100,7 +100,9 @@ static NSDateFormatter *customDateFormat=nil;
     }
 }
 -(void)viewWillAppear:(BOOL)animated{
-    
+
+    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"])
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
     //If there are no events stored in the application level, get the events
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
         
@@ -192,6 +194,29 @@ static NSDateFormatter *customDateFormat=nil;
     if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
         [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
     }
+    //Gift was already selected by the user before he/she logged in, we are going to set HomeScreenVC as the first controller instead of Gifts page. Of course user can view the gift details when he/she selects the event and can be selected any other gift by simply tapping on Back button on gift details screen, such that it will be the normal flow when user logs in.
+    if(giftDetailsWhichWasSelected){
+       
+        NSMutableArray *controllersArray=[NSMutableArray arrayWithArray:self.navigationController.viewControllers];
+        NSMutableIndexSet *indexSet=[[NSMutableIndexSet alloc] init];
+        
+        [controllersArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if([obj isKindOfClass:[GiftOptionsVC class]] ||[obj isKindOfClass:[GiftCardDetailsVC class]] || [obj isKindOfClass:[Gift_GreetingCardDetailsVC class]] || [obj isKindOfClass:[FreeGiftItemDetailsVC class]]){
+                [indexSet addIndex:idx];
+            }
+        }];
+        
+        //NSArray *tempReleasableObjects=[controllersArray objectsAtIndexes:indexSet];
+        [controllersArray removeObjectsAtIndexes:indexSet];
+        
+                
+        [indexSet release];
+       
+        [self.navigationController setViewControllers:(NSArray*)controllersArray];
+       
+    }
+    
+    
 }
 #pragma mark -
 -(void)makeRequestToGetFacebookContacts{
@@ -890,8 +915,13 @@ static NSDateFormatter *customDateFormat=nil;
             }
         }
     }
-        
-    [self.navigationController pushViewController:giftOptions animated:YES];
+    if(giftDetailsWhichWasSelected){
+        giftOptions.selectedGiftItemDetails=giftDetailsWhichWasSelected;
+        giftDetailsWhichWasSelected=nil;
+     //   [self.navigationController pushViewController:giftOptions animated:NO];
+    }
+   // else
+        [self.navigationController pushViewController:giftOptions animated:YES];
     [giftOptions release];
     
     
@@ -2135,6 +2165,7 @@ static NSDateFormatter *customDateFormat=nil;
     }
     [_eventsBgScroll release];
     [_searchBgImg release];
+    [giftDetailsWhichWasSelected release];
     [super dealloc];
 }
 
