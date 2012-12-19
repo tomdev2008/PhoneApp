@@ -241,86 +241,83 @@
     if(listOfAllGiftItems==nil){
         listOfAllGiftItems=[[NSMutableArray alloc]init];
     }
-    [listOfAllGiftItems addObjectsFromArray:listOfGifts];
-    
-    NSMutableIndexSet *indexSet=[[NSMutableIndexSet alloc] init];
-
-    
-    
-    [giftCategoriesList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if(![self checkWhetherGiftItemsAvailableInACategory:[obj catId]]){
-            [indexSet addIndex:idx];
-        }
-    }];
-    
-    [giftCategoriesList removeObjectsAtIndexes:indexSet];
-    [indexSet release];
-    
-    
-    /*for(int i=0;i<[giftCategoriesList count];i++){
-        if(![self checkWhetherGiftItemsAvailableInACategory:[[giftCategoriesList objectAtIndex:i]catId]]){
-            [indexSet addIndex:i];     
-        }
-    }
-       
-    [giftCategoriesList removeObjectsAtIndexes:indexSet];
-    [indexSet release];*/
-    
-    totalCats=[giftCategoriesList count];
-    _giftsBgScroll.contentSize=CGSizeMake(320*(totalCats+3), _giftsBgScroll.bounds.size.height);
-    if([[_giftsBgScroll subviews] count]){
-        for(id subView in [_giftsBgScroll subviews]){
-            if([subView isKindOfClass:[UILabel class]] || [subView isKindOfClass:[UITableView class]]){
-                [subView removeFromSuperview];
+    if([listOfGifts count]){
+        [listOfAllGiftItems addObjectsFromArray:listOfGifts];
+        
+        NSMutableIndexSet *indexSet=[[NSMutableIndexSet alloc] init];
+        
+        [giftCategoriesList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if(![self checkWhetherGiftItemsAvailableInACategory:[obj catId]]){
+                [indexSet addIndex:idx];
+            }
+        }];
+        
+        [giftCategoriesList removeObjectsAtIndexes:indexSet];
+        [indexSet release];
+        
+        totalCats=[giftCategoriesList count];
+        _giftsBgScroll.contentSize=CGSizeMake(320*(totalCats+3), _giftsBgScroll.bounds.size.height);
+        if([[_giftsBgScroll subviews] count]){
+            for(id subView in [_giftsBgScroll subviews]){
+                if([subView isKindOfClass:[UILabel class]] || [subView isKindOfClass:[UITableView class]]){
+                    [subView removeFromSuperview];
+                }
             }
         }
+        
+        for(int i=0;i<totalCats+1;i++){
+            UILabel *giftcatHeadingLbl=[[UILabel alloc]initWithFrame:CGRectMake(17+(320*(i+1)),1,292,42)];
+            giftcatHeadingLbl.autoresizesSubviews=UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
+            //GGLog(@"count %d and %d",totalGroups,i);
+            
+            giftcatHeadingLbl.tag=i+1;
+            if(i!=0)
+                [giftcatHeadingLbl setText:[[giftCategoriesList objectAtIndex:i-1]catName]];
+            [giftcatHeadingLbl setTextColor:[UIColor blackColor]];
+            [giftcatHeadingLbl setFont:[UIFont fontWithName:@"Helvetica-Light" size:20]];
+            [giftcatHeadingLbl setBackgroundColor:[UIColor clearColor]];
+            
+            
+            [_giftsBgScroll addSubview:giftcatHeadingLbl];
+            [giftcatHeadingLbl release];
+            
+            UITableView *tempGiftsTable=[[UITableView alloc]initWithFrame:CGRectMake(320*(i+1), 45, 320, _giftsBgScroll.bounds.size.height-45)];
+            tempGiftsTable.autoresizesSubviews=UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin |UIViewAutoresizingFlexibleRightMargin |UIViewAutoresizingFlexibleBottomMargin |UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            [tempGiftsTable setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+            
+            
+            tempGiftsTable.tag=i+101;
+            
+            [tempGiftsTable setDataSource:self];
+            [tempGiftsTable setDelegate:self];
+            [_giftsBgScroll addSubview:tempGiftsTable];
+            [tempGiftsTable release];
+        }
+        
+        giftCategoryPageControl.numberOfPages=totalCats+1;
+        giftCatNum=1;
+        giftCategoryPageControl.currentPage=giftCatNum;
+        [_giftsBgScroll scrollRectToVisible:CGRectMake(640,0,320,416) animated:NO];
+        if(currentGiftItems!=nil){
+            if([currentGiftItems count])
+                [currentGiftItems removeAllObjects];
+            [currentGiftItems release];
+            currentGiftItems=nil;
+        }
+        
+        [self loadCurrentGiftItemsRespectiveToCategory];
+        [self retrieveGiftThumbnails];
     }
-    
-    for(int i=0;i<totalCats+1;i++){
-        UILabel *giftcatHeadingLbl=[[UILabel alloc]initWithFrame:CGRectMake(17+(320*(i+1)),1,292,42)];
-        giftcatHeadingLbl.autoresizesSubviews=UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
-        //GGLog(@"count %d and %d",totalGroups,i);
-        
-        giftcatHeadingLbl.tag=i+1;
-        if(i!=0)
-            [giftcatHeadingLbl setText:[[giftCategoriesList objectAtIndex:i-1]catName]];
-        [giftcatHeadingLbl setTextColor:[UIColor blackColor]];
-        [giftcatHeadingLbl setFont:[UIFont fontWithName:@"Helvetica-Light" size:20]];
-        [giftcatHeadingLbl setBackgroundColor:[UIColor clearColor]];
-        
-        
-        [_giftsBgScroll addSubview:giftcatHeadingLbl];
-        [giftcatHeadingLbl release];
-        
-        UITableView *tempGiftsTable=[[UITableView alloc]initWithFrame:CGRectMake(320*(i+1), 45, 320, _giftsBgScroll.bounds.size.height-45)];
-        tempGiftsTable.autoresizesSubviews=UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin |UIViewAutoresizingFlexibleRightMargin |UIViewAutoresizingFlexibleBottomMargin |UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [tempGiftsTable setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-        
-        
-        tempGiftsTable.tag=i+101;
-        
-        [tempGiftsTable setDataSource:self];
-        [tempGiftsTable setDelegate:self];
-        [_giftsBgScroll addSubview:tempGiftsTable];
-        [tempGiftsTable release];
+    else{
+        AlertWithMessageAndDelegate(@"GiftGiv", @"Oops! something went wrong, please try again", self);
     }
-    
-    giftCategoryPageControl.numberOfPages=totalCats+1;
-    giftCatNum=1;
-    giftCategoryPageControl.currentPage=giftCatNum;
-    [_giftsBgScroll scrollRectToVisible:CGRectMake(640,0,320,416) animated:NO];
-    if(currentGiftItems!=nil){
-        if([currentGiftItems count])
-            [currentGiftItems removeAllObjects];
-        [currentGiftItems release];
-        currentGiftItems=nil;
-    }
-   
-    [self loadCurrentGiftItemsRespectiveToCategory];
-    [self retrieveGiftThumbnails];
       
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 -(void)loadCurrentGiftItemsRespectiveToCategory{
     

@@ -71,7 +71,6 @@ typedef enum apiCall {
 @property (nonatomic, assign) id <Facebook_GiftGivDelegate>fbGiftGivDelegate;
 
 - (FBSession *)facebook;
-//- (void)extendAccessTokenIfNeeded;
 - (void)authorizeOurAppWithFacebook;
 - (void)logoutOfFacebook;
 - (void)apiFQLIMe;
@@ -83,6 +82,9 @@ typedef enum apiCall {
 - (BOOL)checkWhetherText:(NSString*)sourceText contains:(NSString*)searchedKeyword;
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI;
 - (void) closeSession;
+//Get last day for the month
+- (int)getLastDayOfMonth:(NSString *)dateStr;
 
+-(void) makeQueryToGetListOfBirthdaysWithStartDate:(NSString* )startDate andEndDate:(NSString*)endDate;
 //- (void)postStatusMessage;
 @end

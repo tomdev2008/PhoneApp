@@ -158,6 +158,9 @@ static NSDateFormatter *customDateFormat=nil;
                     //Make request to facebook to get the events, to get the events, will get the list of friends first.
                     [fb_giftgiv_home getAllFriendsWithTheirDetails];
                     
+                    if([listOfBirthdayEvents count])
+                        [listOfBirthdayEvents removeAllObjects];
+                    
                     //get the list of birthdays
                     [fb_giftgiv_home listOfBirthdayEvents];
                     
@@ -422,6 +425,10 @@ static NSDateFormatter *customDateFormat=nil;
             [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"IsLoadingFromFacebook"];
             
             [fb_giftgiv_home getAllFriendsWithTheirDetails];
+            
+            if([listOfBirthdayEvents count])
+                [listOfBirthdayEvents removeAllObjects];
+            
             [fb_giftgiv_home listOfBirthdayEvents];
             
         }
@@ -1335,18 +1342,13 @@ static NSDateFormatter *customDateFormat=nil;
     if(!isEventsLoadingFromFB)
         return;
     
+    int countOfBirthdays=[listOfBirthdays count];
     
-    if([listOfBirthdays count]){
-        
-        if([listOfBirthdayEvents count])
-            [listOfBirthdayEvents removeAllObjects];
-        [listOfBirthdayEvents addObjectsFromArray:listOfBirthdays];
-        
-        int countOfBirthdays=[listOfBirthdayEvents count];
+    if(countOfBirthdays){
         
         for (int i=0;i<countOfBirthdays;i++){
             
-            NSMutableDictionary *tempDict=[listOfBirthdayEvents objectAtIndex:i];
+            NSMutableDictionary *tempDict=[listOfBirthdays objectAtIndex:i];
             NSArray *dateComponents=[[tempDict objectForKey:@"birthday_date"] componentsSeparatedByString:@"/"];
             if([dateComponents count]!=3){
                 if(customDateFormat==nil){
@@ -1358,7 +1360,7 @@ static NSDateFormatter *customDateFormat=nil;
                 
                 NSString *updatedDateString=[[tempDict objectForKey:@"birthday_date"] stringByAppendingFormat:@"/%@",yearString];
                 [tempDict setObject:updatedDateString forKey:@"birthday_date"];
-                [listOfBirthdayEvents replaceObjectAtIndex:i withObject:tempDict];
+                [listOfBirthdays replaceObjectAtIndex:i withObject:tempDict];
             }
             if(customDateFormat==nil){
                 customDateFormat = [[NSDateFormatter alloc] init];
@@ -1369,13 +1371,14 @@ static NSDateFormatter *customDateFormat=nil;
             [tempDict setObject:[customDateFormat stringFromDate:stringToDate] forKey:@"event_date"];
             [tempDict setObject:@"birthday" forKey:@"event_type"];
             
-            [listOfBirthdayEvents replaceObjectAtIndex:i withObject:tempDict];
+            [listOfBirthdays replaceObjectAtIndex:i withObject:tempDict];
         }
-        [allupcomingEvents addObjectsFromArray:listOfBirthdayEvents];
-        [self performSelector:@selector(checkTotalNumberOfGroups)];
-                
-        birthdayEventUserNoToAddAsUser=1;
         
+        [listOfBirthdayEvents addObjectsFromArray:listOfBirthdays];
+        [allupcomingEvents addObjectsFromArray:listOfBirthdays];
+        [self performSelector:@selector(checkTotalNumberOfGroups)];
+        
+        birthdayEventUserNoToAddAsUser=1;
         
         //Store the events to show in success screen
         [self storeAllupcomingsForSuccessScreen];
@@ -1456,7 +1459,7 @@ static NSDateFormatter *customDateFormat=nil;
 -(void) makeRequestToLoadImagesUsingOperations:(id)source{
     
     if([source isKindOfClass:[NSMutableArray class]]){
-        int upcomingsCount=[allupcomingEvents count];
+        int upcomingsCount=[source count];
         for(int i=0;i<upcomingsCount;i++){
             [self checkAndStartOperationToDownloadPicForTheEvent:(NSDictionary*)[source objectAtIndex:i]];
         }

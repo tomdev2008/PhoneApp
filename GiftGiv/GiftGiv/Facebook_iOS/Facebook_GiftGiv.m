@@ -256,37 +256,97 @@ static NSCalendar *gregorian=nil;
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
         
         //Date should be in MM/dd/yyyy formate only for facebook queries
-        NSString *startDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:-4]; //previous 3 days as it like windows phone logic
-        NSString *endDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:14]; //next 15 days as it like windows phone logic
+        NSString *main_startDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:-4]; //previous 3 days as it like windows phone logic
         
-        NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND birthday_date >= \"%@\" AND birthday_date <= \"%@\" ORDER BY birthday_date ASC",startDate,endDate];
+        NSString *main_endDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:14]; //next 15 days as it like windows phone logic
         
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                       getBirthdaysQuery, @"q",
-                                       nil];
+        //Separate the date components as we are going to verify the start date's month and endDate's month
+        NSArray *startDateComponents=[main_startDate componentsSeparatedByString:@"/"];
+        NSArray *endDateComponents=[main_endDate componentsSeparatedByString:@"/"];
+       
+        NSString *firstQuery_strDate=nil;
+        NSString *firstQuery_endDate=nil;
+        NSString *secondQuery_strDate=nil;
+        NSString *secondQuery_endDate=nil;
         
-        // Make the API request that uses FQL
-        [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
-                                     HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
-                                         if (error) {
-                                             GGLog(@"Error: %@", [error localizedDescription]);
-                                         } else {
-                                             if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
-                                                 return;
-                                             //List of birthdays received
-                                             
-                                             if([result isKindOfClass:[NSDictionary class]]){
-                                                 if([[result objectForKey:@"data"] isKindOfClass:[NSArray class]]){
-                                                     [fbGiftGivDelegate receivedBirthDayEvents:(NSMutableArray *)[result objectForKey:@"data"]];
-                                                 }
-                                             }
-                                             
-                                         }
-                                     }];
+        //Check if the start date's month and end date's month is different
+        if([[startDateComponents objectAtIndex:0] integerValue]!=[[endDateComponents objectAtIndex:0] integerValue]){
+            
+            //Get the last day of the month and split the main start and end dates into two. such that will make query two time to get the list of birthdays
+            int startDate_LastDay=[self getLastDayOfMonth:main_startDate];
+            
+            firstQuery_strDate=main_startDate;
+            firstQuery_endDate=[NSString stringWithFormat:@"%@/%d/%@",[startDateComponents objectAtIndex:0],startDate_LastDay,[startDateComponents objectAtIndex:2]];
+            
+            secondQuery_strDate=[NSString stringWithFormat:@"%@/01/%@",[endDateComponents objectAtIndex:0],[endDateComponents objectAtIndex:2]];
+            secondQuery_endDate=main_endDate;
+        }
+        //start and end dates are in same month
+        else{
+            firstQuery_strDate = main_startDate;
+            firstQuery_endDate = main_endDate;
+        }
+        
+        [self makeQueryToGetListOfBirthdaysWithStartDate:firstQuery_strDate andEndDate:firstQuery_endDate];
+        
+        if(secondQuery_strDate!=nil && secondQuery_endDate!=nil){
+            [self makeQueryToGetListOfBirthdaysWithStartDate:secondQuery_strDate andEndDate:secondQuery_endDate];
+        }
+        
     }
     
 }
-
+-(void) makeQueryToGetListOfBirthdaysWithStartDate:(NSString* )startDate andEndDate:(NSString*)endDate{
+    
+    NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND birthday_date >= \"%@\" AND birthday_date <= \"%@\" ORDER BY birthday_date ASC",startDate,endDate];
+    GGLog(@"%@",getBirthdaysQuery);
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   getBirthdaysQuery, @"q",
+                                   nil];
+    
+    // Make the API request that uses FQL
+    [FBRequestConnection startWithGraphPath:@"/fql" parameters:params
+                                 HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
+                                     if (error) {
+                                         GGLog(@"Error: %@", [error localizedDescription]);
+                                     } else {
+                                         if(![[NSUserDefaults standardUserDefaults]boolForKey:@"IsLoadingFromFacebook"])
+                                             return;
+                                         //List of birthdays received
+                                         
+                                         if([result isKindOfClass:[NSDictionary class]]){
+                                             if([[result objectForKey:@"data"] isKindOfClass:[NSArray class]]){
+                                                 [fbGiftGivDelegate receivedBirthDayEvents:(NSMutableArray *)[result objectForKey:@"data"]];
+                                             }
+                                         }
+                                         
+                                     }
+                                 }];
+}
+-(int)getLastDayOfMonth:(NSString *)dateStr
+{
+    if(standardDateFormatter==nil){
+        standardDateFormatter=[[NSDateFormatter alloc]init];
+        [standardDateFormatter setDateFormat:@"MM/dd/yyyy"];
+    }
+    NSDate *sourceDate=[standardDateFormatter dateFromString:dateStr];
+    int last_day = 27;
+    NSCalendar *cal=[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *compsMonth = [cal components:NSWeekdayCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:sourceDate];
+    [compsMonth setDay:last_day];
+    int month = [compsMonth month];
+    
+    while(TRUE){
+        [compsMonth setDay:last_day+1];
+        NSDate *dateFuture = [cal dateFromComponents:compsMonth];
+        NSDateComponents *futureComps = [cal components:NSWeekdayCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:dateFuture];
+        if(month != [futureComps month]){
+            return last_day;
+        }
+        last_day+=1;
+    }
+    return last_day;
+}
 //Algorithm to track the photos/statuses
 /*
  Get all friends
