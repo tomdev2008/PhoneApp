@@ -83,4 +83,9 @@ typedef enum apiCall {
 - (BOOL)checkWhetherText:(NSString*)sourceText contains:(NSString*)searchedKeyword;
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI;
 - (void) closeSession;
+//Get last day for the month
+- (int)getLastDayOfMonth:(NSString *)dateStr;
+
+-(void) makeQueryToGetListOfBirthdaysWithStartDate:(NSString* )startDate andEndDate:(NSString*)endDate;
+
 @end
