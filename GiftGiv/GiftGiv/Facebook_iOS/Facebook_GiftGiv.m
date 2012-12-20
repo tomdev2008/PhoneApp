@@ -298,7 +298,10 @@ static NSCalendar *gregorian=nil;
 }
 -(void) makeQueryToGetListOfBirthdaysWithStartDate:(NSString* )startDate andEndDate:(NSString*)endDate{
     
-    NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND birthday_date >= \"%@\" AND birthday_date <= \"%@\" ORDER BY birthday_date ASC",startDate,endDate];
+    NSArray *startDateComponents=[startDate componentsSeparatedByString:@"/"];
+    NSArray *endDateComponents=[endDate componentsSeparatedByString:@"/"];
+    
+    NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND (substr(birthday_date, 0, 2) = '%@' AND substr(birthday_date, 3, 5) >= '%@') AND (substr(birthday_date, 0, 2) = '%@' AND substr(birthday_date, 3, 5) < '%02d') ORDER BY birthday_date ASC",[startDateComponents objectAtIndex:0],[startDateComponents objectAtIndex:1],[endDateComponents objectAtIndex:0],[[endDateComponents objectAtIndex:1]integerValue]+1];
     GGLog(@"%@",getBirthdaysQuery);
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    getBirthdaysQuery, @"q",

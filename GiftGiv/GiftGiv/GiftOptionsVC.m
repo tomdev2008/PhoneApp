@@ -42,9 +42,7 @@
 {
     [super viewDidLoad];
     
-    if(selectedGiftItemDetails){
-        [self performSelector:@selector(showGiftDetailsScreen:) withObject:selectedGiftItemDetails];
-    }
+    
     
     fm=[NSFileManager defaultManager];
     
@@ -80,7 +78,7 @@
         scrollFrame.size.height=scrollFrame.size.height+48;
         _giftsBgScroll.frame=scrollFrame;
     }
-        
+    
     _searchBgImg.image=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive2" ofType:@"png"] retain];
     pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive2" ofType:@"png"] retain];
@@ -100,6 +98,13 @@
     
     
 
+}
+-(void)viewWillAppear:(BOOL)animated{
+    if(selectedGiftItemDetails){
+        [self performSelector:@selector(showGiftDetailsScreen:) withObject:selectedGiftItemDetails];
+        selectedGiftItemDetails=NO;
+    }
+    [super viewWillAppear:YES];
 }
 -(void)retrieveGiftThumbnails{
     
@@ -541,8 +546,8 @@
         [cell.giftIcon_two.layer setBorderWidth:2.0];
         [cell.giftIcon_one addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
         [cell.giftIcon_two addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.giftIcon_one.titleLabel setNumberOfLines:6];
-        [cell.giftIcon_two.titleLabel setNumberOfLines:6];
+        [cell.giftIcon_one.titleLabel setNumberOfLines:3];
+        [cell.giftIcon_two.titleLabel setNumberOfLines:3];
         
         [cell.giftIcon_one.titleLabel setTextAlignment:UITextAlignmentCenter];
         [cell.giftIcon_two.titleLabel setTextAlignment:UITextAlignmentCenter];
