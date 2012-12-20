@@ -1278,30 +1278,27 @@ static NSDateFormatter *customDateFormat=nil;
     
     if(!isEventsLoadingFromFB)
         return;
-        
+    
     int countOfBirthdays=[listOfBirthdays count];
     
     if(countOfBirthdays){
-              
+        
         for (int i=0;i<countOfBirthdays;i++){
             
             NSMutableDictionary *tempDict=[listOfBirthdays objectAtIndex:i];
-            NSArray *dateComponents=[[tempDict objectForKey:@"birthday_date"] componentsSeparatedByString:@"/"];
+            NSMutableArray *dateComponents=(NSMutableArray*)[[tempDict objectForKey:@"birthday_date"] componentsSeparatedByString:@"/"];
+            if(customDateFormat==nil){
+                customDateFormat = [[NSDateFormatter alloc] init];
+            }
             if([dateComponents count]!=3){
-                if(customDateFormat==nil){
-                    customDateFormat = [[NSDateFormatter alloc] init];
-                    
-                }
                 [customDateFormat setDateFormat:@"yyyy"];
                 NSString *yearString = [customDateFormat stringFromDate:[NSDate date]];
                 
                 NSString *updatedDateString=[[tempDict objectForKey:@"birthday_date"] stringByAppendingFormat:@"/%@",yearString];
                 [tempDict setObject:updatedDateString forKey:@"birthday_date"];
-                [listOfBirthdays replaceObjectAtIndex:i withObject:tempDict];
+                
             }
-            if(customDateFormat==nil){
-                customDateFormat = [[NSDateFormatter alloc] init];
-            }
+            
             [customDateFormat setDateFormat:@"MM/dd/yyyy"];
             NSDate *stringToDate=[customDateFormat dateFromString:[tempDict objectForKey:@"birthday_date"]];
             [customDateFormat setDateFormat:@"yyyy-MM-dd"];
@@ -1313,8 +1310,14 @@ static NSDateFormatter *customDateFormat=nil;
         
         [listOfBirthdayEvents addObjectsFromArray:listOfBirthdays];
         [allupcomingEvents addObjectsFromArray:listOfBirthdays];
+        
+        if([allupcomingEvents count]>1)
+            [self sortEvents:allupcomingEvents eventCategory:1];
+        if([listOfBirthdayEvents count]>1)
+            [self sortEvents:listOfBirthdayEvents eventCategory:2];
+        
         [self performSelector:@selector(checkTotalNumberOfGroups)];
-                
+        
         birthdayEventUserNoToAddAsUser=1;
         
         //Store the events to show in success screen
@@ -1813,11 +1816,39 @@ static NSDateFormatter *customDateFormat=nil;
    	
 	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"event_date" ascending:YES];
     
+    [customDateFormat setDateFormat:@"MMM"];
+    NSString *currentMonth=[customDateFormat stringFromDate:[NSDate date]];
+    
     switch (catNum) {
             //all upcoming
         case 1:
             
-            [allupcomingEvents replaceObjectsInRange:NSMakeRange(0, [allupcomingEvents count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+            if([currentMonth isEqualToString:@"Dec"] || [currentMonth isEqualToString:@"Jan"]){
+                NSMutableArray *tempArrayOne=[[NSMutableArray alloc]init];
+                NSMutableArray *tempArrayTwo=[[NSMutableArray alloc]init];
+                
+                [allupcomingEvents enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    
+                    if([[customDateFormat stringFromDate:[obj objectForKey:@"event_date"]] isEqualToString:@"Dec"]){
+                        [tempArrayOne addObject:obj];
+                    }
+                    else if([[customDateFormat stringFromDate:[obj objectForKey:@"event_date"]] isEqualToString:@"Jan"]){
+                        [tempArrayTwo addObject:obj];
+                    }
+                    
+                }];
+                NSMutableArray *targettedArrayOne=[[NSMutableArray alloc]initWithArray:[tempArrayOne sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+                NSArray *targettedArrayTwo=[tempArrayTwo sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+                
+                [targettedArrayOne addObjectsFromArray:targettedArrayTwo];
+                [allupcomingEvents replaceObjectsInRange:NSMakeRange(0, [allupcomingEvents count]) withObjectsFromArray:targettedArrayOne];
+                
+                [tempArrayOne release];
+                [tempArrayTwo release];
+                [targettedArrayOne release];
+            }
+            else
+                [allupcomingEvents replaceObjectsInRange:NSMakeRange(0, [allupcomingEvents count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
             
             
             
@@ -1825,12 +1856,59 @@ static NSDateFormatter *customDateFormat=nil;
             //birthdays
         case 2:
             
-            [listOfBirthdayEvents replaceObjectsInRange:NSMakeRange(0, [listOfBirthdayEvents count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+            if([currentMonth isEqualToString:@"Dec"] || [currentMonth isEqualToString:@"Jan"]){
+                NSMutableArray *tempArrayOne=[[NSMutableArray alloc]init];
+                NSMutableArray *tempArrayTwo=[[NSMutableArray alloc]init];
+                
+                [listOfBirthdayEvents enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    
+                    if([[customDateFormat stringFromDate:[obj objectForKey:@"event_date"]] isEqualToString:@"Dec"]){
+                        [tempArrayOne addObject:obj];
+                    }
+                    else if([[customDateFormat stringFromDate:[obj objectForKey:@"event_date"]] isEqualToString:@"Jan"]){
+                        [tempArrayTwo addObject:obj];
+                    }
+                    
+                }];
+                NSMutableArray *targettedArrayOne=[[NSMutableArray alloc]initWithArray:[tempArrayOne sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+                NSArray *targettedArrayTwo=[tempArrayTwo sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+                
+                [targettedArrayOne addObjectsFromArray:targettedArrayTwo];
+                [listOfBirthdayEvents replaceObjectsInRange:NSMakeRange(0, [listOfBirthdayEvents count]) withObjectsFromArray:targettedArrayOne];
+                [tempArrayOne release];
+                [tempArrayTwo release];
+                [targettedArrayOne release];
+            }
+            else
+                [listOfBirthdayEvents replaceObjectsInRange:NSMakeRange(0, [listOfBirthdayEvents count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
             break;
             //events to celebrate
         case 3:
-            
-            [eventsToCelebrateArray replaceObjectsInRange:NSMakeRange(0, [eventsToCelebrateArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+            if([currentMonth isEqualToString:@"Dec"] || [currentMonth isEqualToString:@"Jan"]){
+                NSMutableArray *tempArrayOne=[[NSMutableArray alloc]init];
+                NSMutableArray *tempArrayTwo=[[NSMutableArray alloc]init];
+                
+                [eventsToCelebrateArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    
+                    if([[customDateFormat stringFromDate:[obj objectForKey:@"event_date"]] isEqualToString:@"Dec"]){
+                        [tempArrayOne addObject:obj];
+                    }
+                    else if([[customDateFormat stringFromDate:[obj objectForKey:@"event_date"]] isEqualToString:@"Jan"]){
+                        [tempArrayTwo addObject:obj];
+                    }
+                    
+                }];
+                NSMutableArray *targettedArrayOne=[[NSMutableArray alloc]initWithArray:[tempArrayOne sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
+                NSArray *targettedArrayTwo=[tempArrayTwo sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+                
+                [targettedArrayOne addObjectsFromArray:targettedArrayTwo];
+                [eventsToCelebrateArray replaceObjectsInRange:NSMakeRange(0, [eventsToCelebrateArray count]) withObjectsFromArray:targettedArrayOne];
+                [tempArrayOne release];
+                [tempArrayTwo release];
+                [targettedArrayOne release];
+            }
+            else
+                [eventsToCelebrateArray replaceObjectsInRange:NSMakeRange(0, [eventsToCelebrateArray count]) withObjectsFromArray:[listOfEvents sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]]];
             
             
             break;
