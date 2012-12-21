@@ -17,6 +17,7 @@
 #import "GetCachesPathForTargetFile.h"
 #import "GiftItemsRequest.h"
 #import "GiftOptionsVC.h"
+#import "UIImage+ProportionalFill.h"
 
 @interface SignInVC : UIViewController<Facebook_GiftGivDelegate,MBProgressHUDDelegate,AddUserRequestDelegate,GiftItemsRequestDelegate>
 {

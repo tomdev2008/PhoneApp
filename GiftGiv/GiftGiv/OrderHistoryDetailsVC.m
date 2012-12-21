@@ -66,10 +66,22 @@ static NSDateFormatter *customDateFormat=nil;
     if(![orderDetails.phone isEqualToString:@""]){
         addressLbl.text=orderDetails.phone;
         mailGiftToLbl.text=@"Address request sent to:";
+        if([orderDetails.sentAsValue isEqualToString:@"physical"]){
+            mailGiftToLbl.text=@"Address request sent to:";
+        }
+        else if([orderDetails.sentAsValue isEqualToString:@"electronic"]){
+            mailGiftToLbl.text=@"Mail Gift to:";
+        }
     }
     else if(![orderDetails.email isEqualToString:@""]){
         addressLbl.text=orderDetails.email;
         mailGiftToLbl.text=@"Address request sent to:";
+        if([orderDetails.sentAsValue isEqualToString:@"physical"]){
+            mailGiftToLbl.text=@"Address request sent to:";
+        }
+        else if([orderDetails.sentAsValue isEqualToString:@"electronic"]){
+            mailGiftToLbl.text=@"Mail Gift to:";
+        }
     }
     else{
         

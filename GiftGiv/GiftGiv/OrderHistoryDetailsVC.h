@@ -8,12 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "SettingsVC.h"
-//#import "Constants.h"
 #import "CoomonRequestCreationObject.h"
 #import "GetGiftItemRequest.h"
 #import "OrderObject.h"
 #import "CustomDateDisplay.h"
-#import "UIImage+scaling.h"
 #import "ImageAllocationObject.h"
 
 @interface OrderHistoryDetailsVC : UIViewController<GetGiftItemDelegate>

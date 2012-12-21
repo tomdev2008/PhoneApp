@@ -16,9 +16,9 @@
 #import "GiftCategoriesRequest.h"
 #import "GiftItemsRequest.h"
 #import "MBProgressHUD.h"
-#import "UIImage+scaling.h"
 #import "GetCachesPathForTargetFile.h"
 #import "FreeGiftItemDetailsVC.h"
+#import "UIImage+ProportionalFill.h"
 
 @interface GiftOptionsVC : UIViewController<GiftCategoriesRequestDelegate,UITableViewDataSource,UITableViewDelegate,GiftItemsRequestDelegate,MBProgressHUDDelegate,UISearchBarDelegate>{
     

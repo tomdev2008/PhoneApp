@@ -14,7 +14,6 @@
 #import "WebViewController.h"
 #import "PaymentDetails.h"
 #import "MBProgressHUD.h"
-#import "UIImage+scaling.h"
 
 //ExpressCheckoutResponseHandler is not part of the Express Checkout library and should
 //generally not be used because doing the Express Checkout calls on the device requires

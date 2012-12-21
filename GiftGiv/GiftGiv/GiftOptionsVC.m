@@ -146,7 +146,7 @@
                     newHeight=120-20;
                     
                 }
-                UIImage *targetImg=[thumbnail imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];
+                UIImage *targetImg=[thumbnail imageScaledToFitSize:CGSizeMake(newWidth, newHeight)];
                 
                 
                 if(targetImg!=nil) {

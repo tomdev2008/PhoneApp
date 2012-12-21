@@ -158,7 +158,9 @@
     else if([argElementName isEqualToString:@"email"]){
         order.email=(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
-    
+    else if([argElementName isEqualToString:@"SentAs"]){
+        order.sentAsValue=(NSMutableString*)[currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }
 	
 	currentElementValue=nil;
 	[currentElementValue release];

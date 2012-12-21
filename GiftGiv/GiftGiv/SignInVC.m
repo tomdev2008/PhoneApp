@@ -110,9 +110,8 @@
                     newHeight=120-20;
                     
                 }
-                UIImage *targetImg=[thumbnail imageByScalingProportionallyToSize:CGSizeMake(newWidth, newHeight)];
-                
-                
+                UIImage *targetImg=[thumbnail imageScaledToFitSize:CGSizeMake(newWidth, newHeight)];
+                                
                 if(targetImg!=nil) {
                     NSString *filePath = [GetCachesPathForTargetFile cachePathForGiftItemFileName:[NSString stringWithFormat:@"%@.png",[[[listOfGifts objectAtIndex:i]objectForKey:@"GiftDetails"] giftId]]]; //Add the file name
                     [UIImagePNGRepresentation(targetImg) writeToFile:filePath atomically:YES]; //Write the file

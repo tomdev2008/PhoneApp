@@ -29,6 +29,7 @@
 @synthesize email;
 @synthesize profilePicImg;
 @synthesize details;
+@synthesize sentAsValue;
 
 -(void)dealloc{
     [details release];
@@ -50,6 +51,7 @@
     [phone release];
     [email release];
     [profilePicImg release];
+    [sentAsValue release];
     [super dealloc];
 }
 

@@ -48,9 +48,9 @@
 						<array class="NSMutableArray" key="NSSubviews">
 							<object class="IBUIPageControl" id="1005727111">
 								<reference key="NSNextResponder" ref="906454922"/>
-								<int key="NSvFlags">1316</int>
+								<int key="NSvFlags">1293</int>
 								<object class="NSPSMatrix" key="NSFrameMatrix"/>
-								<string key="NSFrame">{{20, 0}, {280, 36}}</string>
+								<string key="NSFrame">{{20, 2}, {280, 36}}</string>
 								<reference key="NSSuperview" ref="906454922"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="276226491"/>
@@ -323,6 +323,7 @@
 								<string key="NSFrame">{{263, 27}, {42, 21}}</string>
 								<reference key="NSSuperview" ref="276226491"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
