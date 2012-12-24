@@ -24,6 +24,8 @@
 @property (retain, nonatomic) IBOutlet UIView *addressEmailSMSSelPickerBgView;
 @property (retain, nonatomic) IBOutlet UIPickerView *addressMailSMSPicker;
 @property (retain, nonatomic) IBOutlet UISegmentedControl *addEmailSMSSegment;
+@property (retain, nonatomic) IBOutlet UILabel *wallPostDescription;
+@property (retain, nonatomic) IBOutlet UILabel *whereShouldWeLbl;
 
 @property (retain, nonatomic) IBOutlet UIImageView *profilePic;
 @property (retain, nonatomic) IBOutlet UIView *statePickerBgView;

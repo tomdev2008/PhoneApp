@@ -52,7 +52,10 @@ static NSDateFormatter *customDateFormat=nil;
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     //GGLog(@"%@",orderDetails.price);
+   
+   
     orderDetailsScroll.frame=CGRectMake(0, 44, 320, 416);
+       
     [self.view addSubview:orderDetailsScroll];
     
     [self performSelector:@selector(loadProfilePicture)];

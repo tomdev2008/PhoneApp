@@ -89,7 +89,12 @@
     else{
         profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
     }
-    sendOptionsContentScroll.frame=CGRectMake(0, 44, 320, 416);
+    if([[UIScreen mainScreen] bounds].size.height == 568)
+        sendOptionsContentScroll.frame=CGRectMake(0, 44, 320, 416+88);
+    else{
+        sendOptionsContentScroll.frame=CGRectMake(0, 44, 320, 416);
+    }
+    
     [self.view addSubview:sendOptionsContentScroll];
     
     //list of states (postal abbreviations) collected from http://www.stateabbreviations.us/
@@ -110,6 +115,7 @@
     else{
         
         if([[sendingInfoDict objectForKey:@"GiftPrice"] isEqualToString:@""]){
+            _whereShouldWeLbl.text=@"Where should we send your message?";
             recipientAddressLbl.text=@"   Post on wall";
             [listOfSendOptions addObject:@"Post on wall"];
             [listOfSendOptions addObject:@"Recipient email address"];
@@ -297,6 +303,8 @@
         [sendingInfoDict removeObjectForKey:@"RecipientPhoneNum"];
     if([sendingInfoDict objectForKey:@"RecipientAddress"])
         [sendingInfoDict removeObjectForKey:@"RecipientAddress"];
+    if([_wallPostDescription superview])
+        [_wallPostDescription removeFromSuperview];
     
     switch (optionIndex) {
             //address
@@ -387,6 +395,10 @@
                 [recipientSMSContentView removeFromSuperview];
             if([recipientemailContentView superview])
                 [recipientemailContentView removeFromSuperview];
+            
+            _wallPostDescription.frame=CGRectMake(23, 161, 275, 80);
+            [sendOptionsContentScroll addSubview:_wallPostDescription];
+            
             sendOptionsContentScroll.contentSize=CGSizeMake(320, 416);
             
             break;
@@ -1068,6 +1080,8 @@
     [self setAddressEmailSMSSelPickerBgView:nil];
     [self setAddressMailSMSPicker:nil];
     [self setAddEmailSMSSegment:nil];
+    [self setWallPostDescription:nil];
+    [self setWhereShouldWeLbl:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -1117,6 +1131,8 @@
     [addressEmailSMSSelPickerBgView release];
     [addressMailSMSPicker release];
     [addEmailSMSSegment release];
+    [_wallPostDescription release];
+    [_whereShouldWeLbl release];
     [super dealloc];
 }
 

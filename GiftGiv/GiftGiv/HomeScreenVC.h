@@ -71,7 +71,7 @@
 @property (retain, nonatomic) IBOutlet UIView *contactsSearchView;
 @property (retain, nonatomic) NSMutableArray *listOfContactsArray;
 @property (retain, nonatomic) IBOutlet UIImageView *searchBgImg;
-@property (retain, nonatomic) GiftItemObject *giftDetailsWhichWasSelected;
+@property (retain, nonatomic) NSMutableDictionary *giftDetailsWhichWasSelected;
 @property (retain, nonatomic) IBOutlet CustomPageControl *pageControlForEventGroups;
 
 - (IBAction)settingsAction:(id)sender;

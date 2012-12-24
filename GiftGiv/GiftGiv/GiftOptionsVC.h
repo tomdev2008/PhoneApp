@@ -43,7 +43,7 @@
 @property (retain, nonatomic) IBOutlet UIScrollView *giftsBgScroll;
 @property (retain, nonatomic) IBOutlet UIImageView *searchBgImg;
 //Passing from HomeScreen controller as user selected the gift before event was selected
-@property (retain, nonatomic) GiftItemObject *selectedGiftItemDetails;
+@property (retain, nonatomic) NSMutableDictionary *selectedGiftItemDetails;
 - (IBAction)cancelTheSearch:(id)sender;
 
 - (IBAction)backToEvents:(id)sender;

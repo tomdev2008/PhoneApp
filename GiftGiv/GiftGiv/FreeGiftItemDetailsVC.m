@@ -31,7 +31,11 @@
     
     fb_giftgiv_detailsScreen=[[Facebook_GiftGiv alloc]init];
     fb_giftgiv_detailsScreen.fbGiftGivDelegate=self;
+    [_giftMsgTxtView setInputAccessoryView:_msgInputAccessoryView];
     
+    _giftDetailsBgScroll.frame=CGRectMake(0, 44, 320,416);
+    
+    [self.view addSubview:_giftDetailsBgScroll];
     // Do any additional setup after loading the view from its nib.
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
         _eventNameLbl.text=[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"eventName"];
@@ -60,42 +64,12 @@
     else{
         _detailsBgView.frame=CGRectMake(_detailsBgView.frame.origin.x, _detailsBgView.frame.origin.y-47, _detailsBgView.frame.size.width, _detailsBgView.frame.size.height);
     }
-    
-    [self loadGiftImage:[giftItemInfo giftImageUrl] forAnObject:_giftItemImg];
-    
-    
-    UITapGestureRecognizer *tapRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(zoomInOutForCards:)];
-    tapRecognizer.numberOfTapsRequired=2;
-    [self.view addGestureRecognizer:tapRecognizer];
-    [tapRecognizer release];
-    
-    _giftNameLbl.text=[giftItemInfo giftTitle];
-    _giftDetailsBgScroll.frame=CGRectMake(0, 44, 320,416);
-    [self.view addSubview:_giftDetailsBgScroll];
-    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:11.0];
-    CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
-    NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:[giftItemInfo giftDetails]];
-    [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:kCTLineBreakByWordWrapping];
-    CGSize labelSize = [[giftDescription string] sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
-    
-    CGRect targetFrame=CGRectMake(20, _giftNameLbl.frame.origin.y+_giftNameLbl.frame.size.height, labelSize.width, labelSize.height);
-    
-    if([[giftDescription string] length]){
-        targetFrame.origin.y+=10;
-        targetFrame.size.height+=20;
-    }
-    _giftDetailsLbl.frame=targetFrame;
-    
-    _giftDetailsLbl.attributedText=giftDescription;
-    
-    _innerViewForGiftItemDetails.frame=CGRectMake(0, _giftDetailsLbl.frame.origin.y+_giftDetailsLbl.frame.size.height+5, 320, 234);
-    CGRect detailsBgFrame=_detailsBgView.frame;
-    detailsBgFrame.size.height=_innerViewForGiftItemDetails.frame.origin.y+_innerViewForGiftItemDetails.frame.size.height;
-    _detailsBgView.frame=detailsBgFrame;
-    [_giftDetailsBgScroll setContentSize:CGSizeMake(320, _detailsBgView.frame.origin.y+_detailsBgView.frame.size.height)];
+    if([giftItemInfo objectForKey:@"EditableGiftDescription"])
+        [self updateTheScreenRespectiveToMessageText:[giftItemInfo objectForKey:@"EditableGiftDescription"]];
+    else
+        [self updateTheScreenRespectiveToMessageText:[[giftItemInfo objectForKey:@"GiftItem"] giftDetails]];
    
-    _personalMsgTxt.inputAccessoryView=_msgInputAccessoryView;
-    
+   
    
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(160, 21);
@@ -106,11 +80,7 @@
     CGSize eventName_newSize = [_eventNameLbl.text sizeWithFont:_eventNameLbl.font constrainedToSize:eventName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
     
     _eventNameLbl.frame= CGRectMake(_profileNameLbl.frame.origin.x+3+_profileNameLbl.frame.size.width, 20, eventName_newSize.width, 21);
-    
-    [_personalMsgTxt.layer setCornerRadius:6.0];
-    [_personalMsgTxt.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
-    [_personalMsgTxt.layer setBorderWidth:1.0];
-    
+        
     [_dateLabel.layer setCornerRadius:6.0];
     [_dateLabel.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
     [_dateLabel.layer setBorderWidth:1.0];
@@ -136,15 +106,55 @@
         [daysArray addObject:[NSString stringWithFormat:@"%d",day]];
         day++;
     }
-    _dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
+    if([giftItemInfo objectForKey:@"DateOfDelivery"]){
+        
+        NSArray *dateArrayComponents=[[giftItemInfo objectForKey:@"DateOfDelivery"] componentsSeparatedByString:@"-"];
+        if([components day]==[[dateArrayComponents objectAtIndex:2] integerValue] && [components month]==[[dateArrayComponents objectAtIndex:1] integerValue]){
+            _dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
+        }
+        else
+            _dateLabel.text=[NSString stringWithFormat:@"   %@ %@",[self getMonthName:[[dateArrayComponents objectAtIndex:1]intValue]],[dateArrayComponents objectAtIndex:2]];
+        
+        [daysArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if([obj isEqualToString:[dateArrayComponents objectAtIndex:2]]){
+                [_dodPicker selectRow:idx inComponent:1 animated:NO];
+            }
+        }];
+        [monthsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if([obj isEqualToString:[dateArrayComponents objectAtIndex:1]]){
+                [_dodPicker selectRow:idx inComponent:0 animated:NO];
+            }
+        }];
+    }
+    else
+        _dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
+         
     
-    _giftTitleInZoomScreen.text=[giftItemInfo giftTitle];
+}
+-(void)updateTheScreenRespectiveToMessageText:(NSString*)targetText{
+        
     
-    [_zoomDoneBtn.layer setBorderColor:[[UIColor blackColor]CGColor]];
-    [_zoomDoneBtn.layer setBorderWidth:1.0];
-    [_zoomDoneBtn.layer setCornerRadius:5.0];
-     
+    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:11.0];
+    CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
+    NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:targetText];
+    [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:kCTLineBreakByWordWrapping];
+    CGSize labelSize = [[giftDescription string] sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
     
+    CGRect targetFrame=CGRectMake(20, 33, labelSize.width, labelSize.height);
+    
+    if([[giftDescription string] length]){
+        targetFrame.origin.y+=10;
+        targetFrame.size.height+=20;
+    }
+    _giftDetailsLbl.frame=targetFrame;
+    
+    _giftDetailsLbl.attributedText=giftDescription;
+    
+    _innerViewForGiftItemDetails.frame=CGRectMake(0, _giftDetailsLbl.frame.origin.y+_giftDetailsLbl.frame.size.height+5, 320, 234);
+    CGRect detailsBgFrame=_detailsBgView.frame;
+    detailsBgFrame.size.height=_innerViewForGiftItemDetails.frame.origin.y+_innerViewForGiftItemDetails.frame.size.height;
+    _detailsBgView.frame=detailsBgFrame;
+    [_giftDetailsBgScroll setContentSize:CGSizeMake(320, _detailsBgView.frame.origin.y+_detailsBgView.frame.size.height)];
 }
 -(NSString *)getMonthName:(int)monthNum{
     switch (monthNum) {
@@ -187,7 +197,7 @@
     }
     return nil;
 }
--(void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
+/*-(void)loadGiftImage:(NSString*)imgURL forAnObject:(UIImageView*)targetImgView{
     
     __block NSString *tempImageURL=imgURL;
     
@@ -228,57 +238,7 @@
     });
     dispatch_release(ImageLoader_Q);
 }
--(void)zoomInOutForCards:(UITapGestureRecognizer*)tapRecog{
-    
-    CGPoint tapLocation=[tapRecog locationInView:_giftDetailsBgScroll];
-    
-    //zoom out
-    if(zoomScrollView!=nil && [zoomScrollView superview]){
-        if(CGRectContainsPoint(zoomScrollView.frame, tapLocation)){
-            
-            [zoomScrollView fullZoomToPoint:tapRecog];
-            if(_zoomDoneBtn.hidden){
-                _zoomDoneBtn.hidden=NO;
-                _giftTitleInZoomScreen.hidden=NO;
-            }
-            else{
-                _zoomDoneBtn.hidden=YES;
-                _giftTitleInZoomScreen.hidden=YES;
-            }
-            return;
-        }
-        
-    }
-    else{
-        if(CGRectContainsPoint(_giftItemImg.frame, tapLocation)){
-            zoomScrollView=[[GfitZoomInView alloc]initWithFrame:[self.view bounds]];
-            
-            zoomScrollView.theContainerView.image=_giftItemImg.image;
-            
-            zoomScrollView.message=self;
-            [self.view addSubview:zoomScrollView];
-            
-            _zoomDoneBtn.frame=CGRectMake(240, 30, 70, 31);
-            [self.view addSubview:_zoomDoneBtn];
-            
-            if([[UIScreen mainScreen] bounds].size.height == 568){
-                _giftTitleInZoomScreen.frame=CGRectMake(10, 480, 300, 41);
-            }
-            else
-                _giftTitleInZoomScreen.frame=CGRectMake(10, 420, 300, 41);
-            
-            //giftTitleInZoomScreen.frame=CGRectMake(10, 400, 300, 41);
-            [self.view addSubview:_giftTitleInZoomScreen];
-            
-            /*zoomDoneBtn.hidden=YES;
-             //zoomScrollView.hidden=YES;
-             giftTitleInZoomScreen.hidden=YES;
-             */
-        }
-        
-    }
-    
-}
+*/
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -326,28 +286,33 @@
 }
 
 - (IBAction)sendOptionsScreenAction:(id)sender {
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+    int month=[components month];
+    int year=[components year];
+    
+    
+    int selectedMonth=[[monthsArray objectAtIndex:[_dodPicker selectedRowInComponent:0]] intValue];
+    int selectedDay=[[daysArray objectAtIndex:[_dodPicker selectedRowInComponent:1]] intValue];
+    if(selectedMonth<month)
+        year++;
+    
+    [giftItemInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
+    [giftItemInfo setObject:[_giftDetailsLbl.attributedText string] forKey:@"EditableGiftDescription"];
+    
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
-        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-        int month=[components month];
-        int year=[components year];
-        
-        
-        int selectedMonth=[[monthsArray objectAtIndex:[_dodPicker selectedRowInComponent:0]] intValue];
-        int selectedDay=[[daysArray objectAtIndex:[_dodPicker selectedRowInComponent:1]] intValue];
-        if(selectedMonth<month)
-            year++;
         
         SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
         sendOptions.isSendElectronically=NO;
         NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
         [giftAndSenderInfo setObject:[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] forKey:@"RecipientName"];
         [giftAndSenderInfo setObject:_eventNameLbl.text forKey:@"EventName"];
-        [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
-        [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
-        [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
+        [giftAndSenderInfo setObject:[[giftItemInfo objectForKey:@"GiftItem"] giftId] forKey:@"GiftID"];
+        [giftAndSenderInfo setObject:[[giftItemInfo objectForKey:@"GiftItem"] giftTitle] forKey:@"GiftName"];
+        [giftAndSenderInfo setObject:[[giftItemInfo objectForKey:@"GiftItem"]giftImageUrl] forKey:@"GiftImgUrl"];
         
         [giftAndSenderInfo setObject:@"" forKey:@"GiftPrice"];
-        [giftAndSenderInfo setObject:[_personalMsgTxt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
+        [giftAndSenderInfo setObject:@"" forKey:@"PersonalMessage"];
         
         [giftAndSenderInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
         
@@ -449,29 +414,7 @@
     }
     return nil;
 }
-- (IBAction)zoomDoneAction:(id)sender {
-    _zoomDoneBtn.hidden=YES;
-    _giftTitleInZoomScreen.hidden=YES;
-    zoomScrollView.hidden=YES;
-    if(zoomScrollView!=nil){
-        [zoomScrollView removeFromSuperview];
-        [_zoomDoneBtn removeFromSuperview];
-        [_giftTitleInZoomScreen removeFromSuperview];
-        [zoomScrollView release];
-        zoomScrollView=nil;
-    }
-}
-- (void)contentView:(GfitZoomInView *)contentView touchesBegan:(NSSet *)touches{
-    if(_zoomDoneBtn.hidden){
-        _zoomDoneBtn.hidden=NO;
-        _giftTitleInZoomScreen.hidden=NO;
-    }
-    else{
-        _zoomDoneBtn.hidden=YES;
-        _giftTitleInZoomScreen.hidden=YES;
-    }
-    
-}
+
 - (void)textViewDidBeginEditing:(UITextView *)textView{
     
     //giftDetailsContentScroll.userInteractionEnabled=NO;
@@ -486,10 +429,21 @@
     pt.y-=65;
 	[_giftDetailsBgScroll setContentOffset:pt animated:YES];
 }
-- (IBAction)msgKeyboardDismissAction:(id)sender {
-    [_personalMsgTxt resignFirstResponder];
-    [_giftDetailsBgScroll setContentOffset:svos animated:YES];
-    _giftDetailsBgScroll.userInteractionEnabled=YES;
+- (IBAction)giftMsgEditActions:(id)sender {
+    [_giftMsgTxtView resignFirstResponder];
+    [_giftMsgEditScreen removeFromSuperview];
+    if([sender tag]==2){
+        
+         [self updateTheScreenRespectiveToMessageText:_giftMsgTxtView.text];
+    }
+}
+
+- (IBAction)editActionForTheMessage:(id)sender {
+    _giftMsgEditScreen.frame=CGRectMake(0, 0, 320, [[UIScreen mainScreen]bounds].size.height-20);
+    
+    _giftMsgTxtView.text=[_giftDetailsLbl.attributedText string];
+    [_giftMsgTxtView becomeFirstResponder];
+    [self.view addSubview:_giftMsgEditScreen];
 }
 - (IBAction)dodPickerAction:(id)sender {
     CATransition *animation = [CATransition animation];
@@ -596,20 +550,19 @@
     [_profileNameLbl release];
     [_eventNameLbl release];
     [_giftDetailsBgScroll release];
-    [_giftItemImg release];
-    [_giftNameLbl release];
+   
     [_giftDetailsLbl release];
     [_innerViewForGiftItemDetails release];
     [_dateLabel release];
-    [_personalMsgTxt release];
-    [_zoomDoneBtn release];
-    [_giftTitleInZoomScreen release];
+    
     [_dodBgView release];
     [_dodPicker release];
     [_msgInputAccessoryView release];
     [giftItemInfo release];
     [fb_giftgiv_detailsScreen release];
     [_detailsBgView release];
+    [_giftMsgEditScreen release];
+    [_giftMsgTxtView release];
     [super dealloc];
 }
 - (void)viewDidUnload {
@@ -617,18 +570,17 @@
     [self setProfileNameLbl:nil];
     [self setEventNameLbl:nil];
     [self setGiftDetailsBgScroll:nil];
-    [self setGiftItemImg:nil];
-    [self setGiftNameLbl:nil];
+   
     [self setGiftDetailsLbl:nil];
     [self setInnerViewForGiftItemDetails:nil];
     [self setDateLabel:nil];
-    [self setPersonalMsgTxt:nil];
-    [self setZoomDoneBtn:nil];
-    [self setGiftTitleInZoomScreen:nil];
+    
     [self setDodBgView:nil];
     [self setDodPicker:nil];
     [self setMsgInputAccessoryView:nil];
     [self setDetailsBgView:nil];
+    [self setGiftMsgEditScreen:nil];
+    [self setGiftMsgTxtView:nil];
     [super viewDidUnload];
 }
 

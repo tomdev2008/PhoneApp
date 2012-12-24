@@ -47,7 +47,7 @@
 @property (retain, nonatomic) IBOutlet UIToolbar *msgInputAccessoryView;
 @property (retain, nonatomic) IBOutlet UITextView *personalMsgTxt;
 @property (retain, nonatomic) IBOutlet UILabel *dateLabel;
-@property (retain, nonatomic) GiftItemObject *giftItemInfo;
+@property (retain, nonatomic) NSMutableDictionary *giftItemInfo;
 
 @property BOOL isGreetingCard;
 - (IBAction)dodPickerAction:(id)sender;

@@ -70,6 +70,18 @@
     
     electronicPhysicalList=[[NSMutableArray alloc]initWithObjects:@"Electronically",@"Physically", nil];
     
+    if([giftItemInfo valueForKey:@"IsSendElectronically"]){
+        if([[giftItemInfo valueForKey:@"IsSendElectronically"] boolValue]){
+            sendMediaLbl.text=[NSString stringWithFormat:@"   Electronically"];
+            selectedElectronicPhysicRow=0;
+        }
+        else{
+            sendMediaLbl.text=[NSString stringWithFormat:@"   Physically"];
+            selectedElectronicPhysicRow=1;
+        }
+    }
+    
+    
     fb_giftgiv_detailsScreen=[[Facebook_GiftGiv alloc]init];
     fb_giftgiv_detailsScreen.fbGiftGivDelegate=self;
     
@@ -109,6 +121,8 @@
     [self performSelector:@selector(loadGiftImage) withObject:nil afterDelay:0.001];
     
     giftDetailsScroll.frame=CGRectMake(0, 44, 320,416);
+   
+    
     [self.view addSubview:giftDetailsScroll];
     
     
@@ -124,7 +138,7 @@
     
     eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 20, eventName_newSize.width, 21);
     
-    NSArray *tempPrices=[[giftItemInfo giftPrice] componentsSeparatedByString:@";"];
+    NSArray *tempPrices=[[[giftItemInfo objectForKey:@"GiftItem"] giftPrice] componentsSeparatedByString:@";"];
     
     priceListArray =[[NSMutableArray alloc]initWithArray:tempPrices];
     
@@ -142,10 +156,10 @@
     [personalMsgTxtView.layer setBorderWidth:1.0];
     
     
-    giftNameLbl.text=[giftItemInfo giftTitle];
+    giftNameLbl.text=[[giftItemInfo objectForKey:@"GiftItem"] giftTitle];
     UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:11.0];
     CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
-    NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:[giftItemInfo giftDetails]];
+    NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:[[giftItemInfo objectForKey:@"GiftItem"] giftDetails]];
     [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:kCTLineBreakByWordWrapping];
     CGSize labelSize = [[giftDescription string]sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
     CGRect targetFrame=CGRectMake(20, shippingCostLbl.frame.origin.y+shippingCostLbl.frame.size.height, labelSize.width, labelSize.height);
@@ -162,21 +176,42 @@
     
     [giftDetailsScroll setContentSize:CGSizeMake(320, giftOptionsListBgView.frame.origin.y+giftOptionsListBgView.frame.size.height)];
     
-    NSArray *priceArray=[[giftItemInfo giftPrice] componentsSeparatedByString:@";"];
+    NSArray *priceArray=[[[giftItemInfo objectForKey:@"GiftItem"] giftPrice] componentsSeparatedByString:@";"];
     
     if([priceArray count]>1){
         ;
         giftPriceLbl.text=[NSString stringWithFormat:@"$%@ - $%@",[priceArray objectAtIndex:0],[priceArray objectAtIndex:[priceArray count]-1]];
-        priceSelectedLbl.text=[NSString stringWithFormat:@"   $%@",[priceArray objectAtIndex:0]];
+        
+        if([giftItemInfo objectForKey:@"GiftPrice"]){
+            priceSelectedLbl.text=[NSString stringWithFormat:@"   %@",[giftItemInfo objectForKey:@"GiftPrice"]];
+            NSString *selectedPriceVal=[[giftItemInfo objectForKey:@"GiftPrice"] stringByReplacingOccurrencesOfString:@"$" withString:@""];
+            
+            [priceArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                
+                if([obj isEqualToString:selectedPriceVal]){
+                    selectedPriceRow=idx;
+                    
+                }
+            }];
+            
+        }
+        else
+            priceSelectedLbl.text=[NSString stringWithFormat:@"   $%@",[priceArray objectAtIndex:0]];
     }
     else{
-        if(![[giftItemInfo giftPrice] isEqualToString:@""]){
-            giftPriceLbl.text=[NSString stringWithFormat:@"$%@",[giftItemInfo giftPrice]];
-            priceSelectedLbl.text=[NSString stringWithFormat:@"   $%@",[giftItemInfo giftPrice]];
+        if(![[[giftItemInfo objectForKey:@"GiftItem"] giftPrice] isEqualToString:@""]){
+            giftPriceLbl.text=[NSString stringWithFormat:@"$%@",[[giftItemInfo objectForKey:@"GiftItem"] giftPrice]];
+            if([giftItemInfo objectForKey:@"GiftPrice"]){
+                priceSelectedLbl.text=[NSString stringWithFormat:@"   %@",[giftItemInfo objectForKey:@"GiftPrice"]];
+            }
+            else
+                priceSelectedLbl.text=[NSString stringWithFormat:@"   $%@",[[giftItemInfo objectForKey:@"GiftItem"] giftPrice]];
         }
         
     }
-    
+    if([giftItemInfo objectForKey:@"PersonalMessage"]){
+        personalMsgTxtView.text=[giftItemInfo objectForKey:@"PersonalMessage"];
+    }
     //Dynamic[fit] label width respected to the size of the text
     CGSize giftPriceLbl_maxsize = CGSizeMake(giftPriceLbl.frame.size.width, giftPriceLbl.frame.size.height);
     CGSize giftPriceLbl_new_size=[giftPriceLbl.text sizeWithFont:giftPriceLbl.font constrainedToSize:giftPriceLbl_maxsize lineBreakMode:UILineBreakModeTailTruncation];
@@ -197,7 +232,7 @@
     tapRecognizer.numberOfTapsRequired=2;
     [self.view addGestureRecognizer:tapRecognizer];
     [tapRecognizer release];
-    giftTitleInZoomScreen.text=[giftItemInfo giftTitle];
+    giftTitleInZoomScreen.text=[[giftItemInfo objectForKey:@"GiftItem"] giftTitle];
     
     NSDateComponents *components = [[NSCalendar currentCalendar] components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
     int month=[components month];
@@ -215,7 +250,30 @@
         [daysArray addObject:[NSString stringWithFormat:@"%d",day]];
         day++;
     }
-    dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
+    
+    if([giftItemInfo objectForKey:@"DateOfDelivery"]){
+        
+        NSArray *dateArrayComponents=[[giftItemInfo objectForKey:@"DateOfDelivery"] componentsSeparatedByString:@"-"];
+        if([components day]==[[dateArrayComponents objectAtIndex:2] integerValue] && [components month]==[[dateArrayComponents objectAtIndex:1] integerValue]){
+            dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
+        }
+        else
+            dateLabel.text=[NSString stringWithFormat:@"   %@ %@",[self getMonthName:[[dateArrayComponents objectAtIndex:1]intValue]],[dateArrayComponents objectAtIndex:2]];
+        
+        [daysArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if([obj isEqualToString:[dateArrayComponents objectAtIndex:2]]){
+                [dodPicker selectRow:idx inComponent:1 animated:NO];
+            }
+        }];
+        [monthsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if([obj isEqualToString:[dateArrayComponents objectAtIndex:1]]){
+                [dodPicker selectRow:idx inComponent:0 animated:NO];
+            }
+        }];
+    }
+      
+    else
+        dateLabel.text=[NSString stringWithFormat:@"   %@ %@ (Immediately)",[self getMonthName:[[monthsArray objectAtIndex:0]intValue]],[daysArray objectAtIndex:0]];
     [zoomDoneBtn.layer setBorderColor:[[UIColor blackColor]CGColor]];
     [zoomDoneBtn.layer setBorderWidth:1.0];
     [zoomDoneBtn.layer setCornerRadius:5.0];
@@ -314,7 +372,7 @@
     ImageLoader_Q=dispatch_queue_create("Gift card picture network connection queue", NULL);
     dispatch_async(ImageLoader_Q, ^{
         
-        NSString *urlStr=[giftItemInfo giftImageUrl];
+        NSString *urlStr=[[giftItemInfo objectForKey:@"GiftItem"] giftImageUrl];
         
         NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
         UIImage *thumbnail = [UIImage imageWithData:data];
@@ -368,7 +426,9 @@
     if(priceRangePickerBgView.hidden)
         priceRangePickerBgView.hidden=NO;
     if(![priceRangePickerBgView superview]){
-        priceRangePickerBgView.frame=CGRectMake(0, 220, 320, 260);
+        CGRect origFrame=priceRangePickerBgView.frame;//CGRectMake(0, 220, 320, 260);
+        origFrame.origin.y=(self.view.frame.size.height - origFrame.size.height)+20;
+        priceRangePickerBgView.frame=origFrame;
         [self.view.window addSubview:priceRangePickerBgView];
     }
     
@@ -409,7 +469,9 @@
     if(electrnicalPhysicalBgView.hidden)
         electrnicalPhysicalBgView.hidden=NO;
     if(![electrnicalPhysicalBgView superview]){
-        electrnicalPhysicalBgView.frame=CGRectMake(0, 220, 320, 260);
+        CGRect origFrame=electrnicalPhysicalBgView.frame;//CGRectMake(0, 220, 320, 260);
+        origFrame.origin.y=(self.view.frame.size.height - origFrame.size.height)+20;
+        electrnicalPhysicalBgView.frame=origFrame;
         [self.view.window addSubview:electrnicalPhysicalBgView];
     }
     
@@ -445,31 +507,47 @@
 }
 - (IBAction)senderDetailsScreenAction:(id)sender {
     
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+    int month=[components month];
+    int year=[components year];
+    
+    
+    int selectedMonth=[[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]] intValue];
+    int selectedDay=[[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]] intValue];
+    if(selectedMonth<month)
+        year++;
+    
+    [giftItemInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
+    if([[sendMediaLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@"Electronically"]){
+        [giftItemInfo setValue:[NSNumber numberWithBool:YES]  forKey:@"IsSendElectronically"];
+    }
+    else
+         [giftItemInfo setValue:[NSNumber numberWithBool:NO] forKey:@"IsSendElectronically"];
+   
+    [giftItemInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
+    [giftItemInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
+    
+    
+    
+    
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]){
-        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-        int month=[components month];
-        int year=[components year];
         
-        
-        int selectedMonth=[[monthsArray objectAtIndex:[dodPicker selectedRowInComponent:0]] intValue];
-        int selectedDay=[[daysArray objectAtIndex:[dodPicker selectedRowInComponent:1]] intValue];
-        if(selectedMonth<month)
-            year++;
         SendOptionsVC *sendOptions=[[SendOptionsVC alloc]initWithNibName:@"SendOptionsVC" bundle:nil];
-        if([[sendMediaLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@"Electronically"]){
+        /*if([[sendMediaLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@"Electronically"]){
             sendOptions.isSendElectronically=YES;
         }
         else
-            sendOptions.isSendElectronically=NO;
+            sendOptions.isSendElectronically=NO;*/
+        sendOptions.isSendElectronically=[[giftItemInfo valueForKey:@"IsSendElectronically"] boolValue];
         NSMutableDictionary *giftAndSenderInfo=[[NSMutableDictionary alloc]initWithCapacity:10];
         [giftAndSenderInfo setObject:[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"] objectForKey:@"userName"] forKey:@"RecipientName"];
         [giftAndSenderInfo setObject:eventNameLbl.text forKey:@"EventName"];
-        [giftAndSenderInfo setObject:[giftItemInfo giftId] forKey:@"GiftID"];
-        [giftAndSenderInfo setObject:[giftItemInfo giftTitle] forKey:@"GiftName"];
-        [giftAndSenderInfo setObject:[giftItemInfo giftImageUrl] forKey:@"GiftImgUrl"];
-        [giftAndSenderInfo setObject:[priceSelectedLbl.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]forKey:@"GiftPrice"];
-        [giftAndSenderInfo setObject:[personalMsgTxtView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"PersonalMessage"];
-        [giftAndSenderInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
+        [giftAndSenderInfo setObject:[[giftItemInfo objectForKey:@"GiftItem"] giftId] forKey:@"GiftID"];
+        [giftAndSenderInfo setObject:[[giftItemInfo objectForKey:@"GiftItem"] giftTitle] forKey:@"GiftName"];
+        [giftAndSenderInfo setObject:[[giftItemInfo objectForKey:@"GiftItem"] giftImageUrl] forKey:@"GiftImgUrl"];
+        [giftAndSenderInfo setObject:[giftItemInfo objectForKey:@"GiftPrice"] forKey:@"GiftPrice"];
+        [giftAndSenderInfo setObject:[giftItemInfo objectForKey:@"PersonalMessage"] forKey:@"PersonalMessage"];
+        [giftAndSenderInfo setObject:[giftItemInfo objectForKey:@"DateOfDelivery"]  forKey:@"DateOfDelivery"];
         
         sendOptions.sendingInfoDict=giftAndSenderInfo;
         [giftAndSenderInfo release];
@@ -978,7 +1056,9 @@
     if(dodBgView.hidden)
         dodBgView.hidden=NO;
     if(![dodBgView superview]){
-        dodBgView.frame=CGRectMake(0, 220, 320, 260);
+        CGRect origFrame=dodBgView.frame;//CGRectMake(0, 220, 320, 260);
+        origFrame.origin.y=(self.view.frame.size.height - origFrame.size.height)+20;
+        dodBgView.frame=origFrame;
         [self.view.window addSubview:dodBgView];
     }
     

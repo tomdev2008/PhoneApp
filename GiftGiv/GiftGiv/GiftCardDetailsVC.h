@@ -58,7 +58,8 @@
 @property (retain, nonatomic) IBOutlet UIView *priceRangePickerBgView;
 @property (retain, nonatomic) IBOutlet UISegmentedControl *prevNextSegmentControl;
 @property (retain, nonatomic) IBOutlet UIPickerView *pricePicker;
-@property (retain, nonatomic) GiftItemObject *giftItemInfo;
+//@property (retain, nonatomic) GiftItemObject *giftItemInfo;
+@property (retain, nonatomic) NSMutableDictionary *giftItemInfo;
 
 - (IBAction)dodPickerAction:(id)sender;
 - (IBAction)showDatePicker:(id)sender;

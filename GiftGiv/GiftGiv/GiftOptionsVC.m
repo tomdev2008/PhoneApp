@@ -652,20 +652,21 @@
     int tableTag=[(GiftCustomCell*)[(UIButton*)sender superview]tableTagForCell];
     int columNum=[sender tag];
     GiftItemObject *selectedGiftItem=[[[currentGiftItems objectAtIndex:tableTag-1]objectAtIndex:(rowNum*2+columNum)-1]objectForKey:@"GiftDetails"];
-    [self performSelector:@selector(showGiftDetailsScreen:) withObject:selectedGiftItem];
+    [self performSelector:@selector(showGiftDetailsScreen:) withObject:[NSMutableDictionary dictionaryWithObject:selectedGiftItem forKey:@"GiftItem"]];
         
 }
--(void)showGiftDetailsScreen:(GiftItemObject*)selectedGift{
+-(void)showGiftDetailsScreen:(NSMutableDictionary*)selectedGift{
     //gift cards
-    if([[selectedGift.giftPrice componentsSeparatedByString:@";"] count]>1){
+    
+    if([[[[selectedGift objectForKey:@"GiftItem"]giftPrice] componentsSeparatedByString:@";"] count]>1){
         GiftCardDetailsVC *giftCardDetails=[[GiftCardDetailsVC alloc]initWithNibName:@"GiftCardDetailsVC" bundle:nil];
         giftCardDetails.giftItemInfo=selectedGift;
         [self.navigationController pushViewController:giftCardDetails animated:YES];
         [giftCardDetails release];
     }
     else{
-        GGLog(@"%@",selectedGift.giftPrice);
-        if([selectedGift.giftPrice isEqualToString:@""]){
+        GGLog(@"%@",[[selectedGift objectForKey:@"GiftItem"]giftPrice]);
+        if([[[selectedGift objectForKey:@"GiftItem"]giftPrice] isEqualToString:@""]){
             FreeGiftItemDetailsVC *freeGiftItemDetails=[[FreeGiftItemDetailsVC alloc]initWithNibName:@"FreeGiftItemDetailsVC" bundle:nil];
             
             freeGiftItemDetails.giftItemInfo=selectedGift;
@@ -675,9 +676,9 @@
         }
         else{
             Gift_GreetingCardDetailsVC *greetingCardDetails=[[Gift_GreetingCardDetailsVC alloc]initWithNibName:@"Gift_GreetingCardDetailsVC" bundle:nil];
-            if(![selectedGift.giftImageBackSideUrl length])
+            if(![[[selectedGift objectForKey:@"GiftItem"]giftImageBackSideUrl]length])
                 greetingCardDetails.isGreetingCard=NO;
-            else if([selectedGift.giftImageBackSideUrl length])
+            else if([[[selectedGift objectForKey:@"GiftItem"]giftImageBackSideUrl]length])
                 greetingCardDetails.isGreetingCard=YES;
             greetingCardDetails.giftItemInfo=selectedGift;
             [self.navigationController pushViewController:greetingCardDetails animated:YES];
