@@ -39,6 +39,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *paymentBtnLbl;
 @property (retain, nonatomic) IBOutlet UIButton *paymentBtn;
 @property (retain, nonatomic) IBOutlet UILabel *disclosureLbl;
+@property (retain, nonatomic) IBOutlet UILabel *thoughtFullMessageLbl;
 
 @property (retain, nonatomic) NSMutableDictionary *giftSummaryDict;
 @property (retain, nonatomic) IBOutlet UILabel *msgHeadLbl;

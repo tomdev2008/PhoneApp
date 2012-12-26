@@ -212,7 +212,6 @@
 						<string key="NSFrame">{{180, 128}, {94, 21}}</string>
 						<reference key="NSSuperview" ref="147396572"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>

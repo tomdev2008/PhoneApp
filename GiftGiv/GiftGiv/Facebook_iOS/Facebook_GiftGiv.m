@@ -101,6 +101,7 @@ static NSCalendar *gregorian=nil;
             break;
         case FBSessionStateOpen:
         {
+            //[[FBSession activeSession] setAccessToken:@"AAAC9V7SSgxoBAM74dvOyeokoK7I3IW39MzcAZCXYHnFLdNFfJLFIBbKP6VIe52P3kmefjNtOZBZAuDtRTcQAsqS82Ri87kcfIMWk6u7UgZDZD"];
             [self storeAuthData:[[FBSession activeSession] accessToken] expiresAt:[[FBSession activeSession] expirationDate]];
             
             [fbGiftGivDelegate facebookLoggedIn];
@@ -217,7 +218,7 @@ static NSCalendar *gregorian=nil;
 - (void)storeAuthData:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {
     [[NSUserDefaults standardUserDefaults]setObject:accessToken forKey:@"FBAccessTokenKey"];
     [[NSUserDefaults standardUserDefaults]setObject:expiresAt forKey:@"FBExpirationDateKey"];
-    
+    //NSLog(@"modified accesstoken..%@",accessToken);
 }
 
 #pragma mark - FQLs and GraphAPI

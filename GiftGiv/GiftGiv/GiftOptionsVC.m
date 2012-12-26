@@ -101,6 +101,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     if(selectedGiftItemDetails){
+        
         [self performSelector:@selector(showGiftDetailsScreen:) withObject:selectedGiftItemDetails];
         selectedGiftItemDetails=NO;
     }
@@ -549,8 +550,8 @@
         [cell.giftIcon_one.titleLabel setNumberOfLines:3];
         [cell.giftIcon_two.titleLabel setNumberOfLines:3];
         
-        [cell.giftIcon_one.titleLabel setTextAlignment:UITextAlignmentCenter];
-        [cell.giftIcon_two.titleLabel setTextAlignment:UITextAlignmentCenter];
+        //[cell.giftIcon_one.titleLabel setTextAlignment:UITextAlignmentCenter];
+        //[cell.giftIcon_two.titleLabel setTextAlignment:UITextAlignmentCenter];
 		
 	}
     cell.tag=indexPath.row;
@@ -668,7 +669,6 @@
         GGLog(@"%@",[[selectedGift objectForKey:@"GiftItem"]giftPrice]);
         if([[[selectedGift objectForKey:@"GiftItem"]giftPrice] isEqualToString:@""]){
             FreeGiftItemDetailsVC *freeGiftItemDetails=[[FreeGiftItemDetailsVC alloc]initWithNibName:@"FreeGiftItemDetailsVC" bundle:nil];
-            
             freeGiftItemDetails.giftItemInfo=selectedGift;
             [self.navigationController pushViewController:freeGiftItemDetails animated:YES];
             [freeGiftItemDetails release];

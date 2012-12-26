@@ -497,10 +497,34 @@
 						<string key="NSFrame">{{16, 106}, {125, 125}}</string>
 						<reference key="NSSuperview" ref="479698573"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="292555007"/>
+						<reference key="NSNextKeyView" ref="131262900"/>
 						<int key="IBUIContentMode">1</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+					</object>
+					<object class="IBUILabel" id="131262900">
+						<reference key="NSNextResponder" ref="479698573"/>
+						<int key="NSvFlags">292</int>
+						<string key="NSFrame">{{18, 106}, {282, 21}}</string>
+						<reference key="NSSuperview" ref="479698573"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="292555007"/>
+						<string key="NSReuseIdentifierKey">_NS:9</string>
+						<bool key="IBUIOpaque">NO</bool>
+						<bool key="IBUIClipsSubviews">YES</bool>
+						<int key="IBUIContentMode">7</int>
+						<bool key="IBUIUserInteractionEnabled">NO</bool>
+						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+						<string key="IBUIText">Label</string>
+						<reference key="IBUITextColor" ref="707103281"/>
+						<nil key="IBUIHighlightedColor"/>
+						<int key="IBUIBaselineAdjustment">0</int>
+						<int key="IBUINumberOfLines">0</int>
+						<int key="IBUILineBreakMode">0</int>
+						<reference key="IBUIFontDescription" ref="366327339"/>
+						<reference key="IBUIFont" ref="897436143"/>
+						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
+						<double key="preferredMaxLayoutWidth">282</double>
 					</object>
 				</array>
 				<string key="NSFrameSize">{320, 463}</string>
@@ -643,6 +667,14 @@
 					<int key="connectionID">47</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">thoughtFullMessageLbl</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="131262900"/>
+					</object>
+					<int key="connectionID">49</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">backToRecipientForm:</string>
 						<reference key="source" ref="415857371"/>
@@ -734,6 +766,7 @@
 							<reference ref="87615205"/>
 							<reference ref="799347931"/>
 							<reference ref="539055488"/>
+							<reference ref="131262900"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -812,6 +845,11 @@
 						<reference key="object" ref="799347931"/>
 						<reference key="parent" ref="479698573"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">48</int>
+						<reference key="object" ref="131262900"/>
+						<reference key="parent" ref="479698573"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -836,6 +874,7 @@
 				<string key="30.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="36.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="4.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="48.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="6.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="7.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -845,7 +884,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">47</int>
+			<int key="maxID">49</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -882,6 +921,7 @@
 						<string key="profileNameLbl">UILabel</string>
 						<string key="profilePic">UIImageView</string>
 						<string key="recipientAddressHeadLbl">UILabel</string>
+						<string key="thoughtFullMessageLbl">UILabel</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="addressLbl">
@@ -942,6 +982,10 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="recipientAddressHeadLbl">
 							<string key="name">recipientAddressHeadLbl</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="thoughtFullMessageLbl">
+							<string key="name">thoughtFullMessageLbl</string>
 							<string key="candidateClassName">UILabel</string>
 						</object>
 					</dictionary>

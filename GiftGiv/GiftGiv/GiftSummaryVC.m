@@ -120,12 +120,28 @@
         }
     }
     if(isFreeGiftItem){
+        recipientAddressHeadLbl.text=@"RECIPIENT DELIVERY";
+        disclosureLbl.hidden=YES;
+        giftImg.hidden=YES;
+        giftNameLbl.hidden=YES;
+        
+        _thoughtFullMessageLbl.text=[giftSummaryDict objectForKey:@"EditableGiftDescription"];
+        
+        CGSize constraintSizeForThoughtFulMessage = CGSizeMake(282.0f, MAXFLOAT);
+        
+        CGSize labelSize = [_thoughtFullMessageLbl.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:11.0] constrainedToSize:constraintSizeForThoughtFulMessage lineBreakMode:UILineBreakModeWordWrap];
+        _thoughtFullMessageLbl.frame=CGRectMake(_thoughtFullMessageLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y, 282.0, labelSize.height);
+        
+        paymentBtnLbl.text=@"SEND";
+        
         if([giftSummaryDict objectForKey:@"WallPost"])
             mailGiftToLbl.text=@"Post on wall";
         else
             mailGiftToLbl.text=@"Mail Gift to:";
     }
-    
+    else{
+        _thoughtFullMessageLbl.hidden=YES;
+    }
     
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(160, 21);
@@ -144,21 +160,21 @@
     else
         msgHeadLbl.hidden=NO;
     
-    
-    
-    
+    if(isFreeGiftItem){
+        
+        msgHeadLbl.frame=CGRectMake(msgHeadLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y+_thoughtFullMessageLbl.frame.size.height+5, msgHeadLbl.frame.size.width, msgHeadLbl.frame.size.height);
+        
+    }
     CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
     
     CGSize labelSize = [personalMsgLbl.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:11.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
-    personalMsgLbl.frame=CGRectMake(personalMsgLbl.frame.origin.x, personalMsgLbl.frame.origin.y, 280.0, labelSize.height);
+    personalMsgLbl.frame=CGRectMake(personalMsgLbl.frame.origin.x, msgHeadLbl.frame.origin.y+msgHeadLbl.frame.size.height+5, 280.0, labelSize.height);
     
     recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, personalMsgLbl.frame.origin.y+personalMsgLbl.frame.size.height+5, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
     mailGiftToLbl.frame=CGRectMake(mailGiftToLbl.frame.origin.x, recipientAddressHeadLbl.frame.origin.y+recipientAddressHeadLbl.frame.size.height-5, mailGiftToLbl.frame.size.width, mailGiftToLbl.frame.size.height);
     addressLbl.frame=CGRectMake(addressLbl.frame.origin.x, mailGiftToLbl.frame.origin.y+mailGiftToLbl.frame.size.height-3, addressLbl.frame.size.width, addressLbl.frame.size.height);
     disclosureLbl.frame=CGRectMake(disclosureLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+10, disclosureLbl.frame.size.width, disclosureLbl.frame.size.height);
-    
-    if(isFreeGiftItem)
-        paymentBtnLbl.text=@"SEND";
+           
     
     paymentBtnLbl.frame=CGRectMake(paymentBtnLbl.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+17, paymentBtnLbl.frame.size.width, paymentBtnLbl.frame.size.height);
     paymentBtn.frame=CGRectMake(paymentBtn.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+10, paymentBtn.frame.size.width, paymentBtn.frame.size.height);
@@ -301,6 +317,7 @@
     [self showProgressHUD:self.view withMsg:nil];
     
     if(isFreeGiftItem){
+        
         if([giftSummaryDict objectForKey:@"WallPost"]){
             //Send the gift item to facebook wall
         }
@@ -310,6 +327,8 @@
         }
         else if([giftSummaryDict objectForKey:@"RecipientMailID"]){
             //Make a service to send Email
+                    
+            
         }
         SuccessVC *showSuccess = [[SuccessVC alloc] initWithNibName:@"SuccessVC" bundle:nil];
         [self.navigationController pushViewController:showSuccess animated:YES];
@@ -406,6 +425,7 @@
     [self setPaymentBtnLbl:nil];
     [self setMsgHeadLbl:nil];
     
+    [self setThoughtFullMessageLbl:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -435,6 +455,7 @@
     [giftSummaryDict release];
     
     [msgHeadLbl release];
+    [_thoughtFullMessageLbl release];
     [super dealloc];
 }
 @end
