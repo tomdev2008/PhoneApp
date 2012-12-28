@@ -123,13 +123,13 @@
         recipientAddressHeadLbl.text=@"RECIPIENT DELIVERY";
         disclosureLbl.hidden=YES;
         giftImg.hidden=YES;
-        giftNameLbl.hidden=YES;
-        
+        giftNameLbl.frame=CGRectMake(18, 98, 282, 21);
+        giftNameLbl.font=[UIFont fontWithName:@"Helvetica" size:18];
         _thoughtFullMessageLbl.text=[giftSummaryDict objectForKey:@"EditableGiftDescription"];
         
         CGSize constraintSizeForThoughtFulMessage = CGSizeMake(282.0f, MAXFLOAT);
         
-        CGSize labelSize = [_thoughtFullMessageLbl.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:11.0] constrainedToSize:constraintSizeForThoughtFulMessage lineBreakMode:UILineBreakModeWordWrap];
+        CGSize labelSize = [_thoughtFullMessageLbl.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:14.0] constrainedToSize:constraintSizeForThoughtFulMessage lineBreakMode:UILineBreakModeWordWrap];
         _thoughtFullMessageLbl.frame=CGRectMake(_thoughtFullMessageLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y, 282.0, labelSize.height);
         
         paymentBtnLbl.text=@"SEND";
@@ -175,9 +175,15 @@
     addressLbl.frame=CGRectMake(addressLbl.frame.origin.x, mailGiftToLbl.frame.origin.y+mailGiftToLbl.frame.size.height-3, addressLbl.frame.size.width, addressLbl.frame.size.height);
     disclosureLbl.frame=CGRectMake(disclosureLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+10, disclosureLbl.frame.size.width, disclosureLbl.frame.size.height);
            
+    if(isFreeGiftItem){
+        paymentBtnLbl.frame=CGRectMake(paymentBtnLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+17, paymentBtnLbl.frame.size.width, paymentBtnLbl.frame.size.height);
+        paymentBtn.frame=CGRectMake(paymentBtn.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+10, paymentBtn.frame.size.width, paymentBtn.frame.size.height);
+    }
+    else{
+        paymentBtnLbl.frame=CGRectMake(paymentBtnLbl.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+17, paymentBtnLbl.frame.size.width, paymentBtnLbl.frame.size.height);
+        paymentBtn.frame=CGRectMake(paymentBtn.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+10, paymentBtn.frame.size.width, paymentBtn.frame.size.height);
+    }
     
-    paymentBtnLbl.frame=CGRectMake(paymentBtnLbl.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+17, paymentBtnLbl.frame.size.width, paymentBtnLbl.frame.size.height);
-    paymentBtn.frame=CGRectMake(paymentBtn.frame.origin.x, disclosureLbl.frame.origin.y+disclosureLbl.frame.size.height+10, paymentBtn.frame.size.width, paymentBtn.frame.size.height);
     
     giftSummaryScroll.contentSize=CGSizeMake(320, paymentBtn.frame.origin.y+paymentBtn.frame.size.height+10);
     
@@ -318,26 +324,150 @@
     
     if(isFreeGiftItem){
         
-        if([giftSummaryDict objectForKey:@"WallPost"]){
-            //Send the gift item to facebook wall
+        
+        //If the recipient user is not from the events/contacts
+        if([[NSUserDefaults standardUserDefaults]objectForKey:@"DummyUserId"])
+            [self prepareRequestToAddOrderFor:[[NSUserDefaults standardUserDefaults]objectForKey:@"DummyUserId"]];
+        else{
+            if([CheckNetwork connectedToNetwork]){
+                
+                NSString *soapmsgFormat;
+                if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]){
+                    soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]];
+                }
+                else{
+                    soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_userID"]];
+                }
+                
+                NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+                GGLog(@"%@",soapRequestString);
+                NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetUser"];
+                
+                GetUserRequest *getUser=[[GetUserRequest alloc]init];
+                [getUser setGetuserDelegate:self];
+                [getUser makeRequestToGetUserId:theRequest];
+                [getUser release];
+            }
         }
-        else if([giftSummaryDict objectForKey:@"RecipientPhoneNum"]){
-            //Make a service to send SMS
-            
-        }
-        else if([giftSummaryDict objectForKey:@"RecipientMailID"]){
-            //Make a service to send Email
-                    
-            
-        }
-        SuccessVC *showSuccess = [[SuccessVC alloc] initWithNibName:@"SuccessVC" bundle:nil];
-        [self.navigationController pushViewController:showSuccess animated:YES];
-        [showSuccess release];
+ 
+             
+        
+        
     }
     else{
         [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_LIVE withDelegate:self];
     }
     
+}
+-(void) responseForGetuser:(UserDetailsObject*)userdetails{
+    
+    [self prepareRequestToAddOrderFor:userdetails.userId];
+    
+    
+}
+-(void)prepareRequestToAddOrderFor:(NSString*)userId{
+    //Send request to add an order
+    if([CheckNetwork connectedToNetwork]){
+        
+        
+        NSString *soapmsgFormat=@"";
+        
+        if([giftSummaryDict objectForKey:@"RecipientMailID"]){
+            
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email>%@</tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>0</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>electronic</tem:sentAs>\n</tem:AddOrderv2>",[giftSummaryDict objectForKey:@"EventName"],[giftSummaryDict objectForKey:@"EditableGiftDescription"],userId,[giftSummaryDict objectForKey:@"RecipientName"],[giftSummaryDict objectForKey:@"RecipientMailID"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[giftSummaryDict objectForKey:@"GiftID"],[giftSummaryDict objectForKey:@"DateOfDelivery"]];
+        }
+        else {
+            
+            soapmsgFormat=[NSString stringWithFormat:@"<tem:AddOrderv2>\n<tem:details>%@</tem:details>\n<tem:userMessage>%@</tem:userMessage>\n<tem:status>0</tem:status>\n<tem:recipientId>%@</tem:recipientId>\n<tem:recipientName>%@</tem:recipientName>\n<tem:email></tem:email>\n<tem:phone></tem:phone>\n<tem:addressLine1></tem:addressLine1>\n<tem:addressLine2></tem:addressLine2>\n<tem:city></tem:city>\n<tem:state></tem:state>\n<tem:zip></tem:zip>\n<tem:senderId>%@</tem:senderId>\n<tem:itemId>%@</tem:itemId>\n<tem:price>0</tem:price>\n<tem:dateofdelivery>%@</tem:dateofdelivery>\n<tem:sentAs>electronic</tem:sentAs>\n</tem:AddOrderv2>",[giftSummaryDict objectForKey:@"EventName"],[giftSummaryDict objectForKey:@"EditableGiftDescription"],userId,[giftSummaryDict objectForKey:@"RecipientName"],[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"],[giftSummaryDict objectForKey:@"GiftID"],[giftSummaryDict objectForKey:@"DateOfDelivery"]];
+        }
+        
+        
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+        GGLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AddOrderv2"];
+        
+        AddOrderRequest *addOrder=[[AddOrderRequest alloc]init];
+        [addOrder setAddorderDelegate:self];
+        [addOrder makeReqToAddOrder:theRequest];
+        [addOrder release];
+    }
+}
+-(void) responseForAddOrder:(NSMutableString*)orderCode{
+    
+    GGLog(@"Order code...%@",orderCode);
+    shouldPushToNextScreen=YES;
+    NSString *soapmsgFormatAlertOrderEmail=[NSString stringWithFormat:@"<tem:AlertOrderEmail>\n<tem:senderName>%@ %@</tem:senderName>\n<tem:recipientName>%@</tem:recipientName>\n<tem:eventType>%@</tem:eventType>\n<tem:giftItem>%@</tem:giftItem>\n<tem:giftPrice></tem:giftPrice>\n<tem:deliveryMethod>electronic</tem:deliveryMethod>\n<tem:deliveryDate>%@</tem:deliveryDate></tem:AlertOrderEmail>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[giftSummaryDict objectForKey:@"RecipientName"],[giftSummaryDict objectForKey:@"EventName"],[giftSummaryDict objectForKey:@"GiftName"],[giftSummaryDict objectForKey:@"DateOfDelivery"]];
+   
+    
+    NSString *soapRequestString=SOAPRequestMsg(soapmsgFormatAlertOrderEmail);
+    GGLog(@"%@",soapRequestString);
+    NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"AlertOrderEmail"];
+    
+    AlertOrderEmailRequest *alertOrderMailReq=[[AlertOrderEmailRequest alloc]init];
+    [alertOrderMailReq setAlertOrderEmailDelegate:self];
+    [alertOrderMailReq makeReqToAlertOrderEmail:theRequest];
+    [alertOrderMailReq release];
+
+    //wall post
+    if([giftSummaryDict objectForKey:@"WallPost"]){
+        shouldPushToNextScreen=NO;
+        
+        NSString *soapmsgFormatAlertOrderEmail=[NSString stringWithFormat:@"<tem:PostOnFacebookWall>\n<tem:fromFBId>%@</tem:fromFBId>\n<tem:toFBId>%@</tem:toFBId>\n<tem:mesage>%@</tem:mesage>\n</tem:PostOnFacebookWall>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"uid"],[[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"userID"],[giftSummaryDict objectForKey:@"EditableGiftDescription"]];
+        
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormatAlertOrderEmail);
+        GGLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"PostOnFacebookWall"];
+        
+        AlertOrderEmailRequest *alertOrderMailReq=[[AlertOrderEmailRequest alloc]init];
+        [alertOrderMailReq setAlertOrderEmailDelegate:self];
+        [alertOrderMailReq makeReqToAlertOrderEmail:theRequest];
+        [alertOrderMailReq release];
+        
+    }
+    else if([giftSummaryDict objectForKey:@"RecipientMailID"]){
+        shouldPushToNextScreen=NO;
+        NSString *soapmsgFormatAlertOrderEmail=[NSString stringWithFormat:@"<tem:SendThoughtFulMessageEmail>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n<tem:toEmail>%@</tem:toEmail>\n<tem:message>%@</tem:message>\n</tem:SendThoughtFulMessageEmail>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[giftSummaryDict objectForKey:@"RecipientName"],[giftSummaryDict objectForKey:@"RecipientMailID"],[giftSummaryDict objectForKey:@"EditableGiftDescription"]];
+        
+        
+        NSString *soapRequestString=SOAPRequestMsg(soapmsgFormatAlertOrderEmail);
+        GGLog(@"%@",soapRequestString);
+        NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"SendThoughtFulMessageEmail"];
+        
+        SendThoughfulMessageEmailReq *sendThoughtfulMsgMailReq=[[SendThoughfulMessageEmailReq alloc]init];
+        [sendThoughtfulMsgMailReq setSendThoughtfulMsgEmailReqDel:self];
+        [sendThoughtfulMsgMailReq makeReqToSendThoughtful:theRequest];
+        [sendThoughtfulMsgMailReq release];
+    }
+   
+    
+}
+-(void) responseForSendThoughtful:(NSMutableString*)responseCode{
+    if(shouldPushToNextScreen)
+        [self performSelector:@selector(pushToSuccessScreen)];
+    shouldPushToNextScreen=YES;
+}
+-(void) responseForAlertOrderEmail:(NSMutableString*)response{
+    //true -- send
+    //false -- failed
+    if(shouldPushToNextScreen)
+        [self performSelector:@selector(pushToSuccessScreen)];
+    shouldPushToNextScreen=YES;
+}
+-(void) responseForPosting:(NSMutableString*)responseCode{
+    if(shouldPushToNextScreen)
+        [self performSelector:@selector(pushToSuccessScreen)];
+    shouldPushToNextScreen=YES;
+}
+-(void) requestFailed{
+    //request faild.
+}
+-(void)pushToSuccessScreen{
+    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"DummyUserId"];
+    SuccessVC *showSuccess = [[SuccessVC alloc] initWithNibName:@"SuccessVC" bundle:nil];
+    [self.navigationController pushViewController:showSuccess animated:YES];
+    [showSuccess release];
 }
 -(void)paymentActionCalledWhenDeviceInitailized{
     //In this example, we do the Express Checkout calls completely on the device.  This is not recommended because

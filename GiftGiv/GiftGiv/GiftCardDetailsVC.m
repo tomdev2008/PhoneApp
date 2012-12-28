@@ -575,7 +575,7 @@
         }
         //Show an alert
         else{
-            AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Please login facebook to select an event of your loved ones", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);   
+            AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Login facebook and select an event to celebrate", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);   
         }
         
         

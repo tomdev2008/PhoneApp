@@ -653,6 +653,7 @@
     int tableTag=[(GiftCustomCell*)[(UIButton*)sender superview]tableTagForCell];
     int columNum=[sender tag];
     GiftItemObject *selectedGiftItem=[[[currentGiftItems objectAtIndex:tableTag-1]objectAtIndex:(rowNum*2+columNum)-1]objectForKey:@"GiftDetails"];
+    GGLog(@"%@,%@,%@,%@",selectedGiftItem.giftId,selectedGiftItem.giftTitle,selectedGiftItem.giftImageUrl,selectedGiftItem.giftPrice);
     [self performSelector:@selector(showGiftDetailsScreen:) withObject:[NSMutableDictionary dictionaryWithObject:selectedGiftItem forKey:@"GiftItem"]];
         
 }

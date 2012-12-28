@@ -134,7 +134,7 @@
     greetingNameLbl.text=[[giftItemInfo objectForKey:@"GiftItem"] giftTitle];
     if(![[[giftItemInfo objectForKey:@"GiftItem"] giftPrice] isEqualToString:@""]){
         greetingPrice.text=[NSString stringWithFormat:@"$%@",[[giftItemInfo objectForKey:@"GiftItem"] giftPrice]];
-        shippingCostLbl.text=@"(shipping costs and sales tax, if applicable, included)";
+        shippingCostLbl.text=@"(shipping and sales tax included)";
     }
     
     //Dynamic[fit] label width respected to the size of the text
@@ -500,7 +500,7 @@
         }
         //Show an alert
         else{
-            AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Please login facebook to select an event of your loved ones", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);
+            AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Login facebook and select an event to celebrate", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);
         }
         
         

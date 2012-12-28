@@ -95,6 +95,7 @@
     else{
         _detailsBgView.frame=CGRectMake(_detailsBgView.frame.origin.x, _detailsBgView.frame.origin.y-47, _detailsBgView.frame.size.width, _detailsBgView.frame.size.height);
     }
+    _giftNameLabel.text=[[giftItemInfo objectForKey:@"GiftItem"] giftTitle];
     if([giftItemInfo objectForKey:@"EditableGiftDescription"])
         [self updateTheScreenRespectiveToMessageText:[giftItemInfo objectForKey:@"EditableGiftDescription"]];
     else
@@ -165,23 +166,25 @@
 -(void)updateTheScreenRespectiveToMessageText:(NSString*)targetText{
         
     
-    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:11.0];
-    CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
-    NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:targetText];
-    [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:kCTLineBreakByWordWrapping];
-    CGSize labelSize = [[giftDescription string] sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
+    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:13.0];
+    CGSize constraintSize = CGSizeMake(280.0f, 65);
+    /*NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:targetText];
+    [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];*/
+    CGSize labelSize = [targetText sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeTailTruncation];
     
-    CGRect targetFrame=CGRectMake(20, 33, labelSize.width, labelSize.height);
+    CGRect targetFrame=CGRectMake(20, 20, labelSize.width, labelSize.height);
     
-    if([[giftDescription string] length]){
+    if([targetText length]){
         targetFrame.origin.y+=10;
         targetFrame.size.height+=20;
     }
     _giftDetailsLbl.frame=targetFrame;
     
-    _giftDetailsLbl.attributedText=giftDescription;
+    _giftDetailsLbl.text=targetText;
     
-    _innerViewForGiftItemDetails.frame=CGRectMake(0, _giftDetailsLbl.frame.origin.y+_giftDetailsLbl.frame.size.height+5, 320, _innerViewForGiftItemDetails.frame.size.height);
+    _txtEditBtn.frame=CGRectMake(_txtEditBtn.frame.origin.x, _giftDetailsLbl.frame.origin.y+_giftDetailsLbl.frame.size.height, _txtEditBtn.frame.size.width, _txtEditBtn.frame.size.height);
+    
+    _innerViewForGiftItemDetails.frame=CGRectMake(0, _txtEditBtn.frame.origin.y+_txtEditBtn.frame.size.height+5, 320, _innerViewForGiftItemDetails.frame.size.height);
     CGRect detailsBgFrame=_detailsBgView.frame;
     detailsBgFrame.size.height=_innerViewForGiftItemDetails.frame.origin.y+_innerViewForGiftItemDetails.frame.size.height;
     _detailsBgView.frame=detailsBgFrame;
@@ -402,7 +405,7 @@
         }
         //Show an alert
         else{
-            AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Please login facebook to select an event of your loved ones", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);
+            AlertWithMessageAndDelegateActionHandling(@"GiftGiv", @"Login facebook and select an event to celebrate", [NSArray arrayWithObjects:@"Cancel",@"Login", nil], self);
         }
         
         
@@ -957,6 +960,8 @@
     [_addressEmailSMSSelPickerBgView release];
     [_recipientemailContentView release];
     
+    [_txtEditBtn release];
+    [_giftNameLabel release];
     [super dealloc];
 }
 - (void)viewDidUnload {
@@ -987,6 +992,8 @@
     [self setConfirmBtnLbl:nil];
     [self setConfirmBtn:nil];
     [self setAddEmailSMSSegment:nil];
+    [self setTxtEditBtn:nil];
+    [self setGiftNameLabel:nil];
     [super viewDidUnload];
 }
 

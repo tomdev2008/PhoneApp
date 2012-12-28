@@ -14,15 +14,20 @@
 #import "WebViewController.h"
 #import "PaymentDetails.h"
 #import "MBProgressHUD.h"
+#import "GetUserRequest.h"
+#import "AddOrderRequest.h"
+#import "AlertOrderEmailRequest.h"
+#import "SendThoughfulMessageemailReq.h"
 
 //ExpressCheckoutResponseHandler is not part of the Express Checkout library and should
 //generally not be used because doing the Express Checkout calls on the device requires
 //that the merchant API credentials be stored in the executable, which is a security risk.
 
 
-@interface GiftSummaryVC : UIViewController<ExpressCheckoutResponseHandler,DeviceReferenceTokenDelegate,MBProgressHUDDelegate>{
+@interface GiftSummaryVC : UIViewController<ExpressCheckoutResponseHandler,DeviceReferenceTokenDelegate,MBProgressHUDDelegate,GetUserReqDelegate,AddOrderReqDelegate,AlertOrderEmailRequestDelegate,SendThoughfulMessageEmailReqDelegate>{
     MBProgressHUD *HUD;
     BOOL isFreeGiftItem;
+    BOOL shouldPushToNextScreen;
 }
 
 @property (retain, nonatomic) IBOutlet UIScrollView *giftSummaryScroll;

@@ -237,7 +237,7 @@
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
 								<string key="IBUITitleShadowOffset">{1, 1}</string>
-								<string key="IBUINormalTitle">Log Out All Accounts</string>
+								<string key="IBUINormalTitle">Log Out</string>
 								<reference key="IBUIHighlightedTitleColor" ref="327962382"/>
 								<object class="NSColor" key="IBUINormalTitleColor">
 									<int key="NSColorSpace">3</int>

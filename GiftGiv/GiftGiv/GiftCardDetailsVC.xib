@@ -342,7 +342,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">(shipping costs and sales tax, if applicable, included)</string>
+						<string key="IBUIText">(shipping and sales tax included)</string>
 						<reference key="IBUITextColor" ref="722628640"/>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
@@ -513,8 +513,8 @@
 								<nil key="IBUIHighlightedColor"/>
 								<int key="IBUIBaselineAdjustment">1</int>
 								<float key="IBUIMinimumFontSize">10</float>
-								<reference key="IBUIFontDescription" ref="16371473"/>
-								<reference key="IBUIFont" ref="919683553"/>
+								<reference key="IBUIFontDescription" ref="317932201"/>
+								<reference key="IBUIFont" ref="968362863"/>
 							</object>
 							<object class="IBUILabel" id="941074408">
 								<reference key="NSNextResponder" ref="254370873"/>
@@ -572,7 +572,7 @@
 							<object class="IBUILabel" id="940680648">
 								<reference key="NSNextResponder" ref="254370873"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{20, 142}, {276, 21}}</string>
+								<string key="NSFrame">{{20, 136}, {284, 30}}</string>
 								<reference key="NSSuperview" ref="254370873"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="646976941"/>
@@ -585,9 +585,11 @@
 								<reference key="IBUITextColor" ref="722628640"/>
 								<nil key="IBUIHighlightedColor"/>
 								<int key="IBUIBaselineAdjustment">1</int>
-								<float key="IBUIMinimumFontSize">10</float>
-								<reference key="IBUIFontDescription" ref="16371473"/>
-								<reference key="IBUIFont" ref="919683553"/>
+								<float key="IBUIMinimumFontSize">12</float>
+								<int key="IBUINumberOfLines">2</int>
+								<reference key="IBUIFontDescription" ref="317932201"/>
+								<reference key="IBUIFont" ref="968362863"/>
+								<double key="preferredMaxLayoutWidth">284</double>
 							</object>
 							<object class="IBUILabel" id="646976941">
 								<reference key="NSNextResponder" ref="254370873"/>

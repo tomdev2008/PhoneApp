@@ -28,6 +28,7 @@
     NSMutableArray *listOfSendOptions;
 }
 - (IBAction)recipientAddressAction:(id)sender;
+@property (retain, nonatomic) IBOutlet UIButton *txtEditBtn;
 
 @property (retain, nonatomic) IBOutlet UILabel *confirmBtnLbl;
 @property (retain, nonatomic) IBOutlet UIButton *confirmBtn;
@@ -43,6 +44,7 @@
 @property (retain, nonatomic) IBOutlet UITextField *emailTxtField;
 
 @property (retain, nonatomic) IBOutlet UIView *recipientemailContentView;
+@property (retain, nonatomic) IBOutlet UILabel *giftNameLabel;
 
 @property (retain, nonatomic) IBOutlet UIView *giftMsgEditScreen;
 @property (retain, nonatomic) IBOutlet UITextView *giftMsgTxtView;
@@ -51,7 +53,7 @@
 @property (retain, nonatomic) NSMutableDictionary *giftItemInfo;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;
 @property (retain, nonatomic) IBOutlet UIScrollView *giftDetailsBgScroll;
-@property (retain, nonatomic) IBOutlet OHAttributedLabel *giftDetailsLbl;
+@property (retain, nonatomic) IBOutlet UILabel *giftDetailsLbl;
 @property (retain, nonatomic) IBOutlet UIView *innerViewForGiftItemDetails;
 @property (retain, nonatomic) IBOutlet UILabel *dateLabel;
 @property (retain, nonatomic) IBOutlet UIPickerView *dodPicker;
