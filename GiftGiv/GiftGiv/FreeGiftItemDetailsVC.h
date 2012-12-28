@@ -29,6 +29,7 @@
 }
 - (IBAction)recipientAddressAction:(id)sender;
 @property (retain, nonatomic) IBOutlet UIButton *txtEditBtn;
+@property (retain, nonatomic) IBOutlet UIButton *editableDoneBtn;
 
 @property (retain, nonatomic) IBOutlet UILabel *confirmBtnLbl;
 @property (retain, nonatomic) IBOutlet UIButton *confirmBtn;

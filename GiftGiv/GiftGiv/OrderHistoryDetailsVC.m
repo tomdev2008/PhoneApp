@@ -85,16 +85,23 @@ static NSDateFormatter *customDateFormat=nil;
         else if([orderDetails.sentAsValue isEqualToString:@"electronic"]){
             mailGiftToLbl.text=@"Mail Gift to:";
         }
+        if([orderDetails.price isEqualToString:@"0"])
+            recipientAddressHeadLbl.text=@"RECIPIENT DELIVERY";
     }
     else{
-        
-        NSString *address=[NSString stringWithFormat:@"%@, ",orderDetails.addressLine1];
-        if(![orderDetails.addressLine2 isEqualToString:@""])
-            address=[address stringByAppendingFormat:@"%@,",orderDetails.addressLine2];
-        address=[address stringByAppendingFormat:@"%@, ",orderDetails.city];
-        address=[address stringByAppendingFormat:@"%@, ",orderDetails.state];
-        address=[address stringByAppendingFormat:@"%@",orderDetails.zip];
-        addressLbl.text=address;
+        if([orderDetails.price isEqualToString:@"0"]){
+            recipientAddressHeadLbl.text=@"RECIPIENT DELIVERY";
+           addressLbl.text=@"Post on wall";
+        }
+        else{
+            NSString *address=[NSString stringWithFormat:@"%@, ",orderDetails.addressLine1];
+            if(![orderDetails.addressLine2 isEqualToString:@""])
+                address=[address stringByAppendingFormat:@"%@,",orderDetails.addressLine2];
+            address=[address stringByAppendingFormat:@"%@, ",orderDetails.city];
+            address=[address stringByAppendingFormat:@"%@, ",orderDetails.state];
+            address=[address stringByAppendingFormat:@"%@",orderDetails.zip];
+            addressLbl.text=address;
+        }
         
         mailGiftToLbl.text=@"Mail Gift to:";
     }
@@ -136,8 +143,7 @@ static NSDateFormatter *customDateFormat=nil;
         messageLbl.hidden=YES;
         msgHeadLbl.hidden=YES;
     }
-    
-    
+        
     //Dynamic[fit] label width respected to the size of the text
     CGSize profileName_maxSize = CGSizeMake(160, 21);
     CGSize profileName_new_size=[profileNameLbl.text sizeWithFont:profileNameLbl.font constrainedToSize:profileName_maxSize lineBreakMode:UILineBreakModeTailTruncation];
@@ -148,13 +154,31 @@ static NSDateFormatter *customDateFormat=nil;
     
     eventNameLbl.frame= CGRectMake(profileNameLbl.frame.origin.x+3+profileNameLbl.frame.size.width, 19, eventName_newSize.width, 21);
     
+    
+    if([orderDetails.price isEqualToString:@"0"]){
+        messageLbl.hidden=YES;
+        msgHeadLbl.hidden=YES;
+        CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
+        NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:orderDetails.userMessage];
+        [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];
+        CGSize labelSize = [orderDetails.userMessage sizeWithFont:[UIFont fontWithName:@"Helvetica" size:14.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
+        
+        _thoughtFulMessageLbl.frame=CGRectMake(_thoughtFulMessageLbl.frame.origin.x, _thoughtFulMessageLbl.frame.origin.y, 280.0, labelSize.height+20);
+        _thoughtFulMessageLbl.attributedText=giftDescription;
+    }
+    else
+        _thoughtFulMessageLbl.hidden=YES;
+    
     CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
     
     CGSize labelSize = [messageLbl.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:11.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
-    messageLbl.frame=CGRectMake(messageLbl.frame.origin.x, messageLbl.frame.origin.y, 280.0, labelSize.height);
-    recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, messageLbl.frame.origin.y+messageLbl.frame.size.height+10, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
     
-    recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, messageLbl.frame.origin.y+messageLbl.frame.size.height+10, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+    messageLbl.frame=CGRectMake(messageLbl.frame.origin.x, messageLbl.frame.origin.y, 280.0, labelSize.height);
+    if(!_thoughtFulMessageLbl.hidden){
+        recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, _thoughtFulMessageLbl.frame.origin.y+_thoughtFulMessageLbl.frame.size.height+10, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+    }
+    else
+       recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, messageLbl.frame.origin.y+messageLbl.frame.size.height+10, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
     mailGiftToLbl.frame=CGRectMake(mailGiftToLbl.frame.origin.x, recipientAddressHeadLbl.frame.origin.y+recipientAddressHeadLbl.frame.size.height-5, mailGiftToLbl.frame.size.width, mailGiftToLbl.frame.size.height);
     addressLbl.frame=CGRectMake(addressLbl.frame.origin.x, mailGiftToLbl.frame.origin.y+mailGiftToLbl.frame.size.height-3, addressLbl.frame.size.width, addressLbl.frame.size.height);
     
@@ -219,9 +243,18 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark -GetGiftItemDelegate
 -(void) receivedGiftItem:(GetDetailedGiftItemObject*)giftDetails{
     
+    
+    if([orderDetails.price isEqualToString:@"0"]){
+        giftNameLbl.frame=CGRectMake(18, 98, 282, 21);
+        giftNameLbl.font=[UIFont fontWithName:@"Helvetica" size:18];
+    }
+    else{
+        giftPriceLbl.text=[NSString stringWithFormat:@"$%@",orderDetails.price];
+        [self loadGiftImage:giftDetails.giftImageUrl forAnObject:giftImg];
+    }
     giftNameLbl.text=giftDetails.giftTitle;
-    giftPriceLbl.text=[NSString stringWithFormat:@"$%@",orderDetails.price];
-    [self loadGiftImage:giftDetails.giftImageUrl forAnObject:giftImg];
+    
+    
 }
 -(void) requestFailed{
     AlertWithMessageAndDelegate(@"GiftGiv", @"Request has failed. Please try again later", nil);
@@ -371,6 +404,7 @@ static NSDateFormatter *customDateFormat=nil;
     [self setMailGiftToLbl:nil];
     [self setGiftImg:nil];
     [self setMsgHeadLbl:nil];
+    [self setThoughtFulMessageLbl:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -401,6 +435,7 @@ static NSDateFormatter *customDateFormat=nil;
     [giftImg release];
     
     [msgHeadLbl release];
+    [_thoughtFulMessageLbl release];
     [super dealloc];
 }
 

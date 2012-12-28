@@ -547,8 +547,8 @@
         [cell.giftIcon_two.layer setBorderWidth:2.0];
         [cell.giftIcon_one addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
         [cell.giftIcon_two addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.giftIcon_one.titleLabel setNumberOfLines:3];
-        [cell.giftIcon_two.titleLabel setNumberOfLines:3];
+        [cell.giftIcon_one.titleLabel setNumberOfLines:4];
+        [cell.giftIcon_two.titleLabel setNumberOfLines:4];
         
         //[cell.giftIcon_one.titleLabel setTextAlignment:UITextAlignmentCenter];
         //[cell.giftIcon_two.titleLabel setTextAlignment:UITextAlignmentCenter];

@@ -13,6 +13,8 @@
 #import "OrderObject.h"
 #import "CustomDateDisplay.h"
 #import "ImageAllocationObject.h"
+#import "OHAttributedLabel.h"
+#import "NSAttributedString+Attributes.h"
 
 @interface OrderHistoryDetailsVC : UIViewController<GetGiftItemDelegate>
 
@@ -24,6 +26,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *statusHeadLbl;
 @property (retain, nonatomic) IBOutlet UILabel *statusDateLbl;
 @property (retain, nonatomic) IBOutlet UILabel *recipientAddressHeadLbl;
+@property (retain, nonatomic) IBOutlet OHAttributedLabel *thoughtFulMessageLbl;
 @property (retain, nonatomic) IBOutlet UIImageView *profilePic;
 @property (retain, nonatomic) IBOutlet UILabel *msgHeadLbl;
 @property (retain, nonatomic) IBOutlet UILabel *messageLbl;

@@ -117,6 +117,9 @@
     [_dateLabel.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
     [_dateLabel.layer setBorderWidth:1.0];
     
+    [_editableDoneBtn.layer setBorderColor:[[UIColor blackColor]CGColor]];
+    [_editableDoneBtn.layer setBorderWidth:1.0];
+    [_editableDoneBtn.layer setCornerRadius:5.0];
     
     monthsArray=[[NSMutableArray alloc]init];
     daysArray=[[NSMutableArray alloc]init];
@@ -166,7 +169,7 @@
 -(void)updateTheScreenRespectiveToMessageText:(NSString*)targetText{
         
     
-    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:13.0];
+    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:14.0];
     CGSize constraintSize = CGSizeMake(280.0f, 65);
     /*NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:targetText];
     [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];*/
@@ -962,6 +965,7 @@
     
     [_txtEditBtn release];
     [_giftNameLabel release];
+    [_editableDoneBtn release];
     [super dealloc];
 }
 - (void)viewDidUnload {
@@ -994,6 +998,7 @@
     [self setAddEmailSMSSegment:nil];
     [self setTxtEditBtn:nil];
     [self setGiftNameLabel:nil];
+    [self setEditableDoneBtn:nil];
     [super viewDidUnload];
 }
 
