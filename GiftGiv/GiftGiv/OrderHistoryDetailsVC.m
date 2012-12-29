@@ -158,13 +158,13 @@ static NSDateFormatter *customDateFormat=nil;
     if([orderDetails.price isEqualToString:@"0"]){
         messageLbl.hidden=YES;
         msgHeadLbl.hidden=YES;
-        CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
-        NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:orderDetails.userMessage];
-        [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];
-        CGSize labelSize = [orderDetails.userMessage sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
-        
-        _thoughtFulMessageLbl.frame=CGRectMake(_thoughtFulMessageLbl.frame.origin.x, _thoughtFulMessageLbl.frame.origin.y, 280.0, labelSize.height+20);
-        _thoughtFulMessageLbl.attributedText=giftDescription;
+        FTCoreTextStyle *defaultStyle = [FTCoreTextStyle new];
+        defaultStyle.name = FTCoreTextTagDefault;	//thought the default name is already set to FTCoreTextTagDefault
+        defaultStyle.font = [UIFont fontWithName:@"Helvetica" size:12.f];
+        defaultStyle.textAlignment = FTCoreTextAlignementJustified;
+        [_thoughtFulMessageLbl addStyle:defaultStyle];
+        _thoughtFulMessageLbl.text=orderDetails.userMessage;
+        [_thoughtFulMessageLbl fitToSuggestedHeight:MAXFLOAT];
     }
     else
         _thoughtFulMessageLbl.hidden=YES;

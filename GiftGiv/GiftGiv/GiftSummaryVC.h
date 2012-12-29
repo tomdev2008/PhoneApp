@@ -18,8 +18,7 @@
 #import "AddOrderRequest.h"
 #import "AlertOrderEmailRequest.h"
 #import "SendThoughfulMessageemailReq.h"
-#import "OHAttributedLabel.h"
-#import "NSAttributedString+Attributes.h"
+#import "FTCoreTextView.h"
 
 //ExpressCheckoutResponseHandler is not part of the Express Checkout library and should
 //generally not be used because doing the Express Checkout calls on the device requires
@@ -46,7 +45,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *paymentBtnLbl;
 @property (retain, nonatomic) IBOutlet UIButton *paymentBtn;
 @property (retain, nonatomic) IBOutlet UILabel *disclosureLbl;
-@property (retain, nonatomic) IBOutlet OHAttributedLabel *thoughtFullMessageLbl;
+@property (retain, nonatomic) IBOutlet FTCoreTextView *thoughtFullMessageLbl;
 
 @property (retain, nonatomic) NSMutableDictionary *giftSummaryDict;
 @property (retain, nonatomic) IBOutlet UILabel *msgHeadLbl;

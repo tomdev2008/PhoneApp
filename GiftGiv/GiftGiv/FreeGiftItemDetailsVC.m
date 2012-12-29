@@ -39,7 +39,11 @@
     [_giftMsgTxtView.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
     [_giftMsgTxtView.layer setBorderWidth:1.0];
     
-    
+    FTCoreTextStyle *defaultStyle = [FTCoreTextStyle new];
+    defaultStyle.name = FTCoreTextTagDefault;	//thought the default name is already set to FTCoreTextTagDefault
+    defaultStyle.font = [UIFont fontWithName:@"Helvetica" size:12.f];
+    defaultStyle.textAlignment = FTCoreTextAlignementJustified;
+    [_giftDetailsLbl addStyle:defaultStyle];
     
     [_emailBgView.layer setCornerRadius:6.0];
     [_emailBgView.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
@@ -49,6 +53,8 @@
     [_recipientsAddressLbl.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
     [_recipientsAddressLbl.layer setBorderWidth:1.0];
     
+    
+      
     //selectedSendOptionRow=0;
     [self.view addSubview:_giftDetailsBgScroll];
     
@@ -97,6 +103,7 @@
     else{
         _detailsBgView.frame=CGRectMake(_detailsBgView.frame.origin.x, _detailsBgView.frame.origin.y-47, _detailsBgView.frame.size.width, _detailsBgView.frame.size.height);
     }
+    _emailTxtField.text=[self getEmailAddressOfRecipient:_profileNameLbl.text];
     _giftNameLabel.text=[[giftItemInfo objectForKey:@"GiftItem"] giftTitle];
     if([giftItemInfo objectForKey:@"EditableGiftDescription"])
         [self updateTheScreenRespectiveToMessageText:[giftItemInfo objectForKey:@"EditableGiftDescription"]];
@@ -171,21 +178,9 @@
 -(void)updateTheScreenRespectiveToMessageText:(NSString*)targetText{
         
     
-    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:12.0];
-    CGSize constraintSize = CGSizeMake(280.0f, 85);
-    /*NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:targetText];
-    [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];*/
-    CGSize labelSize = [targetText sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeTailTruncation];
-    
-    CGRect targetFrame=CGRectMake(20, 20, labelSize.width, labelSize.height);
-    
-    if([targetText length]){
-        targetFrame.origin.y+=10;
-        targetFrame.size.height+=20;
-    }
-    _giftDetailsLbl.frame=targetFrame;
-    
     _giftDetailsLbl.text=targetText;
+    GGLog(@"Text..%@",_giftDetailsLbl.text);
+    [_giftDetailsLbl fitToSuggestedHeight:95.0f];
     
 //    [_giftDetailsLbl.layer setCornerRadius:5.0];
 //    [_giftDetailsLbl.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
@@ -199,6 +194,60 @@
     _detailsBgView.frame=detailsBgFrame;
     _giftDetailsBgScroll.contentSize=CGSizeMake(320, _detailsBgView.frame.origin.y+_innerViewForGiftItemDetails.frame.origin.y+ _confirmBtnLbl.frame.origin.y+_confirmBtnLbl.frame.size.height+10);
     //[_giftDetailsBgScroll setContentSize:CGSizeMake(320, _detailsBgView.frame.origin.y+_detailsBgView.frame.size.height)];
+}
+-(NSString*)getEmailAddressOfRecipient:(NSString*)contactName{
+    ABAddressBookRef allPeople = ABAddressBookCreate();
+    CFArrayRef allContacts = ABAddressBookCopyArrayOfAllPeople(allPeople);
+    CFIndex numberOfContacts  = ABAddressBookGetPersonCount(allPeople);
+    
+    
+    for(int i = 0; i < numberOfContacts; i++){
+        NSString* name = @"";
+        NSString* email = @"";
+        
+        ABRecordRef aPerson = CFArrayGetValueAtIndex(allContacts, i);
+        ABMultiValueRef fnameProperty = ABRecordCopyValue(aPerson, kABPersonFirstNameProperty);
+        ABMultiValueRef lnameProperty = ABRecordCopyValue(aPerson, kABPersonLastNameProperty);
+        
+        ABMultiValueRef emailProperty = ABRecordCopyValue(aPerson, kABPersonEmailProperty);
+        
+        NSArray *emailArray = (NSArray *)ABMultiValueCopyArrayOfAllValues(emailProperty);
+        
+        CFRelease(emailProperty);
+        
+        if (fnameProperty != nil) {
+            name = [NSString stringWithFormat:@"%@", fnameProperty];
+            CFRelease(fnameProperty);
+        }
+        if (lnameProperty != nil) {
+            name = [name stringByAppendingString:[NSString stringWithFormat:@" %@", lnameProperty]];
+            CFRelease(lnameProperty);
+        }
+        
+        if([name caseInsensitiveCompare:contactName]==NSOrderedSame){
+            
+            
+            if ([emailArray count] > 0) {
+                if ([emailArray count] > 1) {
+                    email = [email stringByAppendingString:[NSString stringWithFormat:@"%@", [emailArray objectAtIndex:0]]];
+                    
+                }else {
+                    email = [NSString stringWithFormat:@"%@", [emailArray objectAtIndex:0]];
+                }
+            }
+            [emailArray release];
+            CFRelease(allContacts);
+            CFRelease(allPeople);
+            return email;
+        }
+        [emailArray release];
+        
+        
+    }
+    
+    CFRelease(allContacts);
+    CFRelease(allPeople);
+    return @"";
 }
 -(NSString *)getMonthName:(int)monthNum{
     switch (monthNum) {

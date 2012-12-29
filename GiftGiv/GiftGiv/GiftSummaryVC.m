@@ -127,14 +127,14 @@
         //giftNameLbl.font=[UIFont fontWithName:@"Helvetica" size:18];
         giftNameLbl.hidden=YES;
         
-        CGSize constraintSizeForThoughtFulMessage = CGSizeMake(280.0f, MAXFLOAT);
+        FTCoreTextStyle *defaultStyle = [FTCoreTextStyle new];
+        defaultStyle.name = FTCoreTextTagDefault;	//thought the default name is already set to FTCoreTextTagDefault
+        defaultStyle.font = [UIFont fontWithName:@"Helvetica" size:12.f];
+        defaultStyle.textAlignment = FTCoreTextAlignementJustified;
+        [_thoughtFullMessageLbl addStyle:defaultStyle];
         
-        NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:[giftSummaryDict objectForKey:@"EditableGiftDescription"]];
-        [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];
-        CGSize labelSize = [[giftDescription string] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:constraintSizeForThoughtFulMessage lineBreakMode:UILineBreakModeWordWrap];
-        
-        _thoughtFullMessageLbl.frame=CGRectMake(_thoughtFullMessageLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y, 282.0, labelSize.height+20);
-        _thoughtFullMessageLbl.attributedText=giftDescription;
+        _thoughtFullMessageLbl.text=[giftSummaryDict objectForKey:@"EditableGiftDescription"];
+        [_thoughtFullMessageLbl fitToSuggestedHeight:MAXFLOAT];
         paymentBtnLbl.text=@"SEND";
         
         if([giftSummaryDict objectForKey:@"WallPost"])
@@ -173,7 +173,7 @@
     CGSize labelSize = [personalMsgLbl.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:11.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
     personalMsgLbl.frame=CGRectMake(personalMsgLbl.frame.origin.x, msgHeadLbl.frame.origin.y+msgHeadLbl.frame.size.height+5, 280.0, labelSize.height);
     if(isFreeGiftItem){
-        recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y+_thoughtFullMessageLbl.frame.size.height+5, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+        recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y+_thoughtFullMessageLbl.frame.size.height+10, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
     }
     else{
         recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, personalMsgLbl.frame.origin.y+personalMsgLbl.frame.size.height+5, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);

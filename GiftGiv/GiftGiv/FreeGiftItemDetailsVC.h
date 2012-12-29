@@ -7,17 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "OHAttributedLabel.h"
 #import "ImageAllocationObject.h"
 #import <QuartzCore/QuartzCore.h>
 #import "GiftItemObject.h"
 #import "GetCachesPathForTargetFile.h"
-#import "NSAttributedString+Attributes.h"
 #import "GiftSummaryVC.h"
 #import "Facebook_GiftGiv.h"
 #import "HomeScreenVC.h"
 #import "AddUserRequest.h"
 #import "CoomonRequestCreationObject.h"
+#import "FTCoreTextView.h"
 
 @interface FreeGiftItemDetailsVC : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,Facebook_GiftGivDelegate,AddUserRequestDelegate>{
     CGPoint svos;
@@ -54,7 +53,7 @@
 @property (retain, nonatomic) NSMutableDictionary *giftItemInfo;
 @property (retain, nonatomic) IBOutlet UILabel *profileNameLbl;
 @property (retain, nonatomic) IBOutlet UIScrollView *giftDetailsBgScroll;
-@property (retain, nonatomic) IBOutlet UILabel *giftDetailsLbl;
+@property (retain, nonatomic) IBOutlet FTCoreTextView *giftDetailsLbl;
 @property (retain, nonatomic) IBOutlet UIView *innerViewForGiftItemDetails;
 @property (retain, nonatomic) IBOutlet UILabel *dateLabel;
 @property (retain, nonatomic) IBOutlet UIPickerView *dodPicker;
@@ -72,4 +71,5 @@
 
 - (NSString *)getMonthName:(int)monthNum;
 -(void)updateTheScreenRespectiveToMessageText:(NSString*)targetText;
+-(NSString*)getEmailAddressOfRecipient:(NSString*)contactName;
 @end

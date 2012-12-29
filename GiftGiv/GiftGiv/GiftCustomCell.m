@@ -17,6 +17,8 @@
 @synthesize giftPrice_two;
 @synthesize giftImg_one;
 @synthesize giftImg_two;
+@synthesize gift_coreText_one;
+@synthesize gift_coreText_two;
 @synthesize tableTagForCell;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -44,6 +46,8 @@
     [giftIcon_two release];
     [giftTitle_two release];
     [giftPrice_two release];
+    [gift_coreText_one release];
+    [gift_coreText_two release];
     [super dealloc];
 }
 @end

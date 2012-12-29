@@ -548,12 +548,18 @@
         [cell.giftIcon_one addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
         [cell.giftIcon_two addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
  
-        [cell.giftIcon_one.titleLabel setNumberOfLines:4];
-        [cell.giftIcon_two.titleLabel setNumberOfLines:4];
+        //[cell.giftIcon_one.titleLabel setNumberOfLines:4];
+        //[cell.giftIcon_two.titleLabel setNumberOfLines:4];
         
         //[cell.giftIcon_one.titleLabel setTextAlignment:UITextAlignmentCenter];
         //[cell.giftIcon_two.titleLabel setTextAlignment:UITextAlignmentCenter];
-		
+		FTCoreTextStyle *defaultStyle = [FTCoreTextStyle new];
+        defaultStyle.name = FTCoreTextTagDefault;	//thought the default name is already set to FTCoreTextTagDefault
+        defaultStyle.font = [UIFont fontWithName:@"Helvetica" size:12.f];
+        defaultStyle.textAlignment = FTCoreTextAlignementJustified;
+        [cell.gift_coreText_one addStyle:defaultStyle];
+        [cell.gift_coreText_two addStyle:defaultStyle];
+        [defaultStyle release];
 	}
     cell.tag=indexPath.row;
     cell.tableTagForCell=tableViewTag;
@@ -569,9 +575,9 @@
         NSString *priceValue=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftPrice];
         if([priceValue isEqualToString:@""] || [priceValue isEqualToString:@"0"]){
             NSString *giftDetailsStr_1=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftDetails];
-            
-            [cell.giftIcon_one setTitle:giftDetailsStr_1 forState:UIControlStateNormal];
-            [cell.giftIcon_one setTitle:giftDetailsStr_1  forState:UIControlStateHighlighted];
+            [cell.gift_coreText_one setText:giftDetailsStr_1];
+            /*[cell.giftIcon_one setTitle:giftDetailsStr_1 forState:UIControlStateNormal];
+            [cell.giftIcon_one setTitle:giftDetailsStr_1  forState:UIControlStateHighlighted];*/
         }
             
         else{
@@ -615,8 +621,9 @@
             NSString *priceValue_2=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftPrice];
             if([priceValue_2 isEqualToString:@""]|| [priceValue_2 isEqualToString:@"0"]){
                 NSString *giftDetailsStr=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftDetails];
-                [cell.giftIcon_two setTitle:giftDetailsStr forState:UIControlStateNormal];
-                [cell.giftIcon_two setTitle:giftDetailsStr forState:UIControlStateHighlighted];
+                /*[cell.giftIcon_two setTitle:giftDetailsStr forState:UIControlStateNormal];
+                [cell.giftIcon_two setTitle:giftDetailsStr forState:UIControlStateHighlighted];*/
+                [cell.gift_coreText_two setText:giftDetailsStr];
             }
                 
             else{

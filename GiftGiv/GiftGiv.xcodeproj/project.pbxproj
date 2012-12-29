@@ -184,6 +184,8 @@
 		BD4469B9165A502300CC136E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469B8165A502300CC136E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BD4469BB165A502C00CC136E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469BA165A502C00CC136E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BD9C134C168EDD04008A1DB5 /* strip.png in Resources */ = {isa = PBXBuildFile; fileRef = BD9C134B168EDD04008A1DB5 /* strip.png */; };
+		BD9C1362168F25B4008A1DB5 /* FTCoreTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = BD9C135F168F2035008A1DB5 /* FTCoreTextView.m */; };
+		BD9C1363168F25B4008A1DB5 /* FTCoreTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = BD9C1361168F2035008A1DB5 /* FTCoreTextStyle.m */; };
 		BD9D34B6166337C700D05C0D /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD9D34B5166337C700D05C0D /* FacebookSDK.framework */; };
 		BD9D34B9166337E200D05C0D /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD9D34B7166337E200D05C0D /* FacebookSDKResources.bundle */; };
 		BD9D34BA166337E200D05C0D /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD9D34B8166337E200D05C0D /* FBUserSettingsViewResources.bundle */; };
@@ -504,6 +506,10 @@
 		BD4469B8165A502300CC136E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		BD4469BA165A502C00CC136E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		BD9C134B168EDD04008A1DB5 /* strip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = strip.png; sourceTree = "<group>"; };
+		BD9C135E168F2035008A1DB5 /* FTCoreTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FTCoreTextView.h; sourceTree = "<group>"; };
+		BD9C135F168F2035008A1DB5 /* FTCoreTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FTCoreTextView.m; sourceTree = "<group>"; };
+		BD9C1360168F2035008A1DB5 /* FTCoreTextStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FTCoreTextStyle.h; sourceTree = "<group>"; };
+		BD9C1361168F2035008A1DB5 /* FTCoreTextStyle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FTCoreTextStyle.m; sourceTree = "<group>"; };
 		BD9D34B5166337C700D05C0D /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		BD9D34B7166337E200D05C0D /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		BD9D34B8166337E200D05C0D /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
@@ -1283,6 +1289,7 @@
 		7EE0260615BD8FD9003B9C74 /* Gifts */ = {
 			isa = PBXGroup;
 			children = (
+				BD9C135D168F201C008A1DB5 /* FTCoreText */,
 				7EDC191115BFB75A00FF7789 /* Main */,
 				7EE0260C15BD99FF003B9C74 /* Gift Custom cell */,
 				7EDC191315BFB76B00FF7789 /* Gift Details */,
@@ -1366,6 +1373,17 @@
 				BD2CC8C21667512900216861 /* ValidationOfTheTokenRequest.m */,
 			);
 			name = "Validate AccessToken";
+			sourceTree = "<group>";
+		};
+		BD9C135D168F201C008A1DB5 /* FTCoreText */ = {
+			isa = PBXGroup;
+			children = (
+				BD9C135E168F2035008A1DB5 /* FTCoreTextView.h */,
+				BD9C135F168F2035008A1DB5 /* FTCoreTextView.m */,
+				BD9C1360168F2035008A1DB5 /* FTCoreTextStyle.h */,
+				BD9C1361168F2035008A1DB5 /* FTCoreTextStyle.m */,
+			);
+			name = FTCoreText;
 			sourceTree = "<group>";
 		};
 		BDC2B025163EBD3800D4D9DA /* AddUser_LinkedIn */ = {
@@ -1518,6 +1536,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD9C1362168F25B4008A1DB5 /* FTCoreTextView.m in Sources */,
+				BD9C1363168F25B4008A1DB5 /* FTCoreTextStyle.m in Sources */,
 				BD43303C16848C9500FFBE66 /* UIImage+ProportionalFill.m in Sources */,
 				BD0BDB93164D00C400E30799 /* GfitZoomInView.m in Sources */,
 				BD1B2DB416494B460078C0B9 /* ECNetworkHandler.m in Sources */,

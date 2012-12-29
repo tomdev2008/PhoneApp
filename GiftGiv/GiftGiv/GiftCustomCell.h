@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FTCoreTextView.h"
 
 @interface GiftCustomCell : UITableViewCell
 
@@ -18,5 +19,8 @@
 @property (retain, nonatomic) IBOutlet UILabel *giftPrice_two;
 @property (retain, nonatomic) IBOutlet UIImageView *giftImg_one;
 @property (retain, nonatomic) IBOutlet UIImageView *giftImg_two;
+@property (retain, nonatomic) IBOutlet FTCoreTextView *gift_coreText_one;
+@property (retain, nonatomic) IBOutlet FTCoreTextView *gift_coreText_two;
+
 @property NSInteger tableTagForCell;
 @end
