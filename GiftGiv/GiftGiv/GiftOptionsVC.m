@@ -78,7 +78,7 @@
         scrollFrame.size.height=scrollFrame.size.height+48;
         _giftsBgScroll.frame=scrollFrame;
     }
-    
+    searchFld.backgroundImage=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.2, 0, 0.2, 0)];
     _searchBgImg.image=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     pageActiveImage = [[ImageAllocationObject loadImageObjectName:@"dotactive2" ofType:@"png"] retain];
     pageInactiveImage = [[ImageAllocationObject loadImageObjectName:@"dotinactive2" ofType:@"png"] retain];
@@ -547,6 +547,7 @@
         [cell.giftIcon_two.layer setBorderWidth:2.0];
         [cell.giftIcon_one addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
         [cell.giftIcon_two addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
+ 
         [cell.giftIcon_one.titleLabel setNumberOfLines:4];
         [cell.giftIcon_two.titleLabel setNumberOfLines:4];
         
@@ -566,12 +567,15 @@
     }
     else{
         NSString *priceValue=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftPrice];
-        if(priceValue!=nil && ![priceValue isEqualToString:@""])
-            cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",priceValue];
-        else{
+        if([priceValue isEqualToString:@""] || [priceValue isEqualToString:@"0"]){
             NSString *giftDetailsStr_1=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)]objectForKey:@"GiftDetails"] giftDetails];
+            
             [cell.giftIcon_one setTitle:giftDetailsStr_1 forState:UIControlStateNormal];
-            [cell.giftIcon_one setTitle:giftDetailsStr_1 forState:UIControlStateHighlighted];
+            [cell.giftIcon_one setTitle:giftDetailsStr_1  forState:UIControlStateHighlighted];
+        }
+            
+        else{
+            cell.giftPrice_one.text=[NSString stringWithFormat:@"$%@",priceValue];
             
         }
                     
@@ -609,12 +613,14 @@
         else{
             
             NSString *priceValue_2=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftPrice];
-            if(priceValue_2!=nil && ![priceValue_2 isEqualToString:@""])
-                cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",priceValue_2];
-            else{
+            if([priceValue_2 isEqualToString:@""]|| [priceValue_2 isEqualToString:@"0"]){
                 NSString *giftDetailsStr=[[[[currentGiftItems objectAtIndex:tableViewTag-1]objectAtIndex:(indexPath.row*2)+1]objectForKey:@"GiftDetails"] giftDetails];
                 [cell.giftIcon_two setTitle:giftDetailsStr forState:UIControlStateNormal];
                 [cell.giftIcon_two setTitle:giftDetailsStr forState:UIControlStateHighlighted];
+            }
+                
+            else{
+                cell.giftPrice_two.text=[NSString stringWithFormat:@"$%@",priceValue_2];
             }
             
         }
@@ -668,7 +674,7 @@
     }
     else{
         GGLog(@"%@",[[selectedGift objectForKey:@"GiftItem"]giftPrice]);
-        if([[[selectedGift objectForKey:@"GiftItem"]giftPrice] isEqualToString:@""]){
+        if([[[selectedGift objectForKey:@"GiftItem"]giftPrice] isEqualToString:@""] || [[[selectedGift objectForKey:@"GiftItem"]giftPrice] isEqualToString:@"0"]){
             FreeGiftItemDetailsVC *freeGiftItemDetails=[[FreeGiftItemDetailsVC alloc]initWithNibName:@"FreeGiftItemDetailsVC" bundle:nil];
             freeGiftItemDetails.giftItemInfo=selectedGift;
             [self.navigationController pushViewController:freeGiftItemDetails animated:YES];

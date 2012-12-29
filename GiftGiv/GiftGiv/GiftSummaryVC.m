@@ -123,15 +123,15 @@
         recipientAddressHeadLbl.text=@"RECIPIENT DELIVERY";
         disclosureLbl.hidden=YES;
         giftImg.hidden=YES;
-        giftNameLbl.frame=CGRectMake(18, 98, 282, 21);
-        giftNameLbl.font=[UIFont fontWithName:@"Helvetica" size:18];
-        
+        //giftNameLbl.frame=CGRectMake(18, 98, 282, 21);
+        //giftNameLbl.font=[UIFont fontWithName:@"Helvetica" size:18];
+        giftNameLbl.hidden=YES;
         
         CGSize constraintSizeForThoughtFulMessage = CGSizeMake(280.0f, MAXFLOAT);
         
         NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:[giftSummaryDict objectForKey:@"EditableGiftDescription"]];
         [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];
-        CGSize labelSize = [[giftDescription string] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:14.0] constrainedToSize:constraintSizeForThoughtFulMessage lineBreakMode:UILineBreakModeWordWrap];
+        CGSize labelSize = [[giftDescription string] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:constraintSizeForThoughtFulMessage lineBreakMode:UILineBreakModeWordWrap];
         
         _thoughtFullMessageLbl.frame=CGRectMake(_thoughtFullMessageLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y, 282.0, labelSize.height);
         _thoughtFullMessageLbl.attributedText=giftDescription;

@@ -39,6 +39,8 @@
     [_giftMsgTxtView.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
     [_giftMsgTxtView.layer setBorderWidth:1.0];
     
+    
+    
     [_emailBgView.layer setCornerRadius:6.0];
     [_emailBgView.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
     [_emailBgView.layer setBorderWidth:1.0];
@@ -169,8 +171,8 @@
 -(void)updateTheScreenRespectiveToMessageText:(NSString*)targetText{
         
     
-    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:14.0];
-    CGSize constraintSize = CGSizeMake(280.0f, 65);
+    UIFont *detailsTextFont = [UIFont fontWithName:@"Helvetica" size:12.0];
+    CGSize constraintSize = CGSizeMake(280.0f, 85);
     /*NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:targetText];
     [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];*/
     CGSize labelSize = [targetText sizeWithFont:detailsTextFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeTailTruncation];
@@ -184,6 +186,10 @@
     _giftDetailsLbl.frame=targetFrame;
     
     _giftDetailsLbl.text=targetText;
+    
+//    [_giftDetailsLbl.layer setCornerRadius:5.0];
+//    [_giftDetailsLbl.layer setBorderColor:[[UIColor lightGrayColor]CGColor]];
+//    [_giftDetailsLbl.layer setBorderWidth:1.0];
     
     _txtEditBtn.frame=CGRectMake(_txtEditBtn.frame.origin.x, _giftDetailsLbl.frame.origin.y+_giftDetailsLbl.frame.size.height, _txtEditBtn.frame.size.width, _txtEditBtn.frame.size.height);
     
@@ -336,7 +342,7 @@
         year++;
     
     [giftItemInfo setObject:[NSString stringWithFormat:@"%d-%d-%d",year,selectedMonth,selectedDay] forKey:@"DateOfDelivery"];
-    [giftItemInfo setObject:[_giftDetailsLbl.attributedText string] forKey:@"EditableGiftDescription"];
+    [giftItemInfo setObject:_giftDetailsLbl.text forKey:@"EditableGiftDescription"];
     if([_recipientemailContentView superview]){
         
         if(![_emailTxtField.text isEqualToString:@""])
@@ -578,7 +584,7 @@
 - (IBAction)editActionForTheMessage:(id)sender {
     _giftMsgEditScreen.frame=CGRectMake(0, 0, 320, [[UIScreen mainScreen]bounds].size.height-20);
     
-    _giftMsgTxtView.text=[_giftDetailsLbl.attributedText string];
+    _giftMsgTxtView.text=_giftDetailsLbl.text;
     [_giftMsgTxtView becomeFirstResponder];
     [self.view addSubview:_giftMsgEditScreen];
 }

@@ -68,8 +68,8 @@ static NSDateFormatter *customDateFormat=nil;
     //linkedInContactsArray=[[NSMutableArray alloc]init];
     
     allupcomingEvents=[[NSMutableArray alloc]init];
-    
-   _searchBgImg.image=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    contactsSearchBar.backgroundImage=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.2,0,0.2,0)];
+   _searchBgImg.image=[[ImageAllocationObject loadImageObjectName:@"strip" ofType:@"png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0.2,0,0.2,0)];
     
     searchContactsArray=[[NSMutableArray alloc]init];
     

@@ -183,6 +183,7 @@
 		BD4469B6165A501D00CC136E /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469B5165A501D00CC136E /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BD4469B9165A502300CC136E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469B8165A502300CC136E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BD4469BB165A502C00CC136E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD4469BA165A502C00CC136E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		BD9C134C168EDD04008A1DB5 /* strip.png in Resources */ = {isa = PBXBuildFile; fileRef = BD9C134B168EDD04008A1DB5 /* strip.png */; };
 		BD9D34B6166337C700D05C0D /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD9D34B5166337C700D05C0D /* FacebookSDK.framework */; };
 		BD9D34B9166337E200D05C0D /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD9D34B7166337E200D05C0D /* FacebookSDKResources.bundle */; };
 		BD9D34BA166337E200D05C0D /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD9D34B8166337E200D05C0D /* FBUserSettingsViewResources.bundle */; };
@@ -191,7 +192,6 @@
 		BDAE91E4162EB11F004089DC /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E0162EAE1B004089DC /* NSAttributedString+Attributes.m */; };
 		BDAE91E5162EB11F004089DC /* NSTextCheckingResult+ExtendedURL.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91E2162EB0FE004089DC /* NSTextCheckingResult+ExtendedURL.m */; };
 		BDAE91F8162ED486004089DC /* CoreTextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BDAE91F7162ED45B004089DC /* CoreTextUtils.m */; };
-		BDB11FE11670AEBC0095B560 /* strip.png in Resources */ = {isa = PBXBuildFile; fileRef = BDB11FDF1670AEBC0095B560 /* strip.png */; };
 		BDB11FE21670AEBC0095B560 /* strip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BDB11FE01670AEBC0095B560 /* strip@2x.png */; };
 		BDC2B029163EBDA000D4D9DA /* AddUser_LinkedInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = BDC2B028163EBDA000D4D9DA /* AddUser_LinkedInRequest.m */; };
 		BDF386E916770AEA005918CB /* searchdotinactive2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BDF386E516770AEA005918CB /* searchdotinactive2@2x.png */; };
@@ -503,6 +503,7 @@
 		BD4469B5165A501D00CC136E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		BD4469B8165A502300CC136E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		BD4469BA165A502C00CC136E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		BD9C134B168EDD04008A1DB5 /* strip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = strip.png; sourceTree = "<group>"; };
 		BD9D34B5166337C700D05C0D /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		BD9D34B7166337E200D05C0D /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		BD9D34B8166337E200D05C0D /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
@@ -515,7 +516,6 @@
 		BDAE91E2162EB0FE004089DC /* NSTextCheckingResult+ExtendedURL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTextCheckingResult+ExtendedURL.m"; sourceTree = "<group>"; };
 		BDAE91F6162ED45B004089DC /* CoreTextUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreTextUtils.h; sourceTree = "<group>"; };
 		BDAE91F7162ED45B004089DC /* CoreTextUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreTextUtils.m; sourceTree = "<group>"; };
-		BDB11FDF1670AEBC0095B560 /* strip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = strip.png; sourceTree = "<group>"; };
 		BDB11FE01670AEBC0095B560 /* strip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "strip@2x.png"; sourceTree = "<group>"; };
 		BDC2B027163EBDA000D4D9DA /* AddUser_LinkedInRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddUser_LinkedInRequest.h; path = "Backend Services/AddUser_LinkedIn/AddUser_LinkedInRequest.h"; sourceTree = "<group>"; };
 		BDC2B028163EBDA000D4D9DA /* AddUser_LinkedInRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddUser_LinkedInRequest.m; path = "Backend Services/AddUser_LinkedIn/AddUser_LinkedInRequest.m"; sourceTree = "<group>"; };
@@ -926,10 +926,10 @@
 			isa = PBXGroup;
 			children = (
 				BDF386ED16770AFB005918CB /* searchdotinactive2.png */,
+				BD9C134B168EDD04008A1DB5 /* strip.png */,
 				BDF386EE16770AFB005918CB /* searchdotactive2.png */,
 				BDF386EF16770AFB005918CB /* dotinactive2.png */,
 				BDF386F016770AFB005918CB /* dotactive2.png */,
-				BDB11FDF1670AEBC0095B560 /* strip.png */,
 				BD0A36ED163FE5A500988508 /* graybar2.png */,
 				BD0A36E3163FE3A800988508 /* accounticon.png */,
 				BD0A36E4163FE3A800988508 /* historyicon.png */,
@@ -1497,7 +1497,6 @@
 				BD9D34B9166337E200D05C0D /* FacebookSDKResources.bundle in Resources */,
 				BD9D34BA166337E200D05C0D /* FBUserSettingsViewResources.bundle in Resources */,
 				BD9D34BC166342E900D05C0D /* Default-568h@2x.png in Resources */,
-				BDB11FE11670AEBC0095B560 /* strip.png in Resources */,
 				BDB11FE21670AEBC0095B560 /* strip@2x.png in Resources */,
 				BDF386E916770AEA005918CB /* searchdotinactive2@2x.png in Resources */,
 				BDF386EA16770AEA005918CB /* searchdotactive2@2x.png in Resources */,
@@ -1508,6 +1507,7 @@
 				BDF386F316770AFB005918CB /* dotinactive2.png in Resources */,
 				BDF386F416770AFB005918CB /* dotactive2.png in Resources */,
 				BDF3870916774A75005918CB /* FreeGiftItemDetailsVC.xib in Resources */,
+				BD9C134C168EDD04008A1DB5 /* strip.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
