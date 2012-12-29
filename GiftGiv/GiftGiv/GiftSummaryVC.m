@@ -133,7 +133,7 @@
         [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];
         CGSize labelSize = [[giftDescription string] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:constraintSizeForThoughtFulMessage lineBreakMode:UILineBreakModeWordWrap];
         
-        _thoughtFullMessageLbl.frame=CGRectMake(_thoughtFullMessageLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y, 282.0, labelSize.height);
+        _thoughtFullMessageLbl.frame=CGRectMake(_thoughtFullMessageLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y, 282.0, labelSize.height+20);
         _thoughtFullMessageLbl.attributedText=giftDescription;
         paymentBtnLbl.text=@"SEND";
         
@@ -172,8 +172,12 @@
     
     CGSize labelSize = [personalMsgLbl.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:11.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
     personalMsgLbl.frame=CGRectMake(personalMsgLbl.frame.origin.x, msgHeadLbl.frame.origin.y+msgHeadLbl.frame.size.height+5, 280.0, labelSize.height);
-    
-    recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, personalMsgLbl.frame.origin.y+personalMsgLbl.frame.size.height+5, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+    if(isFreeGiftItem){
+        recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, _thoughtFullMessageLbl.frame.origin.y+_thoughtFullMessageLbl.frame.size.height+5, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+    }
+    else{
+        recipientAddressHeadLbl.frame=CGRectMake(recipientAddressHeadLbl.frame.origin.x, personalMsgLbl.frame.origin.y+personalMsgLbl.frame.size.height+5, recipientAddressHeadLbl.frame.size.width, recipientAddressHeadLbl.frame.size.height);
+    }
     mailGiftToLbl.frame=CGRectMake(mailGiftToLbl.frame.origin.x, recipientAddressHeadLbl.frame.origin.y+recipientAddressHeadLbl.frame.size.height-5, mailGiftToLbl.frame.size.width, mailGiftToLbl.frame.size.height);
     addressLbl.frame=CGRectMake(addressLbl.frame.origin.x, mailGiftToLbl.frame.origin.y+mailGiftToLbl.frame.size.height-3, addressLbl.frame.size.width, addressLbl.frame.size.height);
     disclosureLbl.frame=CGRectMake(disclosureLbl.frame.origin.x, addressLbl.frame.origin.y+addressLbl.frame.size.height+10, disclosureLbl.frame.size.width, disclosureLbl.frame.size.height);

@@ -161,7 +161,7 @@ static NSDateFormatter *customDateFormat=nil;
         CGSize constraintSize = CGSizeMake(280.0f, MAXFLOAT);
         NSMutableAttributedString *giftDescription=[NSMutableAttributedString attributedStringWithString:orderDetails.userMessage];
         [giftDescription setTextAlignment:kCTTextAlignmentJustified lineBreakMode:UILineBreakModeWordWrap];
-        CGSize labelSize = [orderDetails.userMessage sizeWithFont:[UIFont fontWithName:@"Helvetica" size:14.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
+        CGSize labelSize = [orderDetails.userMessage sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
         
         _thoughtFulMessageLbl.frame=CGRectMake(_thoughtFulMessageLbl.frame.origin.x, _thoughtFulMessageLbl.frame.origin.y, 280.0, labelSize.height+20);
         _thoughtFulMessageLbl.attributedText=giftDescription;
@@ -245,14 +245,16 @@ static NSDateFormatter *customDateFormat=nil;
     
     
     if([orderDetails.price isEqualToString:@"0"]){
-        giftNameLbl.frame=CGRectMake(18, 98, 282, 21);
-        giftNameLbl.font=[UIFont fontWithName:@"Helvetica" size:18];
+        giftNameLbl.hidden=YES;
+//        giftNameLbl.frame=CGRectMake(18, 98, 282, 21);
+//        giftNameLbl.font=[UIFont fontWithName:@"Helvetica" size:18];
     }
     else{
         giftPriceLbl.text=[NSString stringWithFormat:@"$%@",orderDetails.price];
+        giftNameLbl.text=giftDetails.giftTitle;
         [self loadGiftImage:giftDetails.giftImageUrl forAnObject:giftImg];
     }
-    giftNameLbl.text=giftDetails.giftTitle;
+    
     
     
 }
