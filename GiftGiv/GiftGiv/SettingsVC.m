@@ -42,8 +42,13 @@
     
     settinsScroll.contentSize=CGSizeMake(320, 483);
     
-    if(showAboutUs)
+    if(showAboutUs){
+        if([[UIScreen mainScreen] bounds].size.height == 568){
+            settinsScroll.contentSize=CGSizeMake(320, 735);
+            
+        }
         [settinsScroll setContentOffset:CGPointMake(0, 230)];
+    }
     
     [(UIButton*)[settinsScroll viewWithTag:11] setUserInteractionEnabled:NO];
     [(UIButton*)[settinsScroll viewWithTag:11] setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
@@ -64,8 +69,7 @@
 - (void)facebookDidLoggedOut{
    [[NSNotificationCenter defaultCenter] postNotificationName:@"UserLoggedOut" object:nil];
     GGLog(@"seetings facebook log out..");
-    //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
-    //[[NSUserDefaults standardUserDefaults]removeObjectForKey:@"FBAccessTokenKey"];
+    
     [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForGiftItemFileName:@""] error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:[GetCachesPathForTargetFile cachePathForProfilePicFileName:@""] error:nil];
     
@@ -82,17 +86,13 @@
     [self performSelector:@selector(makeRequestForInvalidatingTheToken)];
     
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"MyGiftGivUserId"];
-    /*if(![lnkd_giftgiv_settings isLinkedInAuthorized]){
-        [self stopHUD];
-        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-        [self.navigationController popToRootViewControllerAnimated:YES];
-    }
-     */
+   
 }
 
 #pragma mark -
 -(void)makeRequestForInvalidatingTheToken{
     if([CheckNetwork connectedToNetwork]){
+        invalidateTokenStatusDone=NO;
         //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
         GGLog(@"gift home id..%@",[[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]);
         NSString *soapmsgFormat=[NSString stringWithFormat:@"<tem:UpdateAccessTokenValidity>\n<tem:userId>%@</tem:userId>\n<tem:validity>0</tem:validity>\n</tem:UpdateAccessTokenValidity>",[[NSUserDefaults standardUserDefaults]objectForKey:@"MyGiftGivUserId"]];
@@ -112,6 +112,7 @@
     }*/
 }
 -(void) statusOfValidation:(NSString*)response{
+    invalidateTokenStatusDone=YES;
     GGLog(@"status..%@",response);
     if(![lnkd_giftgiv_settings isLinkedInAuthorized]){
         [self stopHUD];
@@ -217,7 +218,7 @@
 }
 
 - (void)linkedInDidLoggedOut{
-    if(![FBSession activeSession].isOpen){
+    if(![FBSession activeSession].isOpen && invalidateTokenStatusDone){
         GGLog(@"linkedin logout");
         [self stopHUD];
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];

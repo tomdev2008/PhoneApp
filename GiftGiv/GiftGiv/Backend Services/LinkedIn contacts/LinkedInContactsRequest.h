@@ -13,7 +13,7 @@
 
 @protocol LinkedInContactsReqDelegate
 
--(void) receivedContacts:(NSMutableArray*)response;
+-(void) receivedLnContacts:(NSMutableArray*)response;
 -(void) requestFailed;
 
 @end

@@ -158,6 +158,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
     NSTimeInterval currentTimeInterval=[[NSDate date] timeIntervalSince1970];
 
     NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/~/network/updates:(update-key,updated-fields,update-content:(person:(id,positions)))?type=%@&after=%@&before=%@&count=250",typeName,[NSString stringWithFormat:@"%.0f",(currentTimeInterval-(3*24*60*60))*1000],[NSString stringWithFormat:@"%.0f",currentTimeInterval*1000]]];
+    GGLog(@"Network updates..%@",[url absoluteString]);
     return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID {

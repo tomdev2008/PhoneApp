@@ -204,10 +204,6 @@ static NSCalendar *gregorian=nil;
         [congratsSearchStrings removeAllObjects];
         congratsSearchStrings=nil;
     }
-    if(friendUserIds!=nil){
-        [friendUserIds removeAllObjects];
-        friendUserIds=nil;
-    }
     
     [fbGiftGivDelegate facebookDidLoggedOut];
     
@@ -396,19 +392,7 @@ static NSCalendar *gregorian=nil;
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
         
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        
-        /*[fbRequestsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-         FBRequest*reqObj= (FBRequest*)obj ;
-         [reqObj.connection cancel];
-         }];*/
-        
-        if(friendUserIds!=nil && [friendUserIds count]){
-            responseCount=0;
-            [friendUserIds removeAllObjects];
-            [friendUserIds release];
-            friendUserIds=nil;
-        }
-        friendUserIds=[[NSMutableDictionary alloc]init];
+                       
         
         NSString *getFriendsQuery=@"SELECT uid, name, first_name, last_name, birthday_date, pic_square from user where uid in (SELECT uid2 FROM friend WHERE uid1=me())";
         
@@ -449,7 +433,7 @@ static NSCalendar *gregorian=nil;
                                              NSMutableArray *requestJsonArrayForPhotos = [[[NSMutableArray alloc] init] autorelease];
                                              
                                              int requestCountForBatch=0;
-                                             
+                                             numberOfStatusPhotoQueriesMade=0;
                                              for (NSDictionary *friendDict in (NSMutableArray*)[result objectForKey:@"data"]){
                                                  
                                                  if(![friendDict isKindOfClass:[NSDictionary class]])
@@ -472,6 +456,7 @@ static NSCalendar *gregorian=nil;
                                                  
                                                  //For every 20 friends (as per the API suggested, will make multiquery
                                                  if(requestCountForBatch%20==0){
+                                                      numberOfStatusPhotoQueriesMade++;
                                                      [self executePhotoMultiquery:requestJsonArrayForPhotos];
                                                  }
                                                  
@@ -479,25 +464,28 @@ static NSCalendar *gregorian=nil;
                                                  
                                                  // for every 50 friends, will prepare a batch request
                                                  if(requestCountForBatch%50==0){
+                                                     numberOfStatusPhotoQueriesMade++;
                                                      [self executeStatusedMultiquery:requestJsonArray];
                                                  }
                                              }
                                              
                                              if([requestJsonArrayForPhotos count]){
+                                                 numberOfStatusPhotoQueriesMade++;
                                                  [self executePhotoMultiquery:requestJsonArrayForPhotos];
                                              }
                                              if([requestJsonArray count]){
+                                                 numberOfStatusPhotoQueriesMade++;
                                                  [self executeStatusedMultiquery:requestJsonArray];
                                              }
-                                             
+                                         
                                          }}];
+        //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         
-        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
     }
     
 }
 -(void)executePhotoMultiquery:(NSMutableArray*)jsonrequestArray{
-    
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
         NSString *requestJson = [NSString stringWithFormat:@"[{\"method\":\"POST\", \"relative_url\":\"method/fql.multiquery?queries={%@}\"}]", [jsonrequestArray componentsJoinedByString:@","]];
         [jsonrequestArray removeAllObjects];
         
@@ -700,10 +688,14 @@ static NSCalendar *gregorian=nil;
                     
                     
                 }}
+            currentQueryNum++;
+            if(numberOfStatusPhotoQueriesMade==currentQueryNum)
+                [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         }];
    
 }
 -(void)executeStatusedMultiquery:(NSMutableArray*)jsonrequestArray{
+    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
         NSString *requestJson = [NSString stringWithFormat:@"[ %@ ]", [jsonrequestArray componentsJoinedByString:@","]];
         [jsonrequestArray removeAllObjects];
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:requestJson forKey:@"batch"];
@@ -848,6 +840,10 @@ static NSCalendar *gregorian=nil;
                 
                 
             }
+            currentQueryNum++;
+            if(numberOfStatusPhotoQueriesMade==currentQueryNum)
+                [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+            //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         }];
     
     

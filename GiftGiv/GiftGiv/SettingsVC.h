@@ -21,6 +21,7 @@
     Facebook_GiftGiv *fb_giftgiv_settings;
     LinkedIn_GiftGiv *lnkd_giftgiv_settings;
     MBProgressHUD *HUD;
+    BOOL invalidateTokenStatusDone;
 }
 @property BOOL showAboutUs;
 @property (retain, nonatomic) IBOutlet UIScrollView *settinsScroll;

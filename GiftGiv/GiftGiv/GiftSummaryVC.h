@@ -19,16 +19,19 @@
 #import "AlertOrderEmailRequest.h"
 #import "SendThoughfulMessageemailReq.h"
 #import "FTCoreTextView.h"
+#import "SendEmailRequest.h"
+#import "SendSMSRequest.h"
 
 //ExpressCheckoutResponseHandler is not part of the Express Checkout library and should
 //generally not be used because doing the Express Checkout calls on the device requires
 //that the merchant API credentials be stored in the executable, which is a security risk.
 
 
-@interface GiftSummaryVC : UIViewController<ExpressCheckoutResponseHandler,DeviceReferenceTokenDelegate,MBProgressHUDDelegate,GetUserReqDelegate,AddOrderReqDelegate,AlertOrderEmailRequestDelegate,SendThoughfulMessageEmailReqDelegate>{
+@interface GiftSummaryVC : UIViewController<ExpressCheckoutResponseHandler,DeviceReferenceTokenDelegate,MBProgressHUDDelegate,GetUserReqDelegate,AddOrderReqDelegate,AlertOrderEmailRequestDelegate,SendThoughfulMessageEmailReqDelegate,SendEmailRequestDelegate,SendSMSReqDelegate>{
     MBProgressHUD *HUD;
     BOOL isFreeGiftItem;
     BOOL shouldPushToNextScreen;
+
 }
 
 @property (retain, nonatomic) IBOutlet UIScrollView *giftSummaryScroll;

@@ -92,7 +92,7 @@
         if([tempParaser parse]){
             GGLog(@"parsed successfully");
             //if([fbContactsDelegate respondsToSelector(receivedFBContacts:) withObject:receivedResponse])
-            [lnContactsDelegate receivedContacts:receivedResponse];
+            [lnContactsDelegate receivedLnContacts:receivedResponse];
         }
         else
             GGLog(@"parsing failed..");

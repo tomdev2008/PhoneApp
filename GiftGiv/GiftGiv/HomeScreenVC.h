@@ -65,6 +65,7 @@
     NSOperationQueue *picturesOperationQueue;
     dispatch_queue_t ImageLoader_Q, ImageLoader_Q_ForEvents;
     BOOL eventsPopulated;
+    BOOL isReceivedLnContacts;
 }
 @property (retain, nonatomic) IBOutlet UIScrollView *eventsBgScroll;
 @property (retain, nonatomic) IBOutlet UISearchBar *contactsSearchBar;

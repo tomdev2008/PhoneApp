@@ -794,7 +794,10 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (IBAction)confirmScreenAction:(id)sender {
+    GGLog(@"sendign..%d",isSendElectronically);
+    
     [sendingInfoDict setObject:[NSNumber numberWithBool:isSendElectronically] forKey:@"IsElectronicSending"];
+    GGLog(@"%@",[sendingInfoDict objectForKey:@"IsElectronicSending"]);
     if([recipientemailContentView superview]){
         if(![emailTxtFld.text isEqualToString:@""]){
             if([self validateMail:emailTxtFld.text]){

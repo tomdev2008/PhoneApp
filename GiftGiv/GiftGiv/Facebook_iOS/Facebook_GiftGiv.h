@@ -51,9 +51,7 @@ typedef enum apiCall {
     
     int currentAPICall;
     
-    //To have the requests
-    NSMutableDictionary *friendUserIds;
-    
+        
     NSMutableArray *birthdaySearchStrings;
     NSMutableArray *anniversarySearchStrings;
     NSMutableArray *newJobSearchStrings;
@@ -64,7 +62,8 @@ typedef enum apiCall {
     FBRequest *getFriendsListReq;
     FBRequest *getFBBirthdaysReq;
 
-    int responseCount;
+    int numberOfStatusPhotoQueriesMade,currentQueryNum;
+    
 }
 @property (nonatomic, retain) NSMutableArray *fbRequestsArray;
 @property (nonatomic, retain) FBSession *facebook;

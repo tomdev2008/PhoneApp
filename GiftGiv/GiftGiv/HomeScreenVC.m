@@ -125,6 +125,7 @@ static NSDateFormatter *customDateFormat=nil;
         if([listOfContactsArray count])
             [listOfContactsArray removeAllObjects];
         
+        isReceivedLnContacts=NO;
         
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
@@ -142,7 +143,7 @@ static NSDateFormatter *customDateFormat=nil;
                 [self performSelector:@selector(makeRequestToGetFacebookContacts)];
                 
                 //If user is logged in for linkedin, get the list of contacts for linkedIn
-                if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
+                if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading && !isReceivedLnContacts){
                     [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
                 }
                 
@@ -168,7 +169,7 @@ static NSDateFormatter *customDateFormat=nil;
                     if([[NSUserDefaults standardUserDefaults] objectForKey:@"MyGiftGivUserId"]){
                         isFBContactsLoading=YES;
                         [self performSelector:@selector(makeRequestToGetFacebookContacts) ];
-                        if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
+                        if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading && !isReceivedLnContacts){
                             [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
                         }
                         
@@ -194,7 +195,7 @@ static NSDateFormatter *customDateFormat=nil;
         [self performSelector:@selector(makeRequestToGetFacebookContacts) ];
         
     }
-    if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
+    if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading && !isReceivedLnContacts){
         [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
     }
     //Gift was already selected by the user before he/she logged in, we are going to set HomeScreenVC as the first controller instead of Gifts page. Of course user can view the gift details when he/she selects the event and can be selected any other gift by simply tapping on Back button on gift details screen, such that it will be the normal flow when user logs in.
@@ -244,10 +245,15 @@ static NSDateFormatter *customDateFormat=nil;
     }
 }
 #pragma mark Contacts Delegate
+-(void) receivedLnContacts:(NSMutableArray*)response{
+    isLnContactsLoading=NO;
+    isReceivedLnContacts=YES;
+    [self receivedContacts:response];
+}
 -(void) receivedContacts:(NSMutableArray*)response{
     int friendsCount=[response count];
-    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-    //GGLog(@"Received contacts..%d",friendsCount);
+    //[[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+    GGLog(@"Received contacts..%d",friendsCount);
     if(friendsCount){
         
         
@@ -2098,7 +2104,7 @@ static NSDateFormatter *customDateFormat=nil;
         
         [eventsToCelebrateArray addObject:linkedInEvent];
         [allupcomingEvents addObject:linkedInEvent];
-        [linkedInEvent release];
+        
         [self performSelector:@selector(checkTotalNumberOfGroups)];
         
         
@@ -2108,7 +2114,7 @@ static NSDateFormatter *customDateFormat=nil;
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
         [self storeAllupcomingsForSuccessScreen];
         [self makeRequestToLoadImagesUsingOperations:linkedInEvent];
-        
+        [linkedInEvent release];
         //Add this event's user to giftgiv server (AddUser--> LinkedIn loggedInuser or event's user)
         if([CheckNetwork connectedToNetwork]){
             
@@ -2124,7 +2130,7 @@ static NSDateFormatter *customDateFormat=nil;
 #pragma mark - Add User Request delegate
 -(void) responseForLnAddUser:(NSMutableDictionary*)response{
     GGLog(@"added user..%@",response);
-    if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading){
+    if([lnkd_giftgiv_home isLinkedInAuthorized] && !isLnContactsLoading && !isReceivedLnContacts){
         [self performSelector:@selector(makeRequestToGetContactsForLinkedIn) ];
     }
     
