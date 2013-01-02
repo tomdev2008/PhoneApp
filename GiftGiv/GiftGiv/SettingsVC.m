@@ -17,6 +17,10 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        fb_giftgiv_settings=[[Facebook_GiftGiv alloc]init];
+        fb_giftgiv_settings.fbGiftGivDelegate=self;
+        lnkd_giftgiv_settings=[[LinkedIn_GiftGiv alloc]init];
+        lnkd_giftgiv_settings.lnkInGiftGivDelegate=self;
     }
     return self;
 }
@@ -34,11 +38,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    fb_giftgiv_settings=[[Facebook_GiftGiv alloc]init];
-    fb_giftgiv_settings.fbGiftGivDelegate=self;
-    lnkd_giftgiv_settings=[[LinkedIn_GiftGiv alloc]init];
-    lnkd_giftgiv_settings.lnkInGiftGivDelegate=self;
     
     settinsScroll.contentSize=CGSizeMake(320, 483);
     
@@ -118,6 +117,7 @@
         [self stopHUD];
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         [self.navigationController popToRootViewControllerAnimated:YES];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"LogOutAllAcounts" object:nil];
     }
 }
 -(void) requestFailed{
@@ -125,6 +125,7 @@
         [self stopHUD];
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         [self.navigationController popToRootViewControllerAnimated:YES];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"LogOutAllAcounts" object:nil];
     }
 }
 #pragma mark -
@@ -223,6 +224,7 @@
         [self stopHUD];
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         [self.navigationController popToRootViewControllerAnimated:YES];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"LogOutAllAcounts" object:nil];
     }
 }
 - (void)linkedInDidRequestFailed{
@@ -287,6 +289,7 @@
     [lnkd_giftgiv_settings release];
     
     [settinsScroll release];
+    
     [super dealloc];
 }
 

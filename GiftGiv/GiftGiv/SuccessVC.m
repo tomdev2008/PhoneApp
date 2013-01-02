@@ -20,6 +20,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(receivedEvents) name:@"EventsInSuccessWhenSweepLocalCopy" object:nil];
     }
     return self;
 }
@@ -38,7 +39,29 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    if([[[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] count])
+        [self performSelector:@selector(receivedEvents)];
+    else{
+        if([[self.navigationController viewControllers] count]>1)
+        {
+            if([[[self.navigationController viewControllers] objectAtIndex:1] isKindOfClass:[HomeScreenVC class]]){
+                [[[self.navigationController viewControllers] objectAtIndex:1]viewWillAppear:YES];
+            }
+            else if([[self.navigationController viewControllers] count]>2){
+                if([[[self.navigationController viewControllers] objectAtIndex:2] isKindOfClass:[HomeScreenVC class]]){
+                    [[[self.navigationController viewControllers] objectAtIndex:2]viewWillAppear:YES];
+                }
+            }
+            
+        }
+    }
     
+}
+-(void)receivedEvents{
+    if(upcomingEvents){
+        [upcomingEvents release];
+        upcomingEvents=nil;
+    }
     upcomingEvents=[[NSMutableArray alloc]initWithArray:[[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"]];
     fm=[NSFileManager defaultManager];
     float tableHeight=[upcomingEvents count]*60;
@@ -401,6 +424,8 @@
 
 - (void)dealloc {
     //[transactionID release];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"EventsInSuccessWhenSweepLocalCopy" object:nil];
+    
     [upcomingEvents release];
     [upcomingEventsTable release];
     [contentScroll release];

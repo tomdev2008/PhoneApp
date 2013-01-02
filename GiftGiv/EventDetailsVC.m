@@ -46,6 +46,8 @@
     
     NSString *profilePicId;
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(redirectToLogin) name:@"LogOutAllAcounts" object:nil];
+    
     if([[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectedEventDetails"] objectForKey:@"linkedIn_userID"]){
         linkedInLikes=0;
         lnk_giftgiv_eventDetails=[[LinkedIn_GiftGiv alloc]init];
@@ -119,19 +121,15 @@
 }
 #pragma mark -Facebook delegates
 - (void)facebookDidRequestFailed{
-    //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
+   
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     [self stopHUD];
-    //AlertWithMessageAndDelegate(@"Oops!",@"Something went wrong. please try again later.", nil);
+    AlertWithMessageAndDelegate(@"Oops!",@"There was a problem finding the details for the event. Please log back in.", self);
 }
 - (void)receivedDetailedEventInfo:(NSMutableDictionary*)eventDetails{
     
     GGLog(@"details..%@",eventDetails);
-    
-    //[[Facebook_GiftGiv sharedSingleton]setFbGiftGivDelegate:nil];
-    
-    
-    
+       
     int likesCount=[[[eventDetails objectForKey:@"likes"] objectForKey:@"data"] count];
     int commentsCount=[[[eventDetails objectForKey:@"comments"] objectForKey:@"data"] count];
     
@@ -154,7 +152,7 @@
         ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
         dispatch_async(ImageLoader_Q, ^{
             
-            NSString *urlStr=[eventDetails objectForKey:@"picture"];
+            NSString *urlStr=[eventDetails objectForKey:@"source"];
             
             NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
             UIImage *eventPic = [UIImage imageWithData:data];
@@ -287,7 +285,18 @@
     
     return 44+5;
 }
-#pragma mark - 
+#pragma mark -
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    [self showProgressHUD:self.view withMsg:nil];
+    settings=[[SettingsVC alloc]initWithNibName:@"SettingsVC" bundle:nil];
+    [settings performSelector:@selector(performLogoutAction)];
+       
+}
+-(void)redirectToLogin{
+    [self stopHUD];
+    [settings release];
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
 -(void)loadProfilePictures{
     int commentsCount=[listOfComments count];
     
@@ -501,6 +510,7 @@
     [likesCommentsLbl release];
     [commentsTable release];
     [detailsScroll release];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"LogOutAllAcounts" object:nil];
     [super dealloc];
 }
 

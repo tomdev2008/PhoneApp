@@ -31,6 +31,9 @@ static NSDateFormatter *customDateFormat=nil;
         //Notification when user logged out of all accounts, such that will cancel all pending requests for events or profile pictures downloading...
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logoutFromAllAccounts) name:@"UserLoggedOut" object:nil];
         
+        //Notification when all facebook queries are done respective to the events fetching
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(completedAllFBQueries) name:@"CompletedAllFBStatusPhotoQueries" object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(redirectToLogin) name:@"LogOutAllAcounts" object:nil];
     }
     return self;
 }
@@ -91,7 +94,37 @@ static NSDateFormatter *customDateFormat=nil;
     [super viewDidLoad];
     
 }
-
+-(void)completedAllFBQueries{
+    if(![allupcomingEvents count]){
+        //No events found, will log out the user by showing an alert
+        
+        if(totalGroups==1 && [[categoryTitles objectAtIndex:0] isEqualToString:events_category_4]){
+            contactsSearchView.frame=CGRectMake(0, 0, 320, 44);
+            if(![contactsSearchView superview]){
+                
+                [self.view addSubview:contactsSearchView];
+            }
+            [contactsSearchBar becomeFirstResponder];
+        }
+        
+        GGLog(@"No event found");
+        
+        AlertWithMessageAndDelegate(@"Oops!",@"There was a problem finding the events worth celebrating. Please log back in.", self);
+    }
+    
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    [self showProgressHUD:self.view withMsg:nil];
+    settingsToLogout=[[SettingsVC alloc]initWithNibName:@"SettingsVC" bundle:nil];
+    [settingsToLogout performSelector:@selector(performLogoutAction)];
+    //[[NSNotificationCenter defaultCenter]postNotificationName:@"LogOutAllAcounts" object:nil];
+    
+}
+-(void)redirectToLogin{
+    [self stopHUD];
+    [settingsToLogout release];
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
 -(void)getEventsFromLinkedIn{
     if([lnkd_giftgiv_home isLinkedInAuthorized]){
         [lnkd_giftgiv_home fetchProfile];
@@ -588,14 +621,7 @@ static NSDateFormatter *customDateFormat=nil;
     pageControlForEventGroups.numberOfPages=totalGroups;
     if(totalGroups==1)
         eventGroupNum=1;
-    if(totalGroups==1 && [[categoryTitles objectAtIndex:0] isEqualToString:events_category_4]){
-        contactsSearchView.frame=CGRectMake(0, 0, 320, 44);
-        if(![contactsSearchView superview]){
-            
-            [self.view addSubview:contactsSearchView];
-        }
-        [contactsSearchBar becomeFirstResponder];
-    }
+    
     if(!eventsPopulated){
         [_eventsBgScroll scrollRectToVisible:CGRectMake(320,0,320,416) animated:NO];
         
@@ -1618,7 +1644,7 @@ static NSDateFormatter *customDateFormat=nil;
     
     [tempArray release];
     [[UIApplication sharedApplication]setApplicationIconBadgeNumber:[allupcomingEvents count]];
-    
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"EventsInSuccessWhenSweepLocalCopy" object:nil];
 }
 - (void)newJobEventDetailsFromStatusOrPhoto:(NSMutableDictionary*)eventDetails{
     
@@ -2183,6 +2209,34 @@ static NSDateFormatter *customDateFormat=nil;
     //[eventProfilePicOpQueue cancelAllOperations];
     isCancelledImgOperations=YES;
 }
+#pragma mark - ProgressHUD methods
+
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr
+{
+	HUD = [[MBProgressHUD alloc] initWithView:targetView];
+	
+	// Add HUD to screen
+	[targetView addSubview:HUD];
+	
+	// Regisete for HUD callbacks so we can remove it from the window at the right time
+	HUD.delegate = self;
+	
+	HUD.labelText=titleStr;
+	
+	// Show the HUD while the provided method executes in a new thread
+	[HUD show:YES];
+	
+}
+- (void)stopHUD{
+    if (![HUD isHidden]) {
+        [HUD setHidden:YES];
+    }
+}
+- (void)hudWasHidden:(MBProgressHUD *)hud
+{
+	[HUD removeFromSuperview];
+	HUD=nil;
+}
 #pragma mark -
 - (void)viewDidUnload
 {
@@ -2208,7 +2262,8 @@ static NSDateFormatter *customDateFormat=nil;
 - (void)dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:picturesOperationQueue name:UIApplicationWillTerminateNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CompletedAllFBStatusPhotoQueries" object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"LogOutAllAcounts" object:nil];
     [picturesOperationQueue cancelAllOperations];
     [picturesOperationQueue release];
     

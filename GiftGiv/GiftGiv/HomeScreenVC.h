@@ -27,8 +27,9 @@
 #import "LinkedInContactsRequest.h"
 #import "AddNormalUserv_2_Request.h"
 #import "GiftItemObject.h"
+#import "MBProgressHUD.h"
 
-@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,GetEventsDelegate,UISearchBarDelegate, FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate,UIScrollViewDelegate,AddNormalUserv_2_RequestDelegate>
+@interface HomeScreenVC : UIViewController<UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,AddUserRequestDelegate,GetEventsDelegate,UISearchBarDelegate, FacebookContactsReqDelegate,LinkedIn_GiftGivDelegate,AddUser_LinkedInRequestDelegate,LinkedInContactsReqDelegate,UIScrollViewDelegate,AddNormalUserv_2_RequestDelegate,MBProgressHUDDelegate>
 
 {
     int eventGroupNum;
@@ -66,6 +67,8 @@
     dispatch_queue_t ImageLoader_Q, ImageLoader_Q_ForEvents;
     BOOL eventsPopulated;
     BOOL isReceivedLnContacts;
+    SettingsVC *settingsToLogout;
+    MBProgressHUD *HUD;
 }
 @property (retain, nonatomic) IBOutlet UIScrollView *eventsBgScroll;
 @property (retain, nonatomic) IBOutlet UISearchBar *contactsSearchBar;
@@ -102,5 +105,10 @@
 
 //Get the event details for the selected event
 -(NSMutableDictionary*)collectDetailsToGetEventDetailsForTheSelectedEvent:(NSMutableDictionary*)souceDict;
+
+#pragma mark - Progress HUD
+- (void) showProgressHUD:(UIView *)targetView withMsg:(NSString *)titleStr;
+- (void) stopHUD;
+#pragma mark -
 
 @end

@@ -14,6 +14,8 @@
 #import "MBProgressHUD.h"
 #import "CustomDateDisplay.h"
 #import "LinkedIn_GiftGiv.h"
+#import "SettingsVC.h"
+
 
 @interface EventDetailsVC : UIViewController <UITableViewDelegate,UITableViewDataSource,Facebook_GiftGivDelegate,MBProgressHUDDelegate,LinkedIn_GiftGivDelegate>
 {
@@ -23,6 +25,7 @@
     Facebook_GiftGiv *fb_giftgiv_eventDetails;
     LinkedIn_GiftGiv *lnk_giftgiv_eventDetails;
     int linkedInLikes;
+    SettingsVC *settings;
 }
 @property (retain, nonatomic) IBOutlet UIImageView *profileImgView;
 @property (retain, nonatomic) IBOutlet UILabel *nameLbl;

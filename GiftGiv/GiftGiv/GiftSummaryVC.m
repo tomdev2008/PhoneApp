@@ -336,7 +336,7 @@
         [self performSelector:@selector(startSendingOrderToServer)];
     }
     else{
-        [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_LIVE withDelegate:self];
+        [[PayPal getPayPalInst] fetchDeviceReferenceTokenWithAppID:@"APP-80W284485P519543T" forEnvironment:ENV_SANDBOX withDelegate:self];
     }
     
 }
@@ -444,7 +444,7 @@
     }
     
     shouldPushToNextScreen=YES;
-    NSString *soapmsgFormatAlertOrderEmail=[NSString stringWithFormat:@"<tem:AlertOrderEmail>\n<tem:senderName>%@ %@</tem:senderName>\n<tem:recipientName>%@</tem:recipientName>\n<tem:eventType>%@</tem:eventType>\n<tem:giftItem>%@</tem:giftItem>\n<tem:giftPrice>%@</tem:giftPrice>\n<tem:deliveryMethod>electronic</tem:deliveryMethod>\n<tem:deliveryDate>%@</tem:deliveryDate></tem:AlertOrderEmail>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[giftSummaryDict objectForKey:@"RecipientName"],[giftSummaryDict objectForKey:@"EventName"],[giftSummaryDict objectForKey:@"GiftName"],priceValue,[giftSummaryDict objectForKey:@"DateOfDelivery"]];
+    NSString *soapmsgFormatAlertOrderEmail=[NSString stringWithFormat:@"<tem:AlertOrderEmail>\n<tem:senderName>%@ %@</tem:senderName>\n<tem:recipientName>%@</tem:recipientName>\n<tem:eventType>%@</tem:eventType>\n<tem:giftItem>%@</tem:giftItem>\n<tem:giftPrice>%@</tem:giftPrice>\n<tem:deliveryMethod>%@</tem:deliveryMethod>\n<tem:deliveryDate>%@</tem:deliveryDate></tem:AlertOrderEmail>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[giftSummaryDict objectForKey:@"RecipientName"],[giftSummaryDict objectForKey:@"EventName"],[giftSummaryDict objectForKey:@"GiftName"],priceValue,sentAsStatus,[giftSummaryDict objectForKey:@"DateOfDelivery"]];
    
     
     NSString *soapRequestString=SOAPRequestMsg(soapmsgFormatAlertOrderEmail);
