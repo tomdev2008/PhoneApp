@@ -542,9 +542,9 @@
 		cell.selectionStyle=UITableViewCellSelectionStyleNone;
         
         [cell.giftIcon_one.layer setBorderColor:[[UIColor colorWithRed:0.0 green:0.66 blue:0.68 alpha:1.0]CGColor]];
-        [cell.giftIcon_one.layer setBorderWidth:2.0];
+        [cell.giftIcon_one.layer setBorderWidth:1.0];
         [cell.giftIcon_two.layer setBorderColor:[[UIColor colorWithRed:0.0 green:0.66 blue:0.68 alpha:1.0]CGColor]];
-        [cell.giftIcon_two.layer setBorderWidth:2.0];
+        [cell.giftIcon_two.layer setBorderWidth:1.0];
         [cell.giftIcon_one addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
         [cell.giftIcon_two addTarget:self action:@selector(giftTileIconTapped:) forControlEvents:UIControlEventTouchUpInside];
  

@@ -477,7 +477,7 @@
         
         if(isFreeGiftItem){
             shouldPushToNextScreen=NO;
-            NSString *soapmsgFormatAlertOrderEmail=[NSString stringWithFormat:@"<tem:SendThoughtFulMessageEmail>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n<tem:toEmail>%@</tem:toEmail>\n<tem:message>%@</tem:message>\n</tem:SendThoughtFulMessageEmail>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[giftSummaryDict objectForKey:@"RecipientName"],[giftSummaryDict objectForKey:@"RecipientMailID"],[giftSummaryDict objectForKey:@"EditableGiftDescription"]];
+            NSString *soapmsgFormatAlertOrderEmail=[NSString stringWithFormat:@"<tem:SendThoughtFulMessageEmail>\n<tem:fromName>%@ %@</tem:fromName>\n<tem:toName>%@</tem:toName>\n<tem:toEmail>%@</tem:toEmail>\n<tem:message>%@</tem:message>\n<tem:deliveryDate>%@</tem:deliveryDate>\n</tem:SendThoughtFulMessageEmail>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"first_name"],[[[NSUserDefaults standardUserDefaults]objectForKey:@"MyFBDetails"] objectForKey:@"last_name"],[giftSummaryDict objectForKey:@"RecipientName"],[giftSummaryDict objectForKey:@"RecipientMailID"],[giftSummaryDict objectForKey:@"EditableGiftDescription"],[giftSummaryDict objectForKey:@"DateOfDelivery"]];
             
             
             NSString *soapRequestString=SOAPRequestMsg(soapmsgFormatAlertOrderEmail);

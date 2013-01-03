@@ -174,12 +174,12 @@
     }
     else{
         //event description's default frame 5, 115, 310, 100
-        eventDescription.frame=CGRectMake(5, 0, 310, 100);
+        eventDescription.frame=CGRectMake(5, 0, 310, MAXFLOAT);
         
         eventDescription.text=[eventDetails objectForKey:@"message"];
         
         [detailsScroll addSubview:eventDescription];
-        CGSize eventDescription_maxSize = CGSizeMake(310, 100);
+        CGSize eventDescription_maxSize = CGSizeMake(310, MAXFLOAT);
         CGSize eventDescription_newSize=[eventDescription.text sizeWithFont:eventDescription.font constrainedToSize:eventDescription_maxSize lineBreakMode:UILineBreakModeWordWrap];
         eventDescription.frame=CGRectMake(5, 0,310, eventDescription_newSize.height+28);
         //GGLog(@"%@",NSStringFromCGSize(eventDescription_newSize));

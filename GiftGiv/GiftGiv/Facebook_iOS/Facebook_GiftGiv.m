@@ -299,6 +299,9 @@ static NSCalendar *gregorian=nil;
     NSArray *endDateComponents=[endDate componentsSeparatedByString:@"/"];
     
     NSString *getBirthdaysQuery=[NSString stringWithFormat:@"SELECT uid, name, first_name, last_name, birthday_date, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND (substr(birthday_date, 0, 2) = '%@' AND substr(birthday_date, 3, 5) >= '%@') AND (substr(birthday_date, 0, 2) = '%@' AND substr(birthday_date, 3, 5) < '%02d') ORDER BY birthday_date ASC",[startDateComponents objectAtIndex:0],[startDateComponents objectAtIndex:1],[endDateComponents objectAtIndex:0],[[endDateComponents objectAtIndex:1]integerValue]+1];
+    /*
+     SELECT uid, name, first_name, last_name, birthday_date, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND strlen(birthday_date) != 0 AND (substr(birthday_date, 0, 2) = '12' AND substr(birthday_date, 3, 5) >= '30') AND (substr(birthday_date, 0, 2) = '12' AND substr(birthday_date, 3, 5) < '32') ORDER BY birthday_date ASC
+     */
     GGLog(@"%@",getBirthdaysQuery);
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    getBirthdaysQuery, @"q",
@@ -368,7 +371,7 @@ static NSCalendar *gregorian=nil;
         }
     }
     //Statuses (For better performance, we used batch requests for each 50 friends
-    Get status messages from past 2 days{
+    Get status messages from past 3 days{
         For each status message{
             If comments or likes count greater than or equal 15{
                 If status message text matches with any of the searched keywords respective to birthdays/anniversaries/congratulations/newjob{
