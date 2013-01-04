@@ -196,34 +196,44 @@ static NSDateFormatter *customDateFormat=nil;
     
 }
 -(void)loadProfilePicture{
-    dispatch_queue_t ImageLoader_Q;
-    ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
-    dispatch_async(ImageLoader_Q, ^{
-        
-        NSString *urlStr=[orderDetails profilePictureUrl];
-        
-        NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
-        UIImage *thumbnail = [UIImage imageWithData:data];
-        
-        if(thumbnail==nil){
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                
-                profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
-                
-            });
+    
+    NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[orderDetails recipientId]]];
+    NSFileManager *fm=[NSFileManager defaultManager];
+    if([fm fileExistsAtPath:filePath]){
+        profilePic.image=[UIImage imageWithContentsOfFile:filePath];
+    }
+    else{
+        dispatch_queue_t ImageLoader_Q;
+        ImageLoader_Q=dispatch_queue_create("Facebook profile picture network connection queue", NULL);
+        dispatch_async(ImageLoader_Q, ^{
             
-        }
-        else {
+            NSString *urlStr=[orderDetails profilePictureUrl];
             
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
+            NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+            UIImage *thumbnail = [UIImage imageWithData:data];
+            
+            if(thumbnail==nil){
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    
+                    profilePic.image=[ImageAllocationObject loadImageObjectName:@"profilepic_dummy" ofType:@"png"];
+                    
+                });
                 
-                profilePic.image=thumbnail;
+            }
+            else {
+                NSString *filePath = [GetCachesPathForTargetFile cachePathForProfilePicFileName:[NSString stringWithFormat:@"%@.png",[orderDetails recipientId]]]; //Add the file name
+                [UIImagePNGRepresentation(thumbnail) writeToFile:filePath atomically:YES]; //Write the file
                 
-            });
-        }
-        
-    });
-    dispatch_release(ImageLoader_Q);
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    
+                    profilePic.image=thumbnail;
+                    
+                });
+            }
+            
+        });
+        dispatch_release(ImageLoader_Q);
+    }
 }
 -(void)getGiftItemDetails{
     if([CheckNetwork connectedToNetwork]){

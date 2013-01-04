@@ -556,7 +556,7 @@
 		FTCoreTextStyle *defaultStyle = [FTCoreTextStyle new];
         defaultStyle.name = FTCoreTextTagDefault;	//thought the default name is already set to FTCoreTextTagDefault
         defaultStyle.font = [UIFont fontWithName:@"Helvetica" size:12.f];
-        defaultStyle.textAlignment = FTCoreTextAlignementJustified;
+        defaultStyle.textAlignment = FTCoreTextAlignementLeft;
         [cell.gift_coreText_one addStyle:defaultStyle];
         [cell.gift_coreText_two addStyle:defaultStyle];
         [defaultStyle release];

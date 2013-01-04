@@ -102,6 +102,7 @@ static NSCalendar *gregorian=nil;
         case FBSessionStateOpen:
         {
             //[[FBSession activeSession] setAccessToken:@"AAAC9V7SSgxoBAM74dvOyeokoK7I3IW39MzcAZCXYHnFLdNFfJLFIBbKP6VIe52P3kmefjNtOZBZAuDtRTcQAsqS82Ri87kcfIMWk6u7UgZDZD"];
+           
             [self storeAuthData:[[FBSession activeSession] accessToken] expiresAt:[[FBSession activeSession] expirationDate]];
             
             [fbGiftGivDelegate facebookLoggedIn];
@@ -253,9 +254,9 @@ static NSCalendar *gregorian=nil;
     if([[NSUserDefaults standardUserDefaults]objectForKey:@"FBAccessTokenKey"]){
         
         //Date should be in MM/dd/yyyy formate only for facebook queries
-        NSString *main_startDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:-4]; //previous 3 days as it like windows phone logic
+        NSString *main_startDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]; //previous 3 days as it like windows phone logic
         
-        NSString *main_endDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:14]; //next 15 days as it like windows phone logic
+        NSString *main_endDate=[self getNewDateForCurrentDateByAddingTimeIntervalInDays:15]; //next 15 days as it like windows phone logic
         
         //Separate the date components as we are going to verify the start date's month and endDate's month
         NSArray *startDateComponents=[main_startDate componentsSeparatedByString:@"/"];
@@ -451,7 +452,7 @@ static NSCalendar *gregorian=nil;
                                                  // Get the list of photos for each of my friend from past 3 days
                                                  NSString *getPhotosQuery=[NSString stringWithFormat:@"'%@':'select object_id,created,owner, like_info,comment_info from photo where modified>=%.0f and aid in (select aid from album where owner=%@ and modified_major>=%.0f)'",[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60)),[friendDict objectForKey:@"uid"],(currentTimeInterval-(3*24*60*60))];
                                                  // statuses query for batch request
-                                                 //last 2 days
+                                                 //last 3 days
                                                  NSString *fbReqStatuses=[NSString stringWithFormat:@"{ \"method\": \"GET\", \"relative_url\": \"%@/statuses?since=%@\" }", [friendDict objectForKey:@"uid"], [self getNewDateForCurrentDateByAddingTimeIntervalInDays:-3]];
                                                  
                                                  
