@@ -347,26 +347,50 @@
         [self prepareRequestToAddOrderFor:[[NSUserDefaults standardUserDefaults]objectForKey:@"DummyUserId"]];
     else{
         if([CheckNetwork connectedToNetwork]){
-            
-            NSString *soapmsgFormat;
-            if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]){
-                soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]];
+         
+                        
+            if ([FBSession.activeSession.permissions indexOfObject:@"publish_actions"] == NSNotFound) {
+                
+                [FBSession.activeSession reauthorizeWithPublishPermissions:[NSArray arrayWithObjects:@"publish_actions", @"publish_stream",nil]
+                                                           defaultAudience:FBSessionDefaultAudienceFriends
+                                                         completionHandler:^(FBSession *session, NSError *error) {
+                                                             if (!error) {
+                                                                
+                                                             }
+                                                             //For this example, ignore errors
+                                                             [self soapRequest];
+                                                         }];
+            } else {
+                
+                [self soapRequest];
             }
-            else{
-                soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_userID"]];
-            }
+
             
-            NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
-            GGLog(@"%@",soapRequestString);
-            NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetUser"];
-            
-            GetUserRequest *getUser=[[GetUserRequest alloc]init];
-            [getUser setGetuserDelegate:self];
-            [getUser makeRequestToGetUserId:theRequest];
-            [getUser release];
+           
         }
     }
 }
+
+
+-(void) soapRequest{
+    NSString *soapmsgFormat;
+    if([[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]){
+        soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"userID"]];
+    }
+    else{
+        soapmsgFormat=[NSString stringWithFormat:@"<tem:GetUser>\n<tem:fbId>%@</tem:fbId>\n</tem:GetUser>",[[[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"]objectForKey:@"linkedIn_userID"]];
+    }
+    
+    NSString *soapRequestString=SOAPRequestMsg(soapmsgFormat);
+    GGLog(@"%@",soapRequestString);
+    NSMutableURLRequest *theRequest=[CoomonRequestCreationObject soapRequestMessage:soapRequestString withAction:@"GetUser"];
+    
+    GetUserRequest *getUser=[[GetUserRequest alloc]init];
+    [getUser setGetuserDelegate:self];
+    [getUser makeRequestToGetUserId:theRequest];
+    [getUser release];
+}
+
 -(void) responseForGetuser:(UserDetailsObject*)userdetails{
     
     [self prepareRequestToAddOrderFor:userdetails.userId];

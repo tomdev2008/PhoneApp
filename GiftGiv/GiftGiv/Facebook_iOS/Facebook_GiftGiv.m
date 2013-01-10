@@ -8,6 +8,7 @@
 
 #import "Facebook_GiftGiv.h"
 #import "ApplicationHelpers.h"
+#import <Accounts/Accounts.h>
 
 @interface Facebook_GiftGiv()
 
@@ -71,17 +72,66 @@ static NSCalendar *gregorian=nil;
         
     }
 }
+
+
+-(void)fbResync
+{
+    ACAccountStore *accountStore;
+    ACAccountType *accountTypeFB;
+    if ((accountStore = [[ACAccountStore alloc] init]) && (accountTypeFB = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook] ) ){
+        
+        NSArray *fbAccounts = [accountStore accountsWithAccountType:accountTypeFB];
+        NSLog(@"fbAccounts ------> %@",fbAccounts);
+        id account;
+        if (fbAccounts && [fbAccounts count] > 0 && (account = [fbAccounts objectAtIndex:0])){
+            
+            [accountStore renewCredentialsForAccount:account completion:^(ACAccountCredentialRenewResult renewResult, NSError *error) {
+                //we don't actually need to inspect renewResult or error.
+                if (error){
+                    
+                }
+            }];
+        }
+    }
+}
+
+
+//resync the device with the server.
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
-    NSArray *permissions=[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",@"status_update",nil];
+     
+   
+    
+    NSArray *permissions=[NSArray arrayWithObjects:@"user_about_me",@"user_birthday",@"friends_status",@"friends_photos",@"friends_birthday",@"friends_location",nil];
+   
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *fbAccessToken=[defaults objectForKey:@"FBAccessTokenKey"];
+    NSDate *fbExpirationDateKey=[defaults objectForKey:@"FBExpirationDateKey"];
+    if (fbAccessToken && fbExpirationDateKey) {
+        [FBSession activeSession].accessToken = fbAccessToken;
+        [FBSession activeSession].expirationDate = fbExpirationDateKey;
+        
+    }
     
     return [FBSession openActiveSessionWithReadPermissions:permissions
-                      allowLoginUI:allowLoginUI
-                      completionHandler:^(FBSession *session,FBSessionState state,
-                                                             NSError *error) {
-                       
-                       
-                       [self sessionStateChanged:session state:state error:error];
-                      }];
+                                              allowLoginUI:YES
+                                         completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+                                             if(error)
+                                             {
+                                                 
+                                                 
+                                                 [self fbResync]; //Manually resync the device with the server
+                                                 [NSThread sleepForTimeInterval:0.5];   //half a second
+                                                 [FBSession openActiveSessionWithReadPermissions:permissions
+                                                                                    allowLoginUI:YES
+                                                                               completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+                                                                                   [self sessionStateChanged:session state:state error:error];
+                                                                               }];
+                                                 
+                                                 
+                                             }
+                                             else
+                                                 [self sessionStateChanged:session state:state error:error];
+                                         }];
     
 }
 
