@@ -134,8 +134,7 @@ static NSDateFormatter *customDateFormat=nil;
 }
 -(void)viewWillAppear:(BOOL)animated{
 
-    if([[NSUserDefaults standardUserDefaults]objectForKey:@"SelectedEventDetails"])
-        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"SelectedEventDetails"];
+   
     //If there are no events stored in the application level, get the events
     if(![[NSUserDefaults standardUserDefaults]objectForKey:@"AllUpcomingEvents"] ){
         
@@ -452,7 +451,8 @@ static NSDateFormatter *customDateFormat=nil;
         if([eventsToCelebrateArray count]>1)
             [self sortEvents:eventsToCelebrateArray eventCategory:3];
         
-        [[NSUserDefaults standardUserDefaults]setObject:allupcomingEvents forKey:@"AllUpcomingEvents"];
+        [self storeAllupcomingsForSuccessScreen];
+        //[[NSUserDefaults standardUserDefaults]setObject:allupcomingEvents forKey:@"AllUpcomingEvents"];
         [self makeRequestToLoadImagesUsingOperations:allupcomingEvents];
         
         
